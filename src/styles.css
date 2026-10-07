@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Climate+Crisis&family=Ms+Madi&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ms+Madi&family=Rubik+Mono+One&display=swap');
 
 :root{--bg:#07080a;--card:#0e1013;--fg:#ededed;--mute:#8b9097;--line:#1f2328;--acc:#4ade80;--acc2:#38bdf8;--r:18px;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -18,7 +18,7 @@ section{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:110px
 .tag{font-size:13px;color:var(--acc);letter-spacing:.08em;text-transform:uppercase}
 h2{font-size:clamp(28px,4.5vw,44px);letter-spacing:-.03em;margin:6px 0 32px;line-height:1.1}
 #hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding-top:120px}
-h1{font-family:'Climate Crisis',sans-serif;font-size:clamp(40px,9vw,92px);letter-spacing:-.05em;line-height:1;margin:14px 0 20px}
+h1{font-family:'Rubik Mono One',sans-serif;font-size:clamp(40px,9vw,92px);letter-spacing:-.05em;line-height:1;margin:14px 0 20px}
 .grad{background:linear-gradient(90deg,var(--acc),var(--acc2),var(--acc));background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 6s linear infinite}
 @keyframes sh{to{background-position:200% center}}
 .lead{max-width:620px;color:var(--mute);font-size:18px}
