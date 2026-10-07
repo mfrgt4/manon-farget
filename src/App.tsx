@@ -115,7 +115,7 @@ export default function App() {
         </div>
       </section>
 
-      <section id="a-propos">
+<section id="a-propos">
         <div className="about">
           <div className="photo rv rv-l">
             {profile.photo
@@ -125,20 +125,8 @@ export default function App() {
           <div className="rv rv-r" style={delay(0.15)}>
             <p className="tag mono">// à propos</p>
             <h2>Un peu plus sur moi.</h2>
-            <p className="about-p">
-              Je m'appelle Manon et je suis étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.
-            </p>
-            <p className="about-p">
-              J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.
-            </p>
-            <p className="about-p">
-              Je cherche un stage à partir d'avril 2027 pour progresser au sein d'une équipe, et y apporter ma curiosité et mon sens du détail.
-            </p>
-            <div className="chips about-facts">
-              <i className="mono">📍 Le Puy-en-Velay</i>
-              <i className="mono">🎓 BUT MMI · 2e année</i>
-              <i className="mono">🗓️ Stage avril 2027</i>
-            </div>
+            {about.map((t, index) => <p key={index} className="about-p">{t}</p>)}
+            <div className="chips about-facts">{facts.map((f) => <i key={f} className="mono">{f}</i>)}</div>
             <div className="stats">
               {[[2, "année de BUT"], [projects.length, "projets"], [tools.length, "outils"]].map(([n, l]) => (
                 <div key={l as string}><b className="mono"><Count to={n as number} /></b><span>{l}</span></div>
