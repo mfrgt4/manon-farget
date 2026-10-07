@@ -190,7 +190,18 @@ export default function App() {
       <section id="accueil">
         <div id="hero">
           <span className="badge mono rv"><span className="dot" />Disponible · stage avril 2027</span>
-          <h1 className="rv" style={delay(0.1)}><span className="chars" aria-label="Hello ! Moi c'est,">{[..."Hello ! Moi c'est,"].map((c, i) => <span key={i} aria-hidden="true" style={{ "--i": i } as React.CSSProperties}>{c === " " ? "\u00a0" : c}</span>)}</span><br /><span className="grad">{profile.name}.</span></h1>
+          
+          <h1 className="rv" style={delay(0.1)}>
+  <span className="chars font-cursive" aria-label="Hello ! Moi c'est,">
+    {[..."Hello ! Moi c'est,"].map((c, i) => (
+      <span key={i} aria-hidden="true" style={{ "--i": i } as React.CSSProperties}>
+        {c === " " ? "\u00a0" : c}
+      </span>
+    ))}
+  </span>
+  <br />
+  <span className="grad">{profile.name}.</span>
+</h1>
           <p className="lead mono rv" style={delay(0.2)}>{typed}<span className="cur" /></p>
           <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
             Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne (Le Puy-en-Velay). Je conçois des interfaces qui allient code propre, design soigné et animations qui donnent envie de rester.
