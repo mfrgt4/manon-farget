@@ -167,7 +167,6 @@ const delay = (d: number) =>
   ({ "--d": d + "s" } as React.CSSProperties);
 
 export default function App() {
-  const typed = useTyped(profile.roles);
   const active = useActive(ids);
 
   const [open, setOpen] = useState<number | null>(null);
@@ -268,11 +267,6 @@ export default function App() {
             <br />
             <span className="grad">{profile.name}.</span>
           </h1>
-
-          <p className="lead mono rv" style={delay(0.2)}>
-            {typed}
-            <span className="cur" />
-          </p>
 
           <p
             className="lead rv"
