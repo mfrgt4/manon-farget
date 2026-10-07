@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
-import { about, categories, facts, nav, profile, projects, skills, studies, tools } from "./data";
+import { categories, nav, profile, projects, skills, studies, tools } from "./data";
 
 function useTyped(words: string[]) {
   const [txt, setTxt] = useState("");
@@ -36,14 +36,14 @@ function useEffects() {
       if (!c) return;
       const r = c.getBoundingClientRect();
       c.style.setProperty("--mx", e.clientX - r.left + "px"); c.style.setProperty("--my", e.clientY - r.top + "px");
-      if ((c.classList.contains("proj") || c.classList.contains("skill")) && matchMedia("(hover:hover)").matches) {
+      if (c.classList.contains("proj") && matchMedia("(hover:hover)").matches) {
         const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
         c.style.transform = `perspective(700px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-4px)`;
       }
     };
     const onLeave = (e: PointerEvent) => {
       const c = e.target as HTMLElement;
-      if (c.classList?.contains("proj") || c.classList?.contains("skill")) c.style.transform = "";
+      if (c.classList?.contains("proj")) c.style.transform = "";
     };
     addEventListener("pointermove", onMove);
     document.addEventListener("pointerout", onLeave);
@@ -83,92 +83,16 @@ function Count({ to }: { to: number }) {
   return <span ref={ref}>0</span>;
 }
 
-function Marquee({ list, rev }: { list: string[]; rev?: boolean }) {
-  return (
-    <div className={"marq" + (rev ? " rev" : "")} aria-hidden="true">
-      <div className="marq-t">{[...list, ...list].map((t, i) => <span key={i}>{t} <b>✦</b></span>)}</div>
-    </div>
-  );
-}
-
-// Barre de progression, parallaxe, ligne de timeline, curseur personnalisé, boutons magnétiques
-function useMotion() {
-  useEffect(() => {
-    const fine = matchMedia("(hover:hover) and (pointer:fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const root = document.documentElement;
-    const prog = document.getElementById("progress")!;
-    const tl = document.querySelector<HTMLElement>(".tl");
-    let tick = false;
-    const onScroll = () => {
-      if (tick) return; tick = true;
-      requestAnimationFrame(() => {
-        tick = false;
-        const max = root.scrollHeight - innerHeight;
-        prog.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
-        root.style.setProperty("--sy", String(scrollY));
-        if (tl) {
-          const r = tl.getBoundingClientRect();
-          tl.style.setProperty("--tl", String(Math.min(1, Math.max(0, (innerHeight * 0.75 - r.top) / r.height))));
-        }
-      });
-    };
-    addEventListener("scroll", onScroll, { passive: true }); onScroll();
-
-    // Traînée d'étoiles qui suit le curseur
-    const cv = document.getElementById("stars") as HTMLCanvasElement;
-    const ctx = cv.getContext("2d")!;
-    type P = { x: number; y: number; vx: number; vy: number; s: number; r: number; vr: number; life: number; max: number; c: string };
-    let ps: P[] = [], raf = 0, running = false, lx = -999, ly = -999;
-    const COL = ["#D13670", "#DF729B", "#f3f4f6", "#DF729B"];
-    const size = () => { const d = Math.min(devicePixelRatio, 2); cv.width = innerWidth * d; cv.height = innerHeight * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
-    size(); addEventListener("resize", size);
-    const star = (p: P) => { // étoile à 4 branches
-      const k = 1 - p.life / p.max, R = p.s * (0.4 + 0.6 * k), r = R * 0.28;
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
-      ctx.globalAlpha = k; ctx.fillStyle = p.c; ctx.shadowColor = p.c; ctx.shadowBlur = 8;
-      ctx.beginPath();
-      for (let i = 0; i < 8; i++) { const a = (i * Math.PI) / 4, d = i % 2 ? r : R; ctx.lineTo(Math.cos(a) * d, Math.sin(a) * d); }
-      ctx.closePath(); ctx.fill(); ctx.restore();
-    };
-    const frame = () => {
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
-      ps = ps.filter((p) => p.life < p.max);
-      for (const p of ps) { p.life++; p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.vx *= 0.985; p.r += p.vr; star(p); }
-      if (ps.length) raf = requestAnimationFrame(frame); else running = false;
-    };
-    const spawn = (x: number, y: number) => {
-      ps.push({ x: x + (Math.random() - 0.5) * 8, y: y + (Math.random() - 0.5) * 8, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2 + 0.2,
-        s: 6 + Math.random() * 9, r: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.08, life: 0, max: 38 + Math.random() * 30, c: COL[(Math.random() * COL.length) | 0] });
-      if (ps.length > 100) ps.shift();
-      if (!running) { running = true; raf = requestAnimationFrame(frame); }
-    };
-    const move = (e: PointerEvent) => {
-      if (Math.hypot(e.clientX - lx, e.clientY - ly) > 14) { spawn(e.clientX, e.clientY); lx = e.clientX; ly = e.clientY; }
-      const b = (e.target as HTMLElement).closest?.<HTMLElement>(".btn");
-      if (b) { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.25}px,${(e.clientY - r.top - r.height / 2) * 0.35 - 3}px)`; }
-    };
-    const out = (e: PointerEvent) => { const b = (e.target as HTMLElement).closest?.<HTMLElement>(".btn"); if (b) b.style.transform = ""; };
-    if (fine) { root.classList.add("cur-on"); addEventListener("pointermove", move); document.addEventListener("pointerout", out); }
-    return () => {
-      removeEventListener("scroll", onScroll); removeEventListener("resize", size);
-      removeEventListener("pointermove", move); document.removeEventListener("pointerout", out);
-      cancelAnimationFrame(raf); root.classList.remove("cur-on");
-    };
-  }, []);
-}
-
 const ids = nav.map(([id]) => id) as string[];
-const sections = ["accueil", ...ids]; // "accueil" = haut de page, sans lien dans le menu
 const delay = (d: number) => ({ "--d": d + "s" } as React.CSSProperties);
 
 export default function App() {
   const typed = useTyped(profile.roles);
-  const active = useActive(sections);
+  const active = useActive(ids);
   const [open, setOpen] = useState<number | null>(null);
   const [cat, setCat] = useState<string>("all");
   const shown = cat === "all" ? projects : projects.filter((p) => p.category === cat);
   useEffects();
-  useMotion();
 
   const send = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -180,8 +104,6 @@ export default function App() {
 
   return (
     <>
-      <div id="progress" /><div className="orb o1" /><div className="orb o2" /><div className="orb o3" />
-      <canvas id="stars" />
       <div id="glow" />
       <nav><div className="in">
         {nav.map(([id, label]) => <a key={id} href={"#" + id} className={active === id ? "on" : ""}>{label}</a>)}
@@ -190,18 +112,7 @@ export default function App() {
       <section id="accueil">
         <div id="hero">
           <span className="badge mono rv"><span className="dot" />Disponible · stage avril 2027</span>
-          
-          <h1 className="rv" style={delay(0.1)}>
-  <span className="chars font-cursive" aria-label="Hello ! Moi c'est,">
-    {[..."Hello ! Moi c'est,"].map((c, i) => (
-      <span key={i} aria-hidden="true" style={{ "--i": i } as React.CSSProperties}>
-        {c === " " ? "\u00a0" : c}
-      </span>
-    ))}
-  </span>
-  <br />
-  <span className="grad">{profile.name}.</span>
-</h1>
+          <h1 className="rv" style={delay(0.1)}>Salut, moi c'est<br /><span className="grad">{profile.name}.</span></h1>
           <p className="lead mono rv" style={delay(0.2)}>{typed}<span className="cur" /></p>
           <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
             Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne (Le Puy-en-Velay). Je conçois des interfaces qui allient code propre, design soigné et animations qui donnent envie de rester.
@@ -209,32 +120,49 @@ export default function App() {
           <div className="btns rv" style={delay(0.4)}>
             <a className="btn p" href="#projets">Voir mes projets →</a><a className="btn" href="#contact">Me contacter</a>
           </div>
-          <a className="scroll mono" href="#a-propos">scroll ↓</a>
         </div>
       </section>
 
-      <Marquee list={tools} />
-      <Marquee list={[...tools].reverse()} rev />
-
       <section id="a-propos">
         <div className="about">
-          <div className="photo rv rv-l">
-            {profile.photo
-              ? <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
-              : <div className="photo-ph mono"><span>{profile.name.split(" ").map((w) => w[0]).join("")}</span><small>ta photo ici</small></div>}
-          </div>
-          <div className="rv rv-r" style={delay(0.15)}>
+          {/* Texte de présentation à gauche */}
+          <div className="rv rv-l" style={delay(0.15)}>
             <p className="tag mono">// à propos</p>
             <h2>Un peu plus sur moi.</h2>
-            {about.map((t) => <p key={t} className="about-p">{t}</p>)}
-            <div className="chips about-facts">{facts.map((f) => <i key={f} className="mono">{f}</i>)}</div>
+            <p className="about-p">
+              Je m'appelle Manon et je suis étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.
+            </p>
+            <p className="about-p">
+              J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.
+            </p>
+            <p className="about-p">
+              Je cherche un stage à partir d'avril 2027 pour progresser au sein d'une équipe, et y apporter ma curiosité et mon sens du détail.
+            </p>
+            <div className="chips about-facts">
+              <i className="mono">📍 Le Puy-en-Velay</i>
+              <i className="mono">🎓 BUT MMI · 2e année</i>
+              <i className="mono">🗓️ Stage avril 2027</i>
+            </div>
             <div className="stats">
               {[[2, "année de BUT"], [projects.length, "projets"], [tools.length, "outils"]].map(([n, l]) => (
                 <div key={l as string}><b className="mono"><Count to={n as number} /></b><span>{l}</span></div>
               ))}
             </div>
           </div>
+
+          {/* Photo de profil à droite */}
+          <div className="photo rv rv-r">
+            {profile.photo ? (
+              <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+            ) : (
+              <div className="photo-ph mono">
+                <span>{profile.name.split(" ").map((w) => w[0]).join("")}</span>
+                <small>ta photo ici</small>
+              </div>
+            )}
+          </div>
         </div>
+
         <p className="tag mono rv" style={{ marginTop: 70 }}>// 5 compétences clés</p>
         <h2 className="rv">Ce que je sais faire.</h2>
         <div className="bento">
