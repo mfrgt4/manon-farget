@@ -1,4 +1,6 @@
 // ✏️ Modifie ici tes contenus : le reste du site se met à jour tout seul.
+import photoProfil from "./photo.jpg";
+
 export const profile = {
   name: "Manon Farget",
   email: "farget.manon@gmail.com",
@@ -6,7 +8,7 @@ export const profile = {
   github: "https://github.com/mfrgt4",
   cv: "#",
   roles: ["Développeuse web", "UI/UX designer", "Motion lover", "Étudiante MMI"],
-  photo: "/moi.jpg",
+  photo: photoProfil,
 };
 export const nav = [
   ["a-propos", "A propos"], ["boite-a-outils", "Ma boîte à outils"],
