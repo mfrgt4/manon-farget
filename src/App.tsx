@@ -261,7 +261,7 @@ export default function App() {
           <h1 className="rv" style={delay(0.1)}>
             Salut, moi c'est
             <br />
-            <span className="grad">{profile.name}.</span>
+            <span className="grad madi">{profile.name}.</span>
           </h1>
 
           <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
