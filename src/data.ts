@@ -1,5 +1,5 @@
 // ✏️ Modifie ici tes contenus : le reste du site se met à jour tout seul.
-import photoProfil from "./moi.jpg";
+import photoProfil from "./moi.png";
 
 export const profile = {
   name: "Manon Farget",
