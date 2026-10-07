@@ -251,6 +251,8 @@ export default function App() {
         </div>
       </nav>
 
+      <canvas id="global-particles" aria-hidden="true" />
+
       <section id="accueil">
         <div id="hero">
           <span className="badge mono rv">
@@ -277,12 +279,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
-      <div className="particles" aria-hidden="true">
-        {Array.from({ length: 24 }).map((_, i) => (
-          <span key={i} />
-        ))}
-      </div>
 
       <section id="a-propos">
         <div className="about">
