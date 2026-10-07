@@ -104,12 +104,12 @@ function useActive(ids: string[]) {
     const so = new IntersectionObserver(
       (es) =>
         es.forEach(
-          (e) => e.isIntersecting && setActive(e.target.id)
+          (e) => e.isIntersecting && setActive(e.target.id === "competences" ? "a-propos" : e.target.id)
         ),
       { rootMargin: "-45% 0px -50% 0px" }
     );
 
-    ids.forEach((id) => {
+    [...ids, "competences"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) so.observe(el);
     });
@@ -423,6 +423,9 @@ export default function App() {
           </div>
         </div>
 
+      </section>
+
+      <section id="competences">
         <div className="sk">
           <div className="sk-side">
             <p className="tag mono rv">// 5 compétences clés</p>

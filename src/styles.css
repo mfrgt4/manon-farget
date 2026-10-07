@@ -247,7 +247,7 @@ h2::after{content:"";display:block;height:2px;width:0;margin-top:12px;background
 
 /* ================= NOUVELLE BANNIÈRE ================= */
 #accueil{max-width:none;width:100%;margin:0;padding:0 0 40px;overflow-x:clip}
-#hero{position:relative;isolation:isolate;max-width:1240px;margin:0 auto;min-height:100svh;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:clamp(24px,5vw,70px);padding:clamp(110px,12vw,150px) 28px 150px;--px:0;--py:0}
+#hero{position:relative;isolation:isolate;max-width:1180px;margin:0 auto;min-height:100svh;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:clamp(24px,5vw,70px);padding:clamp(110px,12vw,150px) 24px 150px;--px:0;--py:0}
 #hero::before{content:"";position:absolute;inset:-6% -25% 0;z-index:-2;pointer-events:none;background:radial-gradient(circle at 78% 28%,rgba(216,75,125,.2),transparent 32%),radial-gradient(circle at 8% 88%,rgba(169,188,174,.4),transparent 34%)}
 .h-word{position:absolute;left:50%;bottom:70px;z-index:-1;pointer-events:none;user-select:none;white-space:nowrap;font-size:clamp(90px,19vw,270px);font-weight:700;letter-spacing:-.07em;line-height:.8;color:transparent;-webkit-text-stroke:1.5px rgba(216,75,125,.3);translate:calc(-50% + var(--px)*-60px) calc(var(--py)*-24px)}
 #hero h1{font-size:clamp(40px,6.2vw,84px);line-height:1;letter-spacing:-.06em;font-weight:700;color:var(--fg);margin:18px 0 22px}
@@ -317,3 +317,10 @@ h2::after{content:"";display:block;height:2px;width:0;margin-top:12px;background
 .sk-row[data-open="true"] .sk-ico{display:block}
 .sk-goal{margin-top:34px}
 @media(max-width:860px){.sk{grid-template-columns:1fr;margin-top:50px}.sk-side{position:static}.sk-count b{font-size:64px}.sk-body>div{padding-left:4px}}
+
+/* ===== Chaque section est centrée à l'écran quand on y arrive depuis le menu ===== */
+#competences .sk{margin-top:0}
+@media(min-width:861px) and (min-height:620px){
+  html{scroll-padding-top:0}
+  section:not(#accueil){min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding-top:96px;padding-bottom:56px}
+}
