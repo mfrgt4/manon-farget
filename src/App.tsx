@@ -3,6 +3,30 @@ import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import { categories, nav, profile, projects, skills, studies, tools } from "./data";
 
+const photo=document.querySelector('.photo');
+
+if(photo){
+const target=photo.querySelector('img,.photo-ph');
+
+photo.addEventListener('mousemove',e=>{
+const r=photo.getBoundingClientRect();
+const x=e.clientX-r.left;
+const y=e.clientY-r.top;
+const rx=(y/r.height-.5)*-10;
+const ry=(x/r.width-.5)*10;
+
+target.style.transform=`perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.025)`;
+photo.style.setProperty('--mx',`${x}px`);
+photo.style.setProperty('--my',`${y}px`);
+});
+
+photo.addEventListener('mouseleave',()=>{
+target.style.transform='perspective(900px) rotateX(0deg) rotateY(0deg) scale(1)';
+photo.style.setProperty('--mx','50%');
+photo.style.setProperty('--my','50%');
+});
+}
+
 function useTyped(words: string[]) {
   const [txt, setTxt] = useState("");
   useEffect(() => {
