@@ -1,27 +1,17 @@
 // ✏️ Modifie ici tes contenus : le reste du site se met à jour tout seul.
 export const profile = {
   name: "Manon Farget",
-  email: "ton.email@domain.com",
-  linkedin: "https://linkedin.com/in/...",
-  github: "https://github.com/...",
-  cv: "/cv.pdf",
-  roles: ["Développeur Web", "UI/UX Designer", "Motion Designer"],
-  photo: "/moi.png",
+  email: "farget.manon@gmail.com",
+  linkedin: "https://www.linkedin.com/in/manon-farget-75baa5333/",
+  github: "https://github.com/mfrgt4",
+  cv: "#",
+  photo: "", // ex: "/photo.jpg" (mets ton fichier dans le dossier public/)
+  roles: ["Développeuse web", "UI/UX designer", "Motion lover", "Étudiante MMI"],
 };
 export const nav = [
   ["a-propos", "A propos"], ["boite-a-outils", "Ma boîte à outils"],
   ["projets", "Projets"], ["parcours", "Parcours"], ["contact", "Contact"],
 ] as const;
-export const about = [
-  "Je m'appelle Manon et je suis étudiante en 2e année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.",
-  "J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.",
-  "Je cherche un stage à partir d'avril 2027 pour progresser au sein d'une équipe, et y apporter ma curiosité et mon sens du détail."
-];
-export const facts = [
-  "📍 Le Puy-en-Velay",
-  "🎓 BUT MMI · 2e année",
-  "🗓️ Stage avril 2027"
-];
 export type Skill = { icon: string; title: string; text: string; span?: string };
 export const skills: Skill[] = [
   { icon: "⚡", title: "Intégration web", text: "HTML sémantique, CSS moderne, React et TypeScript pour des pages rapides et accessibles.", span: "s2 r2" },
@@ -49,3 +39,11 @@ export const studies = [
   { when: "2022 — 2025", title: "Baccalauréat", text: "Série / spécialités : à compléter · Lycée : à compléter." },
   { when: "Avril 2027", title: "Stage recherché", text: "Prochaine étape : une équipe qui me fera progresser.", accent: true },
 ];
+
+// Section « A propos » : modifie librement ces textes
+export const about = [
+  "Je m'appelle Manon et je suis étudiante en 2e année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.",
+  "J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.",
+  "Je cherche un stage à partir d'avril 2027 pour progresser au sein d'une équipe, et y apporter ma curiosité et mon sens du détail.",
+];
+export const facts = ["📍 Le Puy-en-Velay", "🎓 BUT MMI · 2e année", "🗓️ Stage avril 2027"];
