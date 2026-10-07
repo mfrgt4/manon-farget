@@ -97,7 +97,7 @@ function useEffects() {
 }
 
 function useActive(ids: string[]) {
-  const [active, setActive] = useState(ids[0]);
+  const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
     const so = new IntersectionObserver(
@@ -253,10 +253,6 @@ export default function App() {
 
       <section id="accueil">
         <div id="hero">
-          <div className="particles" aria-hidden="true">
-            {Array.from({ length: 30 }).map((_, i) => <span key={i}></span>)}
-          </div>
-
           <span className="badge mono rv">
             <span className="dot" />
             Disponible · stage avril 2027
@@ -268,10 +264,7 @@ export default function App() {
             <span className="grad">{profile.name}.</span>
           </h1>
 
-          <p
-            className="lead rv"
-            style={{ ...delay(0.3), marginTop: 14 }}
-          >
+          <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
             Étudiante en 2<sup>e</sup> année de BUT MMI à
             l'Université Clermont Auvergne (Le Puy-en-Velay). Je
             conçois des interfaces qui allient code propre, design
@@ -279,15 +272,13 @@ export default function App() {
           </p>
 
           <div className="btns rv" style={delay(0.4)}>
-            <a className="btn p" href="#projets">
-              Voir mes projets →
-            </a>
-            <a className="btn" href="#contact">
-              Me contacter
-            </a>
+            <a className="btn p" href="#projets">Voir mes projets →</a>
+            <a className="btn" href="#contact">Me contacter</a>
           </div>
         </div>
       </section>
+
+      <div className="particles" aria-hidden="true"></div>
 
       <section id="a-propos">
         <div className="about">

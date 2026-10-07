@@ -273,37 +273,9 @@ h2::after{content:"";display:block;height:2px;width:0;margin-top:12px;background
 .tl .it.in::before{animation:dot .6s .3s backwards}
 @keyframes dot{from{transform:scale(0)}60%{transform:scale(1.8)}}
 
-.particles{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
-.particles span{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--mint);opacity:.45;box-shadow:0 0 10px rgba(169,188,174,.5);animation:particleFloat linear infinite}
-.particles span:nth-child(3n){background:var(--acc);box-shadow:0 0 10px rgba(216,75,125,.5)}
-.particles span:nth-child(1){left:8%;top:20%;animation-duration:12s;animation-delay:-2s}
-.particles span:nth-child(2){left:16%;top:72%;animation-duration:16s;animation-delay:-8s}
-.particles span:nth-child(3){left:25%;top:35%;animation-duration:13s;animation-delay:-5s}
-.particles span:nth-child(4){left:34%;top:82%;animation-duration:18s;animation-delay:-12s}
-.particles span:nth-child(5){left:43%;top:18%;animation-duration:15s;animation-delay:-4s}
-.particles span:nth-child(6){left:52%;top:65%;animation-duration:11s;animation-delay:-7s}
-.particles span:nth-child(7){left:61%;top:28%;animation-duration:17s;animation-delay:-10s}
-.particles span:nth-child(8){left:70%;top:78%;animation-duration:14s;animation-delay:-3s}
-.particles span:nth-child(9){left:79%;top:42%;animation-duration:19s;animation-delay:-14s}
-.particles span:nth-child(10){left:88%;top:18%;animation-duration:13s;animation-delay:-6s}
-.particles span:nth-child(11){left:94%;top:65%;animation-duration:16s;animation-delay:-9s}
-.particles span:nth-child(12){left:12%;top:48%;animation-duration:20s;animation-delay:-11s}
-.particles span:nth-child(13){left:22%;top:90%;animation-duration:14s;animation-delay:-2s}
-.particles span:nth-child(14){left:38%;top:50%;animation-duration:17s;animation-delay:-13s}
-.particles span:nth-child(15){left:47%;top:92%;animation-duration:12s;animation-delay:-5s}
-.particles span:nth-child(16){left:57%;top:12%;animation-duration:18s;animation-delay:-15s}
-.particles span:nth-child(17){left:66%;top:55%;animation-duration:15s;animation-delay:-8s}
-.particles span:nth-child(18){left:74%;top:12%;animation-duration:21s;animation-delay:-17s}
-.particles span:nth-child(19){left:84%;top:88%;animation-duration:13s;animation-delay:-4s}
-.particles span:nth-child(20){left:91%;top:38%;animation-duration:17s;animation-delay:-12s}
-.particles span:nth-child(21){left:5%;top:88%;animation-duration:15s;animation-delay:-7s}
-.particles span:nth-child(22){left:29%;top:10%;animation-duration:19s;animation-delay:-10s}
-.particles span:nth-child(23){left:41%;top:72%;animation-duration:16s;animation-delay:-3s}
-.particles span:nth-child(24){left:54%;top:40%;animation-duration:14s;animation-delay:-9s}
-.particles span:nth-child(25){left:63%;top:92%;animation-duration:20s;animation-delay:-16s}
-.particles span:nth-child(26){left:73%;top:68%;animation-duration:12s;animation-delay:-5s}
-.particles span:nth-child(27){left:82%;top:58%;animation-duration:18s;animation-delay:-13s}
-.particles span:nth-child(28){left:97%;top:82%;animation-duration:15s;animation-delay:-8s}
-.particles span:nth-child(29){left:18%;top:30%;animation-duration:22s;animation-delay:-18s}
-.particles span:nth-child(30){left:68%;top:35%;animation-duration:16s;animation-delay:-6s}
-@keyframes particleFloat{0%{transform:translateY(30px);opacity:0}15%{opacity:.45}50%{transform:translateY(-40px) translateX(15px);opacity:.7}85%{opacity:.3}100%{transform:translateY(-90px) translateX(-10px);opacity:0}}
+#hero{overflow:hidden}
+#hero .particles{position:absolute;inset:0;z-index:1;pointer-events:none}
+#hero .particles::before{content:"";position:absolute;top:12%;left:8%;width:4px;height:4px;border-radius:50%;background:var(--mint);box-shadow:120px 80px 0 var(--acc),240px 20px 0 var(--mint),380px 150px 0 var(--acc),520px 60px 0 var(--mint),680px 190px 0 var(--acc),820px 40px 0 var(--mint),960px 130px 0 var(--acc),1100px 20px 0 var(--mint),80px 300px 0 var(--acc),220px 420px 0 var(--mint),360px 330px 0 var(--acc),500px 480px 0 var(--mint),650px 350px 0 var(--acc),800px 500px 0 var(--mint),940px 380px 0 var(--acc),1080px 460px 0 var(--mint),130px 600px 0 var(--acc),300px 700px 0 var(--mint),470px 620px 0 var(--acc),620px 740px 0 var(--mint),780px 650px 0 var(--acc),930px 720px 0 var(--mint),1100px 600px 0 var(--acc);opacity:.55;box-shadow:120px 80px 6px var(--acc),240px 20px 6px var(--mint),380px 150px 6px var(--acc),520px 60px 6px var(--mint),680px 190px 6px var(--acc),820px 40px 6px var(--mint),960px 130px 6px var(--acc),1100px 20px 6px var(--mint),80px 300px 6px var(--acc),220px 420px 6px var(--mint),360px 330px 6px var(--acc),500px 480px 6px var(--mint),650px 350px 6px var(--acc),800px 500px 6px var(--mint),940px 380px 6px var(--acc),1080px 460px 6px var(--mint),130px 600px 6px var(--acc),300px 700px 6px var(--mint),470px 620px 6px var(--acc),620px 740px 6px var(--mint),780px 650px 6px var(--acc),930px 720px 6px var(--mint),1100px 600px 6px var(--acc);animation:particlesMove 8s ease-in-out infinite alternate}
+@keyframes particlesMove{from{transform:translateY(0);opacity:.35}to{transform:translateY(-25px);opacity:.7}}
+#hero>*{position:relative;z-index:2}
+#hero .particles{z-index:1}
