@@ -273,6 +273,5 @@ h2::after{content:"";display:block;height:2px;width:0;margin-top:12px;background
 .tl .it.in::before{animation:dot .6s .3s backwards}
 @keyframes dot{from{transform:scale(0)}60%{transform:scale(1.8)}}
 
-nav{z-index:50}
-#global-particles{z-index:1}
-section{z-index:2}
+#hero{position:relative;overflow:hidden}
+#hero>*{position:relative;z-index:2}

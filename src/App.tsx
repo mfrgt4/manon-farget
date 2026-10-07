@@ -251,8 +251,6 @@ export default function App() {
         </div>
       </nav>
 
-      <canvas id="global-particles" aria-hidden="true" />
-
       <section id="accueil">
         <div id="hero">
           <span className="badge mono rv">
