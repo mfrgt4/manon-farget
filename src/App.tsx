@@ -123,7 +123,7 @@ export default function App() {
         </div>
       </section>
 
-      <section id="a-propos">
+<section id="a-propos">
         <div className="about">
           {/* Texte de présentation à gauche */}
           <div className="rv rv-l" style={delay(0.15)}>
@@ -161,6 +161,7 @@ export default function App() {
               </div>
             )}
           </div>
+        </div>
 
         <p className="tag mono rv" style={{ marginTop: 70 }}>// 5 compétences clés</p>
         <h2 className="rv">Ce que je sais faire.</h2>
