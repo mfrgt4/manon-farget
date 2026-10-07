@@ -11,6 +11,16 @@ export const nav = [
   ["a-propos", "A propos"], ["boite-a-outils", "Ma boîte à outils"],
   ["projets", "Projets"], ["parcours", "Parcours"], ["contact", "Contact"],
 ] as const;
+export const about = [
+  "Je m'appelle Manon et je suis étudiante en 2e année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.",
+  "J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.",
+  "Je cherche un stage à partir d'avril 2027 pour progresser au sein d'une équipe, et y apporter ma curiosité et mon sens du détail."
+];
+export const facts = [
+  "📍 Le Puy-en-Velay",
+  "🎓 BUT MMI · 2e année",
+  "🗓️ Stage avril 2027"
+];
 export type Skill = { icon: string; title: string; text: string; span?: string };
 export const skills: Skill[] = [
   { icon: "⚡", title: "Intégration web", text: "HTML sémantique, CSS moderne, React et TypeScript pour des pages rapides et accessibles.", span: "s2 r2" },
