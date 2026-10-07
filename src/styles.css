@@ -72,7 +72,7 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
 a:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
 
 /* ===== Palette Cyber Rose & Vert ===== */
-.grad{background-image:linear-gradient(90deg,#D13670,#DF729B,#D13670);background-size:200% auto}
+.grad{background-image:linear-gradient(90deg,#E9598E,#DF729B,#E9598E);background-size:200% auto}
 h2{color:var(--acc)}
 .tag,.when{color:var(--mint)}
 .dot{background:var(--mint);box-shadow:0 0 0 0 var(--mint)}
@@ -87,7 +87,7 @@ h2{color:var(--acc)}
 
 /* ===== Plus de rose #D13670 ===== */
 h1{color:var(--acc)}
-.grad{background-image:linear-gradient(90deg,#D13670,#D13670,#DF729B,#D13670,#D13670)}
+.grad{background-image:linear-gradient(90deg,#E9598E,#E9598E,#F292B6,#E9598E,#E9598E);background-size:200% auto}
 p.lead.mono{color:var(--acc)}
 .cur{background:var(--acc)}
 .tag,.when{color:var(--acc)}
