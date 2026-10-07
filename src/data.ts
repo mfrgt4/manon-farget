@@ -1,14 +1,12 @@
 // ✏️ Modifie ici tes contenus : le reste du site se met à jour tout seul.
-import photoProfil from "./moi.png";
-
 export const profile = {
   name: "Manon Farget",
-  email: "farget.manon@gmail.com",
-  linkedin: "https://www.linkedin.com/in/manon-farget-75baa5333/",
-  github: "https://github.com/mfrgt4",
-  cv: "#",
-  roles: ["Développeuse web", "UI/UX designer", "Motion lover", "Étudiante MMI"],
-  photo: photoProfil,
+  email: "ton.email@domain.com",
+  linkedin: "https://linkedin.com/in/...",
+  github: "https://github.com/...",
+  cv: "/cv.pdf",
+  roles: ["Développeur Web", "UI/UX Designer", "Motion Designer"],
+  photo: "/moi.png",
 };
 export const nav = [
   ["a-propos", "A propos"], ["boite-a-outils", "Ma boîte à outils"],
