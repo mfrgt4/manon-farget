@@ -88,7 +88,7 @@ export default function App() {
         {nav.map(([id, label]) => <a key={id} href={"#" + id} className={active === id ? "on" : ""}>{label}</a>)}
       </div></nav>
 
-      <section id="a-propos">
+      <section id="intro">
         <div id="hero">
           <span className="badge mono rv"><span className="dot" />Disponible · stage avril 2027</span>
           <h1 className="rv" style={delay(0.1)}>Salut, moi c'est<br /><span className="grad">{profile.name}.</span></h1>
@@ -105,6 +105,52 @@ export default function App() {
         <div className="bento">
           {skills.map((s, i) => (
             <div key={s.title} className={`cell skill ${s.span ?? ""} rv`} style={delay(i * 0.08)}>
+              <span className="ico">{s.icon}</span><h3>{s.title}</h3><p className={i === 0 ? "big" : ""}>{s.text}</p>
+            </div>
+          ))}
+          <div className="cell s2 rv" style={delay(0.4)}>
+            <h3 className="mono" style={{ color: "var(--acc)" }}>&gt; objectif.txt</h3>
+            <p className="mono">Stage dev web / intégration · avril 2027 · mobilité possible.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="a-propos">
+        <div className="about">
+          <div className="photo rv rv-l">
+            {profile.photo
+              ? <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+              : <div className="photo-ph mono"><span>{profile.name.split(" ").map((w) => w[0]).join("")}</span><small>ta photo ici</small></div>}
+          </div>
+          <div className="rv rv-r" style={delay(0.15)}>
+            <p className="tag mono">// à propos</p>
+            <h2>Un peu plus sur moi.</h2>
+            <p className="about-p">
+              Je m'appelle Manon et je suis étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.
+            </p>
+            <p className="about-p">
+              J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.
+            </p>
+            <p className="about-p">
+              Je cherche un stage à partir d'avril 2027 pour progresser au sein d'une équipe, et y apporter ma curiosité et mon sens du détail.
+            </p>
+            <div className="chips about-facts">
+              <i className="mono">📍 Le Puy-en-Velay</i>
+              <i className="mono">🎓 BUT MMI · 2e année</i>
+              <i className="mono">🗓️ Stage avril 2027</i>
+            </div>
+            <div className="stats">
+              {[[2, "année de BUT"], [projects.length, "projets"], [tools.length, "outils"]].map(([n, l]) => (
+                <div key={l as string}><b className="mono"><Count to={n as number} /></b><span>{l}</span></div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <p className="tag mono rv" style={{ marginTop: 70 }}>// 5 compétences clés</p>
+        <h2 className="rv">Ce que je sais faire.</h2>
+        <div className="bento">
+          {skills.map((s, i) => (
+            <div key={s.title} className={`cell skill ${s.span ?? ""} rv rv-z`} style={delay(i * 0.08)}>
               <span className="ico">{s.icon}</span><h3>{s.title}</h3><p className={i === 0 ? "big" : ""}>{s.text}</p>
             </div>
           ))}
