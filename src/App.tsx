@@ -254,6 +254,10 @@ export default function App() {
 
       <section id="accueil">
         <div id="hero">
+          <div className="particles" aria-hidden="true">
+            {Array.from({ length: 30 }).map((_, i) => <span key={i}></span>)}
+          </div>
+
           <span className="badge mono rv">
             <span className="dot" />
             Disponible · stage avril 2027
@@ -430,8 +434,8 @@ export default function App() {
                 {id === "all"
                   ? projects.length
                   : projects.filter(
-                      (p) => p.category === id
-                    ).length}
+                    (p) => p.category === id
+                  ).length}
                 )
               </span>
             </button>
