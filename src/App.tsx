@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import { categories, nav, profile, projects, skills, studies, tools } from "./data";
@@ -62,27 +62,6 @@ function useActive(ids: string[]) {
   return active;
 }
 
-function Count({ to }: { to: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    const el = ref.current!; let raf = 0;
-    const io = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-      io.disconnect();
-      const t0 = performance.now();
-      const step = (t: number) => {
-        const k = Math.min(1, (t - t0) / 1400);
-        el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3))));
-        if (k < 1) raf = requestAnimationFrame(step);
-      };
-      raf = requestAnimationFrame(step);
-    });
-    io.observe(el);
-    return () => { io.disconnect(); cancelAnimationFrame(raf); };
-  }, [to]);
-  return <span ref={ref}>0</span>;
-}
-
 const ids = nav.map(([id]) => id) as string[];
 const delay = (d: number) => ({ "--d": d + "s" } as React.CSSProperties);
 
@@ -109,7 +88,7 @@ export default function App() {
         {nav.map(([id, label]) => <a key={id} href={"#" + id} className={active === id ? "on" : ""}>{label}</a>)}
       </div></nav>
 
-      <section id="accueil">
+      <section id="intro">
         <div id="hero">
           <span className="badge mono rv"><span className="dot" />Disponible · stage avril 2027</span>
           <h1 className="rv" style={delay(0.1)}>Salut, moi c'est<br /><span className="grad">{profile.name}.</span></h1>
@@ -119,6 +98,19 @@ export default function App() {
           </p>
           <div className="btns rv" style={delay(0.4)}>
             <a className="btn p" href="#projets">Voir mes projets →</a><a className="btn" href="#contact">Me contacter</a>
+          </div>
+        </div>
+        <p className="tag mono rv" style={{ marginTop: 70 }}>// 5 compétences clés</p>
+        <h2 className="rv">Ce que je sais faire.</h2>
+        <div className="bento">
+          {skills.map((s, i) => (
+            <div key={s.title} className={`cell skill ${s.span ?? ""} rv`} style={delay(i * 0.08)}>
+              <span className="ico">{s.icon}</span><h3>{s.title}</h3><p className={i === 0 ? "big" : ""}>{s.text}</p>
+            </div>
+          ))}
+          <div className="cell s2 rv" style={delay(0.4)}>
+            <h3 className="mono" style={{ color: "var(--acc)" }}>&gt; objectif.txt</h3>
+            <p className="mono">Stage dev web / intégration · avril 2027 · mobilité possible.</p>
           </div>
         </div>
       </section>
@@ -233,7 +225,7 @@ export default function App() {
         </div>
       </section>
       {open !== null && <ProjectModal list={shown} index={open} onIndex={setOpen} onClose={() => setOpen(null)} />}
-      <footer className="mono">© 2026 {profile.name} · Fait avec React, three.js et Vercel · <a href="#accueil" style={{ color: "var(--acc)" }}>↑ haut</a></footer>
+      <footer className="mono">© 2026 {profile.name} · Fait avec React, three.js et Vercel · <a href="#a-propos" style={{ color: "var(--acc)" }}>↑ haut</a></footer>
     </>
   );
 }
