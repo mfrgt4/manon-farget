@@ -278,7 +278,11 @@ export default function App() {
         </div>
       </section>
 
-      <div className="particles" aria-hidden="true"></div>
+      <div className="particles" aria-hidden="true">
+        {Array.from({ length: 24 }).map((_, i) => (
+          <span key={i} />
+        ))}
+      </div>
 
       <section id="a-propos">
         <div className="about">
