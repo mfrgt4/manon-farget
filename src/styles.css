@@ -18,8 +18,8 @@ section{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:110px
 .tag{font-size:13px;color:var(--acc);letter-spacing:.08em;text-transform:uppercase}
 h2{font-size:clamp(28px,4.5vw,44px);letter-spacing:-.03em;margin:6px 0 32px;line-height:1.1}
 #hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding-top:120px}
-h1{font-family:'Rubik Mono One',sans-serif;font-size:clamp(40px,9vw,92px);letter-spacing:-.05em;line-height:1;margin:14px 0 20px}
-.grad{background:linear-gradient(90deg,var(--acc),var(--acc2),var(--acc));background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 6s linear infinite}
+h1{font-size:clamp(40px,9vw,92px);letter-spacing:-.05em;line-height:1;margin:14px 0 20px}
+.grad{font-family:'Rubik Mono One',sans-serif;background:linear-gradient(90deg,var(--acc),var(--acc2),var(--acc));background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 6s linear infinite}
 @keyframes sh{to{background-position:200% center}}
 .lead{max-width:620px;color:var(--mute);font-size:18px}
 .cur{display:inline-block;width:.6em;height:1.1em;background:var(--acc);vertical-align:-.2em;animation:bl 1s steps(1) infinite}
@@ -72,6 +72,11 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}}
 #cloudbox canvas{display:block;width:100%;height:100%}
 a:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.font-cursive {
+  font-family: 'Ms Madi', cursive;
+  font-size: clamp(45px, 10vw, 100px); /* Ajuste la taille si besoin */
+  font-weight: normal;
+}
 
 /* ===== Palette Cyber Rose & Vert ===== */
 .grad{background-image:linear-gradient(90deg,#D13670,#DF729B,#D13670);background-size:200% auto}
