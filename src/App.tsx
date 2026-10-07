@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import { categories, nav, profile, projects, skills, studies, tools } from "./data";
+import Particles from "./Particles";
 
 function useTyped(words: string[]) {
   const [txt, setTxt] = useState("");
@@ -161,6 +162,44 @@ function Count({ to }: { to: number }) {
   return <span ref={ref}>0</span>;
 }
 
+// Parallaxe de la bannière : la souris décale légèrement chaque élément (variables CSS --px / --py)
+function useHeroParallax() {
+  useEffect(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const hero = document.getElementById("hero");
+    if (!hero) return;
+    const m = (e: PointerEvent) => {
+      hero.style.setProperty("--px", String(e.clientX / innerWidth - 0.5));
+      hero.style.setProperty("--py", String(e.clientY / innerHeight - 0.5));
+    };
+    addEventListener("pointermove", m);
+    return () => removeEventListener("pointermove", m);
+  }, []);
+}
+
+// Barre de progression + points du parcours : se remplissent au fil du scroll
+function useTimeline() {
+  useEffect(() => {
+    const tl = document.querySelector<HTMLElement>(".tl");
+    if (!tl) return;
+    const items = [...tl.querySelectorAll<HTMLElement>(".it")];
+    let tick = false;
+    const update = () => {
+      tick = false;
+      const y = innerHeight * 0.62;
+      const r = tl.getBoundingClientRect();
+      tl.style.setProperty("--tl", String(Math.min(1, Math.max(0, (y - r.top) / r.height))));
+      items.forEach((it) => it.classList.toggle("reached", it.getBoundingClientRect().top + 30 < y));
+    };
+    const onScroll = () => { if (!tick) { tick = true; requestAnimationFrame(update); } };
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll);
+    update();
+    return () => { removeEventListener("scroll", onScroll); removeEventListener("resize", onScroll); };
+  }, []);
+}
+
+const BAND = ["Intégration web", "UI/UX design", "Motion design", "SEO", "Gestion de projet"];
 const ids = nav.map(([id]) => id) as string[];
 
 const delay = (d: number) =>
@@ -181,6 +220,9 @@ export default function App() {
       : projects.filter((p) => p.category === cat);
 
   useEffects();
+  useHeroParallax();
+  useTimeline();
+  const [sel, setSel] = useState(0);
 
   const handlePhotoMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const photo = photoRef.current;
@@ -235,6 +277,7 @@ export default function App() {
 
   return (
     <>
+      <Particles />
       <div id="glow" />
 
       <nav>
@@ -253,27 +296,55 @@ export default function App() {
 
       <section id="accueil">
         <div id="hero">
-          <span className="badge mono rv">
-            <span className="dot" />
-            Disponible · stage avril 2027
-          </span>
+          <div className="h-word" aria-hidden="true">PORTFOLIO</div>
 
-          <h1 className="rv" style={delay(0.1)}>
-            Salut, moi c'est
-            <br />
-            <span className="grad madi">{profile.name}.</span>
-          </h1>
+          <div className="h-text">
+            <span className="badge mono rv">
+              <span className="dot" />
+              Disponible · stage avril 2027
+            </span>
 
-          <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
-            Étudiante en 2<sup>e</sup> année de BUT MMI à
-            l'Université Clermont Auvergne (Le Puy-en-Velay). Je
-            conçois des interfaces qui allient code propre, design
-            soigné et animations qui donnent envie de rester.
-          </p>
+            <h1 className="rv" style={delay(0.1)}>
+              Salut, moi c'est
+              <br />
+              <span className="grad madi">{profile.name}.</span>
+            </h1>
 
-          <div className="btns rv" style={delay(0.4)}>
-            <a className="btn p" href="#projets">Voir mes projets →</a>
-            <a className="btn" href="#contact">Me contacter</a>
+            <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
+              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne (Le Puy-en-Velay).
+              Je conçois des interfaces qui allient code propre, design soigné et animations qui donnent envie de rester.
+            </p>
+
+            <div className="btns rv" style={delay(0.4)}>
+              <a className="btn p" href="#projets">Voir mes projets →</a>
+              <a className="btn" href="#contact">Me contacter</a>
+            </div>
+          </div>
+
+          <div className="h-visual rv" style={delay(0.2)}>
+            <div className="arch">
+              <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+            </div>
+            <div className="h-badge" aria-hidden="true">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="60" fill="#d84b7d" />
+                <defs><path id="hb" d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0" /></defs>
+                <text fontSize="10.5" fontWeight="700" fill="#fff" letterSpacing="1">
+                  <textPath href="#hb" textLength="252" lengthAdjust="spacing">DÉVELOPPEUSE WEB • UI/UX • MOTION • </textPath>
+                </text>
+                <text x="60" y="68" textAnchor="middle" fontSize="22" fill="#fff">✦</text>
+              </svg>
+            </div>
+            <span className="h-chip c1"><i />React</span>
+            <span className="h-chip c2 sage"><i />Figma</span>
+            <span className="h-chip c3"><i />After Effects</span>
+            <span className="h-chip c4 sage"><i />three.js</span>
+          </div>
+        </div>
+
+        <div className="h-band" aria-hidden="true">
+          <div className="h-band-t">
+            {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => <span key={i}>{t}<b>✦</b></span>)}
           </div>
         </div>
       </section>
@@ -352,43 +423,45 @@ export default function App() {
           </div>
         </div>
 
-        <p
-          className="tag mono rv"
-          style={{ marginTop: 70 }}
-        >
-          // 5 compétences clés
-        </p>
-
-        <h2 className="rv">Ce que je sais faire.</h2>
-
-        <div className="bento">
-          {skills.map((s, i) => (
-            <div
-              key={s.title}
-              className={`cell skill ${s.span ?? ""} rv rv-z`}
-              style={delay(i * 0.08)}
-            >
-              <span className="ico">{s.icon}</span>
-              <h3>{s.title}</h3>
-              <p className={i === 0 ? "big" : ""}>
-                {s.text}
-              </p>
+        <div className="sk">
+          <div className="sk-side">
+            <p className="tag mono rv">// 5 compétences clés</p>
+            <h2 className="rv">Ce que je sais faire.</h2>
+            <p className="sk-note rv">Survole ou touche une ligne pour la découvrir.</p>
+            <div className="sk-count mono rv">
+              <b key={sel}>{String(sel + 1).padStart(2, "0")}</b>
+              <span>/ {String(skills.length).padStart(2, "0")}</span>
             </div>
-          ))}
-
-          <div className="cell s2 rv" style={delay(0.4)}>
-            <h3
-              className="mono"
-              style={{ color: "var(--acc)" }}
-            >
-              &gt; objectif.txt
-            </h3>
-
-            <p className="mono">
-              Stage dev web / intégration · avril 2027 · mobilité
-              possible.
-            </p>
           </div>
+
+          <ul className="sk-list">
+            {skills.map((s, i) => (
+              <li
+                key={s.title}
+                className="sk-row rv"
+                data-open={sel === i}
+                style={delay(i * 0.08)}
+                onMouseEnter={() => setSel(i)}
+              >
+                <button className="sk-head" aria-expanded={sel === i} onClick={() => setSel(i)} onFocus={() => setSel(i)}>
+                  <span className="sk-n mono">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="sk-t">{s.title}</span>
+                  <span className="sk-plus" aria-hidden="true">+</span>
+                </button>
+                <div className="sk-body">
+                  <div>
+                    <p>{s.text}</p>
+                    <span className="sk-ico" aria-hidden="true">{s.icon}</span>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="cell sk-goal rv">
+          <h3 className="mono" style={{ color: "var(--acc)" }}>&gt; objectif.txt</h3>
+          <p className="mono">Stage dev web / intégration · avril 2027 · mobilité possible.</p>
         </div>
       </section>
 
@@ -473,10 +546,11 @@ export default function App() {
         <h2 className="rv">Parcours.</h2>
 
         <div className="tl">
+          <span className="tl-head" aria-hidden="true" />
           {studies.map((s, i) => (
             <div
               key={s.title}
-              className="cell it rv"
+              className="cell it rv rv-r"
               style={delay(i * 0.08)}
             >
               <span className="when mono">{s.when}</span>
@@ -499,7 +573,7 @@ export default function App() {
 
       <section id="contact">
         <p className="tag mono rv">// contact</p>
-        <h2 className="rv">Travaillons ensemble.</h2>
+        <h2 className="rv">Prêt·e à collaborer ?</h2>
 
         <div className="bento">
           <div className="cell s2 rv">

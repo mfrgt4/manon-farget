@@ -5,7 +5,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/manon-farget-75baa5333/",
   github: "https://github.com/mfrgt4",
   cv: "#",
-  photo: "", // ex: "/photo.jpg" (mets ton fichier dans le dossier public/)
+  photo: "/images/portrait.png",
   roles: ["Développeuse web", "UI/UX designer", "Motion lover", "Étudiante MMI"],
 };
 export const nav = [
