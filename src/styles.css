@@ -141,8 +141,8 @@ footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size
 .s2{grid-column:auto}
 nav a{padding:7px 10px;font-size:13px}
 #glow{display:none}
-#accueil{padding:80px 0 35px}
-#hero{min-height:calc(100svh - 30px);padding:90px 24px;border-radius:0 0 28px 28px}
+#accueil{width:100%;max-width:none;padding:0 0 35px}
+#hero{width:100%;max-width:none;min-height:100svh;padding:130px 24px;border-radius:0 0 28px 28px}
 #hero h1{font-size:clamp(43px,13vw,70px)}
 #hero .lead{font-size:16px}
 #hero .hero-orbit{width:300px;height:300px;right:-180px;top:4%}
