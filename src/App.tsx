@@ -262,7 +262,7 @@ export default function App() {
           <h1 className="rv" style={delay(0.1)}>
             Salut, moi c'est
             <br />
-            {profile.name}.
+            <span className="grad">{profile.name}.</span>
           </h1>
 
           <p className="lead mono rv" style={delay(0.2)}>
@@ -430,8 +430,8 @@ export default function App() {
                 {id === "all"
                   ? projects.length
                   : projects.filter(
-                    (p) => p.category === id
-                  ).length}
+                      (p) => p.category === id
+                    ).length}
                 )
               </span>
             </button>
