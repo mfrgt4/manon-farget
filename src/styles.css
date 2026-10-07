@@ -1,4 +1,4 @@
-:root{--bg:#07080a;--card:#0e1013;--fg:#ededed;--mute:#8b9097;--line:#1f2328;--acc:#FFFFFF;--acc2:#38bdf8;--r:18px;
+:root{--bg:#07080a;--card:#0e1013;--fg:#ededed;--mute:#8b9097;--line:#1f2328;--acc:#9DBDA5;--acc2:#38bdf8;--r:18px;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth;scroll-padding-top:calc(76px + env(safe-area-inset-top,0px))}
