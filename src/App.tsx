@@ -152,9 +152,15 @@ export default function App() {
 
           {/* Photo de profil à droite */}
           <div className="photo rv rv-r">
-            <div className="photo-ph mono"><span>{profile.name.split(" ").map((w) => w[0]).join("")}</span><small>ta photo ici</small></div>
+            {profile.photo ? (
+              <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+            ) : (
+              <div className="photo-ph mono">
+                <span>{profile.name.split(" ").map((w) => w[0]).join("")}</span>
+                <small>ta photo ici</small>
+              </div>
+            )}
           </div>
-        </div>
 
         <p className="tag mono rv" style={{ marginTop: 70 }}>// 5 compétences clés</p>
         <h2 className="rv">Ce que je sais faire.</h2>
