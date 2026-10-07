@@ -6,6 +6,7 @@ export const profile = {
   github: "https://github.com/mfrgt4",
   cv: "#",
   roles: ["Développeuse web", "UI/UX designer", "Motion lover", "Étudiante MMI"],
+  photo: "/moi.jpg",
 };
 export const nav = [
   ["a-propos", "A propos"], ["boite-a-outils", "Ma boîte à outils"],
