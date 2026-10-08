@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import { categories, nav, profile, projects, skills, studies, tools } from "./data";
+import { projectUrl } from "./data";
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
 
@@ -591,16 +592,15 @@ export default function App() {
               )}
               <div className="grid3">
                 {list.map((p, i) => (
-                  <a
+                  <div
                     key={p.title}
-                    href={p.href}
+                    role="button"
+                    tabIndex={0}
                     className="cell proj aes"
                     data-tilt="9"
                     style={delay((i % 3) * 0.08)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setOpen(shown.indexOf(p));
-                    }}
+                    onClick={() => setOpen(shown.indexOf(p))}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen(shown.indexOf(p)); } }}
                   >
                     <span className="arrow">↗</span>
                     <div className="thumb" style={{ "--c": p.color } as React.CSSProperties}>{cover(p) ? <img src={cover(p)} alt="" loading="lazy" /> : p.icon}</div>
@@ -610,7 +610,21 @@ export default function App() {
                     <div className="chips">
                       {p.stack.map((c) => <i key={c} className="mono">{c}</i>)}
                     </div>
-                  </a>
+                    {projectUrl(p) && (
+                      <div className="proj-actions">
+                        <a
+                          className="proj-link"
+                          href={projectUrl(p)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          onKeyDown={(e) => e.stopPropagation()}
+                        >
+                          {p.linkLabel ?? "Voir le site"} <span aria-hidden="true">↗</span>
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
