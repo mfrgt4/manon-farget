@@ -21,6 +21,8 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
   const [dir, setDir] = useState(1);
   const closeBtn = useRef<HTMLButtonElement>(null);
   const touchX = useRef(0);
+  const slideX = useRef(0);
+  const [sdir, setSdir] = useState(1); // sens du dernier changement d'image (pour l'animation)
 
   const go = (d: number) => { setDir(d); setM(0); onIndex((index + d + n) % n); };
 
@@ -50,6 +52,9 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
   const slides: Slide[] = p.media?.length ? p.media : [1, 2, 3].map((i) => ({ type: "placeholder", src: "", alt: `Visuel ${i}` }));
   const cur = slides[Math.min(m, slides.length - 1)];
 
+  // Flèches du diaporama : image précédente / suivante (en boucle)
+  const goSlide = (d: number) => { setSdir(d); setM((m + d + slides.length) % slides.length); };
+
   return (
     <div className="pm" role="dialog" aria-modal="true" aria-labelledby="pm-title"
       onClick={(e) => e.target === e.currentTarget && onClose()}
@@ -61,11 +66,22 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
 
       <div className="pm-wrap" style={{ "--dx": `${dir * 40}px` } as CSSProperties}>
         <div className="pm-slide" key={p.title + "m"}>
-          <div className="pm-view"><View key={m} s={cur} p={p} /></div>
+          <div className="pm-view" style={{ "--sdx": `${sdir * 50}px` } as CSSProperties}
+            onTouchStart={(e) => { e.stopPropagation(); slideX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => { e.stopPropagation(); const dx = e.changedTouches[0].clientX - slideX.current; if (Math.abs(dx) > 50 && slides.length > 1) goSlide(dx < 0 ? 1 : -1); }}>
+            <View key={m} s={cur} p={p} />
+            {slides.length > 1 && (
+              <>
+                <button className="pm-sarrow l" onClick={() => goSlide(-1)} aria-label="Image précédente">‹</button>
+                <button className="pm-sarrow r" onClick={() => goSlide(1)} aria-label="Image suivante">›</button>
+                <span className="pm-scount mono">{Math.min(m, slides.length - 1) + 1} / {slides.length}</span>
+              </>
+            )}
+          </div>
           <div className="pm-thumbs">
             {slides.map((s, i) => (
-              <button key={i} className={i === m ? "on" : ""} onClick={() => setM(i)} aria-label={`Voir le visuel ${i + 1}`}>
-                {s.type === "image" ? <img src={s.src} alt="" /> : s.type === "video" ? "▶" : p.icon}
+              <button key={i} className={i === m ? "on" : ""} onClick={() => { setSdir(i > m ? 1 : -1); setM(i); }} aria-label={`Voir le visuel ${i + 1}`}>
+                {s.type === "image" ? <img src={s.src} alt="" /> : s.type === "video" ? (s.poster ? <img src={s.poster} alt="" /> : "▶") : p.icon}
               </button>
             ))}
           </div>
