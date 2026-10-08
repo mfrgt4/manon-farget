@@ -659,6 +659,7 @@ function useButtonSounds() {
 
 export default function App() {
   const active = useActive(ids);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   const [open, setOpen] =
     useState<number | null>(null);
@@ -774,25 +775,53 @@ export default function App() {
 
       <div id="glow" />
 
-      <nav>
-        <div className="in">
-          {nav.map(
-            ([id, label]) => (
-              <a
-                key={id}
-                href={"#" + id}
-                className={
-                  active === id
-                    ? "on"
-                    : ""
-                }
-              >
-                {label}
-              </a>
-            )
-          )}
-        </div>
-      </nav>
+<nav>
+  <button
+    className="mobile-menu-btn"
+    type="button"
+    aria-label={
+      mobileMenu
+        ? "Fermer le menu"
+        : "Ouvrir le menu"
+    }
+    aria-expanded={mobileMenu}
+    onClick={() =>
+      setMobileMenu((v) => !v)
+    }
+  >
+    <span />
+    <span />
+    <span />
+  </button>
+
+  <div
+    className={
+      "in" +
+      (mobileMenu
+        ? " mobile-open"
+        : "")
+    }
+  >
+    {nav.map(
+      ([id, label]) => (
+        <a
+          key={id}
+          href={"#" + id}
+          className={
+            active === id
+              ? "on"
+              : ""
+          }
+          onClick={() =>
+            setMobileMenu(false)
+          }
+        >
+          {label}
+        </a>
+      )
+    )}
+  </div>
+</nav>
 
       <div
         className="theme-toggle"
