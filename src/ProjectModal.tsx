@@ -2,7 +2,7 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import type { Media, Project } from "./data";
 
 type Slide = Media | { type: "placeholder"; src: ""; alt: string };
-const LABEL = { scolaire: "Projet scolaire", perso: "Projet personnel" } as const;
+const LABEL = { universitaire: "Projet universitaire", perso: "Projet personnel" } as const;
 
 function View({ s, p }: { s: Slide; p: Project }) {
   if (s.type === "image") return <img src={s.src} alt={s.alt} />;
@@ -66,7 +66,7 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
         </div>
 
         <div className="pm-info pm-slide" key={p.title + "i"}>
-          <div className="pm-cat"><span className="mono pm-k">{LABEL[p.category]}</span><span>{p.kind}</span></div>
+          <div className="pm-cat"><span className="mono pm-k">{LABEL[p.category]}</span><span>{[p.type, p.kind].filter(Boolean).join(" · ")}</span></div>
           <h2 id="pm-title">{p.title}</h2>
           <p className="pm-pitch">{p.pitch ?? p.text}</p>
           <h3 className="mono pm-h">Outils utilisés</h3>
