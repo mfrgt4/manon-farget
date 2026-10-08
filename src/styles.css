@@ -402,3 +402,21 @@ html[data-theme="dark"] .h-band{color:var(--bg)}
 html[data-theme="dark"] .p-frame{border-color:rgba(255,255,255,.1)}
 html[data-theme="dark"] .h-chip{box-shadow:0 14px 35px -12px rgba(0,0,0,.6)}
 html[data-theme="dark"] #hero::before{background:radial-gradient(circle at 78% 28%,rgba(229,96,143,.24),transparent 32%),radial-gradient(circle at 8% 88%,rgba(90,140,110,.26),transparent 34%)}
+
+/* ================= PROJETS : 2 catégories + types ================= */
+.tabs.cats button{font-size:14px;font-weight:500;padding:10px 20px}
+.subtabs{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.2,.8,.2,1)}
+.subtabs.open{grid-template-rows:1fr}
+.subtabs>div{overflow:hidden;min-height:0}
+.subtabs .tabs{margin:0;padding:2px 2px 24px;opacity:0;transform:translateY(-8px);transition:opacity .45s .1s,transform .55s .1s cubic-bezier(.2,.8,.2,1)}
+.subtabs.open .tabs{opacity:1;transform:none}
+.tabs.sub button{font-size:12.5px;padding:6px 13px;border-radius:999px;background:transparent}
+.tabs.sub button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+html[data-theme="dark"] .tabs.sub button.on{color:#fff}
+.grp{margin-bottom:44px}
+.grp:last-child{margin-bottom:0}
+.grp-h{display:flex;align-items:center;gap:12px;margin:0 0 16px;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-t)}
+.grp-h small{font-size:12px;letter-spacing:0;color:var(--mute)}
+.grp-h::after{content:"";order:3;flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.grp-h.aes{transition:opacity .8s,translate .8s cubic-bezier(.2,.8,.2,1)}
+.grp-h.aes:not(.in){opacity:0;translate:-24px 0}
