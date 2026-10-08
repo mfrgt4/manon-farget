@@ -424,7 +424,7 @@ export default function App() {
         <div className="about">
 
           <div className="rv rv-l" style={delay(0.15)}>
-            <p className="tag mono">// à propos</p>
+            <p className="tag mono">// 01</p>
 
             <h2>Un peu plus sur moi.</h2>
 
@@ -497,8 +497,8 @@ export default function App() {
       <section id="competences">
         <div className="sk">
           <div className="sk-side">
-            <p className="tag mono rv">// 5 compétences clés</p>
-            <h2 className="rv">Ce que je sais faire.</h2>
+            <p className="tag mono rv">// 02</p>
+            <h2 className="rv">Mes 5 compétences clés.</h2>
             <p className="sk-note rv">Survole ou touche une ligne pour la découvrir.</p>
             <div className="sk-count mono rv">
               <b key={sel}>{String(sel + 1).padStart(2, "0")}</b>
@@ -538,13 +538,13 @@ export default function App() {
       </section>
 
       <section id="boite-a-outils">
-        <p className="tag mono rv">// stack</p>
+        <p className="tag mono rv">// 03</p>
         <h2 className="rv">Ma boîte à outils.</h2>
         <WordSphere words={tools} />
       </section>
 
       <section id="projets">
-        <p className="tag mono rv">// work</p>
+        <p className="tag mono rv">// 04</p>
         <h2 className="rv">Projets.</h2>
 
         <div className="tabs cats rv" role="tablist" aria-label="Catégorie de projets">
@@ -633,7 +633,7 @@ export default function App() {
       </section>
 
       <section id="parcours">
-        <p className="tag mono rv">// timeline</p>
+        <p className="tag mono rv">// 05</p>
         <h2 className="rv">Parcours.</h2>
 
         <div className="tl">
@@ -663,7 +663,7 @@ export default function App() {
       </section>
 
       <section id="contact">
-        <p className="tag mono rv">// contact</p>
+        <p className="tag mono rv">// 06</p>
         <h2 className="rv">Prêt·e à collaborer ?</h2>
 
         <div className="bento">
