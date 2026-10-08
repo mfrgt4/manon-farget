@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import { categories, nav, profile, projects, skills, studies, tools } from "./data";
+import type { Category, Project } from "./data";
 import Particles from "./Particles";
 
 function useTyped(words: string[]) {
@@ -287,18 +288,26 @@ export default function App() {
   const active = useActive(ids);
 
   const [open, setOpen] = useState<number | null>(null);
-  const [cat, setCat] = useState<string>("all");
+  const [cat, setCat] = useState<Category>("perso");
+  const [type, setType] = useState("all");
 
-  const shown =
-    cat === "all"
-      ? projects
-      : projects.filter((p) => p.category === cat);
+  // Projets universitaires : classés par type. Les types se déduisent de data.ts.
+  const univ = projects.filter((p) => p.category === "universitaire");
+  const typeOf = (p: Project) => p.type ?? "Autre";
+  const types = Array.from(new Set(univ.map(typeOf)));
+  const groups: [string, Project[]][] =
+    cat === "perso"
+      ? [["", projects.filter((p) => p.category === "perso")]]
+      : type === "all"
+        ? types.map((t) => [t, univ.filter((p) => typeOf(p) === t)] as [string, Project[]])
+        : [["", univ.filter((p) => typeOf(p) === type)]];
+  const shown = groups.flatMap((g) => g[1]);
 
   useEffects();
   useHeroParallax();
   useTimeline();
   useTilt();
-  useAes(cat);
+  useAes(cat + "|" + type);
   useAnchorCenter();
   const [theme, chooseTheme] = useTheme();
   const [sel, setSel] = useState(0);
@@ -534,69 +543,74 @@ export default function App() {
         <p className="tag mono rv">// work</p>
         <h2 className="rv">Projets.</h2>
 
-        <div className="tabs rv" role="tablist">
+        <div className="tabs cats rv" role="tablist" aria-label="Catégorie de projets">
           {categories.map(([id, label]) => (
             <button
               key={id}
               role="tab"
               aria-selected={cat === id}
               className={cat === id ? "on" : ""}
-              onClick={() => setCat(id)}
+              onClick={() => { setCat(id); setType("all"); }}
             >
-              {label}{" "}
-              <span className="mono">
-                (
-                {id === "all"
-                  ? projects.length
-                  : projects.filter(
-                    (p) => p.category === id
-                  ).length}
-                )
-              </span>
+              {label} <span className="mono">({projects.filter((p) => p.category === id).length})</span>
             </button>
           ))}
         </div>
 
-        <div className="grid3" key={cat}>
-          {shown.map((p, i) => (
-            <a
-              key={p.title}
-              href={p.href}
-              className="cell proj aes"
-              data-tilt="9"
-              style={delay((i % 3) * 0.08)}
-              onClick={(e) => {
-                e.preventDefault();
-                setOpen(i);
-              }}
-            >
-              <span className="arrow">↗</span>
+        <div className={"subtabs" + (cat === "universitaire" ? " open" : "")}>
+          <div>
+            <div className="tabs sub" role="tablist" aria-label="Type de projet universitaire">
+              {["all", ...types].map((t) => (
+                <button
+                  key={t}
+                  role="tab"
+                  tabIndex={cat === "universitaire" ? 0 : -1}
+                  aria-selected={type === t}
+                  className={type === t ? "on" : ""}
+                  onClick={() => setType(t)}
+                >
+                  {t === "all" ? "Tous les types" : t}{" "}
+                  <span className="mono">({t === "all" ? univ.length : univ.filter((p) => typeOf(p) === t).length})</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
-              <div
-                className="thumb"
-                style={
-                  {
-                    "--c": p.color
-                  } as React.CSSProperties
-                }
-              >
-                {p.icon}
-              </div>
-
-              <span className="when mono">{p.kind}</span>
-
-              <h3>{p.title}</h3>
-
-              <p>{p.text}</p>
-
-              <div className="chips">
-                {p.stack.map((c) => (
-                  <i key={c} className="mono">
-                    {c}
-                  </i>
+        <div key={cat + "|" + type}>
+          {groups.map(([name, list]) => (
+            <div className="grp" key={name || "all"}>
+              {name && (
+                <h3 className="grp-h mono aes">
+                  <span>{name}</span>
+                  <small>({list.length})</small>
+                </h3>
+              )}
+              <div className="grid3">
+                {list.map((p, i) => (
+                  <a
+                    key={p.title}
+                    href={p.href}
+                    className="cell proj aes"
+                    data-tilt="9"
+                    style={delay((i % 3) * 0.08)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpen(shown.indexOf(p));
+                    }}
+                  >
+                    <span className="arrow">↗</span>
+                    <div className="thumb" style={{ "--c": p.color } as React.CSSProperties}>{p.icon}</div>
+                    <span className="when mono">{p.kind}</span>
+                    <h3>{p.title}</h3>
+                    <p>{p.text}</p>
+                    <div className="chips">
+                      {p.stack.map((c) => <i key={c} className="mono">{c}</i>)}
+                    </div>
+                  </a>
                 ))}
               </div>
-            </a>
+            </div>
           ))}
         </div>
       </section>
