@@ -156,7 +156,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset
 .pm-cat{display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap;padding:7px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card);font-size:13px;color:var(--mute)}
 .pm-k{color:var(--acc-t)}
 .pm h2{font-size:clamp(40px,5.5vw,70px);letter-spacing:-.055em;line-height:1.02;margin:22px 0 18px;color:var(--fg)}
-.pm-pitch{font-size:clamp(17px,1.6vw,21px);max-width:46ch;color:#4f4b48}
+
+.pm-main{font-size:clamp(17px,1.6vw,21px);max-width:46ch;color:#4f4b48;line-height:1.4}
+.pm-pitch{font-size:clamp(13px,1.1vw,16px);max-width:46ch;color:#4f4b48;line-height:1.5}
+
 .pm-h{font-size:12px;font-weight:600;color:var(--mute);margin:30px 0 10px;letter-spacing:.08em;text-transform:uppercase}
 .pm-info .btn{display:inline-block;margin-top:28px}
 .pm-btn{width:44px;height:44px;border-radius:12px;cursor:pointer;font:inherit;font-size:18px;color:var(--fg);background:var(--card);border:1px solid var(--line);transition:.3s;box-shadow:none}
@@ -447,3 +450,145 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
 .proj.aes.in>:nth-child(7){animation-delay:calc(var(--d,0s) + 1s)}
 
 .tools-inspiration{margin:-10px 0 30px;font-size:.85rem;color:var(--muted)}.tools-inspiration a{color:var(--acc);text-decoration:underline;text-underline-offset:3px}
+
+
+/* ================= RESPONSIVE MOBILE ================= */
+.mobile-menu-btn{display:none}
+.pm-mobile-project{display:none}
+
+@media(max-width:700px){
+  nav{
+    justify-content:flex-start;
+    padding:12px 14px;
+  }
+
+  .mobile-menu-btn{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:4px;
+    width:42px;
+    height:42px;
+    padding:0;
+    border:1px solid rgba(23,23,23,.12);
+    border-radius:12px;
+    background:rgba(251,250,247,.88);
+    box-shadow:0 10px 35px rgba(23,23,23,.07);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    cursor:pointer;
+  }
+
+  .mobile-menu-btn span{
+    display:block;
+    width:18px;
+    height:2px;
+    border-radius:99px;
+    background:var(--fg);
+    transition:transform .25s ease,opacity .25s ease;
+  }
+
+  .mobile-menu-btn[aria-expanded="true"] span:nth-child(1){
+    transform:translateY(6px) rotate(45deg);
+  }
+
+  .mobile-menu-btn[aria-expanded="true"] span:nth-child(2){
+    opacity:0;
+  }
+
+  .mobile-menu-btn[aria-expanded="true"] span:nth-child(3){
+    transform:translateY(-6px) rotate(-45deg);
+  }
+
+  nav .in{display:none}
+
+  nav .in.mobile-open{
+    display:flex;
+    position:absolute;
+    top:calc(62px + env(safe-area-inset-top,0px));
+    left:14px;
+    right:14px;
+    flex-direction:column;
+    align-items:stretch;
+    gap:4px;
+    padding:7px;
+    border:1px solid rgba(23,23,23,.12);
+    border-radius:14px;
+    background:rgba(251,250,247,.94);
+    box-shadow:0 10px 35px rgba(23,23,23,.1);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    overflow:hidden;
+  }
+
+  nav .in.mobile-open a{
+    display:block;
+    width:100%;
+    padding:11px 13px;
+    border-radius:9px;
+  }
+
+  .theme-toggle{
+    right:14px;
+    padding:4px;
+    gap:3px;
+    border-radius:12px;
+  }
+
+  .theme-toggle .tt-thumb{display:none}
+
+  .theme-toggle .tt-btn{
+    width:38px;
+    height:36px;
+    padding:0;
+    border-radius:9px;
+  }
+
+  .theme-toggle .tt-btn span{display:none}
+
+  .pm-arrow{display:none}
+  .pm-mobile-project{
+    display:grid;
+    place-items:center;
+    width:38px;
+    height:38px;
+    padding:0;
+    border:0;
+    border-radius:10px;
+    background:transparent;
+    color:var(--fg);
+    font-family:inherit;
+    font-size:20px;
+    cursor:pointer;
+    transition:background .2s ease,color .2s ease;
+  }
+
+  .pm-mobile-project:hover,.pm-mobile-project:active{
+    background:var(--acc);
+    color:#fff;
+  }
+
+  .pm-mobile-project:focus-visible{
+    outline:2px solid var(--acc);
+    outline-offset:2px;
+  }
+
+  .pm-bar{gap:8px}
+  .pm-dots{display:none}
+  .pm-count{min-width:52px;text-align:center}
+}
+
+@media(max-width:700px){
+  html[data-theme="dark"] .mobile-menu-btn{
+    border-color:rgba(255,255,255,.1);
+    background:rgba(23,24,28,.8);
+    box-shadow:0 10px 35px rgba(0,0,0,.45);
+  }
+
+  html[data-theme="dark"] nav .in.mobile-open{
+    border-color:rgba(255,255,255,.1);
+    background:rgba(23,24,28,.94);
+    box-shadow:0 10px 35px rgba(0,0,0,.45);
+  }
+}
