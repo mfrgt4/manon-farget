@@ -370,3 +370,35 @@ h2::after{content:"";display:block;height:2px;width:0;margin-top:12px;background
 .cell.sk-goal::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--acc);transform:scaleY(var(--p,0));pointer-events:none}
 .cell.sk-goal h3{translate:calc(var(--p,0)*10px) 0}
 .cell.sk-goal p{translate:calc(var(--p,0)*6px) 0}
+
+/* ================= BOUTONS JOUR / SOMBRE ================= */
+:root{--sph-a:#d84b7d;--sph-b:#171717;--w:84px}
+.theme-toggle{position:fixed;top:calc(18px + env(safe-area-inset-top,0px));right:clamp(14px,3vw,34px);z-index:55;display:flex;gap:2px;padding:5px;border:1px solid rgba(23,23,23,.12);border-radius:14px;background:rgba(251,250,247,.88);box-shadow:0 10px 35px rgba(23,23,23,.07);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.tt-thumb{position:absolute;top:5px;bottom:5px;left:5px;width:var(--w);border-radius:9px;background:var(--fg);transform:translateX(calc(var(--i,0)*(var(--w) + 2px)));transition:transform .55s cubic-bezier(.2,.8,.2,1),background .4s}
+.tt-btn{all:unset;box-sizing:border-box;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;width:var(--w);height:37px;border-radius:9px;font-size:13px;font-weight:500;color:var(--mute);cursor:pointer;transition:color .4s}
+.tt-btn:hover{color:var(--fg)}
+.tt-btn[aria-pressed="true"],.tt-btn[aria-pressed="true"]:hover{color:var(--bg)}
+.tt-btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.tt-btn svg{flex:none}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.55s}
+@media(max-width:940px){:root{--w:38px}.tt-btn span{display:none}}
+@media(max-width:700px){nav{justify-content:flex-start;padding-right:112px}}
+
+/* ================= THÈME SOMBRE ================= */
+html[data-theme="dark"]{color-scheme:dark;--bg:#0e0f11;--card:#17181c;--fg:#f1eee9;--mute:#a29e98;--line:#2b2d32;--acc:#e5608f;--acc-t:#f28fb3;--mint:#2a3d31;--mint-t:#a9c3b0;--sph-a:#ed8eb0;--sph-b:#f1eee9}
+html[data-theme="dark"] body::before{background:radial-gradient(circle at 8% 12%,rgba(229,96,143,.12),transparent 28%),radial-gradient(circle at 92% 78%,rgba(110,165,130,.1),transparent 30%)}
+html[data-theme="dark"] nav .in,html[data-theme="dark"] .theme-toggle{border-color:rgba(255,255,255,.1);background:rgba(23,24,28,.8);box-shadow:0 10px 35px rgba(0,0,0,.45)}
+html[data-theme="dark"] nav a:hover{background:#24262b}
+html[data-theme="dark"] nav a.on{color:var(--bg)}
+html[data-theme="dark"] .btn.p,html[data-theme="dark"] .tabs button.on{color:var(--bg)}
+html[data-theme="dark"] .btn.p:hover,html[data-theme="dark"] .btn:hover{color:#fff}
+html[data-theme="dark"] .cell{box-shadow:0 8px 25px rgba(0,0,0,.3)}
+html[data-theme="dark"] .cell:hover{border-color:#4a4d55;box-shadow:0 20px 45px rgba(0,0,0,.5)}
+html[data-theme="dark"] #cloudbox,html[data-theme="dark"] .pm-view{box-shadow:0 18px 55px rgba(0,0,0,.45)}
+html[data-theme="dark"] .links a:hover{box-shadow:0 8px 25px rgba(0,0,0,.4)}
+html[data-theme="dark"] .about-p,html[data-theme="dark"] .pm-pitch{color:#c9c5bf}
+html[data-theme="dark"] .pm-bar{background:rgba(23,24,28,.94);box-shadow:0 10px 35px rgba(0,0,0,.5)}
+html[data-theme="dark"] .h-band{color:var(--bg)}
+html[data-theme="dark"] .p-frame{border-color:rgba(255,255,255,.1)}
+html[data-theme="dark"] .h-chip{box-shadow:0 14px 35px -12px rgba(0,0,0,.6)}
+html[data-theme="dark"] #hero::before{background:radial-gradient(circle at 78% 28%,rgba(229,96,143,.24),transparent 32%),radial-gradient(circle at 8% 88%,rgba(90,140,110,.26),transparent 34%)}

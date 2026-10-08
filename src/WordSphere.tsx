@@ -31,6 +31,15 @@ export default function WordSphere({ words }: { words: string[] }) {
 
   useEffect(() => {
     const el = box.current!;
+    // Couleurs des mots : suivent le thème jour / sombre (variables --sph-a, --sph-b, --fg)
+    const readPalette = () => {
+      const cs = getComputedStyle(document.documentElement);
+      const g = (n: string, f: string) => cs.getPropertyValue(n).trim() || f;
+      PINK.set(g("--sph-a", "#d84b7d")); MINT.set(g("--sph-b", "#171717")); FG.set(g("--fg", "#171717"));
+    };
+    readPalette();
+    const mo = new MutationObserver(readPalette);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 50);
     camera.position.set(0, 0, 7);
@@ -89,7 +98,7 @@ export default function WordSphere({ words }: { words: string[] }) {
     loop();
 
     return () => {
-      cancelAnimationFrame(raf); ro.disconnect(); controls.dispose();
+      cancelAnimationFrame(raf); ro.disconnect(); mo.disconnect(); controls.dispose();
       el.removeEventListener("pointermove", onMove); el.removeEventListener("pointerleave", onLeave);
       sprites.forEach((s) => { (s.material as THREE.SpriteMaterial).map?.dispose(); s.material.dispose(); });
       renderer.dispose(); renderer.domElement.remove();
