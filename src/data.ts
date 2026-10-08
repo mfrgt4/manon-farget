@@ -20,7 +20,7 @@ export const skills: Skill[] = [
   { icon: "🔎", title: "SEO & contenu", text: "Stratégie éditoriale, référencement." },
   { icon: "🤝", title: "Gestion de projet", text: "Travail en équipe, méthode agile, Git et échanges clairs avec le client.", span: "s2" },
 ];
-export const tools = ["React","TypeScript","three.js","Vite","Vercel","HTML5","CSS3","JavaScript","Tailwind","PHP","SQL","Git","GitHub","Figma","Photoshop","Illustrator","After Effects","Premiere Pro","WordPress","SEO","UX Design","Responsive","Accessibilité","Node.js","Agile","Notion","Blender","API REST"];
+export const tools = ["React","TypeScript","three.js","Vite","Vercel","HTML5","CSS3","JavaScript","PHP","SQL","Git","GitHub","Figma","InDesign","Photoshop","Illustrator","After Effects","Premiere Pro","WordPress","SEO","UX Design","Responsive","Accessibilité","Node.js","Gestion de projet","Notion","Affinity"];
 // Pour ajouter tes visuels : mets les fichiers dans public/projets/ puis, dans un projet :
 // media: [{ type: "image", src: "/projets/boutique-1.jpg", alt: "Page d'accueil" }, { type: "video", src: "/projets/demo.mp4", alt: "Démo" }]
 export type Media = { type: "image" | "video"; src: string; alt: string; poster?: string };
