@@ -108,10 +108,14 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
           </div>
         </div>
       </div>
+      </div>
 
-<div className="pm-bar">
-  <div className="pm-dots" role="tablist">{list.map((q, i) => <button key={q.title} className={i === index ? "on" : ""} aria-label={q.title} aria-selected={i === index} onClick={() => { setDir(i > index ? 1 : -1); setM(0); onIndex(i); }} />)}</div>
-  <span className="mono pm-count">{String(index + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}</span>
-</div>
+      <div className="pm-bar">
+        <div className="pm-dots" role="tablist">
+          {list.map((q, i) => <button key={q.title} className={i === index ? "on" : ""} aria-label={q.title} aria-selected={i === index} onClick={() => { setDir(i > index ? 1 : -1); setM(0); onIndex(i); }} />)}
+        </div>
+        <span className="mono pm-count">{String(index + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}</span>
+      </div>
+    </div>
   );
 }
