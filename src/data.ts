@@ -24,7 +24,10 @@ export const tools = ["React","TypeScript","three.js","Vite","Vercel","HTML5","C
 // Pour ajouter tes visuels : mets les fichiers dans public/projets/ puis, dans un projet :
 // media: [{ type: "image", src: "/projets/boutique-1.jpg", alt: "Page d'accueil" }, { type: "video", src: "/projets/demo.mp4", alt: "Démo" }]
 export type Media = { type: "image" | "video"; src: string; alt: string; poster?: string };
-export type Project = { icon: string; title: string; kind: string; text: string; stack: string[]; color: string; href: string; category: "scolaire" | "perso"; media?: Media[]; pitch?: string };
+// 2 catégories de projets. Les projets universitaires sont classés par "type" (ex : "Développement web", "Motion design"…).
+// Pour un projet universitaire, renseigne simplement type: "…" : la liste des types se crée toute seule.
+export type Category = "perso" | "universitaire";
+export type Project = { icon: string; title: string; kind: string; text: string; stack: string[]; color: string; href: string; category: Category; type?: string; media?: Media[]; pitch?: string };
 export const categories = [["all", "Tous"], ["scolaire", "Projets scolaires"], ["perso", "Projets personnels"]] as const;
 export const projects: Project[] = [
   { icon: "🛒", title: "Boutique en ligne", pitch: "Une boutique pensée pour acheter en trois clics : un parcours fluide, un panier qui réagit instantanément et un design qui met le produit en avant.", category: "scolaire", kind: "SAE · équipe de 4", text: "Site e-commerce responsive avec panier dynamique.", stack: ["React", "TypeScript", "PHP"], color: "#D13670", href: "#" },
