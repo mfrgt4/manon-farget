@@ -406,10 +406,10 @@ export default function App() {
                 <text x="60" y="68" textAnchor="middle" fontSize="22" fill="#fff">✦</text>
               </svg>
             </div>
-            <span className="h-chip c1"><i />React</span>
-            <span className="h-chip c2 sage"><i />Figma</span>
-            <span className="h-chip c3"><i />After Effects</span>
-            <span className="h-chip c4 sage"><i />three.js</span>
+            <span className="h-chip c1"><i />Créative</span>
+            <span className="h-chip c2 sage"><i />Rigoureuse</span>
+            <span className="h-chip c3"><i />Autonome</span>
+            <span className="h-chip c4 sage"><i />Polyvalence</span>
           </div>
         </div>
 
@@ -443,7 +443,7 @@ export default function App() {
             <p className="about-p">
               Je cherche un stage à partir d'avril 2027 pour
               progresser au sein d'une équipe, et y apporter ma
-              curiosité et mon sens du détail.
+              créativité et mon sens du détail.
             </p>
 
             <div className="chips about-facts">
