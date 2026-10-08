@@ -8,7 +8,7 @@ const LABEL = { universitaire: "Projet universitaire", perso: "Projet personnel"
 function View({ s, p }: { s: Slide; p: Project }) {
   const [broken, setBroken] = useState(false);
   if (s.type === "image" && !broken) return <img src={s.src} alt={s.alt} onError={() => setBroken(true)} />;
-  if (s.type === "video") return <video src={s.src} poster={s.poster} controls playsInline autoPlay />;
+  if (s.type === "video") return <video src={s.src} poster={s.poster} controls playsInline ref={(el) => { if (el) el.volume = 0.4; }} />;
   // Image introuvable : on affiche le chemin cherché pour t'aider à corriger
   const label = s.type === "image" ? `Image introuvable : ${s.src}` : `${s.alt} · à remplacer`;
   return <div className="ph" style={{ "--c": p.color } as CSSProperties}><span>{p.icon}</span><small className="mono">{label}</small></div>;
