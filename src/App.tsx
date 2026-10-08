@@ -382,8 +382,8 @@ export default function App() {
             </h1>
 
             <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
-              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne (Le Puy-en-Velay).
-              Je conçois des interfaces qui allient code propre, design soigné et animations qui donnent envie de rester.
+              Étudiante en 2<sup>eme</sup> année de BUT MMI à l'Université Clermont Auvergne au Puy-en-Velay.
+              J'aime créer des univers visuels et des expériences numériques en mêlant design et développement web.
             </p>
 
             <div className="btns rv" style={delay(0.4)}>
@@ -429,15 +429,15 @@ export default function App() {
             <h2>Un peu plus sur moi.</h2>
 
             <p className="about-p">
-              Je m'appelle Manon et je suis étudiante en 2
-              <sup>e</sup> année de BUT MMI à l'Université Clermont
-              Auvergne, au Puy-en-Velay.
+              Moi c'est Manon. Passionnée par le développement web et la création numérique,
+              j'aime concevoir des interfaces à la fois fonctionnelles, intuitives et visuellement soignées.
+              Je m'intéresse particulièrement au front-end, à l'UI/UX et à la manière dont le design peut améliorer
+              l'expérience utilisateur.
             </p>
 
             <p className="about-p">
-              J'aime autant coder une interface que la dessiner ou
-              lui donner vie avec du mouvement : développement web,
-              UI/UX design et motion design sont mes terrains de jeu.
+              Mes projets universitaires et personnels me permettent de mettre mes connaissances en pratique,
+              d'expérimenter de nouveaux outils et de progresser en développant des projets de plus en plus complets.
             </p>
 
             <p className="about-p">
@@ -451,22 +451,6 @@ export default function App() {
               <i className="mono">🎓 BUT MMI · 2e année</i>
               <i className="mono">🗓️ Stage avril 2027</i>
             </div>
-
-            <div className="stats">
-              {[
-                [2, "année de BUT"],
-                [projects.length, "projets"],
-                [tools.length, "outils"]
-              ].map(([n, l]) => (
-                <div key={l as string}>
-                  <b className="mono">
-                    <Count to={n as number} />
-                  </b>
-                  <span>{l}</span>
-                </div>
-              ))}
-            </div>
-          </div>
 
           <div className="photo rv rv-r">
             <div className="p-tilt" data-tilt="11" data-persp="none">
@@ -533,7 +517,7 @@ export default function App() {
 
         <div className="cell sk-goal rv" data-tilt="3">
           <h3 className="mono" style={{ color: "var(--acc)" }}>&gt; objectif.txt</h3>
-          <p className="mono">Stage dev web / intégration · avril 2027 · mobilité possible.</p>
+          <p className="mono">Stage dev web · avril 2027</p>
         </div>
       </section>
 
@@ -546,7 +530,7 @@ export default function App() {
 
       <section id="projets">
         <p className="tag mono rv">// 04</p>
-        <h2 className="rv">Projets.</h2>
+        <h2 className="rv">Mes projets.</h2>
 
         <div className="tabs cats rv" role="tablist" aria-label="Catégorie de projets">
           {categories.map(([id, label]) => (
@@ -635,7 +619,7 @@ export default function App() {
 
       <section id="parcours">
         <p className="tag mono rv">// 05</p>
-        <h2 className="rv">Parcours.</h2>
+        <h2 className="rv">Mon parcours.</h2>
 
         <div className="tl">
           <span className="tl-head" aria-hidden="true" />
