@@ -610,13 +610,8 @@ const playSound = (
   audio.play().catch(() => {});
 };
 
-const playProjectClick = () => {
-  playSound("Click-projets.mp3", 0.2);
-};
-
-const playButtonClick = () => {
-  playSound("Click-buttons.mp3", 0.15);
-};
+const playProjectClick = () => playSound("Click-projets.mp3", 0.12);
+const playButtonClick = () => playSound("Click-buttons.mp3", 0.08);
 
 // Son pour les boutons et liens hors cartes projet
 function useButtonSounds() {
