@@ -69,30 +69,13 @@ function useEffects() {
       c.style.setProperty("--mx", e.clientX - r.left + "px");
       c.style.setProperty("--my", e.clientY - r.top + "px");
 
-      if (c.classList.contains("proj") && matchMedia("(hover:hover)").matches) {
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-
-        c.style.transform =
-          `perspective(700px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-4px)`;
-      }
-    };
-
-    const onLeave = (e: PointerEvent) => {
-      const target = e.target as HTMLElement;
-
-      if (target.classList?.contains("proj")) {
-        target.style.transform = "";
-      }
     };
 
     window.addEventListener("pointermove", onMove);
-    document.addEventListener("pointerout", onLeave);
 
     return () => {
       rv.disconnect();
       window.removeEventListener("pointermove", onMove);
-      document.removeEventListener("pointerout", onLeave);
     };
   }, []);
 }
@@ -199,6 +182,83 @@ function useTimeline() {
   }, []);
 }
 
+// Inclinaison 3D ultra fluide : lissage basé sur le temps (identique à 60 ou 144 Hz), retour au repos plus lent que l'aller.
+// La variable CSS --p (0 → 1) pilote aussi les effets de survol : tout bouge en même temps, sans à-coup.
+function useTilt() {
+  useEffect(() => {
+    if (!matchMedia("(hover:hover)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    type S = { rx: number; ry: number; p: number; tx: number; ty: number; tp: number; max: number; persp: string };
+    const map = new Map<HTMLElement, S>();
+    let raf = 0, last = 0, cur: HTMLElement | null = null;
+    const loop = (t: number) => {
+      const dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
+      let busy = false;
+      map.forEach((s, el) => {
+        const on = s.tp > 0;
+        const kt = 1 - Math.exp(-dt / (on ? 0.09 : 0.3));
+        const kp = 1 - Math.exp(-dt / (on ? 0.2 : 0.35));
+        s.rx += (s.tx - s.rx) * kt; s.ry += (s.ty - s.ry) * kt; s.p += (s.tp - s.p) * kp;
+        if (!on && Math.abs(s.rx) < 0.01 && Math.abs(s.ry) < 0.01 && s.p < 0.001) {
+          el.style.transform = ""; el.style.removeProperty("--p"); map.delete(el); return;
+        }
+        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-6 * s.p).toFixed(3)}px) scale(${(1 + 0.015 * s.p).toFixed(4)})`;
+        el.style.setProperty("--p", s.p.toFixed(4));
+        busy = true;
+      });
+      if (busy) raf = requestAnimationFrame(loop); else { raf = 0; last = 0; }
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+    const release = (el: HTMLElement) => { const s = map.get(el); if (s) { s.tx = 0; s.ty = 0; s.tp = 0; } };
+    const move = (e: PointerEvent) => {
+      const el = (e.target as HTMLElement).closest?.<HTMLElement>("[data-tilt]") ?? null;
+      if (cur && cur !== el) { release(cur); kick(); }
+      cur = el;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      let s = map.get(el);
+      if (!s) { s = { rx: 0, ry: 0, p: 0, tx: 0, ty: 0, tp: 0, max: Number(el.dataset.tilt) || 8, persp: el.dataset.persp === "none" ? "" : "perspective(900px) " }; map.set(el, s); }
+      s.ty = x * s.max * 2; s.tx = -y * s.max * 2; s.tp = 1;
+      el.style.setProperty("--gx", (x + 0.5) * 100 + "%"); el.style.setProperty("--gy", (y + 0.5) * 100 + "%");
+      kick();
+    };
+    const out = (e: PointerEvent) => { if (!e.relatedTarget && cur) { release(cur); cur = null; kick(); } };
+    addEventListener("pointermove", move); document.addEventListener("pointerout", out);
+    return () => { cancelAnimationFrame(raf); removeEventListener("pointermove", move); document.removeEventListener("pointerout", out); };
+  }, []);
+}
+
+// Apparition « aesthetic » des éléments .aes quand ils entrent dans l'écran (se relance quand le filtre change)
+function useAes(dep: string) {
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }),
+      { threshold: 0.18, rootMargin: "0px 0px -6% 0px" }
+    );
+    document.querySelectorAll(".aes:not(.in)").forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [dep]);
+}
+
+// Clic sur un lien d'ancre (#projets…) : la section s'arrête pile au centre de l'écran
+function useAnchorCenter() {
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      const a = (e.target as HTMLElement).closest?.<HTMLAnchorElement>('a[href^="#"]');
+      const id = a?.getAttribute("href")?.slice(1);
+      const sec = id ? document.getElementById(id) : null;
+      if (!sec) return;
+      e.preventDefault();
+      const top = scrollY + sec.getBoundingClientRect().top, h = sec.offsetHeight;
+      scrollTo({ top: Math.max(0, h <= innerHeight ? top - (innerHeight - h) / 2 : top), behavior: "smooth" });
+      history.replaceState(null, "", "#" + id);
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+}
+
 const BAND = ["Intégration web", "UI/UX design", "Motion design", "SEO", "Gestion de projet"];
 const ids = nav.map(([id]) => id) as string[];
 
@@ -211,9 +271,6 @@ export default function App() {
   const [open, setOpen] = useState<number | null>(null);
   const [cat, setCat] = useState<string>("all");
 
-  const photoRef = useRef<HTMLDivElement>(null);
-  const photoTargetRef = useRef<HTMLImageElement>(null);
-
   const shown =
     cat === "all"
       ? projects
@@ -222,41 +279,11 @@ export default function App() {
   useEffects();
   useHeroParallax();
   useTimeline();
+  useTilt();
+  useAes(cat);
+  useAnchorCenter();
   const [sel, setSel] = useState(0);
 
-  const handlePhotoMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const photo = photoRef.current;
-    const target = photoTargetRef.current;
-
-    if (!photo || !target) return;
-
-    const r = photo.getBoundingClientRect();
-
-    const x = e.clientX - r.left;
-    const y = e.clientY - r.top;
-
-    const rx = (y / r.height - 0.5) * -10;
-    const ry = (x / r.width - 0.5) * 10;
-
-    target.style.transform =
-      `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.025)`;
-
-    photo.style.setProperty("--mx", `${x}px`);
-    photo.style.setProperty("--my", `${y}px`);
-  };
-
-  const handlePhotoLeave = () => {
-    const photo = photoRef.current;
-    const target = photoTargetRef.current;
-
-    if (!photo || !target) return;
-
-    target.style.transform =
-      "perspective(900px) rotateX(0deg) rotateY(0deg) scale(1)";
-
-    photo.style.setProperty("--mx", "50%");
-    photo.style.setProperty("--my", "50%");
-  };
 
   const send = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -397,29 +424,27 @@ export default function App() {
             </div>
           </div>
 
-          <div
-            ref={photoRef}
-            className="photo rv rv-r"
-            onMouseMove={handlePhotoMove}
-            onMouseLeave={handlePhotoLeave}
-          >
-            {profile.photo ? (
-              <img
-                ref={photoTargetRef}
-                src={profile.photo}
-                alt={`Portrait de ${profile.name}`}
-              />
-            ) : (
-              <div className="photo-ph mono">
-                <span>
-                  {profile.name
-                    .split(" ")
-                    .map((w) => w[0])
-                    .join("")}
-                </span>
-                <small>ta photo ici</small>
+          <div className="photo rv rv-r">
+            <div className="p-tilt" data-tilt="11" data-persp="none">
+              <span className="p-outline" aria-hidden="true" />
+              <div className="p-frame">
+                {profile.photo ? (
+                  <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+                ) : (
+                  <div className="photo-ph mono">
+                    <span>{profile.name.split(" ").map((w) => w[0]).join("")}</span>
+                    <small>ta photo ici</small>
+                  </div>
+                )}
+                <span className="p-sheen" aria-hidden="true" />
+                <span className="p-glare" aria-hidden="true" />
               </div>
-            )}
+              <span className="p-corner c-tl" aria-hidden="true" />
+              <span className="p-corner c-tr" aria-hidden="true" />
+              <span className="p-corner c-bl" aria-hidden="true" />
+              <span className="p-corner c-br" aria-hidden="true" />
+              <span className="p-tag" aria-hidden="true">hello !</span>
+            </div>
           </div>
         </div>
 
@@ -506,7 +531,8 @@ export default function App() {
             <a
               key={p.title}
               href={p.href}
-              className="cell proj pop"
+              className="cell proj aes"
+              data-tilt="9"
               style={delay((i % 3) * 0.08)}
               onClick={(e) => {
                 e.preventDefault();
