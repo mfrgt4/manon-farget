@@ -23,11 +23,10 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
   const closeBtn = useRef<HTMLButtonElement>(null);
   const touchX = useRef(0);
   const slideX = useRef(0);
-  const [sdir, setSdir] = useState(1); // sens du dernier changement d'image (pour l'animation)
+  const [sdir, setSdir] = useState(1);
 
   const go = (d: number) => { setDir(d); setM(0); onIndex((index + d + n) % n); };
 
-  // Ouverture : bloque le scroll de la page, met le focus dans la fenêtre, le rend à la fermeture
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     const ov = document.body.style.overflow;
@@ -36,7 +35,6 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
     return () => { document.body.style.overflow = ov; prev?.focus(); };
   }, []);
 
-  // Clavier : Échap ferme, flèches changent de projet
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -47,13 +45,11 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
     return () => removeEventListener("keydown", key);
   });
 
-  // Texte gris : seulement s'il apporte une info en plus du libellé rose (on masque "Projet perso" / "Projet universitaire")
   const details = [p.type, p.kind].filter((x): x is string => !!x && x !== "Projet perso" && x !== "Projet universitaire");
 
   const slides: Slide[] = p.media?.length ? p.media : [1, 2, 3].map((i) => ({ type: "placeholder", src: "", alt: `Visuel ${i}` }));
   const cur = slides[Math.min(m, slides.length - 1)];
 
-  // Flèches du diaporama : image précédente / suivante (en boucle)
   const goSlide = (d: number) => { setSdir(d); setM((m + d + slides.length) % slides.length); };
 
   return (
@@ -97,7 +93,19 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
           <p className="pm-pitch">{p.pitch ?? p.text}</p>
           <h3 className="mono pm-h">Outils utilisés</h3>
           <div className="chips">{p.stack.map((c) => <i key={c} className="mono">{c}</i>)}</div>
-          {projectUrl(p) && <a className="btn p" href={projectUrl(p)} target="_blank" rel="noopener noreferrer">{p.linkLabel ?? "Voir le site"} ↗</a>}
+
+          <div className="pm-links">
+            {projectUrl(p) && (
+              <a className="btn p" href={projectUrl(p)} target="_blank" rel="noopener noreferrer">
+                {p.linkLabel ?? "Voir le site"} ↗
+              </a>
+            )}
+            {p.link2 && (
+              <a className="btn p" href={p.link2} target="_blank" rel="noopener noreferrer">
+                {p.linkLabel2 ?? "Voir mon TikTok"} ↗
+              </a>
+            )}
+          </div>
         </div>
       </div>
 
