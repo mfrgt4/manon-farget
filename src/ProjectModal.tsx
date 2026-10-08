@@ -399,7 +399,6 @@ export default function ProjectModal({
       </div>
 
       {/* Navigation mobile */}
-      <div className="pm-mobile-controls">
       <div className="pm-bar">
         <button
           className="pm-mobile-project"
@@ -450,10 +449,6 @@ export default function ProjectModal({
         >
           →
         </button>
-      </div>
-      <button className="pm-return" onClick={onClose} type="button">
-        ← Revenir à la page
-      </button>
       </div>
     </div>
   );
