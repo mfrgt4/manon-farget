@@ -1,7 +1,23 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+```tsx
+import {
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
+
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
-import { categories, nav, profile, projects, skills, studies, tools } from "./data";
+import {
+  categories,
+  nav,
+  profile,
+  projects,
+  skills,
+  studies,
+  tools,
+} from "./data";
 import { projectUrl } from "./data";
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
@@ -10,7 +26,10 @@ function useTyped(words: string[]) {
   const [txt, setTxt] = useState("");
 
   useEffect(() => {
-    let wi = 0, ci = 0, del = false, id = 0;
+    let wi = 0;
+    let ci = 0;
+    let del = false;
+    let id = 0;
 
     const tick = () => {
       const w = words[wi];
@@ -32,6 +51,7 @@ function useTyped(words: string[]) {
     };
 
     tick();
+
     return () => clearTimeout(id);
   }, [words]);
 
@@ -165,6 +185,7 @@ function useHeroParallax() {
         "--px",
         String(e.clientX / innerWidth - 0.5)
       );
+
       hero.style.setProperty(
         "--py",
         String(e.clientY / innerHeight - 0.5)
@@ -235,8 +256,9 @@ function useTilt() {
     if (
       !matchMedia("(hover:hover)").matches ||
       matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
+    ) {
       return;
+    }
 
     type S = {
       rx: number;
@@ -250,9 +272,9 @@ function useTilt() {
     };
 
     const map = new Map<HTMLElement, S>();
-    let raf = 0,
-      last = 0,
-      cur: HTMLElement | null = null;
+    let raf = 0;
+    let last = 0;
+    let cur: HTMLElement | null = null;
 
     const loop = (t: number) => {
       const dt = Math.min(
@@ -313,7 +335,9 @@ function useTilt() {
     };
 
     const kick = () => {
-      if (!raf) raf = requestAnimationFrame(loop);
+      if (!raf) {
+        raf = requestAnimationFrame(loop);
+      }
     };
 
     const release = (el: HTMLElement) => {
@@ -440,8 +464,9 @@ function useAnchorCenter() {
         e.metaKey ||
         e.ctrlKey ||
         e.shiftKey
-      )
+      ) {
         return;
+      }
 
       const a = (
         e.target as HTMLElement
@@ -570,18 +595,73 @@ const ids = nav.map(
 const delay = (d: number) =>
   ({
     "--d": d + "s",
-  } as React.CSSProperties);
+  } as CSSProperties);
 
-// Son lors de l'ouverture d'un projet
-const playProjectClick = () => {
+// Sons des interactions
+const playSound = (
+  file: string,
+  volume = 0.2
+) => {
   const audio = new Audio(
-    "/sounds/Click-projets.mp3"
+    `/sounds/${file}`
   );
 
-  audio.volume = 0.2;
+  audio.volume = volume;
 
   audio.play().catch(() => {});
 };
+
+const playProjectClick = () => {
+  playSound("Click-projets.mp3", 0.2);
+};
+
+const playButtonClick = () => {
+  playSound("Click-buttons.mp3", 0.15);
+};
+
+// Son pour les boutons et liens hors cartes projet
+function useButtonSounds() {
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (
+        e.defaultPrevented ||
+        e.button !== 0 ||
+        e.metaKey ||
+        e.ctrlKey ||
+        e.shiftKey
+      ) {
+        return;
+      }
+
+      const target = e.target as HTMLElement;
+
+      // Les cartes projet ont leur propre son
+      if (target.closest(".proj")) {
+        return;
+      }
+
+      const clickable = target.closest(
+        "button, .btn, nav a, .links a, .proj-link, footer a"
+      );
+
+      if (!clickable) return;
+
+      playButtonClick();
+    };
+
+    document.addEventListener(
+      "click",
+      handleClick
+    );
+
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClick
+      );
+    };
+  }, []);
+}
 
 export default function App() {
   const active = useActive(ids);
@@ -597,7 +677,8 @@ export default function App() {
 
   // Projets universitaires
   const univ = projects.filter(
-    (p) => p.category === "universitaire"
+    (p) =>
+      p.category === "universitaire"
   );
 
   const typeOf = (p: Project) =>
@@ -658,6 +739,7 @@ export default function App() {
     cat + "|" + type
   );
   useAnchorCenter();
+  useButtonSounds();
 
   const [theme, chooseTheme] =
     useTheme();
@@ -728,7 +810,7 @@ export default function App() {
               theme === "dark"
                 ? 1
                 : 0,
-          } as React.CSSProperties
+          } as CSSProperties
         }
       >
         <span
@@ -760,6 +842,7 @@ export default function App() {
               cy="12"
               r="4"
             />
+
             <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
           </svg>
 
@@ -815,6 +898,7 @@ export default function App() {
             >
               Salut, moi c'est
               <br />
+
               <span className="grad madi">
                 {profile.name}.
               </span>
@@ -1378,6 +1462,7 @@ export default function App() {
                         )}
                         onClick={() => {
                           playProjectClick();
+
                           setOpen(
                             shown.indexOf(
                               p
@@ -1394,7 +1479,9 @@ export default function App() {
                               " "
                           ) {
                             e.preventDefault();
+
                             playProjectClick();
+
                             setOpen(
                               shown.indexOf(
                                 p
@@ -1413,7 +1500,7 @@ export default function App() {
                             {
                               "--c":
                                 p.color,
-                            } as React.CSSProperties
+                            } as CSSProperties
                           }
                         >
                           {cover(p) ? (
@@ -1671,3 +1758,4 @@ export default function App() {
     </>
   );
 }
+```
