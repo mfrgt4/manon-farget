@@ -445,3 +445,5 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
 .proj-link:hover{background:var(--acc);color:#fff;gap:12px}
 .proj-link:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .proj.aes.in>:nth-child(7){animation-delay:calc(var(--d,0s) + 1s)}
+
+.tools-inspiration{margin:-10px 0 30px;font-size:.85rem;color:var(--muted)}.tools-inspiration a{color:var(--acc);text-decoration:underline;text-underline-offset:3px}
