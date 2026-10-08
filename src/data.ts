@@ -41,9 +41,9 @@ export const projects: Project[] = [
   { icon: "🌐", title: "Ce portfolio", pitch: "Le site que tu es en train de regarder : React, TypeScript et three.js, avec une sphère 3D interactive, déployé sur Vercel.", category: "perso", kind: "Projet perso", text: "React, TypeScript, sphère 3D, déployé sur Vercel.", stack: ["React", "three.js", "Vercel"], color: "#D13670", href: "#", media: [{ type: "image", src: "/projets/banniere-portfolio.jpg", alt: "Bannière du portfolio de Manon Farget" }] },
 ];
 export const studies = [
-  { when: "2025 — 2027", title: "BUT MMI — Métiers du Multimédia et de l'Internet", text: "Université Clermont Auvergne · IUT du Puy-en-Velay. Parcours : à compléter." },
-  { when: "2022 — 2025", title: "Baccalauréat", text: "Série / spécialités : à compléter · Lycée : à compléter." },
-  { when: "Avril 2027", title: "Stage recherché", text: "Prochaine étape : une équipe qui me fera progresser.", accent: true },
+  { when: "2025 — 2027", title: "BUT MMI — Métiers du Multimédia et de l'Internet", text: "Université Clermont Auvergne · Site du Puy-en-Velay" },
+  { when: "2024 — 2025", title: "BUT Informatique", text: "Université Lyon 1 · Site de la Doua, Villeurbanne" },
+  { when: "2021 — 2024", title: "Baccalauréat", text: "STI2D option Innovation Technologique et Éco-Conception · Lycée Galilée, Vienne.", accent: true },
 ];
 
 // Section « A propos » : modifie librement ces textes
