@@ -278,6 +278,9 @@ function useTheme() {
   return [theme, choose] as const;
 }
 
+// Image de couverture d'un projet : sa première image (sinon l'emoji)
+const cover = (p: Project) => p.media?.find((m) => m.type === "image")?.src;
+
 const BAND = ["Intégration web", "UI/UX design", "Motion design", "SEO", "Gestion de projet"];
 const ids = nav.map(([id]) => id) as string[];
 
@@ -600,7 +603,7 @@ export default function App() {
                     }}
                   >
                     <span className="arrow">↗</span>
-                    <div className="thumb" style={{ "--c": p.color } as React.CSSProperties}>{p.icon}</div>
+                    <div className="thumb" style={{ "--c": p.color } as React.CSSProperties}>{cover(p) ? <img src={cover(p)} alt="" loading="lazy" /> : p.icon}</div>
                     <span className="when mono">{p.kind}</span>
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>

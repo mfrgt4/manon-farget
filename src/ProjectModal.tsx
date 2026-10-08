@@ -5,9 +5,12 @@ type Slide = Media | { type: "placeholder"; src: ""; alt: string };
 const LABEL = { universitaire: "Projet universitaire", perso: "Projet personnel" } as const;
 
 function View({ s, p }: { s: Slide; p: Project }) {
-  if (s.type === "image") return <img src={s.src} alt={s.alt} />;
+  const [broken, setBroken] = useState(false);
+  if (s.type === "image" && !broken) return <img src={s.src} alt={s.alt} onError={() => setBroken(true)} />;
   if (s.type === "video") return <video src={s.src} poster={s.poster} controls playsInline muted loop autoPlay />;
-  return <div className="ph" style={{ "--c": p.color } as CSSProperties}><span>{p.icon}</span><small className="mono">{s.alt} · à remplacer</small></div>;
+  // Image introuvable : on affiche le chemin cherché pour t'aider à corriger
+  const label = s.type === "image" ? `Image introuvable : ${s.src}` : `${s.alt} · à remplacer`;
+  return <div className="ph" style={{ "--c": p.color } as CSSProperties}><span>{p.icon}</span><small className="mono">{label}</small></div>;
 }
 
 type Props = { list: Project[]; index: number; onIndex: (i: number) => void; onClose: () => void };
