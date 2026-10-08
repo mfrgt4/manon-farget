@@ -95,6 +95,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0
 .links{display:grid;gap:8px}
 .links a{display:flex;justify-content:space-between;padding:14px 15px;border:1px solid var(--line);border-radius:12px;transition:.3s;background:var(--card)}
 .links a:hover{border-color:var(--acc);padding-left:20px;box-shadow:0 8px 25px rgba(23,23,23,.05)}
+.pm-links{display:flex;gap:10px;flex-wrap:wrap}
 
 footer{position:relative;z-index:1;text-align:center;color:var(--mute);font-size:12px;padding:55px 20px 75px}
 
