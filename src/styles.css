@@ -241,7 +241,7 @@ h2::after{content:"";display:block;height:2px;width:0;margin-top:12px;background
 /* ================= NOUVELLE BANNIÈRE ================= */
 #accueil{max-width:none;width:100%;margin:0;padding:0 0 40px;overflow-x:clip}
 #hero{position:relative;isolation:isolate;max-width:1180px;margin:0 auto;min-height:100svh;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:clamp(24px,5vw,70px);padding:clamp(110px,12vw,150px) 24px 150px;--px:0;--py:0}
-#hero::before{content:"";position:absolute;inset:-6% -25% 0;z-index:-2;pointer-events:none;background:radial-gradient(circle at 78% 28%,rgba(216,75,125,.2),transparent 32%),radial-gradient(circle at 8% 88%,rgba(169,188,174,.4),transparent 34%)}
+#hero::before{content:"";position:absolute;top:-6%;bottom:0;left:50%;width:100vw;transform:translateX(-50%);-webkit-mask-image:linear-gradient(#000 72%,transparent);mask-image:linear-gradient(#000 72%,transparent);z-index:-2;pointer-events:none;background:radial-gradient(circle at 78% 28%,rgba(216,75,125,.2),transparent 32%),radial-gradient(circle at 8% 88%,rgba(169,188,174,.4),transparent 34%)}
 .h-word{position:absolute;left:50%;bottom:70px;z-index:-1;pointer-events:none;user-select:none;white-space:nowrap;font-size:clamp(90px,19vw,270px);font-weight:700;letter-spacing:-.07em;line-height:.8;color:transparent;-webkit-text-stroke:1.5px rgba(216,75,125,.3);translate:calc(-50% + var(--px)*-60px) calc(var(--py)*-24px)}
 #hero h1{font-size:clamp(40px,6.2vw,84px);line-height:1;letter-spacing:-.06em;font-weight:700;color:var(--fg);margin:18px 0 22px}
 #hero h1 .grad.madi{display:block;font-family:'Ms Madi',cursive!important;font-weight:400;letter-spacing:0;font-size:1.75em;line-height:.9;background:none;-webkit-text-fill-color:var(--acc);color:var(--acc);transform:none;margin-top:4px}
@@ -355,3 +355,18 @@ h2::after{content:"";display:block;height:2px;width:0;margin-top:12px;background
 .c-bl{bottom:-12px;left:-12px;border-right:0;border-top:0;border-radius:0 0 0 10px;translate:var(--o) calc(-1*var(--o))}
 .c-br{bottom:-12px;right:-12px;border-left:0;border-top:0;border-radius:0 0 10px 0;translate:calc(-1*var(--o)) calc(-1*var(--o))}
 .p-tag{position:absolute;right:-16px;bottom:9%;padding:4px 18px 8px;border-radius:999px;background:var(--acc);color:#fff;font-family:'Ms Madi',cursive;font-size:32px;line-height:1;pointer-events:none;transform:translateZ(80px) rotate(-6deg);rotate:calc(9deg*var(--p,0));scale:calc(1 + .1*var(--p,0));box-shadow:0 14px 30px -10px rgba(216,75,125,.65)}
+
+/* ===== > objectif.txt : survol ultra fluide (tout est piloté par --p, lissé en JS par useTilt) ===== */
+.cell.sk-goal.rv{transition:translate .75s cubic-bezier(.2,.7,.2,1) var(--d,0s),opacity .75s var(--d,0s)}
+.cell.sk-goal.rv:not(.in){transform:none;translate:0 30px}
+.cell.sk-goal.rv.in{translate:0 0}
+.cell.sk-goal,.cell.sk-goal:hover{
+  transform:none;
+  border-color:color-mix(in srgb,var(--acc) calc(var(--p,0)*100%),var(--line));
+  box-shadow:0 calc(var(--p,0)*22px) calc(var(--p,0)*55px) rgba(216,75,125,calc(var(--p,0)*.2));
+  background:color-mix(in srgb,var(--acc) calc(var(--p,0)*4%),var(--card))
+}
+.cell.sk-goal::after{opacity:var(--p,0);transition:none}
+.cell.sk-goal::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--acc);transform:scaleY(var(--p,0));pointer-events:none}
+.cell.sk-goal h3{translate:calc(var(--p,0)*10px) 0}
+.cell.sk-goal p{translate:calc(var(--p,0)*6px) 0}
