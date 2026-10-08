@@ -347,7 +347,6 @@ h2::after{content:"";display:block;height:2px;width:0;margin-top:12px;background
 /* ===== Photo : tous les effets de survol sont pilotés par --p (0 → 1, lissé en JS) ===== */
 .p-outline{position:absolute;inset:0;border:1.5px solid var(--acc);border-radius:32px;pointer-events:none;transform:translate3d(calc(16px + 10px*var(--p,0)),calc(16px + 10px*var(--p,0)),-24px)}
 .p-frame img,.p-frame .photo-ph{display:block;width:100%;height:100%;object-fit:cover;transform:scale(calc(1 + .06*var(--p,0)));filter:saturate(calc(1 + .08*var(--p,0)))}
-.p-sheen{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.5) 50%,transparent 62%);transform:translateX(calc(-130% + 260%*var(--p,0)))}
 .p-glare{position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;opacity:var(--p,0);background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.55),transparent 45%)}
 .p-corner{position:absolute;width:28px;height:28px;border:2px solid var(--acc);pointer-events:none;opacity:var(--p,0);--o:calc(12px*(1 - var(--p,0)));transform:translateZ(40px)}
 .c-tl{top:-12px;left:-12px;border-right:0;border-bottom:0;border-radius:10px 0 0 0;translate:var(--o) var(--o)}
