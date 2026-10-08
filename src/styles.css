@@ -624,3 +624,30 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
   /* Les animations de révélation restent réservées aux écrans plus larges. */
   .tl .it p { opacity: 1; transform: none; }
 }
+
+/* Navigation des projets : emplacement stable, sans transparence sur les textes */
+@media (max-width: 700px) {
+  .pm-wrap {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .pm-bar {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 20;
+    transform: translateX(-50%);
+    background: var(--card);
+    border: 1px solid var(--line);
+    box-shadow: 0 8px 28px rgba(23, 23, 23, .16);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    opacity: 1;
+  }
+
+  .pm-bar .pm-mobile-project,
+  .pm-bar .pm-count {
+    flex-shrink: 0;
+  }
+}
