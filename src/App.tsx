@@ -282,7 +282,7 @@ function useTheme() {
 // Image de couverture d'un projet : sa première image (sinon l'emoji)
 const cover = (p: Project) => p.media?.find((m) => m.type === "image")?.src;
 
-const BAND = ["Intégration web", "UI/UX design", "Motion design", "SEO", "Gestion de projet"];
+const BAND = ["Communication", "Design graphique", "UI/UX design", "Développement web", "Audiovisuel"];
 const ids = nav.map(([id]) => id) as string[];
 
 const delay = (d: number) =>
