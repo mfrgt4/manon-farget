@@ -4,7 +4,7 @@ export const profile = {
   email: "farget.manon@gmail.com",
   linkedin: "https://www.linkedin.com/in/manon-farget-75baa5333/",
   github: "https://github.com/mfrgt4",
-  cv: "#",
+  cv: "/images/CV_Manon-FARGET_Graphique.pdf",
   photo: "/images/portrait.png",
   roles: ["Développeuse web", "UI/UX designer", "Motion lover", "Étudiante MMI"],
 };
