@@ -436,3 +436,12 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
 .pm-sarrow.r{right:14px}
 .pm-sarrow:hover{background:var(--acc);transform:scale(1.08)}
 .pm-scount{position:absolute;right:14px;bottom:14px;z-index:2;padding:4px 11px;border-radius:999px;background:rgba(23,23,23,.5);color:#fff;font-size:12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+
+/* ===== Bouton « Voir le site » sur les cartes projets ===== */
+.cell.proj[role="button"]{cursor:pointer}
+.cell.proj:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.proj-actions{margin-top:14px}
+.proj-link{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid var(--acc);color:var(--acc-t);font-size:13px;font-weight:600;transition:background .3s,color .3s,gap .3s}
+.proj-link:hover{background:var(--acc);color:#fff;gap:12px}
+.proj-link:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.proj.aes.in>:nth-child(7){animation-delay:calc(var(--d,0s) + 1s)}

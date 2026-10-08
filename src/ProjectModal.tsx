@@ -1,4 +1,5 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
+import { projectUrl } from "./data";
 import type { Media, Project } from "./data";
 
 type Slide = Media | { type: "placeholder"; src: ""; alt: string };
@@ -96,7 +97,7 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
           <p className="pm-pitch">{p.pitch ?? p.text}</p>
           <h3 className="mono pm-h">Outils utilisés</h3>
           <div className="chips">{p.stack.map((c) => <i key={c} className="mono">{c}</i>)}</div>
-          {p.href !== "#" && <a className="btn p" href={p.href} target="_blank" rel="noopener noreferrer">Voir le projet ↗</a>}
+          {projectUrl(p) && <a className="btn p" href={projectUrl(p)} target="_blank" rel="noopener noreferrer">{p.linkLabel ?? "Voir le site"} ↗</a>}
         </div>
       </div>
 
