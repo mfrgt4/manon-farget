@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import { categories, nav, profile, projects, skills, studies, tools } from "./data";
-import { projectUrl } from "./data";
+import { projectUrl, showEmptyLinkButtons } from "./data";
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
 
@@ -624,11 +624,11 @@ export default function App() {
                         </a>
                       </div>
                     ) : (
-                      // Visible seulement avec "npm run dev" : rappelle où il manque un lien (invisible sur le site en ligne)
-                      import.meta.env.DEV && (
+                      // Projet sans lien : bouton pointillé de rappel (se désactive avec showEmptyLinkButtons dans data.ts)
+                      showEmptyLinkButtons && (
                         <div className="proj-actions">
                           <span className="proj-link empty" title={'Ajoute link: "https://…" à ce projet dans src/data.ts'}>
-                            + Ajouter un lien
+                            + Lien à ajouter
                           </span>
                         </div>
                       )

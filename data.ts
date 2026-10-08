@@ -31,6 +31,9 @@ export type Project = { icon: string; title: string; kind: string; text: string;
 // Lien du projet (site en ligne, GitHub, Figma…) : ajoute link: "https://…" au projet (et linkLabel: "Voir le site" pour changer le texte du bouton).
 // Sans link, aucun bouton n'est affiché. (href: "#" peut rester ou être supprimé, il n'est plus nécessaire.)
 export const projectUrl = (p: Project) => p.link ?? (p.href && p.href !== "#" ? p.href : undefined);
+// Tant que tu n'as pas mis tous tes liens : true = les projets SANS lien affichent un bouton pointillé « + Lien à ajouter ».
+// Quand tout est rempli, passe à false pour le faire disparaître.
+export const showEmptyLinkButtons = true;
 export const categories = [["perso", "Projets personnels"], ["universitaire", "Projets universitaires"]] as const;
 export const projects: Project[] = [
   { icon: "🛒", title: "Boutique en ligne", pitch: "Une boutique pensée pour acheter en trois clics : un parcours fluide, un panier qui réagit instantanément et un design qui met le produit en avant.", category: "universitaire", type: "Développement web", kind: "SAE · équipe de 4", text: "Site e-commerce responsive avec panier dynamique.", stack: ["React", "TypeScript", "PHP"], color: "#D13670", href: "#" },
