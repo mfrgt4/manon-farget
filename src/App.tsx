@@ -1,8 +1,22 @@
-```tsx
-import { FormEvent, useEffect, useRef, useState } from "react";
+import {
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
+
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
-import { categories, nav, profile, projects, skills, studies, tools } from "./data";
+import {
+  categories,
+  nav,
+  profile,
+  projects,
+  skills,
+  studies,
+  tools,
+} from "./data";
 import { projectUrl } from "./data";
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
@@ -11,7 +25,10 @@ function useTyped(words: string[]) {
   const [txt, setTxt] = useState("");
 
   useEffect(() => {
-    let wi = 0, ci = 0, del = false, id = 0;
+    let wi = 0;
+    let ci = 0;
+    let del = false;
+    let id = 0;
 
     const tick = () => {
       const w = words[wi];
@@ -33,6 +50,7 @@ function useTyped(words: string[]) {
     };
 
     tick();
+
     return () => clearTimeout(id);
   }, [words]);
 
@@ -576,17 +594,17 @@ const ids = nav.map(
 const delay = (d: number) =>
   ({
     "--d": d + "s",
-  } as React.CSSProperties);
+  } as CSSProperties);
 
-// ======================================================
-// SONS DES INTERACTIONS
-// ======================================================
-
+// Sons des interactions
 const playSound = (
   file: string,
   volume = 0.2
 ) => {
-  const audio = new Audio(`/sounds/${file}`);
+  const audio = new Audio(
+    `/sounds/${file}`
+  );
+
   audio.volume = volume;
 
   audio.play().catch(() => {});
@@ -600,7 +618,7 @@ const playButtonClick = () => {
   playSound("Click-buttons.mp3", 0.15);
 };
 
-// Son pour les autres boutons et liens
+// Son pour les boutons et liens hors cartes projet
 function useButtonSounds() {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -616,7 +634,7 @@ function useButtonSounds() {
 
       const target = e.target as HTMLElement;
 
-      // Les cartes projets ont leur propre son
+      // Les cartes projet ont leur propre son
       if (target.closest(".proj")) {
         return;
       }
@@ -658,7 +676,8 @@ export default function App() {
 
   // Projets universitaires
   const univ = projects.filter(
-    (p) => p.category === "universitaire"
+    (p) =>
+      p.category === "universitaire"
   );
 
   const typeOf = (p: Project) =>
@@ -790,7 +809,7 @@ export default function App() {
               theme === "dark"
                 ? 1
                 : 0,
-          } as React.CSSProperties
+          } as CSSProperties
         }
       >
         <span
@@ -1480,7 +1499,7 @@ export default function App() {
                             {
                               "--c":
                                 p.color,
-                            } as React.CSSProperties
+                            } as CSSProperties
                           }
                         >
                           {cover(p) ? (
@@ -1738,4 +1757,3 @@ export default function App() {
     </>
   );
 }
-```
