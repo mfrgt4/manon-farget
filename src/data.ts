@@ -21,20 +21,14 @@ export const skills: Skill[] = [
   { icon: "𖹭", title: "Audiovisuel", text: "Créer des montages, animations et contenus multimédias pour enrichir l'identité et la communication du projet.", span: "s2" },
 ];
 export const tools = ["React","TypeScript","three.js","Vite","Vercel","HTML5","CSS3","JavaScript","PHP","SQL","Git","GitHub","Figma","InDesign","Photoshop","Illustrator","After Effects","Premiere Pro","WordPress","SEO","UX Design","Responsive","Accessibilité","Node.js","Gestion de projet","Notion","Affinity"];
-// Pour ajouter tes visuels : mets les fichiers dans public/projets/ puis, dans un projet :
-// media: [{ type: "image", src: "/projets/boutique-1.jpg", alt: "Page d'accueil" }, { type: "video", src: "/projets/demo.mp4", alt: "Démo" }]
 export type Media = { type: "image" | "video"; src: string; alt: string; poster?: string };
-// 2 catégories de projets. Les projets universitaires sont classés par "type" (ex : "Développement web", "Motion design"…).
-// Pour un projet universitaire, renseigne simplement type: "…" : la liste des types se crée toute seule.
 export type Category = "perso" | "universitaire";
-export type Project = { icon: string; title: string; kind: string; text: string; stack: string[]; color: string; href?: string; link?: string; linkLabel?: string; category: Category; type?: string; media?: Media[]; pitch?: string };
-// Lien du projet (site en ligne, GitHub, Figma…) : ajoute link: "https://…" au projet (et linkLabel: "Voir le site" pour changer le texte du bouton).
-// Sans link, aucun bouton n'est affiché. (href: "#" peut rester ou être supprimé, il n'est plus nécessaire.)
+export type Project = { icon: string; title: string; kind: string; text: string; stack: string[]; color: string; href?: string; link?: string; linkLabel?: string; link2?: string; linkLabel2?: string; category: Category; type?: string; media?: Media[]; pitch?: string };
 export const projectUrl = (p: Project) => p.link ?? (p.href && p.href !== "#" ? p.href : undefined);
 export const categories = [["perso", "Projets personnels"], ["universitaire", "Projets universitaires"]] as const;
 export const projects: Project[] = [
   { icon: "🛒", title: "Boutique en ligne", pitch: "Une boutique pensée pour acheter en trois clics : un parcours fluide, un panier qui réagit instantanément et un design qui met le produit en avant.", category: "universitaire", type: "Développement web", kind: "SAE · équipe de 4", text: "Site e-commerce responsive avec panier dynamique.", stack: ["React", "TypeScript", "PHP"], color: "#D13670", href: "#" },
-  { icon: "🎨", title: "Montages visuels", pitch: "Des montages créatifs autour du cinéma et de la musique, mêlant extraits, typographies, effets et transitions pour créer une ambiance visuelle unique.", category: "perso", kind: "Projet perso", text: "Création de montages visuels sur After Effects 2020.", stack: ["After Effects", "Motion Design"], color: "#024E32", href: "#", link: "https://www.instagram.com/xxmanclouds/?hl=fr", linkLabel: "Voir mon Instagram", media: [{ type: "image", src: "/projets/perso-edits.png", alt: "Bannière de mes montages persos" }, { type: "video", src: "/projets/Michaelj_Edit.mp4", alt: "Montage sur Michael Jackson" }] },
+  { icon: "🎨", title: "Montages visuels", pitch: "Des montages créatifs autour du cinéma et de la musique, mêlant extraits, typographies, effets et transitions pour créer une ambiance visuelle unique.", category: "perso", kind: "Projet perso", text: "Création de montages visuels sur After Effects 2020.", stack: ["After Effects", "Motion Design"], color: "#024E32", href: "#", link: "https://www.instagram.com/xxmanclouds/?hl=fr", linkLabel: "Voir mon Instagram", link2: "TON-LIEN-TIKTOK", linkLabel2: "Voir mon TikTok", media: [{ type: "image", src: "/projets/perso-edits.png", alt: "Bannière de mes montages persos" }, { type: "video", src: "/projets/Michaelj_Edit.mp4", alt: "Montage sur Michael Jackson" }] },
   { icon: "🎬", title: "Motion design", pitch: "Quelques secondes, beaucoup de rythme. Un générique animé où chaque transition raconte quelque chose.", category: "universitaire", type: "Motion design", kind: "SAE", text: "Générique animé et habillage vidéo.", stack: ["After Effects"], color: "#D13670", href: "#" },
   { icon: "📰", title: "Blog & SEO", pitch: "Un blog rapide, lisible et construit pour être trouvé : structure sémantique, contenus optimisés et performances au vert.", category: "universitaire", type: "SEO & contenu", kind: "Projet universitaire", text: "Site WordPress optimisé pour le référencement.", stack: ["WordPress", "SEO"], color: "#D13670", href: "#" },
   { icon: "🕹️", title: "Blog", pitch: "Un blog personnel consacré aux années 2010, à travers des articles sur la musique, le cinéma, et la mode qui ont marqué cette époque.", category: "perso", kind: "Projet perso", text: "Création d'un blog personnel sur Blogger.", stack: ["Blogger"], color: "#024E32", href: "#", link: "https://thepopstardiary.blogspot.com/", linkLabel: "Voir mon Blog", media: [{ type: "image", src: "/projets/blog.png", alt: "Bannière mon blog" }] },
@@ -43,10 +37,8 @@ export const projects: Project[] = [
 export const studies = [
   { when: "2025 — En cours", title: "BUT MMI — Métiers du Multimédia et de l'Internet", text: "Université Clermont Auvergne · Site du Puy-en-Velay", accent: true },
   { when: "2024 — 2025", title: "BUT Informatique", text: "Université Lyon 1 · Site de la Doua, Villeurbanne" },
-  { when: "2021 — 2024", title: "Baccalauréat", text: "STI2D option Innovation Technologique et Éco-Conception · Lycée Galilée, Vienne."},
+  { when: "2021 — 2024", title: "Baccalauréat", text: "STI2D option Innovation Technologique et Éco-Conception · Lycée Galilée, Vienne." },
 ];
-
-// Section « A propos » : modifie librement ces textes
 export const about = [
   "Je m'appelle Manon et je suis étudiante en 2e année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.",
   "J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.",
