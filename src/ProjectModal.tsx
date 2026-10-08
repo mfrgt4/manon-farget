@@ -44,6 +44,9 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
     return () => removeEventListener("keydown", key);
   });
 
+  // Texte gris : seulement s'il apporte une info en plus du libellé rose (on masque "Projet perso" / "Projet universitaire")
+  const details = [p.type, p.kind].filter((x): x is string => !!x && x !== "Projet perso" && x !== "Projet universitaire");
+
   const slides: Slide[] = p.media?.length ? p.media : [1, 2, 3].map((i) => ({ type: "placeholder", src: "", alt: `Visuel ${i}` }));
   const cur = slides[Math.min(m, slides.length - 1)];
 
@@ -69,7 +72,10 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
         </div>
 
         <div className="pm-info pm-slide" key={p.title + "i"}>
-          <div className="pm-cat"><span className="mono pm-k">{LABEL[p.category]}</span><span>{[p.type, p.kind].filter(Boolean).join(" · ")}</span></div>
+          <div className="pm-cat">
+            <span className="mono pm-k">{LABEL[p.category]}</span>
+            {details.length > 0 && <span>{details.join(" · ")}</span>}
+          </div>
           <h2 id="pm-title">{p.title}</h2>
           <p className="pm-pitch">{p.pitch ?? p.text}</p>
           <h3 className="mono pm-h">Outils utilisés</h3>
