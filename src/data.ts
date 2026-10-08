@@ -14,11 +14,11 @@ export const nav = [
 ] as const;
 export type Skill = { icon: string; title: string; text: string; span?: string };
 export const skills: Skill[] = [
-  { icon: "⚡", title: "Intégration web", text: "HTML sémantique, CSS moderne, React et TypeScript pour des pages rapides et accessibles.", span: "s2 r2" },
-  { icon: "🎨", title: "Design UI/UX", text: "Maquettes Figma, design system, prototypage et tests utilisateurs.", span: "s2" },
-  { icon: "🎬", title: "Motion & vidéo", text: "After Effects, Premiere Pro." },
-  { icon: "🔎", title: "SEO & contenu", text: "Stratégie éditoriale, référencement." },
-  { icon: "🤝", title: "Gestion de projet", text: "Travail en équipe, méthode agile, Git et échanges clairs avec le client.", span: "s2" },
+  { icon: "𖹭", title: "Communication", text: "Définir le message, identifier la cible et construire une stratégie adaptée au projet.", span: "s2 r2" },
+  { icon: "𖹭", title: "Design graphique", text: "Créer une identité visuelle cohérente, travailler la composition, la typographie et l'univers graphique.", span: "s2" },
+  { icon: "𖹭", title: "UI/UX Design", text: "Concevoir des interfaces intuitives et réfléchir au parcours et à l'expérience des utilisateurs." },
+  { icon: "𖹭", title: "Développement web", text: "Intégrer et développer des sites responsives en travaillant le front-end et le back-end." },
+  { icon: "𖹭", title: "Audiovisuel", text: "Créer des montages, animations et contenus multimédias pour enrichir l'identité et la communication du projet.", span: "s2" },
 ];
 export const tools = ["React","TypeScript","three.js","Vite","Vercel","HTML5","CSS3","JavaScript","PHP","SQL","Git","GitHub","Figma","InDesign","Photoshop","Illustrator","After Effects","Premiere Pro","WordPress","SEO","UX Design","Responsive","Accessibilité","Node.js","Gestion de projet","Notion","Affinity"];
 // Pour ajouter tes visuels : mets les fichiers dans public/projets/ puis, dans un projet :
