@@ -578,8 +578,8 @@ export default function App() {
             </h1>
 
             <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
-              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne (Le Puy-en-Velay).
-              Je conçois des interfaces qui allient code propre, design soigné et animations qui donnent envie de rester.
+              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne au Puy-en-Velay).
+              Je mêle créativité, développement web et design pour donner vie à mes idées.
             </p>
 
             <div className="btns rv" style={delay(0.4)}>
@@ -608,10 +608,10 @@ export default function App() {
               </svg>
             </div>
 
-            <span className="h-chip c1"><i />React</span>
-            <span className="h-chip c2 sage"><i />Figma</span>
-            <span className="h-chip c3"><i />After Effects</span>
-            <span className="h-chip c4 sage"><i />three.js</span>
+            <span className="h-chip c1"><i />Créative</span>
+            <span className="h-chip c2 sage"><i />Autonome</span>
+            <span className="h-chip c3"><i />Rigoureuse</span>
+            <span className="h-chip c4 sage"><i />Polyvalente</span>
           </div>
         </div>
 
@@ -627,15 +627,15 @@ export default function App() {
       <section id="a-propos">
         <div className="about">
           <div className="rv rv-l" style={delay(0.15)}>
-            <p className="tag mono">// à propos</p>
+            <p className="tag mono">// 01</p>
             <h2>Un peu plus sur moi.</h2>
 
             <p className="about-p">
-              Je m'appelle Manon et je suis étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.
+              Hello ! Moi, c’est Manon. Étudiante en BUT MMI, je m’intéresse au développement web, au design d’interfaces et à la création visuelle. J’aime concevoir des expériences web esthétiques et donner vie à mes idées grâce au graphisme et au montage vidéo.
             </p>
 
             <p className="about-p">
-              J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.
+              En dehors des cours, je réalise des projets personnels en web, design graphique et montage vidéo pour explorer ma créativité et continuer à apprendre.
             </p>
 
             <p className="about-p">
@@ -646,19 +646,6 @@ export default function App() {
               <i className="mono">📍 Le Puy-en-Velay</i>
               <i className="mono">🎓 BUT MMI · 2e année</i>
               <i className="mono">🗓️ Stage avril 2027</i>
-            </div>
-
-            <div className="stats">
-              {[
-                [2, "année de BUT"],
-                [projects.length, "projets"],
-                [tools.length, "outils"],
-              ].map(([n, l]) => (
-                <div key={l as string}>
-                  <b className="mono"><Count to={n as number} /></b>
-                  <span>{l}</span>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -690,9 +677,9 @@ export default function App() {
       <section id="competences">
         <div className="sk">
           <div className="sk-side">
-            <p className="tag mono rv">// 5 compétences clés</p>
-            <h2 className="rv">Ce que je sais faire.</h2>
-            <p className="sk-note rv">Survole ou touche une ligne pour la découvrir.</p>
+            <p className="tag mono rv">// 02</p>
+            <h2 className="rv">Mes 5 compétences clés.</h2>
+            <p className="sk-note rv">survole ou touche une ligne pour la découvrir.</p>
 
             <div className="sk-count mono rv">
               <b key={sel}>{String(sel + 1).padStart(2, "0")}</b>
@@ -736,19 +723,19 @@ export default function App() {
 
         <div className="cell sk-goal rv" data-tilt="3">
           <h3 className="mono" style={{ color: "var(--acc)" }}>&gt; objectif.txt</h3>
-          <p className="mono">Stage dev web / intégration · avril 2027 · mobilité possible.</p>
+          <p className="mono">Stage dev web · avril 2027.</p>
         </div>
       </section>
 
       <section id="boite-a-outils">
-        <p className="tag mono rv">// stack</p>
+        <p className="tag mono rv">// 03</p>
         <h2 className="rv">Ma boîte à outils.</h2>
         <WordSphere words={tools} />
       </section>
 
       <section id="projets">
-        <p className="tag mono rv">// work</p>
-        <h2 className="rv">Projets.</h2>
+        <p className="tag mono rv">// 04</p>
+        <h2 className="rv">Mes projets.</h2>
 
         <div className="tabs cats rv" role="tablist" aria-label="Catégorie de projets">
           {categories.map(([id, label]) => (
@@ -839,8 +826,8 @@ export default function App() {
       </section>
 
       <section id="parcours">
-        <p className="tag mono rv">// timeline</p>
-        <h2 className="rv">Parcours.</h2>
+        <p className="tag mono rv">// 05</p>
+        <h2 className="rv">Mon parcours.</h2>
 
         <div className="tl">
           <span className="tl-head" aria-hidden="true" />
@@ -860,7 +847,7 @@ export default function App() {
       </section>
 
       <section id="contact">
-        <p className="tag mono rv">// contact</p>
+        <p className="tag mono rv">// 06</p>
         <h2 className="rv">Prêt·e à collaborer ?</h2>
 
         <div className="bento">
