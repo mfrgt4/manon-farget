@@ -83,7 +83,7 @@ export default function ProjectModal({
   const touchX = useRef(0);
   const slideTouchX = useRef(0);
 
-  // Changement de projet avec son
+  // Changement de projet
   const go = (d: number) => {
     if (n <= 1) return;
 
@@ -93,7 +93,7 @@ export default function ProjectModal({
     onIndex((index + d + n) % n);
   };
 
-  // Ouverture : bloque le scroll et gère le focus
+  // Bloque le scroll lorsque la fenêtre est ouverte
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     const previousOverflow = document.body.style.overflow;
@@ -107,14 +107,21 @@ export default function ProjectModal({
     };
   }, []);
 
-  // Clavier : Échap ferme, flèches changent de projet
+  // Navigation au clavier
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
+      // Ne pas intercepter les flèches pendant la saisie dans un champ
+      const target = e.target as HTMLElement | null;
+      const isEditing =
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.isContentEditable;
+
       if (e.key === "Escape") {
         onClose();
-      } else if (e.key === "ArrowRight") {
+      } else if (!isEditing && e.key === "ArrowRight") {
         go(1);
-      } else if (e.key === "ArrowLeft") {
+      } else if (!isEditing && e.key === "ArrowLeft") {
         go(-1);
       }
     };
@@ -124,6 +131,7 @@ export default function ProjectModal({
     return () => window.removeEventListener("keydown", key);
   });
 
+  // Visuels du projet
   const slides: Slide[] = p.media?.length
     ? p.media
     : [1, 2, 3].map((i) => ({
@@ -134,7 +142,7 @@ export default function ProjectModal({
 
   const cur = slides[Math.min(m, slides.length - 1)];
 
-  // Diaporama : visuel précédent / suivant
+  // Changement d'image ou de vidéo
   const goSlide = (d: number) => {
     if (slides.length <= 1) return;
 
@@ -143,10 +151,12 @@ export default function ProjectModal({
     setM((current) => (current + d + slides.length) % slides.length);
   };
 
-  // Réinitialise le visuel sélectionné quand on change de projet
+  // Remet le diaporama au début lors d'un changement de projet
   useEffect(() => {
     setM(0);
   }, [index]);
+
+  if (!p) return null;
 
   return (
     <div
@@ -168,9 +178,10 @@ export default function ProjectModal({
         }
       }}
     >
-      {/* Bouton fermer */}
+      {/* Fermer la fenêtre */}
       <button
         ref={closeBtn}
+        type="button"
         className="pm-btn pm-x"
         onClick={onClose}
         aria-label="Fermer"
@@ -180,6 +191,7 @@ export default function ProjectModal({
 
       {/* Projet précédent */}
       <button
+        type="button"
         className="pm-btn pm-arrow l"
         onClick={() => go(-1)}
         aria-label="Projet précédent"
@@ -189,6 +201,7 @@ export default function ProjectModal({
 
       {/* Projet suivant */}
       <button
+        type="button"
         className="pm-btn pm-arrow r"
         onClick={() => go(1)}
         aria-label="Projet suivant"
@@ -218,11 +231,12 @@ export default function ProjectModal({
           >
             <View key={`${p.title}-${m}`} s={cur} p={p} />
 
+            {/* Flèches du diaporama */}
             {slides.length > 1 && (
               <>
                 <button
                   type="button"
-                  className="pm-media-arrow pm-media-prev"
+                  className="pm-sarrow l"
                   onClick={() => goSlide(-1)}
                   aria-label="Visuel précédent"
                 >
@@ -231,14 +245,15 @@ export default function ProjectModal({
 
                 <button
                   type="button"
-                  className="pm-media-arrow pm-media-next"
+                  className="pm-sarrow r"
                   onClick={() => goSlide(1)}
                   aria-label="Visuel suivant"
                 >
                   ›
                 </button>
 
-                <span className="pm-media-count mono">
+                {/* Compteur des visuels */}
+                <span className="pm-scount mono">
                   {String(m + 1).padStart(2, "0")} /{" "}
                   {String(slides.length).padStart(2, "0")}
                 </span>
@@ -252,7 +267,7 @@ export default function ProjectModal({
               {slides.map((s, i) => (
                 <button
                   type="button"
-                  key={i}
+                  key={`${p.title}-thumb-${i}`}
                   className={i === m ? "on" : ""}
                   onClick={() => {
                     if (i !== m) {
@@ -318,9 +333,10 @@ export default function ProjectModal({
         </div>
       </div>
 
-      {/* Barre de navigation entre les projets */}
+      {/* Navigation entre les projets */}
       <div className="pm-bar">
         <button
+          type="button"
           className="pm-btn"
           onClick={() => go(-1)}
           aria-label="Projet précédent"
@@ -328,9 +344,10 @@ export default function ProjectModal({
           ←
         </button>
 
-        <div className="pm-dots" role="tablist">
+        <div className="pm-dots" role="tablist" aria-label="Choisir un projet">
           {list.map((q, i) => (
             <button
+              type="button"
               key={q.title}
               className={i === index ? "on" : ""}
               aria-label={q.title}
@@ -354,6 +371,7 @@ export default function ProjectModal({
         </span>
 
         <button
+          type="button"
           className="pm-btn"
           onClick={() => go(1)}
           aria-label="Projet suivant"
