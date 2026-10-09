@@ -9,8 +9,8 @@ const LABEL = {
 } as const;
 
 // Son lors du changement de projet
-const projectSound = new Audio("/sounds/Click-projets.mp3");
-projectSound.volume = 0.12;
+const projectSound = new Audio("/sounds/Click-buttons.mp3");
+projectSound.volume = 0.08;
 
 function playProjectClick() {
   projectSound.currentTime = 0;
