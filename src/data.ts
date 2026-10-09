@@ -4,7 +4,7 @@ export const profile = {
   email: "farget.manon@gmail.com",
   linkedin: "https://www.linkedin.com/in/manon-farget-75baa5333/",
   github: "https://github.com/mfrgt4",
-  cv: "#",
+  cv: "/images/CV_Manon-FARGET_Graphique.pdf",
   photo: "/images/portrait.png",
   roles: ["Développeuse web", "UI/UX designer", "Motion lover", "Étudiante MMI"],
 };
@@ -14,37 +14,33 @@ export const nav = [
 ] as const;
 export type Skill = { icon: string; title: string; text: string; span?: string };
 export const skills: Skill[] = [
-  { icon: "⚡", title: "Intégration web", text: "HTML sémantique, CSS moderne, React et TypeScript pour des pages rapides et accessibles.", span: "s2 r2" },
-  { icon: "🎨", title: "Design UI/UX", text: "Maquettes Figma, design system, prototypage et tests utilisateurs.", span: "s2" },
-  { icon: "🎬", title: "Motion & vidéo", text: "After Effects, Premiere Pro." },
-  { icon: "🔎", title: "SEO & contenu", text: "Stratégie éditoriale, référencement." },
-  { icon: "🤝", title: "Gestion de projet", text: "Travail en équipe, méthode agile, Git et échanges clairs avec le client.", span: "s2" },
+  { icon: "𖹭", title: "Communication", text: "Définir le message, identifier la cible et construire une stratégie adaptée au projet.", span: "s2 r2" },
+  { icon: "𖹭", title: "Design graphique", text: "Créer une identité visuelle cohérente, travailler la composition, la typographie et l'univers graphique.", span: "s2" },
+  { icon: "𖹭", title: "UI/UX Design", text: "Concevoir des interfaces intuitives et réfléchir au parcours et à l'expérience des utilisateurs." },
+  { icon: "𖹭", title: "Développement web", text: "Intégrer et développer des sites responsives en travaillant le front-end et le back-end." },
+  { icon: "𖹭", title: "Audiovisuel", text: "Créer des montages, animations et contenus multimédias pour enrichir l'identité et la communication du projet.", span: "s2" },
 ];
-export const tools = ["React","TypeScript","three.js","Vite","Vercel","HTML5","CSS3","JavaScript","Tailwind","PHP","SQL","Git","GitHub","Figma","Photoshop","Illustrator","After Effects","Premiere Pro","WordPress","SEO","UX Design","Responsive","Accessibilité","Node.js","Agile","Notion","Blender","API REST"];
-// Pour ajouter tes visuels : mets les fichiers dans public/projets/ puis, dans un projet :
-// media: [{ type: "image", src: "/projets/boutique-1.jpg", alt: "Page d'accueil" }, { type: "video", src: "/projets/demo.mp4", alt: "Démo" }]
+export const tools = ["React","TypeScript","three.js","Vite","Vercel","HTML5","CSS3","JavaScript","PHP","SQL","Git","GitHub","Figma","InDesign","Photoshop","Illustrator","After Effects","Premiere Pro","WordPress","SEO","UX Design","Responsive","Accessibilité","Node.js","Gestion de projet","Notion","Affinity"];
 export type Media = { type: "image" | "video"; src: string; alt: string; poster?: string };
-// 2 catégories de projets. Les projets universitaires sont classés par "type" (ex : "Développement web", "Motion design"…).
-// Pour un projet universitaire, renseigne simplement type: "…" : la liste des types se crée toute seule.
 export type Category = "perso" | "universitaire";
-export type Project = { icon: string; title: string; kind: string; text: string; stack: string[]; color: string; href: string; category: Category; type?: string; media?: Media[]; pitch?: string };
+export type Project = { icon: string; title: string; kind: string; text: string; stack: string[]; color: string; href?: string; link?: string; linkLabel?: string; link2?: string; linkLabel2?: string; category: Category; type?: string; media?: Media[]; pitch?: string };
+export const projectUrl = (p: Project) => p.link ?? (p.href && p.href !== "#" ? p.href : undefined);
 export const categories = [["perso", "Projets personnels"], ["universitaire", "Projets universitaires"]] as const;
 export const projects: Project[] = [
-  { icon: "🛒", title: "Boutique en ligne", pitch: "Une boutique pensée pour acheter en trois clics : un parcours fluide, un panier qui réagit instantanément et un design qui met le produit en avant.", category: "universitaire", type: "Développement web", kind: "SAE · équipe de 4", text: "Site e-commerce responsive avec panier dynamique.", stack: ["React", "TypeScript", "PHP"], color: "#D13670", href: "#" },
-  { icon: "🎨", title: "Refonte UI d'une app", pitch: "Repartir d'une page blanche pour rendre une application enfin évidente : nouvelle identité, design system complet et prototype testé auprès de vrais utilisateurs.", category: "perso", kind: "Projet perso", text: "Maquettes Figma et design system complet.", stack: ["Figma", "UX"], color: "#024E32", href: "#" },
-  { icon: "🎬", title: "Motion design", pitch: "Quelques secondes, beaucoup de rythme. Un générique animé où chaque transition raconte quelque chose.", category: "universitaire", type: "Motion design", kind: "SAE", text: "Générique animé et habillage vidéo.", stack: ["After Effects"], color: "#D13670", href: "#" },
-  { icon: "📰", title: "Blog & SEO", pitch: "Un blog rapide, lisible et construit pour être trouvé : structure sémantique, contenus optimisés et performances au vert.", category: "universitaire", type: "SEO & contenu", kind: "Projet universitaire", text: "Site WordPress optimisé pour le référencement.", stack: ["WordPress", "SEO"], color: "#D13670", href: "#" },
-  { icon: "🕹️", title: "Expérience 3D", pitch: "Une scène en temps réel qui se manipule du bout des doigts. Quand le web devient un terrain de jeu.", category: "perso", kind: "Projet perso", text: "Scène interactive avec three.js.", stack: ["three.js", "TypeScript"], color: "#024E32", href: "#" },
-  { icon: "🌐", title: "Ce portfolio", pitch: "Le site que tu es en train de regarder : React, TypeScript et three.js, avec une sphère 3D interactive, déployé sur Vercel.", category: "perso", kind: "Projet perso", text: "React, TypeScript, sphère 3D, déployé sur Vercel.", stack: ["React", "three.js", "Vercel"], color: "#D13670", href: "#",
-    media: [{ type: "image", src: "/projets/banniere-portfolio.jpg", alt: "Bannière du portfolio de Manon Farget" }] },
+  // ===== Projets personnels =====
+  { icon: "🎨", title: "Montages", pitch: "Création de Reels Instagram et TikTok sur des films et des séries. L’objectif est de développer mon storytelling et ma compréhension des tendances à travers des visuels. Grâce à l’analyse des statistiques et des tendances, mes contenus ont atteint une large audience.", category: "perso", kind: "Projet perso", text: "Création de montages visuels sur After Effects 2020.", stack: ["After Effects"], color: "#024E32", href: "#", link: "https://www.instagram.com/xxmanclouds/?hl=fr", linkLabel: "Voir mon Instagram", link2: "https://www.tiktok.com/@xxmanclouds?_r=1&_t=ZG-9AOBYnJ3lE9", linkLabel2: "Voir mon TikTok", media: [{ type: "image", src: "/projets/perso-edits.png", alt: "Bannière de mes montages persos" }, { type: "video", src: "/projets/Michaelj_Edit.mp4", alt: "Montage sur Michael Jackson" }, { type: "video", src: "/projets/Hunger-Games_Edit.mp4", alt: "Montage sur Hunger Games" }, { type: "video", src: "/projets/Matrix_Edit2.mp4", alt: "Montage sur Matrix" }, { type: "video", src: "/projets/NaomiLapa_Edit.mp4", alt: "Montage Naomi Lapa" }, { type: "video", src: "/projets/Nami-transitions_Edit.mp4", alt: "Montage sur Nami dans One Piece" }, { type: "video", src: "/projets/Matrix_Edit1.mp4", alt: "Deuxième montage sur Matrix" }, { type: "video", src: "/projets/Daeneris_Edit.mp4", alt: "Montage sur Daenerys" }] },
+  { icon: "🕹️", title: "Blog", pitch: "Création d’un blog personnel autour de mes passions. L’objectif est de développer ma créativité et mes compétences en webdesign (HTML, CSS, JavaScript), tout en travaillant la mise en page, l’identité visuelle et l’expérience utilisateur.", category: "perso", kind: "Projet perso", text: "Création d'un blog personnel sur Blogger.", stack: ["Blogger"], color: "#024E32", href: "#", link: "https://thepopstardiary.blogspot.com/", linkLabel: "Voir mon Blog", media: [{ type: "image", src: "/projets/blog.png", alt: "Bannière mon blog" }] },
+  { icon: "🌐", title: "Ce portfolio", pitch: "Le site que tu es en train de regarder : React, TypeScript et three.js, avec une sphère 3D interactive, déployé sur Vercel.", category: "perso", kind: "Projet perso", text: "React, TypeScript, sphère 3D, déployé sur Vercel.", stack: ["React", "three.js", "Vercel"], color: "#D13670", href: "#", media: [{ type: "image", src: "/projets/banniere-portfolio.png", alt: "Bannière du portfolio de Manon Farget" }] },
+
+  // ===== Projets universitaires =====
+  { icon: "🛒", title: "SAE203 - Concevoir un Site Web avec BDD", pitch: "Création d’un site immersif inspiré de The Vampire Diaries, de la base de données MySQL au développement de l’interface. Réalisation d’un site responsive avec PHP, HTML, CSS et JavaScript, intégrant des filtres interactifs, des animations et un espace administrateur sécurisé.", category: "universitaire", type: "Développement web", kind: "", text: "Site web immersif avec base de données, filtres interactifs et espace administrateur sécurisé.", stack: ["HTML", "CSS", "JavaScript", "PHP", "MySQL"], color: "#D13670", href: "#", link: "https://manon.farget.fr/MysticFalls/", linkLabel: "Découvrir le site", media: [{ type: "image", src: "/projets/Mystic-falls.png", alt: "Aperçu du site immersif Mystic Falls" }] },
+  { icon: "📰", title: "IKEA x Animal Crossing", pitch: "Un blog rapide, lisible et construit pour être trouvé : structure sémantique, contenus optimisés et performances au vert.", category: "universitaire", type: "SEO & contenu", kind: "Projet universitaire", text: "Site WordPress optimisé pour le référencement.", stack: ["WordPress", "SEO"], color: "#D13670", href: "#" },
 ];
 export const studies = [
-  { when: "2025 — 2027", title: "BUT MMI — Métiers du Multimédia et de l'Internet", text: "Université Clermont Auvergne · IUT du Puy-en-Velay. Parcours : à compléter." },
-  { when: "2022 — 2025", title: "Baccalauréat", text: "Série / spécialités : à compléter · Lycée : à compléter." },
-  { when: "Avril 2027", title: "Stage recherché", text: "Prochaine étape : une équipe qui me fera progresser.", accent: true },
+  { when: "2025 — En cours", title: "BUT MMI — Métiers du Multimédia et de l'Internet", text: "Université Clermont Auvergne · Site du Puy-en-Velay", accent: true },
+  { when: "2024 — 2025", title: "BUT Informatique", text: "Université Lyon 1 · Site de la Doua, Villeurbanne" },
+  { when: "2021 — 2024", title: "Baccalauréat", text: "STI2D option Innovation Technologique et Éco-Conception · Lycée Galilée, Vienne." },
 ];
-
-// Section « A propos » : modifie librement ces textes
 export const about = [
   "Je m'appelle Manon et je suis étudiante en 2e année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.",
   "J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.",
