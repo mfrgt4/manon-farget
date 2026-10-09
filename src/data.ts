@@ -24,6 +24,11 @@ export const projects: Project[] = [
 { icon: "📰", title: "SAE202 - Decathlon Gym, la salle qui vous correspond", pitch: "Création d’une campagne de communication pour Decathlon Gym, un concept de salles de sport éco-conçues et accessibles, incluant une stratégie marketing, une vidéo promotionnelle où j'ai réalisé la prise du son et un site web réalisé avec WordPress.", category: "universitaire", type: "Communication & Marketing", kind: "Projet universitaire", text: "Création d’une campagne de communication pour Decathlon Gym, un concept de salles de sport éco-conçues et accessibles.", stack: ["Stratégie marketing", "Communication", "Création audiovisuelle", "Prise de son", "WordPress", "Figma", "Excel"], color: "#D13670", href: "#", link: "https://decathlongym.sae202.mmilepuy.fr/", linkLabel: "Voir le site", media: [{ type: "image", src: "/projets/Decathlon-Gym.jpg", alt: "Séance de boxe lors d’un entraînement chez Decathlon Gym" }] },
 { icon: "📰", title: "SAE104 - Production d'un tutoriel audio et vidéo", pitch: "Montage d’un tutoriel vidéo de deux minutes scénarisé en anglais. Préparation du storyboard en équipe, puis montage sur Adobe Premiere Pro avec effets visuels, bruitages et sous-titres.", category: "universitaire", type: "Audiovisuel", kind: "Projet universitaire", text: "Réalisation d’un tutoriel vidéo de deux minutes en anglais, avec montage dynamique, effets visuels, bruitages et sous-titres.", stack: ["Montage vidéo", "Adobe Premiere Pro", "Effets visuels", "Sound design", "Sous-titrage", "Scénarisation"], color: "#D13670", href: "#", media: [{ type: "image", src: "/projets/Mojito.png", alt: "Visuel promotionnel du tuto Mojito" }] },
 ];
+
+export function projectUrl(project: Project): string {
+  return project.link || project.href || "#";
+}
+
 export const studies = [
 { when: "2025 — 2027", title: "BUT MMI — Métiers du Multimédia et de l'Internet", text: "Université Clermont Auvergne · IUT du Puy-en-Velay. Parcours : à compléter." },
 { when: "2022 — 2025", title: "Baccalauréat", text: "Série / spécialités : à compléter · Lycée : à compléter." },
