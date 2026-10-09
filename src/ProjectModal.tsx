@@ -30,19 +30,19 @@ function View({ s, p }: { s: Slide; p: Project }) {
     );
   }
 
-  if (s.type === "video") {
-    return (
-      <video
-        src={s.src}
-        poster={s.poster}
-        controls
-        playsInline
-        muted
-        loop
-        autoPlay
-      />
-    );
-  }
+if (s.type === "video") {
+  return (
+    <video
+      src={s.src}
+      poster={s.poster}
+      controls
+      autoPlay
+      ref={(video) => {
+        if (video) video.volume = 0.15;
+      }}
+    />
+  );
+}
 
   const label =
     s.type === "image"
