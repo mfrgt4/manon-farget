@@ -481,8 +481,8 @@ export default function App() {
     cat === "perso"
       ? [["", projects.filter((p) => p.category === "perso")]]
       : type === "all"
-        ? types.map((t) => [t, univ.filter((p) => typeOf(p) === t)] as [string, Project[]])
-        : [["", univ.filter((p) => typeOf(p) === type)]];
+        ? [["", univ]]
+        : [[type, univ.filter((p) => typeOf(p) === type)]];
 
   const shown = groups.flatMap((g) => g[1]);
 
