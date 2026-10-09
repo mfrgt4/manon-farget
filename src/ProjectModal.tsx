@@ -1,5 +1,6 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import type { Media, Project } from "./data";
+import { CSSProperties, useEffect, useRef, useState }
 
 type Slide = Media | { type: "placeholder"; src: ""; alt: string };
 const LABEL = { universitaire: "Projet universitaire", perso: "Projet personnel" } as const;
@@ -81,7 +82,21 @@ export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
       <div className="pm-bar">
         <button className="pm-btn" onClick={() => go(-1)} aria-label="Projet précédent">←</button>
         <div className="pm-dots" role="tablist">
-          {list.map((q, i) => <button key={q.title} className={i === index ? "on" : ""} aria-label={q.title} aria-selected={i === index} onClick={() => { setDir(i > index ? 1 : -1); setM(0); onIndex(i); }} />)}
+
+        {list.map((q, i) => (
+          <button
+            key={q.title}
+            className={i === index ? "on" : ""}
+            aria-label={q.title}
+            aria-selected={i === index}
+            onClick={() => {
+              playProjectClick();
+              setDir(i > index ? 1 : -1);
+              setM(0);
+              onIndex(i);
+            }}
+          />
+        ))}
         </div>
         <span className="mono pm-count">{String(index + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}</span>
         <button className="pm-btn" onClick={() => go(1)} aria-label="Projet suivant">→</button>
