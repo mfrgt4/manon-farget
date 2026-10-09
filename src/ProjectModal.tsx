@@ -326,6 +326,33 @@ export default function ProjectModal({
               Voir le projet ↗
             </a>
           )}
+
+          {(p.link || p.link2) && (
+            <div className="pm-links">
+              {p.link && (
+                <a
+                  className="btn p"
+                  href={p.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {p.linkLabel || "Voir le lien"} ↗
+                </a>
+              )}
+
+              {p.link2 && (
+                <a
+                  className="btn p"
+                  href={p.link2}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {p.linkLabel2 || "Voir le deuxième lien"} ↗
+                </a>
+              )}
+            </div>
+          )}
+
         </div>
       </div>
 
