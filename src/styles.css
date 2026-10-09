@@ -685,3 +685,7 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
   .pm-links { margin-top: 24px; }
   .pm-links .btn { margin-top: 0; }
 }
+
+/* ===== Image des cartes projets : même format (4:3) que dans la page du projet ===== */
+.thumb { height: auto; aspect-ratio: 4 / 3; }
+.thumb img { height: 100%; object-fit: cover; }
