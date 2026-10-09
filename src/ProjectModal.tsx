@@ -8,7 +8,7 @@ const LABEL = {
   perso: "Projet personnel",
 } as const;
 
-// Son lors du changement de projet
+// Son lors du changement de projet ou de visuel
 const projectSound = new Audio("/sounds/Click-buttons.mp3");
 projectSound.volume = 0.08;
 
@@ -44,7 +44,6 @@ function View({ s, p }: { s: Slide; p: Project }) {
     );
   }
 
-  // Image introuvable : affiche le chemin recherché
   const label =
     s.type === "image"
       ? `Image introuvable : ${s.src}`
@@ -82,6 +81,7 @@ export default function ProjectModal({
 
   const closeBtn = useRef<HTMLButtonElement>(null);
   const touchX = useRef(0);
+  const slideTouchX = useRef(0);
 
   // Changement de projet avec son
   const go = (d: number) => {
@@ -96,13 +96,13 @@ export default function ProjectModal({
   // Ouverture : bloque le scroll et gère le focus
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
-    const ov = document.body.style.overflow;
+    const previousOverflow = document.body.style.overflow;
 
     document.body.style.overflow = "hidden";
     closeBtn.current?.focus();
 
     return () => {
-      document.body.style.overflow = ov;
+      document.body.style.overflow = previousOverflow;
       prev?.focus();
     };
   }, []);
@@ -119,9 +119,9 @@ export default function ProjectModal({
       }
     };
 
-    addEventListener("keydown", key);
+    window.addEventListener("keydown", key);
 
-    return () => removeEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
   });
 
   const slides: Slide[] = p.media?.length
@@ -134,21 +134,34 @@ export default function ProjectModal({
 
   const cur = slides[Math.min(m, slides.length - 1)];
 
+  // Diaporama : visuel précédent / suivant
+  const goSlide = (d: number) => {
+    if (slides.length <= 1) return;
+
+    playProjectClick();
+    setDir(d);
+    setM((current) => (current + d + slides.length) % slides.length);
+  };
+
+  // Réinitialise le visuel sélectionné quand on change de projet
+  useEffect(() => {
+    setM(0);
+  }, [index]);
+
   return (
     <div
       className="pm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="pm-title"
-      onClick={(e) =>
-        e.target === e.currentTarget && onClose()
-      }
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       onTouchStart={(e) => {
         touchX.current = e.touches[0].clientX;
       }}
       onTouchEnd={(e) => {
-        const dx =
-          e.changedTouches[0].clientX - touchX.current;
+        const dx = e.changedTouches[0].clientX - touchX.current;
 
         if (Math.abs(dx) > 70) {
           go(dx < 0 ? 1 : -1);
@@ -188,37 +201,90 @@ export default function ProjectModal({
         style={{ "--dx": `${dir * 40}px` } as CSSProperties}
       >
         {/* Visuels du projet */}
-        <div className="pm-slide" key={p.title + "m"}>
-          <div className="pm-view">
-            <View key={m} s={cur} p={p} />
+        <div className="pm-slide" key={p.title + "-media"}>
+          <div
+            className="pm-view"
+            onTouchStart={(e) => {
+              slideTouchX.current = e.touches[0].clientX;
+            }}
+            onTouchEnd={(e) => {
+              const dx =
+                e.changedTouches[0].clientX - slideTouchX.current;
+
+              if (Math.abs(dx) > 50) {
+                goSlide(dx < 0 ? 1 : -1);
+              }
+            }}
+          >
+            <View key={`${p.title}-${m}`} s={cur} p={p} />
+
+            {slides.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  className="pm-media-arrow pm-media-prev"
+                  onClick={() => goSlide(-1)}
+                  aria-label="Visuel précédent"
+                >
+                  ‹
+                </button>
+
+                <button
+                  type="button"
+                  className="pm-media-arrow pm-media-next"
+                  onClick={() => goSlide(1)}
+                  aria-label="Visuel suivant"
+                >
+                  ›
+                </button>
+
+                <span className="pm-media-count mono">
+                  {String(m + 1).padStart(2, "0")} /{" "}
+                  {String(slides.length).padStart(2, "0")}
+                </span>
+              </>
+            )}
           </div>
 
-          <div className="pm-thumbs">
-            {slides.map((s, i) => (
-              <button
-                key={i}
-                className={i === m ? "on" : ""}
-                onClick={() => setM(i)}
-                aria-label={`Voir le visuel ${i + 1}`}
-              >
-                {s.type === "image" ? (
-                  <img src={s.src} alt="" />
-                ) : s.type === "video" ? (
-                  "▶"
-                ) : (
-                  p.icon
-                )}
-              </button>
-            ))}
-          </div>
+          {/* Miniatures */}
+          {slides.length > 1 && (
+            <div className="pm-thumbs">
+              {slides.map((s, i) => (
+                <button
+                  type="button"
+                  key={i}
+                  className={i === m ? "on" : ""}
+                  onClick={() => {
+                    if (i !== m) {
+                      playProjectClick();
+                      setDir(i > m ? 1 : -1);
+                      setM(i);
+                    }
+                  }}
+                  aria-label={`Voir le visuel ${i + 1}`}
+                  aria-pressed={i === m}
+                >
+                  {s.type === "image" ? (
+                    <img src={s.src} alt="" />
+                  ) : s.type === "video" ? (
+                    s.poster ? (
+                      <img src={s.poster} alt="" />
+                    ) : (
+                      <span aria-hidden="true">▶</span>
+                    )
+                  ) : (
+                    <span>{p.icon}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Informations du projet */}
-        <div className="pm-info pm-slide" key={p.title + "i"}>
+        <div className="pm-info pm-slide" key={p.title + "-info"}>
           <div className="pm-cat">
-            <span className="mono pm-k">
-              {LABEL[p.category]}
-            </span>
+            <span className="mono pm-k">{LABEL[p.category]}</span>
 
             <span>
               {[p.type, p.kind].filter(Boolean).join(" · ")}
@@ -227,9 +293,7 @@ export default function ProjectModal({
 
           <h2 id="pm-title">{p.title}</h2>
 
-          <p className="pm-pitch">
-            {p.pitch ?? p.text}
-          </p>
+          <p className="pm-pitch">{p.pitch ?? p.text}</p>
 
           <h3 className="mono pm-h">Outils utilisés</h3>
 
@@ -254,7 +318,7 @@ export default function ProjectModal({
         </div>
       </div>
 
-      {/* Barre de navigation */}
+      {/* Barre de navigation entre les projets */}
       <div className="pm-bar">
         <button
           className="pm-btn"
