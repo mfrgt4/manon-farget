@@ -1,3 +1,4 @@
+
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { projectUrl } from "./data";
 import type { Media, Project } from "./data";
@@ -23,6 +24,10 @@ function View({
   p: Project;
 }) {
   const [broken, setBroken] = useState(false);
+
+  useEffect(() => {
+    setBroken(false);
+  }, [s]);
 
   if (s.type === "image" && !broken) {
     return (
@@ -78,32 +83,30 @@ export default function ProjectModal({
   onIndex,
   onClose,
 }: Props) {
-  const p = list[index];
   const n = list.length;
+  const p = list[index];
 
   const [m, setM] = useState(0);
   const [dir, setDir] = useState(1);
+  const [sdir, setSdir] = useState(1);
 
   const closeBtn = useRef<HTMLButtonElement>(null);
   const touchX = useRef(0);
   const slideX = useRef(0);
 
-  const [sdir, setSdir] = useState(1);
-
   const go = (d: number) => {
+    if (n <= 1) return;
+
     setDir(d);
     setM(0);
     onIndex((index + d + n) % n);
   };
 
   useEffect(() => {
-    const prev =
-      document.activeElement as HTMLElement | null;
-
+    const prev = document.activeElement as HTMLElement | null;
     const ov = document.body.style.overflow;
 
     document.body.style.overflow = "hidden";
-
     closeBtn.current?.focus();
 
     return () => {
@@ -123,17 +126,16 @@ export default function ProjectModal({
       }
     };
 
-    addEventListener("keydown", key);
+    window.addEventListener("keydown", key);
 
     return () => {
-      removeEventListener("keydown", key);
+      window.removeEventListener("keydown", key);
     };
   });
 
-  const details = [
-    p.type,
-    p.kind,
-  ].filter(
+  if (!p) return null;
+
+  const details = [p.type, p.kind].filter(
     (x): x is string =>
       !!x &&
       x !== "Projet perso" &&
@@ -148,15 +150,11 @@ export default function ProjectModal({
         alt: `Visuel ${i}`,
       }));
 
-  const cur =
-    slides[Math.min(m, slides.length - 1)];
+  const cur = slides[Math.min(m, slides.length - 1)];
 
   const goSlide = (d: number) => {
     setSdir(d);
-    setM(
-      (m + d + slides.length) %
-        slides.length
-    );
+    setM((m + d + slides.length) % slides.length);
   };
 
   return (
@@ -165,18 +163,14 @@ export default function ProjectModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="pm-title"
-      onClick={(e) =>
-        e.target === e.currentTarget &&
-        onClose()
-      }
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       onTouchStart={(e) => {
-        touchX.current =
-          e.touches[0].clientX;
+        touchX.current = e.touches[0].clientX;
       }}
       onTouchEnd={(e) => {
-        const dx =
-          e.changedTouches[0].clientX -
-          touchX.current;
+        const dx = e.changedTouches[0].clientX - touchX.current;
 
         if (Math.abs(dx) > 70) {
           go(dx < 0 ? 1 : -1);
@@ -193,142 +187,107 @@ export default function ProjectModal({
       </button>
 
       {/* Navigation projet desktop */}
-      <button
-        className="pm-btn pm-arrow l"
-        onClick={() => go(-1)}
-        aria-label="Projet précédent"
-      >
-        ←
-      </button>
+      {n > 1 && (
+        <>
+          <button
+            className="pm-btn pm-arrow l"
+            onClick={() => go(-1)}
+            aria-label="Projet précédent"
+          >
+            ←
+          </button>
 
-      <button
-        className="pm-btn pm-arrow r"
-        onClick={() => go(1)}
-        aria-label="Projet suivant"
-      >
-        →
-      </button>
+          <button
+            className="pm-btn pm-arrow r"
+            onClick={() => go(1)}
+            aria-label="Projet suivant"
+          >
+            →
+          </button>
+        </>
+      )}
 
       <div
         className="pm-wrap"
-        style={
-          {
-            "--dx": `${dir * 40}px`,
-          } as CSSProperties
-        }
+        style={{ "--dx": `${dir * 40}px` } as CSSProperties}
       >
-        <div
-          className="pm-slide"
-          key={p.title + "m"}
-        >
+        {/* Visuels du projet */}
+        <div className="pm-slide" key={p.title + "m"}>
           <div
             className="pm-view"
-            style={
-              {
-                "--sdx": `${sdir * 50}px`,
-              } as CSSProperties
-            }
+            style={{ "--sdx": `${sdir * 50}px` } as CSSProperties}
             onTouchStart={(e) => {
               e.stopPropagation();
-
-              slideX.current =
-                e.touches[0].clientX;
+              slideX.current = e.touches[0].clientX;
             }}
             onTouchEnd={(e) => {
               e.stopPropagation();
 
               const dx =
-                e.changedTouches[0].clientX -
-                slideX.current;
+                e.changedTouches[0].clientX - slideX.current;
 
-              if (
-                Math.abs(dx) > 50 &&
-                slides.length > 1
-              ) {
-                goSlide(
-                  dx < 0 ? 1 : -1
-                );
+              if (Math.abs(dx) > 50 && slides.length > 1) {
+                goSlide(dx < 0 ? 1 : -1);
               }
             }}
           >
-            <View
-              key={m}
-              s={cur}
-              p={p}
-            />
+            <View key={m} s={cur} p={p} />
 
             {slides.length > 1 && (
               <>
                 <button
                   className="pm-sarrow l"
-                  onClick={() =>
-                    goSlide(-1)
-                  }
-                  aria-label="Image précédente"
+                  onClick={() => goSlide(-1)}
+                  aria-label="Visuel précédent"
                 >
                   ‹
                 </button>
 
                 <button
                   className="pm-sarrow r"
-                  onClick={() =>
-                    goSlide(1)
-                  }
-                  aria-label="Image suivante"
+                  onClick={() => goSlide(1)}
+                  aria-label="Visuel suivant"
                 >
                   ›
                 </button>
 
                 <span className="pm-scount mono">
-                  {Math.min(
-                    m,
-                    slides.length - 1
-                  ) + 1}{" "}
-                  / {slides.length}
+                  {Math.min(m, slides.length - 1) + 1} / {slides.length}
                 </span>
               </>
             )}
           </div>
 
-          <div className="pm-thumbs">
-            {slides.map((s, i) => (
-              <button
-                key={i}
-                className={
-                  i === m ? "on" : ""
-                }
-                onClick={() => {
-                  setSdir(
-                    i > m ? 1 : -1
-                  );
-                  setM(i);
-                }}
-                aria-label={`Voir le visuel ${
-                  i + 1
-                }`}
-              >
-                {s.type === "image" ? (
-                  <img
-                    src={s.src}
-                    alt=""
-                  />
-                ) : s.type === "video" ? (
-                  s.poster ? (
-                    <img
-                      src={s.poster}
-                      alt=""
-                    />
+          {slides.length > 1 && (
+            <div className="pm-thumbs">
+              {slides.map((s, i) => (
+                <button
+                  key={i}
+                  className={i === m ? "on" : ""}
+                  onClick={() => {
+                    setSdir(i > m ? 1 : -1);
+                    setM(i);
+                  }}
+                  aria-label={`Voir le visuel ${i + 1}`}
+                >
+                  {s.type === "image" ? (
+                    <img src={s.src} alt="" />
+                  ) : s.type === "video" ? (
+                    s.poster ? (
+                      <img src={s.poster} alt="" />
+                    ) : (
+                      "▶"
+                    )
                   ) : (
-                    "▶"
-                  )
-                ) : (
-                  p.icon
-                )}
-              </button>
-            ))}
-          </div>
+                    p.icon
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
+        {/* Informations du projet */}
         <div
           className="pm-info pm-slide"
           key={p.title + "i"}
@@ -339,30 +298,25 @@ export default function ProjectModal({
             </span>
 
             {details.length > 0 && (
-              <span>
-                {details.join(" · ")}
-              </span>
+              <span>{details.join(" · ")}</span>
             )}
           </div>
 
-          <h2 id="pm-title">
-            {p.title}
-          </h2>
+          <h2 id="pm-title">{p.title}</h2>
 
-          <p className="pm-pitch">
-            {p.pitch ?? p.text}
-          </p>
+          {p.text && (
+            <p className="pm-main">{p.text}</p>
+          )}
 
-          <h3 className="mono pm-h">
-            Outils utilisés
-          </h3>
+          {p.pitch && (
+            <p className="pm-pitch">{p.pitch}</p>
+          )}
+
+          <h3 className="mono pm-h">Outils utilisés</h3>
 
           <div className="chips">
             {p.stack.map((c) => (
-              <i
-                key={c}
-                className="mono"
-              >
+              <i key={c} className="mono">
                 {c}
               </i>
             ))}
@@ -376,9 +330,7 @@ export default function ProjectModal({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {p.linkLabel ??
-                  "Voir le site"}{" "}
-                ↗
+                {p.linkLabel ?? "Voir le site"} ↗
               </a>
             )}
 
@@ -389,9 +341,7 @@ export default function ProjectModal({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {p.linkLabel2 ??
-                  "Voir mon TikTok"}{" "}
-                ↗
+                {p.linkLabel2 ?? "Voir mon TikTok"} ↗
               </a>
             )}
           </div>
@@ -404,28 +354,20 @@ export default function ProjectModal({
           className="pm-mobile-project"
           onClick={() => go(-1)}
           aria-label="Projet précédent"
+          disabled={n <= 1}
         >
           ←
         </button>
 
-        <div
-          className="pm-dots"
-          role="tablist"
-        >
+        <div className="pm-dots" role="tablist" aria-label="Choisir un projet">
           {list.map((q, i) => (
             <button
               key={q.title}
-              className={
-                i === index ? "on" : ""
-              }
+              className={i === index ? "on" : ""}
               aria-label={q.title}
-              aria-selected={
-                i === index
-              }
+              aria-selected={i === index}
               onClick={() => {
-                setDir(
-                  i > index ? 1 : -1
-                );
+                setDir(i > index ? 1 : -1);
                 setM(0);
                 onIndex(i);
               }}
@@ -434,11 +376,7 @@ export default function ProjectModal({
         </div>
 
         <span className="mono pm-count">
-          {String(index + 1).padStart(
-            2,
-            "0"
-          )}{" "}
-          /{" "}
+          {String(index + 1).padStart(2, "0")} /{" "}
           {String(n).padStart(2, "0")}
         </span>
 
@@ -446,6 +384,7 @@ export default function ProjectModal({
           className="pm-mobile-project"
           onClick={() => go(1)}
           aria-label="Projet suivant"
+          disabled={n <= 1}
         >
           →
         </button>
