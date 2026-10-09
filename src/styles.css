@@ -652,9 +652,12 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
   }
 }
 
-/* ===== Page projet sur ordinateur : tout tient dans l'écran, centré, sans défilement ===== */
+/* ===== Page projet sur ordinateur : scroll personnalisé à droite ===== */
 @media (min-width: 981px) {
-  .pm { overflow: hidden; }
+  .pm {
+    overflow: hidden;
+  }
+
   .pm-wrap {
     height: 100vh;
     height: 100svh;
@@ -662,7 +665,8 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
     padding: 72px 6vw 96px;
     align-items: center;
   }
-  /* colonne de gauche : l'image s'adapte à la hauteur de l'écran, miniatures dessous, le tout centré */
+
+  /* Colonne de gauche : images et miniatures */
   .pm-wrap > .pm-slide:first-child {
     display: flex;
     flex-direction: column;
@@ -670,20 +674,64 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
     justify-content: center;
     min-width: 0;
   }
-  .pm-view { width: min(100%, calc((100svh - 270px) * 4 / 3)); }
-  .pm-thumbs { justify-content: center; }
-  /* colonne de droite : centrée, textes qui s'adaptent à la hauteur */
+
+  .pm-view {
+    width: min(100%, calc((100svh - 270px) * 4 / 3));
+  }
+
+  .pm-thumbs {
+    justify-content: center;
+  }
+
+  /* Colonne de droite : contenu défilant */
   .pm-info {
     align-self: center;
+    min-height: 0;
     max-height: calc(100svh - 170px);
     overflow-y: auto;
-    scrollbar-width: none;
+    overflow-x: hidden;
+    padding-right: 12px;
+
+    /* Barre Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--acc) var(--line);
   }
-  .pm-info::-webkit-scrollbar { display: none; }
-  .pm h2 { font-size: clamp(30px, min(5.5vw, 8svh), 70px); margin: 16px 0 12px; }
-  .pm-h { margin: 20px 0 8px; }
-  .pm-links { margin-top: 24px; }
-  .pm-links .btn { margin-top: 0; }
+
+  /* Barre Chrome, Edge et Safari */
+  .pm-info::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .pm-info::-webkit-scrollbar-track {
+    background: var(--line);
+    border-radius: 10px;
+  }
+
+  .pm-info::-webkit-scrollbar-thumb {
+    background: var(--acc);
+    border-radius: 10px;
+  }
+
+  .pm-info::-webkit-scrollbar-thumb:hover {
+    background: var(--acc-t);
+  }
+
+  .pm h2 {
+    font-size: clamp(30px, min(5.5vw, 8svh), 70px);
+    margin: 16px 0 12px;
+  }
+
+  .pm-h {
+    margin: 20px 0 8px;
+  }
+
+  .pm-links {
+    margin-top: 24px;
+  }
+
+  .pm-links .btn {
+    margin-top: 0;
+  }
 }
 
 /* ===== Image des cartes projets : même format (4:3) que dans la page du projet ===== */
