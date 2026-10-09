@@ -424,15 +424,3 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
 /* Image de couverture dans les cartes projets */
 .thumb{overflow:hidden}
 .thumb img{display:block;width:100%;height:100%;object-fit:cover}
-
-
-/* ================= MODALE PROJET : panneau de texte défilant ================= */
-.pm-info{max-height:calc(100svh - 190px);overflow-y:auto;overscroll-behavior:contain;padding:4px 14px 18px 2px;scrollbar-width:thin;scrollbar-color:var(--acc) transparent;scrollbar-gutter:stable}
-.pm-info::-webkit-scrollbar{width:7px}
-.pm-info::-webkit-scrollbar-track{background:transparent;border-radius:999px}
-.pm-info::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--acc) 72%,transparent);border:2px solid transparent;background-clip:padding-box;border-radius:999px}
-.pm-info::-webkit-scrollbar-thumb:hover{background:var(--acc);border:1px solid transparent;background-clip:padding-box}
-.proj-kind{display:block;color:var(--mute);font-size:12px;letter-spacing:.02em}
-@media(max-width:980px){.pm-info{max-height:none;overflow:visible;padding:0 0 24px;scrollbar-width:auto}.pm-info::-webkit-scrollbar{display:none}}
-.pm-main{font-size:clamp(17px,1.6vw,21px);max-width:46ch;color:var(--fg);line-height:1.4;margin-bottom:14px}
-html[data-theme="dark"] .pm-main{color:var(--fg)}

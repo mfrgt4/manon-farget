@@ -69,6 +69,7 @@ function useEffects() {
 
       c.style.setProperty("--mx", e.clientX - r.left + "px");
       c.style.setProperty("--my", e.clientY - r.top + "px");
+
     };
 
     window.addEventListener("pointermove", onMove);
@@ -87,9 +88,7 @@ function useActive(ids: string[]) {
     const so = new IntersectionObserver(
       (es) =>
         es.forEach(
-          (e) =>
-            e.isIntersecting &&
-            setActive(e.target.id === "competences" ? "a-propos" : e.target.id)
+          (e) => e.isIntersecting && setActive(e.target.id === "competences" ? "a-propos" : e.target.id)
         ),
       { rootMargin: "-45% 0px -50% 0px" }
     );
@@ -147,315 +146,142 @@ function Count({ to }: { to: number }) {
   return <span ref={ref}>0</span>;
 }
 
-// Parallaxe de la bannière
+// Parallaxe de la bannière : la souris décale légèrement chaque élément (variables CSS --px / --py)
 function useHeroParallax() {
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
     const hero = document.getElementById("hero");
     if (!hero) return;
-
     const m = (e: PointerEvent) => {
       hero.style.setProperty("--px", String(e.clientX / innerWidth - 0.5));
       hero.style.setProperty("--py", String(e.clientY / innerHeight - 0.5));
     };
-
     addEventListener("pointermove", m);
-
     return () => removeEventListener("pointermove", m);
   }, []);
 }
 
-// Barre de progression et points du parcours
+// Barre de progression + points du parcours : se remplissent au fil du scroll
 function useTimeline() {
   useEffect(() => {
     const tl = document.querySelector<HTMLElement>(".tl");
     if (!tl) return;
-
     const items = [...tl.querySelectorAll<HTMLElement>(".it")];
     let tick = false;
-
     const update = () => {
       tick = false;
-
       const y = innerHeight * 0.62;
       const r = tl.getBoundingClientRect();
-
-      tl.style.setProperty(
-        "--tl",
-        String(Math.min(1, Math.max(0, (y - r.top) / r.height)))
-      );
-
-      items.forEach((it) =>
-        it.classList.toggle("reached", it.getBoundingClientRect().top + 30 < y)
-      );
+      tl.style.setProperty("--tl", String(Math.min(1, Math.max(0, (y - r.top) / r.height))));
+      items.forEach((it) => it.classList.toggle("reached", it.getBoundingClientRect().top + 30 < y));
     };
-
-    const onScroll = () => {
-      if (!tick) {
-        tick = true;
-        requestAnimationFrame(update);
-      }
-    };
-
+    const onScroll = () => { if (!tick) { tick = true; requestAnimationFrame(update); } };
     addEventListener("scroll", onScroll, { passive: true });
     addEventListener("resize", onScroll);
     update();
-
-    return () => {
-      removeEventListener("scroll", onScroll);
-      removeEventListener("resize", onScroll);
-    };
+    return () => { removeEventListener("scroll", onScroll); removeEventListener("resize", onScroll); };
   }, []);
 }
 
-// Inclinaison 3D des éléments
+// Inclinaison 3D ultra fluide : lissage basé sur le temps (identique à 60 ou 144 Hz), retour au repos plus lent que l'aller.
+// La variable CSS --p (0 → 1) pilote aussi les effets de survol : tout bouge en même temps, sans à-coup.
 function useTilt() {
   useEffect(() => {
-    if (
-      !matchMedia("(hover:hover)").matches ||
-      matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) return;
-
-    type S = {
-      rx: number;
-      ry: number;
-      p: number;
-      tx: number;
-      ty: number;
-      tp: number;
-      max: number;
-      persp: string;
-    };
-
+    if (!matchMedia("(hover:hover)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    type S = { rx: number; ry: number; p: number; tx: number; ty: number; tp: number; max: number; persp: string };
     const map = new Map<HTMLElement, S>();
     let raf = 0, last = 0, cur: HTMLElement | null = null;
-
     const loop = (t: number) => {
-      const dt = Math.min(0.05, (t - (last || t)) / 1000);
-      last = t;
+      const dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
       let busy = false;
-
       map.forEach((s, el) => {
         const on = s.tp > 0;
         const kt = 1 - Math.exp(-dt / (on ? 0.09 : 0.3));
         const kp = 1 - Math.exp(-dt / (on ? 0.2 : 0.35));
-
-        s.rx += (s.tx - s.rx) * kt;
-        s.ry += (s.ty - s.ry) * kt;
-        s.p += (s.tp - s.p) * kp;
-
-        if (
-          !on &&
-          Math.abs(s.rx) < 0.01 &&
-          Math.abs(s.ry) < 0.01 &&
-          s.p < 0.001
-        ) {
-          el.style.transform = "";
-          el.style.removeProperty("--p");
-          map.delete(el);
-          return;
+        s.rx += (s.tx - s.rx) * kt; s.ry += (s.ty - s.ry) * kt; s.p += (s.tp - s.p) * kp;
+        if (!on && Math.abs(s.rx) < 0.01 && Math.abs(s.ry) < 0.01 && s.p < 0.001) {
+          el.style.transform = ""; el.style.removeProperty("--p"); map.delete(el); return;
         }
-
-        el.style.transform =
-          `${s.persp}rotateX(${s.rx.toFixed(3)}deg) ` +
-          `rotateY(${s.ry.toFixed(3)}deg) ` +
-          `translateY(${(-6 * s.p).toFixed(3)}px) ` +
-          `scale(${(1 + 0.015 * s.p).toFixed(4)})`;
-
+        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-6 * s.p).toFixed(3)}px) scale(${(1 + 0.015 * s.p).toFixed(4)})`;
         el.style.setProperty("--p", s.p.toFixed(4));
         busy = true;
       });
-
-      if (busy) {
-        raf = requestAnimationFrame(loop);
-      } else {
-        raf = 0;
-        last = 0;
-      }
+      if (busy) raf = requestAnimationFrame(loop); else { raf = 0; last = 0; }
     };
-
-    const kick = () => {
-      if (!raf) raf = requestAnimationFrame(loop);
-    };
-
-    const release = (el: HTMLElement) => {
-      const s = map.get(el);
-      if (s) {
-        s.tx = 0;
-        s.ty = 0;
-        s.tp = 0;
-      }
-    };
-
+    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+    const release = (el: HTMLElement) => { const s = map.get(el); if (s) { s.tx = 0; s.ty = 0; s.tp = 0; } };
     const move = (e: PointerEvent) => {
-      const el =
-        (e.target as HTMLElement).closest<HTMLElement>("[data-tilt]") ?? null;
-
-      if (cur && cur !== el) {
-        release(cur);
-        kick();
-      }
-
+      const el = (e.target as HTMLElement).closest?.<HTMLElement>("[data-tilt]") ?? null;
+      if (cur && cur !== el) { release(cur); kick(); }
       cur = el;
       if (!el) return;
-
       const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-
+      const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
       let s = map.get(el);
-
-      if (!s) {
-        s = {
-          rx: 0,
-          ry: 0,
-          p: 0,
-          tx: 0,
-          ty: 0,
-          tp: 0,
-          max: Number(el.dataset.tilt) || 8,
-          persp: el.dataset.persp === "none" ? "" : "perspective(900px) ",
-        };
-        map.set(el, s);
-      }
-
-      s.ty = x * s.max * 2;
-      s.tx = -y * s.max * 2;
-      s.tp = 1;
-
-      el.style.setProperty("--gx", (x + 0.5) * 100 + "%");
-      el.style.setProperty("--gy", (y + 0.5) * 100 + "%");
-
+      if (!s) { s = { rx: 0, ry: 0, p: 0, tx: 0, ty: 0, tp: 0, max: Number(el.dataset.tilt) || 8, persp: el.dataset.persp === "none" ? "" : "perspective(900px) " }; map.set(el, s); }
+      s.ty = x * s.max * 2; s.tx = -y * s.max * 2; s.tp = 1;
+      el.style.setProperty("--gx", (x + 0.5) * 100 + "%"); el.style.setProperty("--gy", (y + 0.5) * 100 + "%");
       kick();
     };
-
-    const out = (e: PointerEvent) => {
-      if (!e.relatedTarget && cur) {
-        release(cur);
-        cur = null;
-        kick();
-      }
-    };
-
-    addEventListener("pointermove", move);
-    document.addEventListener("pointerout", out);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      removeEventListener("pointermove", move);
-      document.removeEventListener("pointerout", out);
-    };
+    const out = (e: PointerEvent) => { if (!e.relatedTarget && cur) { release(cur); cur = null; kick(); } };
+    addEventListener("pointermove", move); document.addEventListener("pointerout", out);
+    return () => { cancelAnimationFrame(raf); removeEventListener("pointermove", move); document.removeEventListener("pointerout", out); };
   }, []);
 }
 
-// Apparition esthétique des éléments au changement de filtre
+// Apparition « aesthetic » des éléments .aes quand ils entrent dans l'écran (se relance quand le filtre change)
 function useAes(dep: string) {
   useEffect(() => {
     const io = new IntersectionObserver(
-      (es) =>
-        es.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("in");
-            io.unobserve(e.target);
-          }
-        }),
+      (es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }),
       { threshold: 0.18, rootMargin: "0px 0px -6% 0px" }
     );
-
     document.querySelectorAll(".aes:not(.in)").forEach((el) => io.observe(el));
-
     return () => io.disconnect();
   }, [dep]);
 }
 
-// Clic sur un lien d'ancre
+// Clic sur un lien d'ancre (#projets…) : la section s'arrête pile au centre de l'écran
 function useAnchorCenter() {
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (
-        e.defaultPrevented ||
-        e.button !== 0 ||
-        e.metaKey ||
-        e.ctrlKey ||
-        e.shiftKey
-      ) return;
-
-      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      const a = (e.target as HTMLElement).closest?.<HTMLAnchorElement>('a[href^="#"]');
       const id = a?.getAttribute("href")?.slice(1);
       const sec = id ? document.getElementById(id) : null;
-
       if (!sec) return;
-
       e.preventDefault();
-
-      const top = scrollY + sec.getBoundingClientRect().top;
-      const h = sec.offsetHeight;
-
-      scrollTo({
-        top: Math.max(0, h <= innerHeight ? top - (innerHeight - h) / 2 : top),
-        behavior: "smooth",
-      });
-
+      const top = scrollY + sec.getBoundingClientRect().top, h = sec.offsetHeight;
+      scrollTo({ top: Math.max(0, h <= innerHeight ? top - (innerHeight - h) / 2 : top), behavior: "smooth" });
       history.replaceState(null, "", "#" + id);
     };
-
     document.addEventListener("click", onClick);
-
     return () => document.removeEventListener("click", onClick);
   }, []);
 }
 
-// Thème clair / sombre
+// Thème jour / sombre : mémorisé dans le navigateur, transition en fondu quand le navigateur sait le faire
 type Theme = "light" | "dark";
-
 function useTheme() {
-  const [theme, setTheme] = useState<Theme>(() =>
-    document.documentElement.dataset.theme === "dark" ? "dark" : "light"
-  );
-
+  const [theme, setTheme] = useState<Theme>(() => (document.documentElement.dataset.theme === "dark" ? "dark" : "light"));
   const choose = (next: Theme) => {
     if (next === theme) return;
-
     const apply = () => {
       document.documentElement.dataset.theme = next;
       setTheme(next);
-
-      try {
-        localStorage.setItem("theme", next);
-      } catch {
-        // Stockage indisponible
-      }
+      try { localStorage.setItem("theme", next); } catch { /* stockage indisponible */ }
     };
-
-    const d = document as Document & {
-      startViewTransition?: (cb: () => void) => unknown;
-    };
-
-    if (
-      d.startViewTransition &&
-      !matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      d.startViewTransition(apply);
-    } else {
-      apply();
-    }
+    const d = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+    if (d.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) d.startViewTransition(apply);
+    else apply();
   };
-
   return [theme, choose] as const;
 }
 
-// Image de couverture d'un projet
+// Image de couverture d'un projet : sa première image (sinon l'emoji)
 const cover = (p: Project) => p.media?.find((m) => m.type === "image")?.src;
 
-const BAND = [
-  "Intégration web",
-  "UI/UX design",
-  "Motion design",
-  "SEO",
-  "Gestion de projet",
-];
-
+const BAND = ["Intégration web", "UI/UX design", "Motion design", "SEO", "Gestion de projet"];
 const ids = nav.map(([id]) => id) as string[];
 
 const delay = (d: number) =>
@@ -465,46 +291,30 @@ export default function App() {
   const active = useActive(ids);
 
   const [open, setOpen] = useState<number | null>(null);
-  const [cat, setCat] = useState<"tous" | Category>("tous");
-  const [typeFilter, setTypeFilter] = useState<string>("tous");
+  const [cat, setCat] = useState<Category>("perso");
+  const [type, setType] = useState("all");
 
-  // Projets scolaires et types disponibles
-  const schoolProjects = projects.filter(
-    (p) => p.category === "universitaire"
-  );
-
-  const schoolTypes = Array.from(
-    new Set(
-      schoolProjects
-        .map((p) => p.type)
-        .filter((type): type is string => Boolean(type))
-    )
-  );
-
-  // Liste affichée en fonction des filtres
-  const shown = projects.filter((p) => {
-    if (cat === "tous") return true;
-
-    if (cat === "perso") {
-      return p.category === "perso";
-    }
-
-    if (p.category !== "universitaire") {
-      return false;
-    }
-
-    return typeFilter === "tous" || p.type === typeFilter;
-  });
+  // Projets universitaires : classés par type. Les types se déduisent de data.ts.
+  const univ = projects.filter((p) => p.category === "universitaire");
+  const typeOf = (p: Project) => p.type ?? "Autre";
+  const types = Array.from(new Set(univ.map(typeOf)));
+  const groups: [string, Project[]][] =
+    cat === "perso"
+      ? [["", projects.filter((p) => p.category === "perso")]]
+      : type === "all"
+        ? types.map((t) => [t, univ.filter((p) => typeOf(p) === t)] as [string, Project[]])
+        : [["", univ.filter((p) => typeOf(p) === type)]];
+  const shown = groups.flatMap((g) => g[1]);
 
   useEffects();
   useHeroParallax();
   useTimeline();
   useTilt();
-  useAes(`${cat}-${typeFilter}`);
+  useAes(cat + "|" + type);
   useAnchorCenter();
-
   const [theme, chooseTheme] = useTheme();
   const [sel, setSel] = useState(0);
+
 
   const send = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -542,53 +352,14 @@ export default function App() {
         </div>
       </nav>
 
-      <div
-        className="theme-toggle"
-        role="group"
-        aria-label="Thème du site"
-        style={{ "--i": theme === "dark" ? 1 : 0 } as React.CSSProperties}
-      >
+      <div className="theme-toggle" role="group" aria-label="Thème du site" style={{ "--i": theme === "dark" ? 1 : 0 } as React.CSSProperties}>
         <span className="tt-thumb" aria-hidden="true" />
-
-        <button
-          className="tt-btn"
-          aria-pressed={theme === "light"}
-          onClick={() => chooseTheme("light")}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-          </svg>
+        <button className="tt-btn" aria-pressed={theme === "light"} onClick={() => chooseTheme("light")}>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
           <span>Jour</span>
         </button>
-
-        <button
-          className="tt-btn"
-          aria-pressed={theme === "dark"}
-          onClick={() => chooseTheme("dark")}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-          </svg>
+        <button className="tt-btn" aria-pressed={theme === "dark"} onClick={() => chooseTheme("dark")}>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
           <span>Sombre</span>
         </button>
       </div>
@@ -624,32 +395,16 @@ export default function App() {
             <div className="arch">
               <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
             </div>
-
             <div className="h-badge" aria-hidden="true">
               <svg viewBox="0 0 120 120">
                 <circle cx="60" cy="60" r="60" fill="#d84b7d" />
-                <defs>
-                  <path
-                    id="hb"
-                    d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0"
-                  />
-                </defs>
-                <text
-                  fontSize="10.5"
-                  fontWeight="700"
-                  fill="#fff"
-                  letterSpacing="1"
-                >
-                  <textPath href="#hb" textLength="252" lengthAdjust="spacing">
-                    DÉVELOPPEUSE WEB • UI/UX • MOTION •
-                  </textPath>
+                <defs><path id="hb" d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0" /></defs>
+                <text fontSize="10.5" fontWeight="700" fill="#fff" letterSpacing="1">
+                  <textPath href="#hb" textLength="252" lengthAdjust="spacing">DÉVELOPPEUSE WEB • UI/UX • MOTION • </textPath>
                 </text>
-                <text x="60" y="68" textAnchor="middle" fontSize="22" fill="#fff">
-                  ✦
-                </text>
+                <text x="60" y="68" textAnchor="middle" fontSize="22" fill="#fff">✦</text>
               </svg>
             </div>
-
             <span className="h-chip c1"><i />React</span>
             <span className="h-chip c2 sage"><i />Figma</span>
             <span className="h-chip c3"><i />After Effects</span>
@@ -659,17 +414,17 @@ export default function App() {
 
         <div className="h-band" aria-hidden="true">
           <div className="h-band-t">
-            {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => (
-              <span key={i}>{t}<b>✦</b></span>
-            ))}
+            {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => <span key={i}>{t}<b>✦</b></span>)}
           </div>
         </div>
       </section>
 
       <section id="a-propos">
         <div className="about">
+
           <div className="rv rv-l" style={delay(0.15)}>
             <p className="tag mono">// à propos</p>
+
             <h2>Un peu plus sur moi.</h2>
 
             <p className="about-p">
@@ -700,7 +455,7 @@ export default function App() {
               {[
                 [2, "année de BUT"],
                 [projects.length, "projets"],
-                [tools.length, "outils"],
+                [tools.length, "outils"]
               ].map(([n, l]) => (
                 <div key={l as string}>
                   <b className="mono">
@@ -715,7 +470,6 @@ export default function App() {
           <div className="photo rv rv-r">
             <div className="p-tilt" data-tilt="11" data-persp="none">
               <span className="p-outline" aria-hidden="true" />
-
               <div className="p-frame">
                 {profile.photo ? (
                   <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
@@ -725,11 +479,9 @@ export default function App() {
                     <small>ta photo ici</small>
                   </div>
                 )}
-
                 <span className="p-sheen" aria-hidden="true" />
                 <span className="p-glare" aria-hidden="true" />
               </div>
-
               <span className="p-corner c-tl" aria-hidden="true" />
               <span className="p-corner c-tr" aria-hidden="true" />
               <span className="p-corner c-bl" aria-hidden="true" />
@@ -738,6 +490,7 @@ export default function App() {
             </div>
           </div>
         </div>
+
       </section>
 
       <section id="competences">
@@ -746,7 +499,6 @@ export default function App() {
             <p className="tag mono rv">// 5 compétences clés</p>
             <h2 className="rv">Ce que je sais faire.</h2>
             <p className="sk-note rv">Survole ou touche une ligne pour la découvrir.</p>
-
             <div className="sk-count mono rv">
               <b key={sel}>{String(sel + 1).padStart(2, "0")}</b>
               <span>/ {String(skills.length).padStart(2, "0")}</span>
@@ -762,17 +514,11 @@ export default function App() {
                 style={delay(i * 0.08)}
                 onMouseEnter={() => setSel(i)}
               >
-                <button
-                  className="sk-head"
-                  aria-expanded={sel === i}
-                  onClick={() => setSel(i)}
-                  onFocus={() => setSel(i)}
-                >
+                <button className="sk-head" aria-expanded={sel === i} onClick={() => setSel(i)} onFocus={() => setSel(i)}>
                   <span className="sk-n mono">{String(i + 1).padStart(2, "0")}</span>
                   <span className="sk-t">{s.title}</span>
                   <span className="sk-plus" aria-hidden="true">+</span>
                 </button>
-
                 <div className="sk-body">
                   <div>
                     <p>{s.text}</p>
@@ -800,141 +546,75 @@ export default function App() {
         <p className="tag mono rv">// work</p>
         <h2 className="rv">Projets.</h2>
 
-        {/* Filtres principaux */}
-        <div
-          className="tabs cats rv"
-          role="tablist"
-          aria-label="Catégorie de projets"
-        >
-          <button
-            role="tab"
-            aria-selected={cat === "tous"}
-            className={cat === "tous" ? "on" : ""}
-            onClick={() => {
-              setCat("tous");
-              setTypeFilter("tous");
-              setOpen(null);
-            }}
-          >
-            Tous <span className="mono">({projects.length})</span>
-          </button>
-
-          <button
-            role="tab"
-            aria-selected={cat === "perso"}
-            className={cat === "perso" ? "on" : ""}
-            onClick={() => {
-              setCat("perso");
-              setTypeFilter("tous");
-              setOpen(null);
-            }}
-          >
-            Projets personnels{" "}
-            <span className="mono">
-              ({projects.filter((p) => p.category === "perso").length})
-            </span>
-          </button>
-
-          <button
-            role="tab"
-            aria-selected={cat === "universitaire"}
-            className={cat === "universitaire" ? "on" : ""}
-            onClick={() => {
-              setCat("universitaire");
-              setTypeFilter("tous");
-              setOpen(null);
-            }}
-          >
-            Projets scolaires{" "}
-            <span className="mono">({schoolProjects.length})</span>
-          </button>
+        <div className="tabs cats rv" role="tablist" aria-label="Catégorie de projets">
+          {categories.map(([id, label]) => (
+            <button
+              key={id}
+              role="tab"
+              aria-selected={cat === id}
+              className={cat === id ? "on" : ""}
+              onClick={() => { setCat(id); setType("all"); }}
+            >
+              {label} <span className="mono">({projects.filter((p) => p.category === id).length})</span>
+            </button>
+          ))}
         </div>
 
-        {/* Sous-filtres affichés uniquement pour les projets scolaires */}
-        {cat === "universitaire" && (
-          <div
-            className="tabs cats rv"
-            role="tablist"
-            aria-label="Type de projet scolaire"
-          >
-            <button
-              role="tab"
-              aria-selected={typeFilter === "tous"}
-              className={typeFilter === "tous" ? "on" : ""}
-              onClick={() => {
-                setTypeFilter("tous");
-                setOpen(null);
-              }}
-            >
-              Tous les types
-            </button>
-
-            {schoolTypes.map((type) => (
-              <button
-                key={type}
-                role="tab"
-                aria-selected={typeFilter === type}
-                className={typeFilter === type ? "on" : ""}
-                onClick={() => {
-                  setTypeFilter(type);
-                  setOpen(null);
-                }}
-              >
-                {type}{" "}
-                <span className="mono">
-                  ({schoolProjects.filter((p) => p.type === type).length})
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
-
-        <div key={`${cat}-${typeFilter}`}>
-          <div className="grid3">
-            {shown.map((p, i) => (
-              <a
-                key={p.title}
-                href={p.href}
-                className="cell proj aes"
-                data-tilt="9"
-                style={delay((i % 3) * 0.08)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOpen(i);
-                }}
-              >
-                <span className="arrow">↗</span>
-
-                <div
-                  className="thumb"
-                  style={{ "--c": p.color } as React.CSSProperties}
+        <div className={"subtabs" + (cat === "universitaire" ? " open" : "")}>
+          <div>
+            <div className="tabs sub" role="tablist" aria-label="Type de projet universitaire">
+              {["all", ...types].map((t) => (
+                <button
+                  key={t}
+                  role="tab"
+                  tabIndex={cat === "universitaire" ? 0 : -1}
+                  aria-selected={type === t}
+                  className={type === t ? "on" : ""}
+                  onClick={() => setType(t)}
                 >
-                  {cover(p) ? (
-                    <img src={cover(p)} alt="" loading="lazy" />
-                  ) : (
-                    p.icon
-                  )}
-                </div>
-
-                <span className="when mono">
-                  {p.category === "universitaire"
-                    ? "Projet scolaire"
-                    : "Projet personnel"}
-                  {p.type ? ` · ${p.type}` : ""}
-                </span>
-
-                <h3>{p.title}</h3>
-                <span className="proj-kind mono">{p.kind}</span>
-                <p>{p.text}</p>
-
-                <div className="chips">
-                  {p.stack.map((c) => (
-                    <i key={c} className="mono">{c}</i>
-                  ))}
-                </div>
-              </a>
-            ))}
+                  {t === "all" ? "Tous les types" : t}{" "}
+                  <span className="mono">({t === "all" ? univ.length : univ.filter((p) => typeOf(p) === t).length})</span>
+                </button>
+              ))}
+            </div>
           </div>
+        </div>
+
+        <div key={cat + "|" + type}>
+          {groups.map(([name, list]) => (
+            <div className="grp" key={name || "all"}>
+              {name && (
+                <h3 className="grp-h mono aes">
+                  <span>{name}</span>
+                  <small>({list.length})</small>
+                </h3>
+              )}
+              <div className="grid3">
+                {list.map((p, i) => (
+                  <a
+                    key={p.title}
+                    href={p.href}
+                    className="cell proj aes"
+                    data-tilt="9"
+                    style={delay((i % 3) * 0.08)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpen(shown.indexOf(p));
+                    }}
+                  >
+                    <span className="arrow">↗</span>
+                    <div className="thumb" style={{ "--c": p.color } as React.CSSProperties}>{cover(p) ? <img src={cover(p)} alt="" loading="lazy" /> : p.icon}</div>
+                    <span className="when mono">{p.kind}</span>
+                    <h3>{p.title}</h3>
+                    <p>{p.text}</p>
+                    <div className="chips">
+                      {p.stack.map((c) => <i key={c} className="mono">{c}</i>)}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -944,7 +624,6 @@ export default function App() {
 
         <div className="tl">
           <span className="tl-head" aria-hidden="true" />
-
           {studies.map((s, i) => (
             <div
               key={s.title}
@@ -953,7 +632,13 @@ export default function App() {
             >
               <span className="when mono">{s.when}</span>
 
-              <h3 style={s.accent ? { color: "var(--acc)" } : undefined}>
+              <h3
+                style={
+                  s.accent
+                    ? { color: "var(--acc)" }
+                    : undefined
+                }
+              >
                 {s.title}
               </h3>
 
@@ -970,9 +655,25 @@ export default function App() {
         <div className="bento">
           <div className="cell s2 rv">
             <form onSubmit={send}>
-              <input name="name" placeholder="Ton nom" required />
-              <input name="email" type="email" placeholder="Ton email" required />
-              <textarea name="message" rows={4} placeholder="Ton message" required />
+              <input
+                name="name"
+                placeholder="Ton nom"
+                required
+              />
+
+              <input
+                name="email"
+                type="email"
+                placeholder="Ton email"
+                required
+              />
+
+              <textarea
+                name="message"
+                rows={4}
+                placeholder="Ton message"
+                required
+              />
 
               <button className="btn p" type="submit">
                 Envoyer ↗
@@ -980,24 +681,41 @@ export default function App() {
             </form>
           </div>
 
-          <div className="cell s2 rv" style={delay(0.1)}>
+          <div
+            className="cell s2 rv"
+            style={delay(0.1)}
+          >
             <div className="links">
               <a href={"mailto:" + profile.email}>
                 <span>Email</span>
-                <span className="mono">{profile.email}</span>
+                <span className="mono">
+                  {profile.email}
+                </span>
               </a>
 
-              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span>LinkedIn</span>
                 <span>↗</span>
               </a>
 
-              <a href={profile.github} target="_blank" rel="noopener noreferrer">
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span>GitHub</span>
                 <span>↗</span>
               </a>
 
-              <a href={profile.cv} target="_blank" rel="noopener noreferrer">
+              <a
+                href={profile.cv}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span>CV (PDF)</span>
                 <span>↓</span>
               </a>
@@ -1016,8 +734,12 @@ export default function App() {
       )}
 
       <footer className="mono">
-        © 2026 {profile.name} · Fait avec React, three.js et Vercel ·{" "}
-        <a href="#accueil" style={{ color: "var(--acc)" }}>
+        © 2026 {profile.name} · Fait avec React, three.js et
+        Vercel ·{" "}
+        <a
+          href="#accueil"
+          style={{ color: "var(--acc)" }}
+        >
           ↑ haut
         </a>
       </footer>
