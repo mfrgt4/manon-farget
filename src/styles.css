@@ -735,9 +735,15 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
 }
 
 .pm-cat {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.pm-info .pm-cat {
+  align-self: flex-start;
 }
 
 .pm-separator {
