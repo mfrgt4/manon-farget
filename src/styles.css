@@ -734,6 +734,16 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
   }
 }
 
+.pm-cat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pm-separator {
+  color: #9b9b9b;
+}
+
 /* ===== Image des cartes projets : même format (4:3) que dans la page du projet ===== */
 .thumb { height: auto; aspect-ratio: 4 / 3; }
 .thumb img { height: 100%; object-fit: cover; }

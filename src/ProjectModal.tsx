@@ -300,10 +300,13 @@ export default function ProjectModal({
         <div className="pm-info pm-slide" key={p.title + "-info"}>
 
         <div className="pm-cat">
-          <span className="mono pm-k">{LABEL[p.category]}</span>
+        <span className="mono pm-k">{LABEL[p.category]}</span>
 
           {p.collaboration && (
-            <span className="mono pm-k">•   {p.collaboration}</span>
+            <>
+              <span className="pm-separator">•</span>
+              <span className="mono pm-k">{p.collaboration}</span>
+            </>
           )}
         </div>
 
