@@ -810,7 +810,9 @@ export default function App() {
                       {cover(p) ? <img src={cover(p)} alt="" loading="lazy" /> : p.icon}
                     </div>
 
-                    <span className="when mono">{p.kind}</span>
+                    <span className="when mono">
+                      {p.collaboration ?? p.kind}
+                    </span>
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
 
