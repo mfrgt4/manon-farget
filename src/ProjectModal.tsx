@@ -298,12 +298,9 @@ export default function ProjectModal({
 
         {/* Informations du projet */}
         <div className="pm-info pm-slide" key={p.title + "-info"}>
-          <div className="pm-cat">
-            <span className="mono pm-k">{LABEL[p.category]}</span>
-
-            <span>
-              {[p.type, p.kind].filter(Boolean).join(" · ")}
-            </span>
+            <div className="pm-cat">
+              <span className="mono pm-k">{LABEL[p.category]}</span>
+            </div>
           </div>
 
           <h2 id="pm-title">{p.title}</h2>
