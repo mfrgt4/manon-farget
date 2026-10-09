@@ -303,7 +303,7 @@ export default function ProjectModal({
           <span className="mono pm-k">{LABEL[p.category]}</span>
 
           {p.collaboration && (
-            <span className="mono pm-k">{p.collaboration}</span>
+            <span className="mono pm-k">• {p.collaboration}</span>
           )}
         </div>
 
