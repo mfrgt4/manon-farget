@@ -301,7 +301,6 @@ export default function ProjectModal({
             <div className="pm-cat">
               <span className="mono pm-k">{LABEL[p.category]}</span>
             </div>
-          </div>
 
           <h2 id="pm-title">{p.title}</h2>
 
