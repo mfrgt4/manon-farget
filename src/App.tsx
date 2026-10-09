@@ -456,7 +456,8 @@ function useTheme() {
 
 // ================= PROJETS =================
 
-const cover = (p: Project) => p.media?.find((m) => m.type === "image")?.src;
+const cover = (p: Project) =>
+  p.thumbnail ?? p.media?.find((m) => m.type === "image")?.src;
 
 const BAND = ["Intégration web", "UI/UX design", "Motion design", "SEO", "Gestion de projet"];
 const ids = nav.map(([id]) => id) as string[];
