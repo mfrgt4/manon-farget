@@ -5,6 +5,26 @@ import { categories, nav, profile, projects, skills, studies, tools } from "./da
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
 
+// ================= SONS =================
+
+const buttonSound = new Audio("/sounds/Click-buttons.mp3");
+const projectSound = new Audio("/sounds/Click-projets.mp3");
+
+buttonSound.volume = 0.08;
+projectSound.volume = 0.12;
+
+function playButtonClick() {
+  buttonSound.currentTime = 0;
+  buttonSound.play().catch(() => {});
+}
+
+function playProjectClick() {
+  projectSound.currentTime = 0;
+  projectSound.play().catch(() => {});
+}
+
+// ================= TEXTE ANIMÉ =================
+
 function useTyped(words: string[]) {
   const [txt, setTxt] = useState("");
 
@@ -36,6 +56,8 @@ function useTyped(words: string[]) {
 
   return txt;
 }
+
+// ================= EFFETS =================
 
 function useEffects() {
   useEffect(() => {
@@ -69,7 +91,6 @@ function useEffects() {
 
       c.style.setProperty("--mx", e.clientX - r.left + "px");
       c.style.setProperty("--my", e.clientY - r.top + "px");
-
     };
 
     window.addEventListener("pointermove", onMove);
@@ -88,7 +109,9 @@ function useActive(ids: string[]) {
     const so = new IntersectionObserver(
       (es) =>
         es.forEach(
-          (e) => e.isIntersecting && setActive(e.target.id === "competences" ? "a-propos" : e.target.id)
+          (e) =>
+            e.isIntersecting &&
+            setActive(e.target.id === "competences" ? "a-propos" : e.target.id)
         ),
       { rootMargin: "-45% 0px -50% 0px" }
     );
@@ -146,139 +169,293 @@ function Count({ to }: { to: number }) {
   return <span ref={ref}>0</span>;
 }
 
-// Parallaxe de la bannière : la souris décale légèrement chaque élément (variables CSS --px / --py)
+// ================= PARALLAXE =================
+
 function useHeroParallax() {
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const hero = document.getElementById("hero");
     if (!hero) return;
+
     const m = (e: PointerEvent) => {
       hero.style.setProperty("--px", String(e.clientX / innerWidth - 0.5));
       hero.style.setProperty("--py", String(e.clientY / innerHeight - 0.5));
     };
+
     addEventListener("pointermove", m);
     return () => removeEventListener("pointermove", m);
   }, []);
 }
 
-// Barre de progression + points du parcours : se remplissent au fil du scroll
+// ================= TIMELINE =================
+
 function useTimeline() {
   useEffect(() => {
     const tl = document.querySelector<HTMLElement>(".tl");
     if (!tl) return;
+
     const items = [...tl.querySelectorAll<HTMLElement>(".it")];
     let tick = false;
+
     const update = () => {
       tick = false;
       const y = innerHeight * 0.62;
       const r = tl.getBoundingClientRect();
-      tl.style.setProperty("--tl", String(Math.min(1, Math.max(0, (y - r.top) / r.height))));
-      items.forEach((it) => it.classList.toggle("reached", it.getBoundingClientRect().top + 30 < y));
+
+      tl.style.setProperty(
+        "--tl",
+        String(Math.min(1, Math.max(0, (y - r.top) / r.height)))
+      );
+
+      items.forEach((it) =>
+        it.classList.toggle("reached", it.getBoundingClientRect().top + 30 < y)
+      );
     };
-    const onScroll = () => { if (!tick) { tick = true; requestAnimationFrame(update); } };
+
+    const onScroll = () => {
+      if (!tick) {
+        tick = true;
+        requestAnimationFrame(update);
+      }
+    };
+
     addEventListener("scroll", onScroll, { passive: true });
     addEventListener("resize", onScroll);
     update();
-    return () => { removeEventListener("scroll", onScroll); removeEventListener("resize", onScroll); };
+
+    return () => {
+      removeEventListener("scroll", onScroll);
+      removeEventListener("resize", onScroll);
+    };
   }, []);
 }
 
-// Inclinaison 3D ultra fluide : lissage basé sur le temps (identique à 60 ou 144 Hz), retour au repos plus lent que l'aller.
-// La variable CSS --p (0 → 1) pilote aussi les effets de survol : tout bouge en même temps, sans à-coup.
+// ================= INCLINAISON 3D =================
+
 function useTilt() {
   useEffect(() => {
-    if (!matchMedia("(hover:hover)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    type S = { rx: number; ry: number; p: number; tx: number; ty: number; tp: number; max: number; persp: string };
+    if (
+      !matchMedia("(hover:hover)").matches ||
+      matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) return;
+
+    type S = {
+      rx: number;
+      ry: number;
+      p: number;
+      tx: number;
+      ty: number;
+      tp: number;
+      max: number;
+      persp: string;
+    };
+
     const map = new Map<HTMLElement, S>();
     let raf = 0, last = 0, cur: HTMLElement | null = null;
+
     const loop = (t: number) => {
-      const dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
+      const dt = Math.min(0.05, (t - (last || t)) / 1000);
+      last = t;
       let busy = false;
+
       map.forEach((s, el) => {
         const on = s.tp > 0;
         const kt = 1 - Math.exp(-dt / (on ? 0.09 : 0.3));
         const kp = 1 - Math.exp(-dt / (on ? 0.2 : 0.35));
-        s.rx += (s.tx - s.rx) * kt; s.ry += (s.ty - s.ry) * kt; s.p += (s.tp - s.p) * kp;
+
+        s.rx += (s.tx - s.rx) * kt;
+        s.ry += (s.ty - s.ry) * kt;
+        s.p += (s.tp - s.p) * kp;
+
         if (!on && Math.abs(s.rx) < 0.01 && Math.abs(s.ry) < 0.01 && s.p < 0.001) {
-          el.style.transform = ""; el.style.removeProperty("--p"); map.delete(el); return;
+          el.style.transform = "";
+          el.style.removeProperty("--p");
+          map.delete(el);
+          return;
         }
-        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-6 * s.p).toFixed(3)}px) scale(${(1 + 0.015 * s.p).toFixed(4)})`;
+
+        el.style.transform =
+          `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-6 * s.p).toFixed(3)}px) scale(${(1 + 0.015 * s.p).toFixed(4)})`;
+
         el.style.setProperty("--p", s.p.toFixed(4));
         busy = true;
       });
-      if (busy) raf = requestAnimationFrame(loop); else { raf = 0; last = 0; }
+
+      if (busy) {
+        raf = requestAnimationFrame(loop);
+      } else {
+        raf = 0;
+        last = 0;
+      }
     };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
-    const release = (el: HTMLElement) => { const s = map.get(el); if (s) { s.tx = 0; s.ty = 0; s.tp = 0; } };
+
+    const kick = () => {
+      if (!raf) raf = requestAnimationFrame(loop);
+    };
+
+    const release = (el: HTMLElement) => {
+      const s = map.get(el);
+      if (s) {
+        s.tx = 0;
+        s.ty = 0;
+        s.tp = 0;
+      }
+    };
+
     const move = (e: PointerEvent) => {
-      const el = (e.target as HTMLElement).closest?.<HTMLElement>("[data-tilt]") ?? null;
-      if (cur && cur !== el) { release(cur); kick(); }
+      const el =
+        (e.target as HTMLElement).closest<HTMLElement>("[data-tilt]") ?? null;
+
+      if (cur && cur !== el) {
+        release(cur);
+        kick();
+      }
+
       cur = el;
       if (!el) return;
+
       const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+
       let s = map.get(el);
-      if (!s) { s = { rx: 0, ry: 0, p: 0, tx: 0, ty: 0, tp: 0, max: Number(el.dataset.tilt) || 8, persp: el.dataset.persp === "none" ? "" : "perspective(900px) " }; map.set(el, s); }
-      s.ty = x * s.max * 2; s.tx = -y * s.max * 2; s.tp = 1;
-      el.style.setProperty("--gx", (x + 0.5) * 100 + "%"); el.style.setProperty("--gy", (y + 0.5) * 100 + "%");
+
+      if (!s) {
+        s = {
+          rx: 0,
+          ry: 0,
+          p: 0,
+          tx: 0,
+          ty: 0,
+          tp: 0,
+          max: Number(el.dataset.tilt) || 8,
+          persp: el.dataset.persp === "none" ? "" : "perspective(900px) ",
+        };
+        map.set(el, s);
+      }
+
+      s.ty = x * s.max * 2;
+      s.tx = -y * s.max * 2;
+      s.tp = 1;
+
+      el.style.setProperty("--gx", (x + 0.5) * 100 + "%");
+      el.style.setProperty("--gy", (y + 0.5) * 100 + "%");
+
       kick();
     };
-    const out = (e: PointerEvent) => { if (!e.relatedTarget && cur) { release(cur); cur = null; kick(); } };
-    addEventListener("pointermove", move); document.addEventListener("pointerout", out);
-    return () => { cancelAnimationFrame(raf); removeEventListener("pointermove", move); document.removeEventListener("pointerout", out); };
+
+    const out = (e: PointerEvent) => {
+      if (!e.relatedTarget && cur) {
+        release(cur);
+        cur = null;
+        kick();
+      }
+    };
+
+    addEventListener("pointermove", move);
+    document.addEventListener("pointerout", out);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      removeEventListener("pointermove", move);
+      document.removeEventListener("pointerout", out);
+    };
   }, []);
 }
 
-// Apparition « aesthetic » des éléments .aes quand ils entrent dans l'écran (se relance quand le filtre change)
+// ================= APPARITION DES ÉLÉMENTS =================
+
 function useAes(dep: string) {
   useEffect(() => {
     const io = new IntersectionObserver(
-      (es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }),
+      (es) =>
+        es.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            io.unobserve(e.target);
+          }
+        }),
       { threshold: 0.18, rootMargin: "0px 0px -6% 0px" }
     );
+
     document.querySelectorAll(".aes:not(.in)").forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, [dep]);
 }
 
-// Clic sur un lien d'ancre (#projets…) : la section s'arrête pile au centre de l'écran
+// ================= LIENS D'ANCRE =================
+
 function useAnchorCenter() {
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+
       const a = (e.target as HTMLElement).closest?.<HTMLAnchorElement>('a[href^="#"]');
       const id = a?.getAttribute("href")?.slice(1);
       const sec = id ? document.getElementById(id) : null;
+
       if (!sec) return;
+
       e.preventDefault();
-      const top = scrollY + sec.getBoundingClientRect().top, h = sec.offsetHeight;
-      scrollTo({ top: Math.max(0, h <= innerHeight ? top - (innerHeight - h) / 2 : top), behavior: "smooth" });
+
+      const top = scrollY + sec.getBoundingClientRect().top;
+      const h = sec.offsetHeight;
+
+      scrollTo({
+        top: Math.max(0, h <= innerHeight ? top - (innerHeight - h) / 2 : top),
+        behavior: "smooth",
+      });
+
       history.replaceState(null, "", "#" + id);
     };
+
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
   }, []);
 }
 
-// Thème jour / sombre : mémorisé dans le navigateur, transition en fondu quand le navigateur sait le faire
+// ================= THÈME =================
+
 type Theme = "light" | "dark";
+
 function useTheme() {
-  const [theme, setTheme] = useState<Theme>(() => (document.documentElement.dataset.theme === "dark" ? "dark" : "light"));
+  const [theme, setTheme] = useState<Theme>(() =>
+    document.documentElement.dataset.theme === "dark" ? "dark" : "light"
+  );
+
   const choose = (next: Theme) => {
     if (next === theme) return;
+
     const apply = () => {
       document.documentElement.dataset.theme = next;
       setTheme(next);
-      try { localStorage.setItem("theme", next); } catch { /* stockage indisponible */ }
+      try {
+        localStorage.setItem("theme", next);
+      } catch {
+        /* stockage indisponible */
+      }
     };
-    const d = document as Document & { startViewTransition?: (cb: () => void) => unknown };
-    if (d.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) d.startViewTransition(apply);
-    else apply();
+
+    const d = document as Document & {
+      startViewTransition?: (cb: () => void) => unknown;
+    };
+
+    if (
+      d.startViewTransition &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      d.startViewTransition(apply);
+    } else {
+      apply();
+    }
   };
+
   return [theme, choose] as const;
 }
 
-// Image de couverture d'un projet : sa première image (sinon l'emoji)
+// ================= PROJETS =================
+
 const cover = (p: Project) => p.media?.find((m) => m.type === "image")?.src;
 
 const BAND = ["Intégration web", "UI/UX design", "Motion design", "SEO", "Gestion de projet"];
@@ -287,6 +464,8 @@ const ids = nav.map(([id]) => id) as string[];
 const delay = (d: number) =>
   ({ "--d": d + "s" } as React.CSSProperties);
 
+// ================= COMPOSANT PRINCIPAL =================
+
 export default function App() {
   const active = useActive(ids);
 
@@ -294,16 +473,17 @@ export default function App() {
   const [cat, setCat] = useState<Category>("perso");
   const [type, setType] = useState("all");
 
-  // Projets universitaires : classés par type. Les types se déduisent de data.ts.
   const univ = projects.filter((p) => p.category === "universitaire");
   const typeOf = (p: Project) => p.type ?? "Autre";
   const types = Array.from(new Set(univ.map(typeOf)));
+
   const groups: [string, Project[]][] =
     cat === "perso"
       ? [["", projects.filter((p) => p.category === "perso")]]
       : type === "all"
         ? types.map((t) => [t, univ.filter((p) => typeOf(p) === t)] as [string, Project[]])
         : [["", univ.filter((p) => typeOf(p) === type)]];
+
   const shown = groups.flatMap((g) => g[1]);
 
   useEffects();
@@ -312,25 +492,20 @@ export default function App() {
   useTilt();
   useAes(cat + "|" + type);
   useAnchorCenter();
+
   const [theme, chooseTheme] = useTheme();
   const [sel, setSel] = useState(0);
 
-
   const send = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    playButtonClick();
 
     const f = new FormData(e.currentTarget);
 
-    const subject = encodeURIComponent(
-      "Contact portfolio — " + f.get("name")
-    );
+    const subject = encodeURIComponent("Contact portfolio — " + f.get("name"));
+    const body = encodeURIComponent(f.get("message") + "\n\n" + f.get("email"));
 
-    const body = encodeURIComponent(
-      f.get("message") + "\n\n" + f.get("email")
-    );
-
-    location.href =
-      `mailto:${profile.email}?subject=${subject}&body=${body}`;
+    location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -341,25 +516,47 @@ export default function App() {
       <nav>
         <div className="in">
           {nav.map(([id, label]) => (
-            <a
-              key={id}
-              href={"#" + id}
-              className={active === id ? "on" : ""}
-            >
+            <a key={id} href={"#" + id} className={active === id ? "on" : ""}>
               {label}
             </a>
           ))}
         </div>
       </nav>
 
-      <div className="theme-toggle" role="group" aria-label="Thème du site" style={{ "--i": theme === "dark" ? 1 : 0 } as React.CSSProperties}>
+      <div
+        className="theme-toggle"
+        role="group"
+        aria-label="Thème du site"
+        style={{ "--i": theme === "dark" ? 1 : 0 } as React.CSSProperties}
+      >
         <span className="tt-thumb" aria-hidden="true" />
-        <button className="tt-btn" aria-pressed={theme === "light"} onClick={() => chooseTheme("light")}>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+
+        <button
+          className="tt-btn"
+          aria-pressed={theme === "light"}
+          onClick={() => {
+            playButtonClick();
+            chooseTheme("light");
+          }}
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </svg>
           <span>Jour</span>
         </button>
-        <button className="tt-btn" aria-pressed={theme === "dark"} onClick={() => chooseTheme("dark")}>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+
+        <button
+          className="tt-btn"
+          aria-pressed={theme === "dark"}
+          onClick={() => {
+            playButtonClick();
+            chooseTheme("dark");
+          }}
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+          </svg>
           <span>Sombre</span>
         </button>
       </div>
@@ -395,16 +592,22 @@ export default function App() {
             <div className="arch">
               <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
             </div>
+
             <div className="h-badge" aria-hidden="true">
               <svg viewBox="0 0 120 120">
                 <circle cx="60" cy="60" r="60" fill="#d84b7d" />
-                <defs><path id="hb" d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0" /></defs>
+                <defs>
+                  <path id="hb" d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0" />
+                </defs>
                 <text fontSize="10.5" fontWeight="700" fill="#fff" letterSpacing="1">
-                  <textPath href="#hb" textLength="252" lengthAdjust="spacing">DÉVELOPPEUSE WEB • UI/UX • MOTION • </textPath>
+                  <textPath href="#hb" textLength="252" lengthAdjust="spacing">
+                    DÉVELOPPEUSE WEB • UI/UX • MOTION •
+                  </textPath>
                 </text>
                 <text x="60" y="68" textAnchor="middle" fontSize="22" fill="#fff">✦</text>
               </svg>
             </div>
+
             <span className="h-chip c1"><i />React</span>
             <span className="h-chip c2 sage"><i />Figma</span>
             <span className="h-chip c3"><i />After Effects</span>
@@ -414,35 +617,29 @@ export default function App() {
 
         <div className="h-band" aria-hidden="true">
           <div className="h-band-t">
-            {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => <span key={i}>{t}<b>✦</b></span>)}
+            {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => (
+              <span key={i}>{t}<b>✦</b></span>
+            ))}
           </div>
         </div>
       </section>
 
       <section id="a-propos">
         <div className="about">
-
           <div className="rv rv-l" style={delay(0.15)}>
             <p className="tag mono">// à propos</p>
-
             <h2>Un peu plus sur moi.</h2>
 
             <p className="about-p">
-              Je m'appelle Manon et je suis étudiante en 2
-              <sup>e</sup> année de BUT MMI à l'Université Clermont
-              Auvergne, au Puy-en-Velay.
+              Je m'appelle Manon et je suis étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne, au Puy-en-Velay.
             </p>
 
             <p className="about-p">
-              J'aime autant coder une interface que la dessiner ou
-              lui donner vie avec du mouvement : développement web,
-              UI/UX design et motion design sont mes terrains de jeu.
+              J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.
             </p>
 
             <p className="about-p">
-              Je cherche un stage à partir d'avril 2027 pour
-              progresser au sein d'une équipe, et y apporter ma
-              curiosité et mon sens du détail.
+              Je cherche un stage à partir d'avril 2027 pour progresser au sein d'une équipe, et y apporter ma curiosité et mon sens du détail.
             </p>
 
             <div className="chips about-facts">
@@ -455,12 +652,10 @@ export default function App() {
               {[
                 [2, "année de BUT"],
                 [projects.length, "projets"],
-                [tools.length, "outils"]
+                [tools.length, "outils"],
               ].map(([n, l]) => (
                 <div key={l as string}>
-                  <b className="mono">
-                    <Count to={n as number} />
-                  </b>
+                  <b className="mono"><Count to={n as number} /></b>
                   <span>{l}</span>
                 </div>
               ))}
@@ -490,7 +685,6 @@ export default function App() {
             </div>
           </div>
         </div>
-
       </section>
 
       <section id="competences">
@@ -499,6 +693,7 @@ export default function App() {
             <p className="tag mono rv">// 5 compétences clés</p>
             <h2 className="rv">Ce que je sais faire.</h2>
             <p className="sk-note rv">Survole ou touche une ligne pour la découvrir.</p>
+
             <div className="sk-count mono rv">
               <b key={sel}>{String(sel + 1).padStart(2, "0")}</b>
               <span>/ {String(skills.length).padStart(2, "0")}</span>
@@ -514,11 +709,20 @@ export default function App() {
                 style={delay(i * 0.08)}
                 onMouseEnter={() => setSel(i)}
               >
-                <button className="sk-head" aria-expanded={sel === i} onClick={() => setSel(i)} onFocus={() => setSel(i)}>
+                <button
+                  className="sk-head"
+                  aria-expanded={sel === i}
+                  onClick={() => {
+                    playButtonClick();
+                    setSel(i);
+                  }}
+                  onFocus={() => setSel(i)}
+                >
                   <span className="sk-n mono">{String(i + 1).padStart(2, "0")}</span>
                   <span className="sk-t">{s.title}</span>
                   <span className="sk-plus" aria-hidden="true">+</span>
                 </button>
+
                 <div className="sk-body">
                   <div>
                     <p>{s.text}</p>
@@ -553,7 +757,11 @@ export default function App() {
               role="tab"
               aria-selected={cat === id}
               className={cat === id ? "on" : ""}
-              onClick={() => { setCat(id); setType("all"); }}
+              onClick={() => {
+                playButtonClick();
+                setCat(id);
+                setType("all");
+              }}
             >
               {label} <span className="mono">({projects.filter((p) => p.category === id).length})</span>
             </button>
@@ -570,10 +778,15 @@ export default function App() {
                   tabIndex={cat === "universitaire" ? 0 : -1}
                   aria-selected={type === t}
                   className={type === t ? "on" : ""}
-                  onClick={() => setType(t)}
+                  onClick={() => {
+                    playButtonClick();
+                    setType(t);
+                  }}
                 >
                   {t === "all" ? "Tous les types" : t}{" "}
-                  <span className="mono">({t === "all" ? univ.length : univ.filter((p) => typeOf(p) === t).length})</span>
+                  <span className="mono">
+                    ({t === "all" ? univ.length : univ.filter((p) => typeOf(p) === t).length})
+                  </span>
                 </button>
               ))}
             </div>
@@ -589,6 +802,7 @@ export default function App() {
                   <small>({list.length})</small>
                 </h3>
               )}
+
               <div className="grid3">
                 {list.map((p, i) => (
                   <a
@@ -599,14 +813,20 @@ export default function App() {
                     style={delay((i % 3) * 0.08)}
                     onClick={(e) => {
                       e.preventDefault();
+                      playProjectClick();
                       setOpen(shown.indexOf(p));
                     }}
                   >
                     <span className="arrow">↗</span>
-                    <div className="thumb" style={{ "--c": p.color } as React.CSSProperties}>{cover(p) ? <img src={cover(p)} alt="" loading="lazy" /> : p.icon}</div>
+
+                    <div className="thumb" style={{ "--c": p.color } as React.CSSProperties}>
+                      {cover(p) ? <img src={cover(p)} alt="" loading="lazy" /> : p.icon}
+                    </div>
+
                     <span className="when mono">{p.kind}</span>
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
+
                     <div className="chips">
                       {p.stack.map((c) => <i key={c} className="mono">{c}</i>)}
                     </div>
@@ -624,6 +844,7 @@ export default function App() {
 
         <div className="tl">
           <span className="tl-head" aria-hidden="true" />
+
           {studies.map((s, i) => (
             <div
               key={s.title}
@@ -631,17 +852,7 @@ export default function App() {
               style={delay(i * 0.08)}
             >
               <span className="when mono">{s.when}</span>
-
-              <h3
-                style={
-                  s.accent
-                    ? { color: "var(--acc)" }
-                    : undefined
-                }
-              >
-                {s.title}
-              </h3>
-
+              <h3 style={s.accent ? { color: "var(--acc)" } : undefined}>{s.title}</h3>
               <p>{s.text}</p>
             </div>
           ))}
@@ -655,25 +866,9 @@ export default function App() {
         <div className="bento">
           <div className="cell s2 rv">
             <form onSubmit={send}>
-              <input
-                name="name"
-                placeholder="Ton nom"
-                required
-              />
-
-              <input
-                name="email"
-                type="email"
-                placeholder="Ton email"
-                required
-              />
-
-              <textarea
-                name="message"
-                rows={4}
-                placeholder="Ton message"
-                required
-              />
+              <input name="name" placeholder="Ton nom" required />
+              <input name="email" type="email" placeholder="Ton email" required />
+              <textarea name="message" rows={4} placeholder="Ton message" required />
 
               <button className="btn p" type="submit">
                 Envoyer ↗
@@ -681,41 +876,24 @@ export default function App() {
             </form>
           </div>
 
-          <div
-            className="cell s2 rv"
-            style={delay(0.1)}
-          >
+          <div className="cell s2 rv" style={delay(0.1)}>
             <div className="links">
               <a href={"mailto:" + profile.email}>
                 <span>Email</span>
-                <span className="mono">
-                  {profile.email}
-                </span>
+                <span className="mono">{profile.email}</span>
               </a>
 
-              <a
-                href={profile.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
                 <span>LinkedIn</span>
                 <span>↗</span>
               </a>
 
-              <a
-                href={profile.github}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={profile.github} target="_blank" rel="noopener noreferrer">
                 <span>GitHub</span>
                 <span>↗</span>
               </a>
 
-              <a
-                href={profile.cv}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={profile.cv} target="_blank" rel="noopener noreferrer">
                 <span>CV (PDF)</span>
                 <span>↓</span>
               </a>
@@ -734,12 +912,8 @@ export default function App() {
       )}
 
       <footer className="mono">
-        © 2026 {profile.name} · Fait avec React, three.js et
-        Vercel ·{" "}
-        <a
-          href="#accueil"
-          style={{ color: "var(--acc)" }}
-        >
+        © 2026 {profile.name} · Fait avec React, three.js et Vercel ·{" "}
+        <a href="#accueil" style={{ color: "var(--acc)" }}>
           ↑ haut
         </a>
       </footer>
