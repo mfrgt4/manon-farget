@@ -578,7 +578,7 @@ export default function App() {
             </h1>
 
             <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
-              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne au Puy-en-Velay).
+              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne au Puy-en-Velay.
               Je mêle créativité, développement web et design pour donner vie à mes idées.
             </p>
 
