@@ -30,6 +30,18 @@ function View({ s, p }: { s: Slide; p: Project }) {
     );
   }
 
+
+if (s.type === "video" && s.src.includes("youtube.com/embed/")) {
+  return (
+    <iframe
+      src={s.src}
+      title={s.alt}
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowFullScreen
+    />
+  );
+}
+
 if (s.type === "video") {
   return (
     <video
@@ -37,12 +49,14 @@ if (s.type === "video") {
       poster={s.poster}
       controls
       autoPlay
+      playsInline
       ref={(video) => {
         if (video) video.volume = 0.15;
       }}
     />
   );
 }
+
 
   const label =
     s.type === "image"

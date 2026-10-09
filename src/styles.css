@@ -146,6 +146,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset
 @keyframes pmSl{from{opacity:0;transform:translateX(var(--dx,0))}}
 .pm-view{aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:0 25px 70px rgba(23,23,23,.12)}
 .pm-view img,.pm-view video{width:100%;height:100%;object-fit:cover;display:block}
+.pm-view iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
 .ph{width:100%;height:100%;display:grid;place-content:center;justify-items:center;gap:12px;background:radial-gradient(circle at 30% 20%,color-mix(in srgb,var(--c) 35%,transparent),transparent 70%),var(--card)}
 .ph span{font-size:clamp(56px,10vw,110px)}
 .ph small{color:var(--mute)}
