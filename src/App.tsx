@@ -24,8 +24,6 @@ function playProjectClick() {
   projectSound.play().catch(() => {});
 }
 
-import { useEffect } from "react";
-
 // ================= TEXTE ANIMÉ =================
 
 function useTyped(words: string[]) {
