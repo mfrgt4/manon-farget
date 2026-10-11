@@ -1204,31 +1204,6 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
 }
 
 
-.pm-swipe-hint {
-  display: none;
-}
-
-@media (max-width: 700px) {
-  .pm-swipe-hint {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    font-size: 12px;
-    line-height: 1.5;
-    text-align: center;
-  }
-
-  .pm-swipe-hint span {
-    font-size: 22px;
-    line-height: 1;
-    color: var(--acc);
-  }
-}
-
-
-
 /* Masquer la barre de navigation des projets sur téléphone */
 @media (max-width: 700px) {
   .pm-bar {
