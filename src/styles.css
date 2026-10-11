@@ -1082,38 +1082,17 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
 }
 
 
-/* Bouton hamburger : caché sur ordinateur */
-.hamburger {
-  display: none;
-  border: 0;
-  background: transparent;
-  padding: 8px;
-  cursor: pointer;
-}
 
-.hamburger span {
-  display: block;
-  width: 24px;
-  height: 2px;
-  margin: 5px 0;
-  border-radius: 2px;
-  background: var(--acc, #D13670);
-  transition: transform 0.25s ease, opacity 0.25s ease;
-}
-
-.nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Version téléphone */
 @media (max-width: 768px) {
-  .nav-inner {
+  nav .nav-inner {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
   }
 
-  .hamburger {
+  nav .hamburger {
     display: block;
     position: relative;
     z-index: 1002;
@@ -1122,11 +1101,12 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
   nav .in {
     display: none;
     position: absolute;
-    z-index: 1001;
     top: calc(100% + 12px);
-    left: 0;
+    left: auto;
     right: 0;
-    padding: 14px;
+    width: min(260px, calc(100vw - 40px));
+    box-sizing: border-box;
+    padding: 12px;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
@@ -1141,7 +1121,12 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
   }
 
   nav .in a {
-    padding: 14px 10px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 12px;
+    white-space: normal;
+    overflow-wrap: break-word;
     color: var(--acc, #D13670);
     border-bottom: 1px solid #f2d4e1;
     text-decoration: none;
@@ -1149,17 +1134,5 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
 
   nav .in a:last-child {
     border-bottom: 0;
-  }
-
-  nav.menu-open .hamburger span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-  }
-
-  nav.menu-open .hamburger span:nth-child(2) {
-    opacity: 0;
-  }
-
-  nav.menu-open .hamburger span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
   }
 }
