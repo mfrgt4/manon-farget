@@ -7,7 +7,6 @@ import Particles from "./Particles";
 
 
 // ================= SONS =================
-
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
 const projectSound = new Audio("/sounds/Click-projets.mp3");
 
@@ -469,6 +468,8 @@ const delay = (d: number) =>
 // ================= COMPOSANT PRINCIPAL =================
 
 export default function App() {
+  const [folderOpened, setFolderOpened] = useState(false);
+  
   const active = useActive(ids);
 
   const [open, setOpen] = useState<number | null>(null);
