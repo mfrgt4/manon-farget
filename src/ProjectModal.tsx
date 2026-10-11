@@ -227,6 +227,9 @@ export default function ProjectModal({
         className="pm-wrap"
         style={{ "--dx": `${dir * 40}px` } as CSSProperties}
       >
+        <p className="pm-swipe-hint">
+          Swipe vers la gauche ou la droite pour changer de projet
+        </p>
         {/* Visuels du projet */}
         <div className="pm-slide" key={p.title + "-media"}>
           <div
