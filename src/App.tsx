@@ -799,25 +799,25 @@ export default function App() {
           </div>
         ) : (
           <div className="folder-list">
-            <button
-              type="button"
-              className="back-to-folders"
-              onClick={() => {
-                playButtonClick();
-                setFolderOpened(false);
-                setType("all");
-              }}
-            >
-              ← Retour aux dossiers
-            </button>
+            <div className="folder-head">
+              <button
+                type="button"
+                className="back-to-folders"
+                onClick={() => {
+                  playButtonClick();
+                  setFolderOpened(false);
+                  setType("all");
+                }}
+              >
+                ← Retour aux dossiers
+              </button>
 
-            <div className="tabs cats" role="tablist" aria-label="Catégorie de projets">
-              {categories.map(([id, label]) => (
-                <button key={id} type="button" role="tab" aria-selected={cat === id} className={cat === id ? "on" : ""}
-                  onClick={() => { playButtonClick(); setCat(id); setType("all"); }}>
-                  {label} <span className="mono">({projects.filter((p) => p.category === id).length})</span>
-                </button>
-              ))}
+              <h3 className="folder-title">
+                {categories.find(([id]) => id === cat)?.[1]}{" "}
+                <span className="mono">
+                  ({projects.filter((p) => p.category === cat).length})
+                </span>
+              </h3>
             </div>
 
             <div className={`subtabs${cat === "universitaire" ? " open" : ""}`}>
