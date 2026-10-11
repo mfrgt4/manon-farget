@@ -740,6 +740,105 @@ export default function App() {
         <p className="tag mono rv">// 04</p>
         <h2 className="rv">Mes projets.</h2>
 
+{/* ================= DOSSIERS PROJETS ================= */}
+<div className="project-folders rv">
+
+  {/* DOSSIER PERSONNEL */}
+  <button
+    type="button"
+    className="project-folder folder-personal"
+    onClick={() => {
+      playButtonClick();
+      setCat("personnel");
+      setType("all");
+      document.getElementById("projets")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }}
+  >
+    <div className="folder-stack">
+      {projects
+        .filter((p) => p.category === "personnel")
+        .slice(0, 3)
+        .map((p, i) => (
+          <div
+            className={`folder-preview preview-${i + 1}`}
+            key={p.title}
+          >
+            {cover(p) ? (
+              <img src={cover(p)} alt="" />
+            ) : (
+              <span>{p.icon}</span>
+            )}
+          </div>
+        ))}
+
+      <div className="folder-back" />
+      <div className="folder-tab" />
+      <div className="folder-front">
+        <span className="folder-emoji">✳</span>
+        <span className="folder-open">↗</span>
+      </div>
+    </div>
+
+    <div className="folder-caption">
+      <span className="folder-name">Projets personnels</span>
+      <span className="folder-count mono">
+        {projects.filter((p) => p.category === "personnel").length} créations
+      </span>
+    </div>
+  </button>
+
+  {/* DOSSIER UNIVERSITAIRE */}
+  <button
+    type="button"
+    className="project-folder folder-university"
+    onClick={() => {
+      playButtonClick();
+      setCat("universitaire");
+      setType("all");
+      document.getElementById("projets")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }}
+  >
+    <div className="folder-stack">
+      {projects
+        .filter((p) => p.category === "universitaire")
+        .slice(0, 3)
+        .map((p, i) => (
+          <div
+            className={`folder-preview preview-${i + 1}`}
+            key={p.title}
+          >
+            {cover(p) ? (
+              <img src={cover(p)} alt="" />
+            ) : (
+              <span>{p.icon}</span>
+            )}
+          </div>
+        ))}
+
+      <div className="folder-back" />
+      <div className="folder-tab" />
+      <div className="folder-front">
+        <span className="folder-emoji">✿</span>
+        <span className="folder-open">↗</span>
+      </div>
+    </div>
+
+    <div className="folder-caption">
+      <span className="folder-name">Projets universitaires</span>
+      <span className="folder-count mono">
+        {projects.filter((p) => p.category === "universitaire").length} créations
+      </span>
+    </div>
+  </button>
+
+</div>
+
         <div className="tabs cats rv" role="tablist" aria-label="Catégorie de projets">
           {categories.map(([id, label]) => (
             <button
