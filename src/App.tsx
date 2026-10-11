@@ -531,14 +531,13 @@ export default function App() {
       <Particles />
       <div id="glow" />
 
-
-<nav className={menuOpen ? "menu-open" : ""}>
+<nav>
   <div className="nav-inner">
-    <div className="in">
+    <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
       {nav.map(([id, label]) => (
         <a
           key={id}
-          href={"#" + id}
+          href={`#${id}`}
           className={active === id ? "on" : ""}
           onClick={() => setMenuOpen(false)}
         >
@@ -549,7 +548,7 @@ export default function App() {
 
     <button
       type="button"
-      className="hamburger"
+      className="mobile-menu-btn"
       aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
       aria-expanded={menuOpen}
       onClick={() => setMenuOpen(!menuOpen)}
