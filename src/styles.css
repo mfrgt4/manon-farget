@@ -776,3 +776,11 @@ html[data-theme="dark"] .pm-view.contain {
     linear-gradient(45deg, #232429 25%, transparent 25%, transparent 75%, #232429 75%),
     linear-gradient(45deg, #232429 25%, transparent 25%, transparent 75%, #232429 75%);
 }
+
+/* Toutes les cartes projets ont la même hauteur, d'une ligne à l'autre */
+.grid3 { grid-auto-rows: 1fr; }
+
+/* Sur téléphone (1 colonne), pas besoin : chaque carte garde sa hauteur */
+@media (max-width: 560px) {
+  .grid3 { grid-auto-rows: auto; }
+}
