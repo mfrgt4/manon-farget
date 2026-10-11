@@ -737,111 +737,77 @@ export default function App() {
         <WordSphere words={tools} />
       </section>
 
+
       <section id="projets">
         <p className="tag mono rv">// 04</p>
         <h2 className="rv">Mes projets.</h2>
 
-        {/* ================= DOSSIERS PROJETS ================= */}
-
-        {!folderOpened && (
+        {!folderOpened ? (
           <div className="project-folders rv">
+            {[
+              {
+                id: "perso" as Category,
+                name: "Projets personnels",
+                emoji: "✳",
+                className: "folder-personal",
+              },
+              {
+                id: "universitaire" as Category,
+                name: "Projets universitaires",
+                emoji: "✿",
+                className: "folder-university",
+              },
+            ].map((folder) => {
+              const folderProjects = projects.filter(
+                (p) => p.category === folder.id
+              );
 
-            {/* DOSSIER PERSONNEL */}
-            <button
-              type="button"
-              className="project-folder folder-personal"
-              onClick={() => {
-                playButtonClick();
-                setCat("perso");
-                setType("all");
-                setFolderOpened(true);
-              }}
-            >
-              <div className="folder-stack">
-                {projects
-                  .filter((p) => p.category === "perso")
-                  .slice(0, 3)
-                  .map((p, i) => (
-                    <div
-                      className={`folder-preview preview-${i + 1}`}
-                      key={p.title}
-                    >
-                      {cover(p) ? (
-                        <img src={cover(p)} alt="" />
-                      ) : (
-                        <span>{p.icon}</span>
-                      )}
+              return (
+                <button
+                  key={folder.id}
+                  type="button"
+                  className={`project-folder ${folder.className}`}
+                  onClick={() => {
+                    playButtonClick();
+                    setCat(folder.id);
+                    setType("all");
+                    setFolderOpened(true);
+                  }}
+                >
+                  <div className="folder-stack">
+                    {folderProjects.slice(0, 3).map((p, i) => (
+                      <div
+                        className={`folder-preview preview-${i + 1}`}
+                        key={p.title}
+                      >
+                        {cover(p) ? (
+                          <img src={cover(p)} alt="" />
+                        ) : (
+                          <span>{p.icon}</span>
+                        )}
+                      </div>
+                    ))}
+
+                    <div className="folder-back" />
+                    <div className="folder-tab" />
+                    <div className="folder-front">
+                      <span className="folder-emoji">{folder.emoji}</span>
+                      <span className="folder-open">↗</span>
                     </div>
-                  ))}
+                  </div>
 
-                <div className="folder-back" />
-                <div className="folder-tab" />
-                <div className="folder-front">
-                  <span className="folder-emoji">✳</span>
-                  <span className="folder-open">↗</span>
-                </div>
-              </div>
-
-              <div className="folder-caption">
-                <span className="folder-name">Projets personnels</span>
-                <span className="folder-count mono">
-                  {projects.filter((p) => p.category === "perso").length} créations
-                </span>
-              </div>
-            </button>
-
-            {/* DOSSIER UNIVERSITAIRE */}
-            <button
-              type="button"
-              className="project-folder folder-university"
-              onClick={() => {
-                playButtonClick();
-                setCat("universitaire");
-                setType("all");
-                setFolderOpened(true);
-              }}
-            >
-              <div className="folder-stack">
-                {projects
-                  .filter((p) => p.category === "universitaire")
-                  .slice(0, 3)
-                  .map((p, i) => (
-                    <div
-                      className={`folder-preview preview-${i + 1}`}
-                      key={p.title}
-                    >
-                      {cover(p) ? (
-                        <img src={cover(p)} alt="" />
-                      ) : (
-                        <span>{p.icon}</span>
-                      )}
-                    </div>
-                  ))}
-
-                <div className="folder-back" />
-                <div className="folder-tab" />
-                <div className="folder-front">
-                  <span className="folder-emoji">✿</span>
-                  <span className="folder-open">↗</span>
-                </div>
-              </div>
-
-              <div className="folder-caption">
-                <span className="folder-name">Projets universitaires</span>
-                <span className="folder-count mono">
-                  {projects.filter((p) => p.category === "universitaire").length} créations
-                </span>
-              </div>
-            </button>
-
+                  <div className="folder-caption">
+                    <span className="folder-name">{folder.name}</span>
+                    <span className="folder-count mono">
+                      {folderProjects.length} créations
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
-        )}
-
-        {/* ================= CONTENU DES PROJETS ================= */}
-
-        {folderOpened && (
+        ) : (
           <>
-            {/* RETOUR AUX DOSSIERS */}
             <button
               type="button"
               className="back-to-folders"
@@ -854,15 +820,11 @@ export default function App() {
               ← Retour aux dossiers
             </button>
 
-            {/* CATÉGORIES */}
-            <div
-              className="tabs cats rv"
-              role="tablist"
-              aria-label="Catégorie de projets"
-            >
+            <div className="tabs cats" role="tablist" aria-label="Catégorie de projets">
               {categories.map(([id, label]) => (
                 <button
                   key={id}
+                  type="button"
                   role="tab"
                   aria-selected={cat === id}
                   className={cat === id ? "on" : ""}
@@ -880,8 +842,7 @@ export default function App() {
               ))}
             </div>
 
-            {/* SOUS-CATÉGORIES UNIVERSITAIRES */}
-            <div className={"subtabs" + (cat === "universitaire" ? " open" : "")}>
+            <div className={`subtabs${cat === "universitaire" ? " open" : ""}`}>
               <div>
                 <div
                   className="tabs sub"
@@ -891,6 +852,7 @@ export default function App() {
                   {["all", ...types].map((t) => (
                     <button
                       key={t}
+                      type="button"
                       role="tab"
                       tabIndex={cat === "universitaire" ? 0 : -1}
                       aria-selected={type === t}
@@ -914,8 +876,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* GRILLE DE PROJETS */}
-            <div key={cat + "|" + type}>
+            <div key={`${cat}|${type}`}>
               {groups.map(([name, list]) => (
                 <div className="grp" key={name || "all"}>
                   {name && (
@@ -961,9 +922,7 @@ export default function App() {
 
                         <div className="chips">
                           {p.stack.map((c) => (
-                            <i key={c} className="mono">
-                              {c}
-                            </i>
+                            <i key={c} className="mono">{c}</i>
                           ))}
                         </div>
                       </a>
@@ -974,7 +933,8 @@ export default function App() {
             </div>
           </>
         )}
-      </section>  
+      </section>
+
 
       <section id="parcours">
         <p className="tag mono rv">// 05</p>
