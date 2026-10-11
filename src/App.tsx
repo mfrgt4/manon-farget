@@ -749,7 +749,7 @@ export default function App() {
     className="project-folder folder-personal"
     onClick={() => {
       playButtonClick();
-      setCat("personnel");
+      setCat("perso");
       setType("all");
       document.getElementById("projets")?.scrollIntoView({
         behavior: "smooth",
