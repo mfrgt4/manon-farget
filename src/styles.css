@@ -1083,8 +1083,18 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
 
 
 
-/* Bouton hamburger : caché sur ordinateur */
-.hamburger {
+
+/* Navigation */
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+}
+
+/* Hamburger masqué sur ordinateur */
+nav .hamburger {
   display: none;
   border: 0;
   background: transparent;
@@ -1092,7 +1102,7 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
   cursor: pointer;
 }
 
-.hamburger span {
+nav .hamburger span {
   display: block;
   width: 24px;
   height: 2px;
@@ -1102,42 +1112,33 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
-/* Conteneur de navigation */
-.nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Version téléphone */
+/* Mobile */
 @media (max-width: 768px) {
-  .nav-inner {
-    position: relative;
-    display: flex;
+  nav .nav-inner {
     justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    box-sizing: border-box;
+    min-height: 48px;
   }
 
-  .hamburger {
-    display: block;
+  nav .hamburger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
     position: relative;
     z-index: 1002;
-    margin-left: auto;
   }
 
-  /* Menu déroulant aligné à droite */
   nav .in {
-    display: none;
+    display: none !important;
     position: absolute;
-    z-index: 1001;
     top: calc(100% + 12px);
-    left: auto;
     right: 0;
-    width: min(260px, calc(100vw - 40px));
+    left: auto;
+    width: min(260px, calc(100vw - 32px));
+    height: auto;
     box-sizing: border-box;
-    padding: 14px;
+    padding: 12px;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
@@ -1145,11 +1146,11 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
     border: 1px solid #f2d4e1;
     border-radius: 16px;
     box-shadow: 0 12px 30px rgba(209, 54, 112, 0.12);
+    z-index: 1001;
   }
 
-  /* Affichage lorsque le menu est ouvert */
   nav.menu-open .in {
-    display: flex;
+    display: flex !important;
   }
 
   nav .in a {
@@ -1157,7 +1158,6 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
     width: 100%;
     box-sizing: border-box;
     padding: 14px 10px;
-    color: var(--acc, #D13670);
     border-bottom: 1px solid #f2d4e1;
     text-decoration: none;
     white-space: normal;
@@ -1167,7 +1167,6 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
     border-bottom: 0;
   }
 
-  /* Animation du hamburger en croix */
   nav.menu-open .hamburger span:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
   }
@@ -1181,28 +1180,3 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
   }
 }
 
-
-@media (max-width: 768px) {
-  nav .nav-inner {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    min-height: 48px;
-    position: relative;
-  }
-
-  nav .hamburger {
-    display: flex !important;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-left: auto;
-    position: relative;
-    z-index: 1002;
-  }
-
-  nav .hamburger span {
-    flex-shrink: 0;
-  }
-}
