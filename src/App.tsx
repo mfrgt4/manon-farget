@@ -531,6 +531,7 @@ export default function App() {
       <Particles />
       <div id="glow" />
 
+
 <nav className={menuOpen ? "menu-open" : ""}>
   <div className="nav-inner">
     <div className="in">
@@ -559,6 +560,7 @@ export default function App() {
     </button>
   </div>
 </nav>
+
 
       <div
         className="theme-toggle"
