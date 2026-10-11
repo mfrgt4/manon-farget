@@ -111,12 +111,12 @@ function useActive(ids: string[]) {
         es.forEach(
           (e) =>
             e.isIntersecting &&
-            setActive(e.target.id === "competences" ? "a-propos" : e.target.id)
+            setActive(e.target.id === "accueil" ? null : e.target.id === "competences" ? "a-propos" : e.target.id)
         ),
       { rootMargin: "-45% 0px -50% 0px" }
     );
 
-    [...ids, "competences"].forEach((id) => {
+    ["accueil", ...ids, "competences"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) so.observe(el);
     });
