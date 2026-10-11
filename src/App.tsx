@@ -740,239 +740,239 @@ export default function App() {
         <p className="tag mono rv">// 04</p>
         <h2 className="rv">Mes projets.</h2>
 
-{/* ================= DOSSIERS PROJETS ================= */}
+        {/* ================= DOSSIERS PROJETS ================= */}
 
-{!folderOpened && (
-  <div className="project-folders rv">
+        {!folderOpened && (
+          <div className="project-folders rv">
 
-    {/* DOSSIER PERSONNEL */}
-    <button
-      type="button"
-      className="project-folder folder-personal"
-      onClick={() => {
-        playButtonClick();
-        setCat("perso");
-        setType("all");
-        setFolderOpened(true);
-      }}
-    >
-      <div className="folder-stack">
-        {projects
-          .filter((p) => p.category === "perso")
-          .slice(0, 3)
-          .map((p, i) => (
-            <div
-              className={`folder-preview preview-${i + 1}`}
-              key={p.title}
-            >
-              {cover(p) ? (
-                <img src={cover(p)} alt="" />
-              ) : (
-                <span>{p.icon}</span>
-              )}
-            </div>
-          ))}
-
-        <div className="folder-back" />
-        <div className="folder-tab" />
-        <div className="folder-front">
-          <span className="folder-emoji">✳</span>
-          <span className="folder-open">↗</span>
-        </div>
-      </div>
-
-      <div className="folder-caption">
-        <span className="folder-name">Projets personnels</span>
-        <span className="folder-count mono">
-          {projects.filter((p) => p.category === "perso").length} créations
-        </span>
-      </div>
-    </button>
-
-    {/* DOSSIER UNIVERSITAIRE */}
-    <button
-      type="button"
-      className="project-folder folder-university"
-      onClick={() => {
-        playButtonClick();
-        setCat("universitaire");
-        setType("all");
-        setFolderOpened(true);
-      }}
-    >
-      <div className="folder-stack">
-        {projects
-          .filter((p) => p.category === "universitaire")
-          .slice(0, 3)
-          .map((p, i) => (
-            <div
-              className={`folder-preview preview-${i + 1}`}
-              key={p.title}
-            >
-              {cover(p) ? (
-                <img src={cover(p)} alt="" />
-              ) : (
-                <span>{p.icon}</span>
-              )}
-            </div>
-          ))}
-
-        <div className="folder-back" />
-        <div className="folder-tab" />
-        <div className="folder-front">
-          <span className="folder-emoji">✿</span>
-          <span className="folder-open">↗</span>
-        </div>
-      </div>
-
-      <div className="folder-caption">
-        <span className="folder-name">Projets universitaires</span>
-        <span className="folder-count mono">
-          {projects.filter((p) => p.category === "universitaire").length} créations
-        </span>
-      </div>
-    </button>
-
-  </div>
-)}
-
-{/* ================= CONTENU DES PROJETS ================= */}
-
-{folderOpened && (
-  <>
-    {/* RETOUR AUX DOSSIERS */}
-    <button
-      type="button"
-      className="back-to-folders"
-      onClick={() => {
-        playButtonClick();
-        setFolderOpened(false);
-        setType("all");
-      }}
-    >
-      ← Retour aux dossiers
-    </button>
-
-    {/* CATÉGORIES */}
-    <div
-      className="tabs cats rv"
-      role="tablist"
-      aria-label="Catégorie de projets"
-    >
-      {categories.map(([id, label]) => (
-        <button
-          key={id}
-          role="tab"
-          aria-selected={cat === id}
-          className={cat === id ? "on" : ""}
-          onClick={() => {
-            playButtonClick();
-            setCat(id);
-            setType("all");
-          }}
-        >
-          {label}{" "}
-          <span className="mono">
-            ({projects.filter((p) => p.category === id).length})
-          </span>
-        </button>
-      ))}
-    </div>
-
-    {/* SOUS-CATÉGORIES UNIVERSITAIRES */}
-    <div className={"subtabs" + (cat === "universitaire" ? " open" : "")}>
-      <div>
-        <div
-          className="tabs sub"
-          role="tablist"
-          aria-label="Type de projet universitaire"
-        >
-          {["all", ...types].map((t) => (
+            {/* DOSSIER PERSONNEL */}
             <button
-              key={t}
-              role="tab"
-              tabIndex={cat === "universitaire" ? 0 : -1}
-              aria-selected={type === t}
-              className={type === t ? "on" : ""}
+              type="button"
+              className="project-folder folder-personal"
               onClick={() => {
                 playButtonClick();
-                setType(t);
+                setCat("perso");
+                setType("all");
+                setFolderOpened(true);
               }}
             >
-              {t === "all" ? "Tous les types" : t}{" "}
-              <span className="mono">
-                (
-                {t === "all"
-                  ? univ.length
-                  : univ.filter((p) => typeOf(p) === t).length}
-                )
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+              <div className="folder-stack">
+                {projects
+                  .filter((p) => p.category === "perso")
+                  .slice(0, 3)
+                  .map((p, i) => (
+                    <div
+                      className={`folder-preview preview-${i + 1}`}
+                      key={p.title}
+                    >
+                      {cover(p) ? (
+                        <img src={cover(p)} alt="" />
+                      ) : (
+                        <span>{p.icon}</span>
+                      )}
+                    </div>
+                  ))}
 
-    {/* GRILLE DE PROJETS */}
-    <div key={cat + "|" + type}>
-      {groups.map(([name, list]) => (
-        <div className="grp" key={name || "all"}>
-          {name && (
-            <h3 className="grp-h mono aes">
-              <span>{name}</span>
-              <small>({list.length})</small>
-            </h3>
-          )}
-
-          <div className="grid3">
-            {list.map((p, i) => (
-              <a
-                key={p.title}
-                href={p.href}
-                className="cell proj aes"
-                data-tilt="9"
-                style={delay((i % 3) * 0.08)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  playProjectClick();
-                  setOpen(shown.indexOf(p));
-                }}
-              >
-                <span className="arrow">↗</span>
-
-                <div
-                  className="thumb"
-                  style={{ "--c": p.color } as React.CSSProperties}
-                >
-                  {cover(p) ? (
-                    <img src={cover(p)} alt="" loading="lazy" />
-                  ) : (
-                    p.icon
-                  )}
+                <div className="folder-back" />
+                <div className="folder-tab" />
+                <div className="folder-front">
+                  <span className="folder-emoji">✳</span>
+                  <span className="folder-open">↗</span>
                 </div>
+              </div>
 
-                <span className="when mono">
-                  {p.collaboration ?? p.kind}
+              <div className="folder-caption">
+                <span className="folder-name">Projets personnels</span>
+                <span className="folder-count mono">
+                  {projects.filter((p) => p.category === "perso").length} créations
                 </span>
+              </div>
+            </button>
 
-                <h3>{p.title}</h3>
-                <p>{p.text}</p>
+            {/* DOSSIER UNIVERSITAIRE */}
+            <button
+              type="button"
+              className="project-folder folder-university"
+              onClick={() => {
+                playButtonClick();
+                setCat("universitaire");
+                setType("all");
+                setFolderOpened(true);
+              }}
+            >
+              <div className="folder-stack">
+                {projects
+                  .filter((p) => p.category === "universitaire")
+                  .slice(0, 3)
+                  .map((p, i) => (
+                    <div
+                      className={`folder-preview preview-${i + 1}`}
+                      key={p.title}
+                    >
+                      {cover(p) ? (
+                        <img src={cover(p)} alt="" />
+                      ) : (
+                        <span>{p.icon}</span>
+                      )}
+                    </div>
+                  ))}
 
-                <div className="chips">
-                  {p.stack.map((c) => (
-                    <i key={c} className="mono">
-                      {c}
-                    </i>
+                <div className="folder-back" />
+                <div className="folder-tab" />
+                <div className="folder-front">
+                  <span className="folder-emoji">✿</span>
+                  <span className="folder-open">↗</span>
+                </div>
+              </div>
+
+              <div className="folder-caption">
+                <span className="folder-name">Projets universitaires</span>
+                <span className="folder-count mono">
+                  {projects.filter((p) => p.category === "universitaire").length} créations
+                </span>
+              </div>
+            </button>
+
+          </div>
+        )}
+
+        {/* ================= CONTENU DES PROJETS ================= */}
+
+        {folderOpened && (
+          <>
+            {/* RETOUR AUX DOSSIERS */}
+            <button
+              type="button"
+              className="back-to-folders"
+              onClick={() => {
+                playButtonClick();
+                setFolderOpened(false);
+                setType("all");
+              }}
+            >
+              ← Retour aux dossiers
+            </button>
+
+            {/* CATÉGORIES */}
+            <div
+              className="tabs cats rv"
+              role="tablist"
+              aria-label="Catégorie de projets"
+            >
+              {categories.map(([id, label]) => (
+                <button
+                  key={id}
+                  role="tab"
+                  aria-selected={cat === id}
+                  className={cat === id ? "on" : ""}
+                  onClick={() => {
+                    playButtonClick();
+                    setCat(id);
+                    setType("all");
+                  }}
+                >
+                  {label}{" "}
+                  <span className="mono">
+                    ({projects.filter((p) => p.category === id).length})
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* SOUS-CATÉGORIES UNIVERSITAIRES */}
+            <div className={"subtabs" + (cat === "universitaire" ? " open" : "")}>
+              <div>
+                <div
+                  className="tabs sub"
+                  role="tablist"
+                  aria-label="Type de projet universitaire"
+                >
+                  {["all", ...types].map((t) => (
+                    <button
+                      key={t}
+                      role="tab"
+                      tabIndex={cat === "universitaire" ? 0 : -1}
+                      aria-selected={type === t}
+                      className={type === t ? "on" : ""}
+                      onClick={() => {
+                        playButtonClick();
+                        setType(t);
+                      }}
+                    >
+                      {t === "all" ? "Tous les types" : t}{" "}
+                      <span className="mono">
+                        (
+                        {t === "all"
+                          ? univ.length
+                          : univ.filter((p) => typeOf(p) === t).length}
+                        )
+                      </span>
+                    </button>
                   ))}
                 </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  </>
-)}
+              </div>
+            </div>
+
+            {/* GRILLE DE PROJETS */}
+            <div key={cat + "|" + type}>
+              {groups.map(([name, list]) => (
+                <div className="grp" key={name || "all"}>
+                  {name && (
+                    <h3 className="grp-h mono aes">
+                      <span>{name}</span>
+                      <small>({list.length})</small>
+                    </h3>
+                  )}
+
+                  <div className="grid3">
+                    {list.map((p, i) => (
+                      <a
+                        key={p.title}
+                        href={p.href}
+                        className="cell proj aes"
+                        data-tilt="9"
+                        style={delay((i % 3) * 0.08)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          playProjectClick();
+                          setOpen(shown.indexOf(p));
+                        }}
+                      >
+                        <span className="arrow">↗</span>
+
+                        <div
+                          className="thumb"
+                          style={{ "--c": p.color } as React.CSSProperties}
+                        >
+                          {cover(p) ? (
+                            <img src={cover(p)} alt="" loading="lazy" />
+                          ) : (
+                            p.icon
+                          )}
+                        </div>
+
+                        <span className="when mono">
+                          {p.collaboration ?? p.kind}
+                        </span>
+
+                        <h3>{p.title}</h3>
+                        <p>{p.text}</p>
+
+                        <div className="chips">
+                          {p.stack.map((c) => (
+                            <i key={c} className="mono">
+                              {c}
+                            </i>
+                          ))}
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
       <section id="parcours">
         <p className="tag mono rv">// 05</p>
