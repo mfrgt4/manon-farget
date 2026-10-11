@@ -760,7 +760,7 @@ export default function App() {
           <div className={"project-folders" + (opening ? " is-opening" : "")}>
             {[
               { id: "perso" as Category, name: "Projets personnels", emoji: "✳", className: "folder-personal" },
-              { id: "universitaire" as Category, name: "Projets universitaires", emoji: "✿", className: "folder-university" },
+              { id: "universitaire" as Category, name: "Projets universitaires", emoji: "✳", className: "folder-university" },
             ].map((folder, fi) => {
               const folderProjects = projects.filter((p) => p.category === folder.id);
               const state = opening === folder.id ? "chosen" : opening ? "other" : "idle";

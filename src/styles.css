@@ -989,7 +989,7 @@ html[data-theme="dark"] .pm .pm-btn {
   animation: backIn .6s .15s cubic-bezier(.2, .8, .2, 1) backwards;
 }
 @keyframes backIn { from { opacity: 0; transform: translateX(-14px); } }
-.back-to-folders:hover { background: var(--acc-t); transform: translateX(-3px); }
+.back-to-folders:hover { background: var(--acc); transform: translateX(-3px); }
 
 
 /* Moins d'espace uniquement quand les dossiers sont affichés */
