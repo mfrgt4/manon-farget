@@ -20,7 +20,7 @@ export const skills: Skill[] = [
   { icon: "𖹭", title: "Développement web", text: "Intégrer et développer des sites responsives en travaillant le front-end et le back-end." },
   { icon: "𖹭", title: "Audiovisuel", text: "Créer des montages, animations et contenus multimédias pour enrichir l'identité et la communication du projet.", span: "s2" },
 ];
-export const tools = ["React","TypeScript","three.js","Vite","Vercel","HTML5","CSS3","JavaScript","PHP","SQL","Git","GitHub","Figma","InDesign","Photoshop","Illustrator","After Effects","Premiere Pro","WordPress","SEO","UX Design","Responsive","Accessibilité","Node.js","Gestion de projet","Notion","Affinity"];
+export const tools = ["React","TypeScript","three.js","Vite","Vercel","HTML5","CSS3","JavaScript","PHP","SQL","Git","GitHub","Figma","InDesign","Photoshop","Illustrator","After Effects","Premiere Pro","WordPress","Référencement","UX Design","Responsive","Accessibilité","Node.js","Gestion de projet","Notion","Affinity"];
 export type Media = { type: "image" | "video"; src: string; alt: string; poster?: string };
 export type Category = "perso" | "universitaire";
 export type Project = {
