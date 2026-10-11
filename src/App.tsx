@@ -469,7 +469,7 @@ const delay = (d: number) =>
 
 export default function App() {
   const [folderOpened, setFolderOpened] = useState(false);
-  
+
   const active = useActive(ids);
 
   const [open, setOpen] = useState<number | null>(null);
@@ -974,6 +974,7 @@ export default function App() {
             </div>
           </>
         )}
+      </section>  
 
       <section id="parcours">
         <p className="tag mono rv">// 05</p>
