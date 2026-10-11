@@ -4,7 +4,6 @@ import ProjectModal from "./ProjectModal";
 import { categories, nav, profile, projects, skills, studies, tools } from "./data";
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
-import CarteIdentite from "./CarteIdentite";
 
 
 // ================= SONS =================
@@ -628,8 +627,6 @@ export default function App() {
       </section>
       
       <section id="a-propos">
-
-        <CarteIdentite />
 
         <div className="about">
           <div className="rv rv-l" style={delay(0.15)}>
