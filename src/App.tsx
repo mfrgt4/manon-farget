@@ -469,6 +469,20 @@ const delay = (d: number) =>
 
 export default function App() {
   const [folderOpened, setFolderOpened] = useState(false);
+  const [opening, setOpening] = useState<Category | null>(null);
+
+  const openFolder = (id: Category) => {
+    if (opening) return;
+    playButtonClick();
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setOpening(id);
+    window.setTimeout(() => {
+      setCat(id);
+      setType("all");
+      setFolderOpened(true);
+      setOpening(null);
+    }, reduce ? 0 : 520);
+  };
 
   const active = useActive(ids);
 
