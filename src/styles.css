@@ -821,7 +821,7 @@ html[data-theme="dark"] .pm .pm-btn {
   border-color: var(--line);
 }
 
-/* ================= DOSSIERS MACOS ================= */
+/* ================= DOSSIERS MACOS (animés, fluides) ================= */
 
 .project-folders {
   display: grid;
@@ -844,17 +844,33 @@ html[data-theme="dark"] .pm .pm-btn {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Apparition au scroll : les dossiers arrivent l'un après l'autre */
+.project-folder.aes {
+  transition:
+    opacity .8s var(--d, 0s),
+    translate 1s cubic-bezier(.2, .8, .2, 1) var(--d, 0s),
+    scale 1s cubic-bezier(.2, .8, .2, 1) var(--d, 0s);
+}
+.project-folder.aes:not(.in) { opacity: 0; translate: 0 60px; scale: .88; }
+
+/* --k : avancement du survol (0 → 1), lissé en JavaScript (data-tilt) ; --f : focus clavier */
 .folder-stack {
+  --k: max(var(--p, 0), var(--f, 0));
   position: relative;
   width: 100%;
   max-width: 300px;
   aspect-ratio: 1.2 / 1;
   margin: 0 auto;
   isolation: isolate;
+  will-change: transform;
+  animation: folderFloat 6s ease-in-out infinite;   /* petit flottement au repos */
 }
+.project-folder:nth-child(2) .folder-stack { animation-delay: -3s; }
+@keyframes folderFloat { 50% { translate: 0 -7px; } }
+.project-folder:focus-visible .folder-stack { --f: 1; }
+@media (hover: none) { .folder-stack { --f: .5; } }   /* tactile : dossier à moitié ouvert */
 
-/* Cartes qui dépassent du dossier */
-
+/* Cartes qui sortent du dossier : tout est piloté par --k, donc ça monte et redescend en douceur */
 .folder-preview {
   position: absolute;
   z-index: 1;
@@ -866,43 +882,19 @@ html[data-theme="dark"] .pm .pm-btn {
   border: 3px solid #fffafc;
   border-radius: 9px;
   background: #fff;
-  box-shadow: 0 5px 18px #6b30451c;
   transform-origin: bottom center;
-  transition:
-    transform 0.45s cubic-bezier(.2, .8, .2, 1),
-    box-shadow 0.35s ease;
+  box-shadow:
+    0 calc(5px + 9px * var(--k)) calc(18px + 8px * var(--k))
+    rgba(107, 48, 69, calc(.11 + .1 * var(--k)));
 }
+.folder-preview img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.folder-preview > span { display: grid; width: 100%; height: 100%; place-items: center; font-size: 2rem; background: #f9e8ef; }
 
-.folder-preview img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.preview-1 { transform: translateX(calc(-85% - 15% * var(--k))) translateY(calc(-13% * var(--k))) rotate(calc(-13deg - 5deg * var(--k))); }
+.preview-2 { transform: translateX(calc(-15% + 15% * var(--k))) translateY(calc(-16% * var(--k))) rotate(calc(8deg + 4deg * var(--k))); }
+.preview-3 { transform: translateX(-50%) translateY(calc(-12% - 17% * var(--k))) rotate(calc(-2deg + 1deg * var(--k))); }
 
-.folder-preview > span {
-  display: grid;
-  width: 100%;
-  height: 100%;
-  place-items: center;
-  font-size: 2rem;
-  background: #f9e8ef;
-}
-
-.preview-1 {
-  transform: translateX(-85%) rotate(-13deg);
-}
-
-.preview-2 {
-  transform: translateX(-15%) rotate(8deg);
-}
-
-.preview-3 {
-  transform: translateX(-50%) translateY(-12%) rotate(-2deg);
-}
-
-/* Structure du dossier */
-
+/* Structure du dossier : le devant s'ouvre comme un couvercle */
 .folder-back {
   position: absolute;
   z-index: 2;
@@ -911,7 +903,6 @@ html[data-theme="dark"] .pm .pm-btn {
   background: #e9a5c0;
   transform: skewY(-2deg);
 }
-
 .folder-tab {
   position: absolute;
   z-index: 3;
@@ -922,7 +913,6 @@ html[data-theme="dark"] .pm .pm-btn {
   border-radius: 9px 9px 0 0;
   background: #e9a5c0;
 }
-
 .folder-front {
   position: absolute;
   z-index: 4;
@@ -934,17 +924,13 @@ html[data-theme="dark"] .pm .pm-btn {
   border: 1px solid #d98ba9;
   border-radius: 5px 13px 13px 13px;
   background: linear-gradient(145deg, #f5c5d7, #e9a5c0);
-  box-shadow: 0 13px 25px #78334b17;
-  transition:
-    transform 0.4s cubic-bezier(.2, .8, .2, 1),
-    box-shadow 0.4s ease;
+  box-shadow:
+    0 calc(13px + 8px * var(--k)) calc(25px + 6px * var(--k))
+    rgba(120, 51, 75, calc(.09 + .06 * var(--k)));
+  transform-origin: 50% 100%;
+  transform: perspective(700px) rotateX(calc(var(--k) * -20deg)) translateY(calc(var(--k) * 5px));
 }
-
-.folder-emoji {
-  color: #a54f71;
-  font-size: clamp(1.5rem, 3vw, 2.3rem);
-}
-
+.folder-emoji { color: #a54f71; font-size: clamp(1.5rem, 3vw, 2.3rem); }
 .folder-open {
   display: grid;
   width: 30px;
@@ -953,94 +939,38 @@ html[data-theme="dark"] .pm .pm-btn {
   border: 1px solid #b96586;
   border-radius: 50%;
   color: #944463;
-  opacity: 0;
-  transform: translate(-5px, 5px);
-  transition: opacity .3s ease, transform .3s ease;
+  opacity: var(--k);
+  transform: translate(calc(-5px * (1 - var(--k))), calc(5px * (1 - var(--k))));
 }
 
 /* Variante universitaire */
-
 .folder-university .folder-back,
-.folder-university .folder-tab {
-  background: #d8e2d2;
-}
-
-.folder-university .folder-front {
-  border-color: #b2c6a9;
-  background: linear-gradient(145deg, #e8efdf, #cbdcc3);
-}
-
-.folder-university .folder-emoji {
-  color: #627d59;
-}
-
-.folder-university .folder-open {
-  border-color: #9bb28f;
-  color: #4c6945;
-}
+.folder-university .folder-tab { background: #d8e2d2; }
+.folder-university .folder-front { border-color: #b2c6a9; background: linear-gradient(145deg, #e8efdf, #cbdcc3); }
+.folder-university .folder-emoji { color: #627d59; }
+.folder-university .folder-open { border-color: #9bb28f; color: #4c6945; }
 
 /* Libellés */
+.folder-caption { display: flex; flex-direction: column; gap: 6px; align-items: center; margin-top: 19px; }
+.folder-name { font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 600; letter-spacing: -0.035em; transition: color .35s ease; }
+.project-folder:hover .folder-name,
+.project-folder:focus-visible .folder-name { color: var(--acc); }
+.folder-count { color: var(--mute); font-size: .68rem; letter-spacing: .04em; text-transform: uppercase; }
 
-.folder-caption {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: center;
-  margin-top: 19px;
-}
+.project-folder:focus-visible { outline: 2px solid var(--acc); outline-offset: 8px; border-radius: 10px; }
 
-.folder-name {
-  font-size: clamp(1rem, 2vw, 1.2rem);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-}
+/* Au clic : le dossier choisi s'ouvre en grand et s'efface, l'autre s'éloigne */
+.project-folder[data-state="chosen"] { pointer-events: none; animation: folderChosen .52s cubic-bezier(.5, 0, .2, 1) forwards; }
+.project-folder[data-state="other"]  { pointer-events: none; animation: folderAway .45s ease forwards; }
+.project-folder[data-state="chosen"] .folder-stack { --f: 1; animation: none; }
+.project-folder[data-state="chosen"] .folder-preview { animation: previewFly .52s cubic-bezier(.5, 0, .2, 1) forwards; }
+@keyframes folderChosen { 55% { transform: scale(1.07); } 100% { transform: scale(1.18); opacity: 0; filter: blur(8px); } }
+@keyframes folderAway { to { opacity: 0; transform: translateY(24px) scale(.9); filter: blur(6px); } }
+@keyframes previewFly { to { translate: 0 -70px; opacity: 0; } }
 
-.folder-count {
-  color: var(--muted, #8b8287);
-  font-size: .68rem;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
-
-/* Interactions */
-
-.project-folder:hover .folder-front,
-.project-folder:focus-visible .folder-front {
-  transform: translateY(5px);
-  box-shadow: 0 19px 30px #78334b26;
-}
-
-.project-folder:hover .folder-open,
-.project-folder:focus-visible .folder-open {
-  opacity: 1;
-  transform: translate(0, 0);
-}
-
-.project-folder:hover .preview-1,
-.project-folder:focus-visible .preview-1 {
-  transform: translateX(-100%) translateY(-13%) rotate(-18deg);
-}
-
-.project-folder:hover .preview-2,
-.project-folder:focus-visible .preview-2 {
-  transform: translateX(0%) translateY(-16%) rotate(12deg);
-}
-
-.project-folder:hover .preview-3,
-.project-folder:focus-visible .preview-3 {
-  transform: translateX(-50%) translateY(-29%) rotate(-2deg);
-}
-
-.project-folder:hover .folder-preview,
-.project-folder:focus-visible .folder-preview {
-  box-shadow: 0 12px 24px #6b30452b;
-}
-
-.project-folder:focus-visible {
-  outline: 2px solid var(--acc);
-  outline-offset: 8px;
-  border-radius: 10px;
-}
+/* Liste des projets : elle monte en douceur, le bouton retour glisse depuis la gauche */
+.folder-list { animation: folderListIn .6s cubic-bezier(.2, .8, .2, 1); }
+@keyframes folderListIn { from { opacity: 0; transform: translateY(26px); } }
 
 .back-to-folders {
   display: inline-flex;
@@ -1055,13 +985,30 @@ html[data-theme="dark"] .pm .pm-btn {
   font: inherit;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background .25s ease, transform .25s ease;
+  animation: backIn .6s .15s cubic-bezier(.2, .8, .2, 1) backwards;
 }
+@keyframes backIn { from { opacity: 0; transform: translateX(-14px); } }
+.back-to-folders:hover { background: #f5dce7; transform: translateX(-3px); }
 
-.back-to-folders:hover {
-  background: #f5dce7;
-  transform: translateX(-3px);
-}
+/* ===== Mode sombre : dossiers, bouton retour et page projet ===== */
+html[data-theme="dark"] .pm { background: rgba(14, 15, 17, .96); }
+html[data-theme="dark"] .pm-main,
+html[data-theme="dark"] .pm-pitch { color: #c9c5bf; }
+html[data-theme="dark"] .back-to-folders:hover { background: #2a1f26; }
+html[data-theme="dark"] .folder-preview { border-color: #2b2d32; }
+html[data-theme="dark"] .folder-back,
+html[data-theme="dark"] .folder-tab { background: #9a4f6d; }
+html[data-theme="dark"] .folder-front { border-color: #7a3b55; background: linear-gradient(145deg, #c46d90, #a65578); }
+html[data-theme="dark"] .folder-emoji,
+html[data-theme="dark"] .folder-open { color: #ffe3ee; }
+html[data-theme="dark"] .folder-open { border-color: #f0b5cb; }
+html[data-theme="dark"] .folder-university .folder-back,
+html[data-theme="dark"] .folder-university .folder-tab { background: #516a4b; }
+html[data-theme="dark"] .folder-university .folder-front { border-color: #3f5539; background: linear-gradient(145deg, #7a9871, #5f7c57); }
+html[data-theme="dark"] .folder-university .folder-emoji,
+html[data-theme="dark"] .folder-university .folder-open { color: #e9f3e3; }
+html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb; }
 
 /* Mobile */
 

@@ -493,7 +493,7 @@ export default function App() {
   useHeroParallax();
   useTimeline();
   useTilt();
-  useAes(cat + "|" + type);
+  useAes(cat + "|" + type + "|" + folderOpened);
   useAnchorCenter();
 
   const [theme, chooseTheme] = useTheme();
@@ -743,48 +743,27 @@ export default function App() {
         <h2 className="rv">Mes projets.</h2>
 
         {!folderOpened ? (
-          <div className="project-folders rv">
+          <div className={"project-folders" + (opening ? " is-opening" : "")}>
             {[
-              {
-                id: "perso" as Category,
-                name: "Projets personnels",
-                emoji: "✳",
-                className: "folder-personal",
-              },
-              {
-                id: "universitaire" as Category,
-                name: "Projets universitaires",
-                emoji: "✿",
-                className: "folder-university",
-              },
-            ].map((folder) => {
-              const folderProjects = projects.filter(
-                (p) => p.category === folder.id
-              );
+              { id: "perso" as Category, name: "Projets personnels", emoji: "✳", className: "folder-personal" },
+              { id: "universitaire" as Category, name: "Projets universitaires", emoji: "✿", className: "folder-university" },
+            ].map((folder, fi) => {
+              const folderProjects = projects.filter((p) => p.category === folder.id);
+              const state = opening === folder.id ? "chosen" : opening ? "other" : "idle";
 
               return (
                 <button
                   key={folder.id}
                   type="button"
-                  className={`project-folder ${folder.className}`}
-                  onClick={() => {
-                    playButtonClick();
-                    setCat(folder.id);
-                    setType("all");
-                    setFolderOpened(true);
-                  }}
+                  className={`project-folder aes ${folder.className}`}
+                  data-state={state}
+                  style={delay(fi * 0.14)}
+                  onClick={() => openFolder(folder.id)}
                 >
-                  <div className="folder-stack">
+                  <div className="folder-stack" data-tilt="6">
                     {folderProjects.slice(0, 3).map((p, i) => (
-                      <div
-                        className={`folder-preview preview-${i + 1}`}
-                        key={p.title}
-                      >
-                        {cover(p) ? (
-                          <img src={cover(p)} alt="" />
-                        ) : (
-                          <span>{p.icon}</span>
-                        )}
+                      <div className={`folder-preview preview-${i + 1}`} key={p.title}>
+                        {cover(p) ? <img src={cover(p)} alt="" /> : <span>{p.icon}</span>}
                       </div>
                     ))}
 
@@ -798,16 +777,14 @@ export default function App() {
 
                   <div className="folder-caption">
                     <span className="folder-name">{folder.name}</span>
-                    <span className="folder-count mono">
-                      {folderProjects.length} créations
-                    </span>
+                    <span className="folder-count mono">{folderProjects.length} créations</span>
                   </div>
                 </button>
               );
             })}
           </div>
         ) : (
-          <>
+          <div className="folder-list">
             <button
               type="button"
               className="back-to-folders"
@@ -822,54 +799,21 @@ export default function App() {
 
             <div className="tabs cats" role="tablist" aria-label="Catégorie de projets">
               {categories.map(([id, label]) => (
-                <button
-                  key={id}
-                  type="button"
-                  role="tab"
-                  aria-selected={cat === id}
-                  className={cat === id ? "on" : ""}
-                  onClick={() => {
-                    playButtonClick();
-                    setCat(id);
-                    setType("all");
-                  }}
-                >
-                  {label}{" "}
-                  <span className="mono">
-                    ({projects.filter((p) => p.category === id).length})
-                  </span>
+                <button key={id} type="button" role="tab" aria-selected={cat === id} className={cat === id ? "on" : ""}
+                  onClick={() => { playButtonClick(); setCat(id); setType("all"); }}>
+                  {label} <span className="mono">({projects.filter((p) => p.category === id).length})</span>
                 </button>
               ))}
             </div>
 
             <div className={`subtabs${cat === "universitaire" ? " open" : ""}`}>
               <div>
-                <div
-                  className="tabs sub"
-                  role="tablist"
-                  aria-label="Type de projet universitaire"
-                >
+                <div className="tabs sub" role="tablist" aria-label="Type de projet universitaire">
                   {["all", ...types].map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      role="tab"
-                      tabIndex={cat === "universitaire" ? 0 : -1}
-                      aria-selected={type === t}
-                      className={type === t ? "on" : ""}
-                      onClick={() => {
-                        playButtonClick();
-                        setType(t);
-                      }}
-                    >
+                    <button key={t} type="button" role="tab" tabIndex={cat === "universitaire" ? 0 : -1} aria-selected={type === t}
+                      className={type === t ? "on" : ""} onClick={() => { playButtonClick(); setType(t); }}>
                       {t === "all" ? "Tous les types" : t}{" "}
-                      <span className="mono">
-                        (
-                        {t === "all"
-                          ? univ.length
-                          : univ.filter((p) => typeOf(p) === t).length}
-                        )
-                      </span>
+                      <span className="mono">({t === "all" ? univ.length : univ.filter((p) => typeOf(p) === t).length})</span>
                     </button>
                   ))}
                 </div>
@@ -879,59 +823,26 @@ export default function App() {
             <div key={`${cat}|${type}`}>
               {groups.map(([name, list]) => (
                 <div className="grp" key={name || "all"}>
-                  {name && (
-                    <h3 className="grp-h mono aes">
-                      <span>{name}</span>
-                      <small>({list.length})</small>
-                    </h3>
-                  )}
-
+                  {name && (<h3 className="grp-h mono aes"><span>{name}</span><small>({list.length})</small></h3>)}
                   <div className="grid3">
                     {list.map((p, i) => (
-                      <a
-                        key={p.title}
-                        href={p.href}
-                        className="cell proj aes"
-                        data-tilt="9"
-                        style={delay((i % 3) * 0.08)}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          playProjectClick();
-                          setOpen(shown.indexOf(p));
-                        }}
-                      >
+                      <a key={p.title} href={p.href} className="cell proj aes" data-tilt="9" style={delay((i % 3) * 0.08)}
+                        onClick={(e) => { e.preventDefault(); playProjectClick(); setOpen(shown.indexOf(p)); }}>
                         <span className="arrow">↗</span>
-
-                        <div
-                          className="thumb"
-                          style={{ "--c": p.color } as React.CSSProperties}
-                        >
-                          {cover(p) ? (
-                            <img src={cover(p)} alt="" loading="lazy" />
-                          ) : (
-                            p.icon
-                          )}
+                        <div className="thumb" style={{ "--c": p.color } as React.CSSProperties}>
+                          {cover(p) ? <img src={cover(p)} alt="" loading="lazy" /> : p.icon}
                         </div>
-
-                        <span className="when mono">
-                          {p.collaboration ?? p.kind}
-                        </span>
-
+                        <span className="when mono">{p.collaboration ?? p.kind}</span>
                         <h3>{p.title}</h3>
                         <p>{p.text}</p>
-
-                        <div className="chips">
-                          {p.stack.map((c) => (
-                            <i key={c} className="mono">{c}</i>
-                          ))}
-                        </div>
+                        <div className="chips">{p.stack.map((c) => <i key={c} className="mono">{c}</i>)}</div>
                       </a>
                     ))}
                   </div>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )}
       </section>
 
