@@ -1081,25 +1081,128 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
   }
 }
 
-/* ===== Pages projets : taille identique sur téléphone ===== */
+
+/* ===== Fenêtre projet : version mobile ===== */
 @media (max-width: 700px) {
-  .pm-view {
+  .pm {
+    position: fixed;
+    inset: 0;
     width: 100%;
-    height: 260px;
-    min-height: 260px;
-    max-height: 260px;
-    aspect-ratio: auto;
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
     box-sizing: border-box;
+  }
+
+  .pm-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 auto;
+    padding: 82px 16px 32px;
+    box-sizing: border-box;
+  }
+
+  .pm-swipe-hint {
+    grid-column: 1;
+    width: 100%;
+    margin: 0;
+    padding: 0 8px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
+  }
+
+  .pm-slide,
+  .pm-view,
+  .pm-info {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .pm-view {
+    height: auto;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 18px;
   }
 
   .pm-view > img,
   .pm-view > video,
-  .pm-view > iframe,
-  .pm-view > .ph {
+  .pm-view > iframe {
+    display: block;
     width: 100%;
     height: 100%;
+    max-width: 100%;
+    border: 0;
+    object-fit: contain;
+  }
+
+  .pm-thumbs {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    box-sizing: border-box;
+  }
+
+  .pm-thumbs button {
+    flex: 0 0 84px;
+    width: 84px;
+    height: 84px;
+    min-width: 0;
+  }
+
+  .pm-info {
+    overflow-wrap: anywhere;
+  }
+
+  .pm-info h2 {
+    font-size: clamp(28px, 8vw, 38px);
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+
+  .pm-info p {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .pm-info .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pm-bar {
+    display: none !important;
+  }
+
+  .pm-arrow {
+    display: none;
+  }
+
+  .pm-x {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 20;
   }
 }
+
 
 
 /* Masquer la barre de navigation des projets sur téléphone */
