@@ -796,3 +796,27 @@ html[data-theme="dark"] ::selection {
   background: #f28fb3;
   color: #0e0f11;
 }
+
+/* ===== Modal projet en mode sombre ===== */
+html[data-theme="dark"] .pm {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+html[data-theme="dark"] .pm-wrap,
+html[data-theme="dark"] .pm-info {
+  background: var(--card);
+  color: var(--fg);
+}
+
+html[data-theme="dark"] .pm h2,
+html[data-theme="dark"] .pm h3,
+html[data-theme="dark"] .pm p,
+html[data-theme="dark"] .pm span {
+  color: var(--fg);
+}
+
+html[data-theme="dark"] .pm .pm-btn {
+  color: var(--fg);
+  border-color: var(--line);
+}
