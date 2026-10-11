@@ -759,7 +759,7 @@ export default function App() {
   >
     <div className="folder-stack">
       {projects
-        .filter((p) => p.category === "personnel")
+        .filter((p) => p.category === "perso")
         .slice(0, 3)
         .map((p, i) => (
           <div
@@ -785,7 +785,7 @@ export default function App() {
     <div className="folder-caption">
       <span className="folder-name">Projets personnels</span>
       <span className="folder-count mono">
-        {projects.filter((p) => p.category === "personnel").length} créations
+        {projects.filter((p) => p.category === "perso").length} créations
       </span>
     </div>
   </button>
