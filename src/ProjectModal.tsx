@@ -230,7 +230,7 @@ export default function ProjectModal({
         {/* Visuels du projet */}
         <div className="pm-slide" key={p.title + "-media"}>
           <div
-            className="pm-view"
+            className={"pm-view" + (p.fit === "contain" ? " contain" : "")}
             onTouchStart={(e) => {
               slideTouchX.current = e.touches[0].clientX;
             }}

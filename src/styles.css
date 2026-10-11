@@ -758,3 +758,21 @@ html[data-theme="dark"] .tabs.sub button.on{color:#fff}
 /* ===== Image des cartes projets : même format (4:3) que dans la page du projet ===== */
 .thumb { height: auto; aspect-ratio: 4 / 3; }
 .thumb img { height: 100%; object-fit: cover; }
+
+/* ===== Image entière + damier dans la page projet (projets avec fit: "contain") ===== */
+.pm-view.contain {
+  background-color: #fbfaf7;
+  background-image:
+    linear-gradient(45deg, #ebe8e3 25%, transparent 25%, transparent 75%, #ebe8e3 75%),
+    linear-gradient(45deg, #ebe8e3 25%, transparent 25%, transparent 75%, #ebe8e3 75%);
+  background-size: 36px 36px;
+  background-position: 0 0, 18px 18px;
+}
+.pm-view.contain img,
+.pm-view.contain video { object-fit: contain; }
+html[data-theme="dark"] .pm-view.contain {
+  background-color: #17181c;
+  background-image:
+    linear-gradient(45deg, #232429 25%, transparent 25%, transparent 75%, #232429 75%),
+    linear-gradient(45deg, #232429 25%, transparent 25%, transparent 75%, #232429 75%);
+}
