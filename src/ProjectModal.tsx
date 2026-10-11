@@ -230,7 +230,7 @@ export default function ProjectModal({
         
         <p className="pm-swipe-hint">
           <span aria-hidden="true">←</span>
-          Swipe pour changer de projet
+          &nbsp; &nbsp; swipe pour changer de projet &nbsp; &nbsp;
           <span aria-hidden="true">→</span>
         </p>
 
