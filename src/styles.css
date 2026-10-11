@@ -989,7 +989,20 @@ html[data-theme="dark"] .pm .pm-btn {
   animation: backIn .6s .15s cubic-bezier(.2, .8, .2, 1) backwards;
 }
 @keyframes backIn { from { opacity: 0; transform: translateX(-14px); } }
-.back-to-folders:hover { background: #f5dce7; transform: translateX(-3px); }
+.back-to-folders:hover { background: var(--acc-t); transform: translateX(-3px); }
+
+
+/* Moins d'espace uniquement quand les dossiers sont affichés */
+#projets.showing-folders {
+  padding-bottom: 1rem;
+  margin-bottom: 0;
+}
+
+/* Conserver l'espacement habituel quand un dossier est ouvert */
+#projets.showing-projects {
+  padding-bottom: initial;
+  margin-bottom: initial;
+}
 
 /* ===== Mode sombre : dossiers, bouton retour et page projet ===== */
 html[data-theme="dark"] .pm { background: rgba(14, 15, 17, .96); }

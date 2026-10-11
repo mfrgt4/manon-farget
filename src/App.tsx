@@ -752,7 +752,7 @@ export default function App() {
       </section>
 
 
-      <section id="projets">
+      <section id="projets" className={!folderOpened ? "showing-folders" : "showing-projects"}>
         <p className="tag mono rv">// 04</p>
         <h2 className="rv">Mes projets.</h2>
 
