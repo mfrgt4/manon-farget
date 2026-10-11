@@ -784,3 +784,15 @@ html[data-theme="dark"] .pm-view.contain {
 @media (max-width: 560px) {
   .grid3 { grid-auto-rows: auto; }
 }
+
+/* ===== Couleur du texte sélectionné ===== */
+::selection {
+  background: #d84b7d;   /* ton rose */
+  color: #fff;
+}
+
+/* En mode sombre : rose plus clair, texte foncé pour rester lisible */
+html[data-theme="dark"] ::selection {
+  background: #f28fb3;
+  color: #0e0f11;
+}
