@@ -470,6 +470,7 @@ const delay = (d: number) =>
 export default function App() {
   const [folderOpened, setFolderOpened] = useState(false);
   const [opening, setOpening] = useState<Category | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const openFolder = (id: Category) => {
     if (opening) return;
@@ -530,15 +531,34 @@ export default function App() {
       <Particles />
       <div id="glow" />
 
-      <nav>
-        <div className="in">
-          {nav.map(([id, label]) => (
-            <a key={id} href={"#" + id} className={active === id ? "on" : ""}>
-              {label}
-            </a>
-          ))}
-        </div>
-      </nav>
+<nav className={menuOpen ? "menu-open" : ""}>
+  <div className="nav-inner">
+    <div className="in">
+      {nav.map(([id, label]) => (
+        <a
+          key={id}
+          href={"#" + id}
+          className={active === id ? "on" : ""}
+          onClick={() => setMenuOpen(false)}
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+
+    <button
+      type="button"
+      className="hamburger"
+      aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+      aria-expanded={menuOpen}
+      onClick={() => setMenuOpen(!menuOpen)}
+    >
+      <span />
+      <span />
+      <span />
+    </button>
+  </div>
+</nav>
 
       <div
         className="theme-toggle"
