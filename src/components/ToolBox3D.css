@@ -60,7 +60,6 @@
    MISE EN PAGE
 ========================= */
 
-/* Les deux encadrés : dimensions fixes et identiques */
 .toolbox3d-layout {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -74,8 +73,14 @@
 
 .toolbox3d-stage {
   position: relative;
+  width: 100%;
   min-width: 0;
+
+  /* Dimensions fixes identiques à la fiche */
   height: 540px;
+  min-height: 540px;
+  max-height: 540px;
+
   overflow: hidden;
   isolation: isolate;
   border: 1px solid rgba(190, 130, 175, 0.35);
@@ -435,7 +440,7 @@
 
 /* =========================
    FICHE À DROITE
-   TAILLE FIXE POUR TOUS LES DOMAINES
+   HAUTEUR FIXE
 ========================= */
 
 .toolbox3d-panel {
@@ -447,7 +452,7 @@
   width: 100%;
   min-width: 0;
 
-  /* Même hauteur, quelle que soit la fiche affichée */
+  /* Empêche la hauteur de varier selon la catégorie */
   height: 540px;
   min-height: 540px;
   max-height: 540px;
@@ -492,6 +497,7 @@
   justify-content: space-between;
   gap: 12px;
   min-height: 57px;
+  flex: 0 0 auto;
 }
 
 .toolbox3d-number {
@@ -521,6 +527,7 @@
 
 .toolbox3d-panel-overline {
   display: block;
+  flex: 0 0 auto;
   margin-top: 24px;
   color: #988b9a;
   font: 600 9px/1.5 monospace;
@@ -528,8 +535,8 @@
 }
 
 .toolbox3d-panel h3 {
-  /* Réserve la même hauteur au titre pour éviter les sauts */
   min-height: 2.3em;
+  flex: 0 0 auto;
   margin: 12px 0 0;
   color: var(--toolbox-text);
   font-size: clamp(25px, 2.5vw, 34px);
@@ -542,6 +549,7 @@
 
 .toolbox3d-panel-subtitle {
   min-height: 1.65em;
+  flex: 0 0 auto;
   margin: 8px 0 0;
   color: var(--toolbox-muted);
   font-size: 13px;
@@ -570,8 +578,10 @@
   flex-wrap: wrap;
   align-content: flex-start;
   gap: 8px;
-  min-height: 150px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1px 3px 4px 0;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--active-color) 50%, transparent) transparent;
@@ -608,6 +618,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 0 0 auto;
   margin-top: auto;
   padding-top: 18px;
   color: #9b8f9e;
@@ -733,18 +744,18 @@
 
 @media (max-width: 1000px) {
   .toolbox3d-layout {
-    grid-template-columns: minmax(0, 1.35fr) minmax(235px, 0.8fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 15px;
   }
 
-  .toolbox3d-stage {
-    height: 500px;
-  }
-
+  .toolbox3d-stage,
   .toolbox3d-panel {
     height: 500px;
     min-height: 500px;
     max-height: 500px;
+  }
+
+  .toolbox3d-panel {
     padding: 25px;
   }
 
@@ -787,10 +798,6 @@
   .toolbox3d-panel h3 {
     font-size: clamp(23px, 2.5vw, 30px);
   }
-
-  .toolbox3d-tags {
-    min-height: 140px;
-  }
 }
 
 /* =========================
@@ -819,10 +826,18 @@
     gap: 14px;
   }
 
-  .toolbox3d-stage {
-    height: 510px;
-    min-height: 0;
+  /* Les deux blocs ont exactement la même hauteur sur mobile */
+  .toolbox3d-stage,
+  .toolbox3d-panel {
+    width: 100%;
+    height: 450px;
+    min-height: 450px;
+    max-height: 450px;
     border-radius: 23px;
+  }
+
+  .toolbox3d-stage {
+    padding: 0;
   }
 
   .toolbox3d-orbit--one {
@@ -910,40 +925,64 @@
   }
 
   .toolbox3d-panel {
-    height: 430px;
-    min-height: 430px;
-    max-height: 430px;
-    padding: 25px;
-    border-radius: 23px;
+    padding: 22px;
   }
 
   .toolbox3d-panel::before {
-    left: 25px;
+    left: 22px;
+  }
+
+  .toolbox3d-panel-top {
+    min-height: 48px;
+  }
+
+  .toolbox3d-panel-symbol {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+  }
+
+  .toolbox3d-panel-symbol svg {
+    width: 29px;
+    height: 29px;
   }
 
   .toolbox3d-panel-overline {
-    margin-top: 23px;
+    margin-top: 18px;
   }
 
   .toolbox3d-panel h3 {
     min-height: 2.3em;
-    font-size: clamp(27px, 7vw, 34px);
+    margin-top: 9px;
+    font-size: clamp(25px, 7vw, 32px);
+  }
+
+  .toolbox3d-panel-subtitle {
+    margin-top: 6px;
+    font-size: 12px;
   }
 
   .toolbox3d-panel-divider {
-    margin: 20px 0 17px;
+    margin: 16px 0 14px;
+  }
+
+  .toolbox3d-tools-label {
+    margin-bottom: 10px;
   }
 
   .toolbox3d-tags {
-    min-height: 120px;
+    min-height: 0;
+    gap: 7px;
   }
 
   .toolbox3d-tags span {
+    min-height: 31px;
+    padding: 7px 9px;
     font-size: 10px;
   }
 
   .toolbox3d-panel-footer {
-    padding-top: 18px;
+    padding-top: 12px;
   }
 }
 
@@ -952,8 +991,11 @@
 ========================= */
 
 @media (max-width: 380px) {
-  .toolbox3d-stage {
-    height: 450px;
+  .toolbox3d-stage,
+  .toolbox3d-panel {
+    height: 430px;
+    min-height: 430px;
+    max-height: 430px;
   }
 
   .toolbox3d-icon {
@@ -991,10 +1033,23 @@
   }
 
   .toolbox3d-panel {
-    height: 430px;
-    min-height: 430px;
-    max-height: 430px;
-    padding: 21px;
+    padding: 18px;
+  }
+
+  .toolbox3d-panel::before {
+    left: 18px;
+  }
+
+  .toolbox3d-panel-overline {
+    margin-top: 15px;
+  }
+
+  .toolbox3d-panel-divider {
+    margin: 13px 0 11px;
+  }
+
+  .toolbox3d-panel-footer {
+    padding-top: 10px;
   }
 }
 
