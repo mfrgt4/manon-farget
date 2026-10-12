@@ -1233,3 +1233,20 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
     color: var(--mute);
   }
 }
+
+.tools-credit {
+  margin: 8px 0 24px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.tools-credit a {
+  color: var(--acc);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.tools-credit a:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
