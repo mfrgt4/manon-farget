@@ -157,8 +157,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 30px;
-  min-height: 300px;
+  padding: 40px;
+  min-height: 360px;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--active-color) 35%, #e8dfe8);
   border-radius: 24px;

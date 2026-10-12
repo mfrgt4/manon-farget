@@ -111,7 +111,7 @@ function HeartOutline({
     group.current.rotation.y +=
       (targetY - group.current.rotation.y) * Math.min(delta * 3, 1);
 
-    const targetScale = active ? 1.85 : hovered ? 1.5 : 1;
+    const targetScale = active ? 1.55 : hovered ? 1.3 : 1;
 
     const nextScale =
     group.current.scale.x +
