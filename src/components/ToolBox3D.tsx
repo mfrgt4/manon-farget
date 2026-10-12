@@ -83,12 +83,6 @@ export default function ToolBox3D() {
 
   return (
     <section id="boite-a-outils" className="toolbox3d">
-      <div className="toolbox3d-heading">
-        <span className="toolbox3d-eyebrow">// 03 — MON UNIVERS</span>
-        <h2>Y'a quoi dans mes poches ?</h2>
-        <span className="toolbox3d-heading-line" />
-        <p>Survole les éléments pour découvrir leur contenu.</p>
-      </div>
 
       <div className="toolbox3d-layout">
         {/* À GAUCHE : La page d'infos fixe */}
