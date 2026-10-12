@@ -1,19 +1,4 @@
-
-import { useCallback, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-  Float,
-  Html,
-  Environment,
-  Sparkles,
-  ContactShadows,
-} from "@react-three/drei";
-import type { ThreeElements } from "@react-three/fiber";
-import {
-  CatmullRomCurve3,
-  Vector3,
-  type Group,
-} from "three";
+import { useState } from "react";
 import "./ToolBox3D.css";
 
 type Domain = {
@@ -22,6 +7,7 @@ type Domain = {
   subtitle: string;
   color: string;
   tools: string[];
+  number: string;
 };
 
 const DOMAINS: Domain[] = [
@@ -30,6 +16,7 @@ const DOMAINS: Domain[] = [
     title: "Design graphique",
     subtitle: "Créer un univers visuel",
     color: "#e761aa",
+    number: "01",
     tools: ["Photoshop", "Illustrator", "InDesign", "Affinity"],
   },
   {
@@ -37,6 +24,7 @@ const DOMAINS: Domain[] = [
     title: "UI/UX design",
     subtitle: "Imaginer des interfaces",
     color: "#9ab88b",
+    number: "02",
     tools: [
       "Figma",
       "UX Design",
@@ -51,6 +39,7 @@ const DOMAINS: Domain[] = [
     title: "Développement web",
     subtitle: "Donner vie aux idées",
     color: "#829cf4",
+    number: "03",
     tools: [
       "WordPress",
       "HTML5",
@@ -71,455 +60,171 @@ const DOMAINS: Domain[] = [
     title: "Audiovisuel",
     subtitle: "Raconter en images",
     color: "#efaa82",
+    number: "04",
     tools: ["Premiere Pro", "After Effects"],
   },
 ];
 
-type SkillObjectProps = ThreeElements["group"] & {
-  domain: Domain;
-  active: boolean;
-  index: number;
-  onSelect: () => void;
-};
-
-function createHeartCurve() {
-  const points: Vector3[] = [];
-  const segments = 160;
-
-  for (let i = 0; i < segments; i++) {
-    const t = (i / segments) * Math.PI * 2;
-
-    points.push(
-      new Vector3(
-        (16 * Math.pow(Math.sin(t), 3)) / 17,
-        (
-          13 * Math.cos(t) -
-          5 * Math.cos(2 * t) -
-          2 * Math.cos(3 * t) -
-          Math.cos(4 * t)
-        ) / 17,
-        Math.sin(t * 2) * 0.12,
-      ),
-    );
-  }
-
-  return new CatmullRomCurve3(points, true, "centripetal", 0.5);
-}
-
-function HeartOutline({
-  domain,
-  active,
-  index,
-  onSelect,
-  ...props
-}: SkillObjectProps) {
-  const group = useRef<Group>(null);
-  const halo = useRef<Group>(null);
-  const pulse = useRef(0);
-  const [hovered, setHovered] = useState(false);
-  const { pointer } = useThree();
-
-  const curve = useMemo(() => createHeartCurve(), []);
-
-  const handleSelect = useCallback(() => {
-    pulse.current = 1;
-    onSelect();
-  }, [onSelect]);
-
-  useFrame((state, delta) => {
-    if (!group.current) return;
-
-    const time = state.clock.elapsedTime;
-    const influence = hovered ? 0.32 : 0.16;
-
-    const targetX = -pointer.y * influence;
-    const targetY =
-      pointer.x * influence +
-      Math.sin(time * 0.55 + index) * 0.08;
-
-    group.current.rotation.x +=
-      (targetX - group.current.rotation.x) *
-      Math.min(delta * 4, 1);
-
-    group.current.rotation.y +=
-      (targetY - group.current.rotation.y) *
-      Math.min(delta * 4, 1);
-
-    const targetScale = active ? 1.42 : hovered ? 1.22 : 1;
-    const pulseAmount = pulse.current;
-
-    pulse.current = Math.max(0, pulse.current - delta * 1.8);
-
-    const pulseScale = Math.sin(pulseAmount * Math.PI) * 0.13;
-    const finalScale = targetScale + pulseScale;
-
-    const nextScale =
-      group.current.scale.x +
-      (finalScale - group.current.scale.x) *
-        Math.min(delta * 9, 1);
-
-    group.current.scale.setScalar(nextScale);
-
-    if (halo.current) {
-      const haloScale =
-        (active ? 1.25 : 1) +
-        Math.sin(time * 2.2 + index) * 0.035 +
-        pulseAmount * 0.35;
-
-      halo.current.scale.setScalar(haloScale);
-    }
-  });
-
-  const handlePointerOut = () => {
-    setHovered(false);
-    document.body.style.cursor = "";
+function DomainIcon({ id }: { id: string }) {
+  const common = {
+    width: 42,
+    height: 42,
+    viewBox: "0 0 48 48",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.7,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true as const,
   };
 
-  return (
-    <group {...props}>
-      <Float
-        speed={1.1 + index * 0.22}
-        rotationIntensity={0.16}
-        floatIntensity={0.45 + index * 0.06}
-      >
-        <group
-          ref={group}
-          onClick={(event) => {
-            event.stopPropagation();
-            handleSelect();
-          }}
-          onPointerOver={(event) => {
-            event.stopPropagation();
-            setHovered(true);
-            document.body.style.cursor = "pointer";
-          }}
-          onPointerOut={handlePointerOut}
-        >
-          {/* Halo animé */}
-          <group ref={halo} position={[0, 0, -0.16]}>
-            <mesh>
-              <sphereGeometry args={[0.74, 32, 32]} />
-              <meshBasicMaterial
-                color={domain.color}
-                transparent
-                opacity={active ? 0.12 : hovered ? 0.1 : 0.035}
-                depthWrite={false}
-              />
-            </mesh>
-          </group>
+  switch (id) {
+    case "design":
+      return (
+        <svg {...common}>
+          <path d="M9 34 31 12a5 5 0 0 1 7 7L16 41l-9 2 2-9Z" />
+          <path d="m27 16 7 7M9 34l7 7M6 43h36" />
+          <path d="m14 29 5 5" />
+        </svg>
+      );
 
-          {/* Lueur extérieure */}
-          <mesh>
-            <tubeGeometry args={[curve, 160, 0.095, 12, true]} />
-            <meshBasicMaterial
-              color={domain.color}
-              transparent
-              opacity={active ? 0.3 : hovered ? 0.25 : 0.075}
-              depthWrite={false}
-            />
-          </mesh>
+    case "uiux":
+      return (
+        <svg {...common}>
+          <rect x="8" y="6" width="32" height="36" rx="5" />
+          <path d="M8 15h32M14 11h.01M18 11h.01M22 11h.01" />
+          <rect x="14" y="21" width="9" height="8" rx="2" />
+          <path d="M27 22h7M27 26h7M14 34h20" />
+        </svg>
+      );
 
-          {/* Contour effet verre */}
-          <mesh>
-            <tubeGeometry args={[curve, 160, 0.052, 16, true]} />
-            <meshPhysicalMaterial
-              color={domain.color}
-              roughness={0.08}
-              metalness={0.05}
-              transmission={0.75}
-              thickness={0.7}
-              ior={1.45}
-              clearcoat={1}
-              clearcoatRoughness={0.05}
-              emissive={domain.color}
-              emissiveIntensity={active ? 0.65 : hovered ? 0.4 : 0.12}
-              transparent
-              opacity={0.95}
-            />
-          </mesh>
+    case "web":
+      return (
+        <svg {...common}>
+          <rect x="5" y="8" width="38" height="31" rx="5" />
+          <path d="M5 17h38M12 12.5h.01M16 12.5h.01M20 12.5h.01" />
+          <path d="m17 24-5 4 5 4M31 24l5 4-5 4M27 22l-6 12" />
+        </svg>
+      );
 
-          {/* Reflet lumineux */}
-          <mesh>
-            <tubeGeometry args={[curve, 160, 0.012, 8, true]} />
-            <meshBasicMaterial
-              color="#ffffff"
-              transparent
-              opacity={hovered || active ? 0.95 : 0.5}
-              depthWrite={false}
-            />
-          </mesh>
-
-          {/* Éclats autour du cœur actif */}
-          {(active || hovered) && (
-            <Sparkles
-              count={active ? 24 : 12}
-              scale={[2.3, 2.3, 0.7]}
-              size={active ? 3 : 2}
-              speed={0.45}
-              opacity={active ? 0.85 : 0.5}
-              color={domain.color}
-            />
-          )}
-
-          <pointLight
-            color={domain.color}
-            intensity={active ? 2.5 : hovered ? 2 : 0.45}
-            distance={active ? 4 : 3}
-          />
-
-          {/* Étiquette cliquable */}
-          <Html
-            center
-            distanceFactor={8}
-            position={[0, -1.12, 0]}
-            zIndexRange={[20, 0]}
-          >
-            <button
-              type="button"
-              aria-pressed={active}
-              aria-label={`Explorer le domaine ${domain.title}`}
-              className={`tool3d-label ${
-                active ? "is-active" : ""
-              } ${hovered ? "is-hovered" : ""}`}
-              style={
-                { "--tool-color": domain.color } as React.CSSProperties
-              }
-              onClick={(event) => {
-                event.stopPropagation();
-                handleSelect();
-              }}
-              onPointerOver={() => {
-                setHovered(true);
-                document.body.style.cursor = "pointer";
-              }}
-              onPointerOut={handlePointerOut}
-            >
-              {domain.title}
-            </button>
-          </Html>
-        </group>
-      </Float>
-    </group>
-  );
-}
-
-function WorkshopScene({
-  activeId,
-  onSelect,
-}: {
-  activeId: string;
-  onSelect: (id: string) => void;
-}) {
-  const { pointer } = useThree();
-  const scene = useRef<Group>(null);
-
-  const positions: [number, number, number][] = [
-    [-3.15, 1.45, 0],
-    [2.8, 1.75, -0.4],
-    [0.35, -0.5, 0.2],
-    [-2.5, -1.8, 0.1],
-  ];
-
-  useFrame((_, delta) => {
-    if (!scene.current) return;
-
-    scene.current.rotation.y +=
-      (pointer.x * 0.065 - scene.current.rotation.y) *
-      Math.min(delta * 2.5, 1);
-
-    scene.current.rotation.x +=
-      (-pointer.y * 0.045 - scene.current.rotation.x) *
-      Math.min(delta * 2.5, 1);
-  });
-
-  return (
-    <>
-      <ambientLight intensity={1.1} />
-      <hemisphereLight args={["#fff8fc", "#6f5578", 1.5]} />
-      <directionalLight
-        position={[4, 5, 6]}
-        intensity={2.5}
-        color="#ffffff"
-      />
-      <pointLight
-        position={[-4, 1, 3]}
-        intensity={10}
-        color="#ffd9f0"
-      />
-      <pointLight
-        position={[3, -2, 2]}
-        intensity={8}
-        color="#dce3ff"
-      />
-      <Environment preset="studio" />
-
-      <group ref={scene}>
-        {DOMAINS.map((domain, index) => (
-          <HeartOutline
-            key={domain.id}
-            domain={domain}
-            active={activeId === domain.id}
-            index={index}
-            position={positions[index]}
-            rotation={[0, index * 0.12, index * 0.04]}
-            onSelect={() => onSelect(domain.id)}
-          />
-        ))}
-      </group>
-
-      <ContactShadows
-        position={[0, -2.8, -1]}
-        opacity={0.18}
-        scale={10}
-        blur={2.5}
-        far={4}
-      />
-    </>
-  );
+    default:
+      return (
+        <svg {...common}>
+          <rect x="5" y="11" width="38" height="26" rx="6" />
+          <path d="m20 18 11 6-11 6V18Z" />
+          <path d="M12 6h24M12 42h24" />
+        </svg>
+      );
+  }
 }
 
 export default function ToolBox3D() {
   const [activeId, setActiveId] = useState("design");
 
-  const activeIndex = DOMAINS.findIndex(
-    (domain) => domain.id === activeId,
-  );
-
-  const active = DOMAINS[activeIndex] ?? DOMAINS[0];
-
-  const changeDomain = useCallback((step: number) => {
-    setActiveId((currentId) => {
-      const currentIndex = DOMAINS.findIndex(
-        (domain) => domain.id === currentId,
-      );
-      const nextIndex =
-        (currentIndex + step + DOMAINS.length) % DOMAINS.length;
-
-      return DOMAINS[nextIndex].id;
-    });
-  }, []);
+  const active =
+    DOMAINS.find((domain) => domain.id === activeId) ?? DOMAINS[0];
 
   return (
-    <div
-      className="toolbox3d"
-      style={{ "--active-color": active.color } as React.CSSProperties}
-      onKeyDown={(event) => {
-        if (event.key === "ArrowRight") {
-          event.preventDefault();
-          changeDomain(1);
-        }
-
-        if (event.key === "ArrowLeft") {
-          event.preventDefault();
-          changeDomain(-1);
-        }
-      }}
-    >
+    <section className="toolbox3d">
       <div className="toolbox3d-heading">
-        <p>Choisis un cœur et explore mon univers créatif.</p>
-        <span className="toolbox3d-counter">
-          {String(activeIndex + 1).padStart(2, "0")} / 04
-        </span>
+        <span className="toolbox3d-eyebrow">// 03 — MON UNIVERS</span>
+        <h2>Ma boîte à outils.</h2>
+        <span className="toolbox3d-heading-line" />
+        <p>Survole les icônes pour explorer mes domaines créatifs.</p>
       </div>
 
       <div className="toolbox3d-layout">
         <div className="toolbox3d-stage">
-          <div className="toolbox3d-orb toolbox3d-orb--one" />
-          <div className="toolbox3d-orb toolbox3d-orb--two" />
+          <div className="toolbox3d-grain" />
+          <div className="toolbox3d-glow toolbox3d-glow--pink" />
+          <div className="toolbox3d-glow toolbox3d-glow--blue" />
+          <div className="toolbox3d-orbit toolbox3d-orbit--one" />
+          <div className="toolbox3d-orbit toolbox3d-orbit--two" />
 
-          <Canvas
-            camera={{ position: [0, 0, 8], fov: 45 }}
-            dpr={[1, 1.5]}
-            gl={{ antialias: true, alpha: true }}
-            onCreated={({ gl }) => {
-              gl.toneMappingExposure = 1.15;
-            }}
-          >
-            <WorkshopScene
-              activeId={activeId}
-              onSelect={setActiveId}
-            />
-          </Canvas>
+          <div className="toolbox3d-center" aria-live="polite">
+            <span className="toolbox3d-center-kicker">CRÉER · IMAGINER · RACONTER</span>
+            <h3>
+              Y'a quoi dans
+              <br />
+              <span>Ma boîte à outils</span>
+            </h3>
+            <p>Un peu de technique, beaucoup de créativité.</p>
+            <div className="toolbox3d-center-mark">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+
+          {DOMAINS.map((domain) => (
+            <button
+              key={domain.id}
+              type="button"
+              className={`toolbox3d-icon toolbox3d-icon--${domain.id} ${
+                activeId === domain.id ? "is-active" : ""
+              }`}
+              style={{ "--tool-color": domain.color } as React.CSSProperties}
+              aria-label={`Explorer ${domain.title}`}
+              aria-pressed={activeId === domain.id}
+              onMouseEnter={() => setActiveId(domain.id)}
+              onFocus={() => setActiveId(domain.id)}
+              onClick={() => setActiveId(domain.id)}
+            >
+              <span className="toolbox3d-icon-number">{domain.number}</span>
+              <span className="toolbox3d-icon-drawing">
+                <DomainIcon id={domain.id} />
+              </span>
+              <span className="toolbox3d-icon-title">{domain.title}</span>
+              <span className="toolbox3d-icon-sparkle">✳</span>
+            </button>
+          ))}
 
           <span className="toolbox3d-hint">
             <span className="toolbox3d-hint-dot" />
-            SURVOLE · CLIQUE · EXPLORE
+            SURVOLE UNE ICÔNE POUR EXPLORER
           </span>
         </div>
 
         <aside
           className="toolbox3d-panel"
           key={active.id}
-          style={
-            { "--active-color": active.color } as React.CSSProperties
-          }
+          style={{ "--active-color": active.color } as React.CSSProperties}
           aria-live="polite"
         >
-          <span
-            className="toolbox3d-number"
-            style={{ color: active.color }}
-          >
-            DOMAINE / 0{activeIndex + 1}
-          </span>
+          <div className="toolbox3d-panel-top">
+            <span className="toolbox3d-number">
+              DOMAINE / {active.number}
+            </span>
+            <span className="toolbox3d-panel-symbol">
+              <DomainIcon id={active.id} />
+            </span>
+          </div>
 
+          <span className="toolbox3d-panel-overline">MON SAVOIR-FAIRE</span>
           <h3>{active.title}</h3>
-          <p>{active.subtitle}</p>
+          <p className="toolbox3d-panel-subtitle">{active.subtitle}</p>
 
+          <div className="toolbox3d-panel-divider" />
+
+          <span className="toolbox3d-tools-label">OUTILS & COMPÉTENCES</span>
           <div className="toolbox3d-tags">
             {active.tools.map((tool, index) => (
               <span
                 key={tool}
-                style={{ animationDelay: `${index * 65}ms` }}
+                style={{ animationDelay: `${index * 45}ms` }}
               >
                 {tool}
               </span>
             ))}
           </div>
 
-          <div className="toolbox3d-panel-nav">
-            <button
-              type="button"
-              onClick={() => changeDomain(-1)}
-              aria-label="Domaine précédent"
-            >
-              ← Précédent
-            </button>
-            <button
-              type="button"
-              onClick={() => changeDomain(1)}
-              aria-label="Domaine suivant"
-            >
-              Suivant →
-            </button>
+          <div className="toolbox3d-panel-footer">
+            <span className="toolbox3d-footer-dot" />
+            <span>TOUJOURS EN EXPLORATION</span>
+            <span className="toolbox3d-footer-number">{active.number} / 04</span>
           </div>
-
-          <div className="toolbox3d-indicator" />
         </aside>
       </div>
-
-      <div className="toolbox3d-mobile-list">
-        {DOMAINS.map((domain, index) => (
-          <button
-            key={domain.id}
-            type="button"
-            aria-pressed={activeId === domain.id}
-            className={activeId === domain.id ? "is-active" : ""}
-            style={
-              { "--tool-color": domain.color } as React.CSSProperties
-            }
-            onClick={() => setActiveId(domain.id)}
-          >
-            <span className="toolbox3d-mobile-dot" />
-            <span className="toolbox3d-mobile-text">
-              <strong>{domain.title}</strong>
-              <small>{domain.subtitle}</small>
-            </span>
-            <span className="toolbox3d-mobile-index">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-          </button>
-        ))}
-      </div>
-    </div>
+    </section>
   );
 }
