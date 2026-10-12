@@ -60,11 +60,12 @@
    MISE EN PAGE
 ========================= */
 
+/* Les deux encadrés : dimensions fixes et identiques */
 .toolbox3d-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.75fr) minmax(260px, 0.85fr);
-  align-items: stretch;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
+  align-items: stretch;
 }
 
 /* =========================
