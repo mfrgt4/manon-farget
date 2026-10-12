@@ -140,6 +140,7 @@
   font: 10px monospace;
   letter-spacing: 0.08em;
   pointer-events: none;
+  margin-top: 32px;
 }
 
 .toolbox3d-hint-dot {
