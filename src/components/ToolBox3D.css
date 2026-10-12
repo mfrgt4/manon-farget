@@ -1,4 +1,3 @@
-
 .toolbox3d {
   position: relative;
   padding: 35px 0;
@@ -17,7 +16,10 @@
   color: var(--muted, #716675);
   line-height: 1.8;
   font-size: 14px;
+  transition: color 250ms ease;
 }
+
+/* ================= LAYOUT ================= */
 
 .toolbox3d-layout {
   display: grid;
@@ -25,6 +27,8 @@
   gap: 20px;
   align-items: stretch;
 }
+
+/* ================= SCÈNE 3D ================= */
 
 .toolbox3d-stage {
   position: relative;
@@ -37,6 +41,17 @@
   box-shadow:
     inset 0 0 45px rgba(231, 97, 170, 0.04),
     0 15px 50px rgba(74, 43, 70, 0.08);
+  transition:
+    border-color 350ms ease,
+    box-shadow 350ms ease,
+    background 350ms ease;
+}
+
+.toolbox3d-stage:hover {
+  border-color: rgba(190, 130, 175, 0.65);
+  box-shadow:
+    inset 0 0 60px rgba(231, 97, 170, 0.07),
+    0 20px 60px rgba(74, 43, 70, 0.12);
 }
 
 .toolbox3d-stage::before {
@@ -45,9 +60,22 @@
   content: "";
   pointer-events: none;
   opacity: 0.14;
-  background-image: radial-gradient(rgba(70, 45, 75, 0.3) 0.7px, transparent 0.7px);
+  background-image: radial-gradient(
+    rgba(70, 45, 75, 0.3) 0.7px,
+    transparent 0.7px
+  );
   background-size: 24px 24px;
-  mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
+  mask-image: linear-gradient(
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  transition: opacity 400ms ease;
+}
+
+.toolbox3d-stage:hover::before {
+  opacity: 0.24;
 }
 
 .toolbox3d-stage::after {
@@ -68,6 +96,8 @@
   touch-action: pan-y;
 }
 
+/* ================= LUEURS D'AMBIANCE ================= */
+
 .toolbox3d-orb {
   position: absolute;
   width: 160px;
@@ -77,6 +107,14 @@
   opacity: 0.2;
   pointer-events: none;
   animation: toolbox3d-orb-drift 9s ease-in-out infinite alternate;
+  transition:
+    opacity 500ms ease,
+    filter 500ms ease;
+}
+
+.toolbox3d-stage:hover .toolbox3d-orb {
+  opacity: 0.28;
+  filter: blur(55px);
 }
 
 .toolbox3d-orb--one {
@@ -92,41 +130,56 @@
   animation-delay: -4s;
 }
 
+/* ================= ÉTIQUETTES DES CŒURS ================= */
+
 .tool3d-label {
   --tool-color: #e761aa;
-  padding: 8px 12px;
-  border: 1px solid color-mix(in srgb, var(--tool-color) 50%, white);
+  position: relative;
+  padding: 10px 15px;
+  border: 1px solid color-mix(in srgb, var(--tool-color) 55%, white);
   border-radius: 30px;
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(255, 255, 255, 0.96);
   color: #302633;
-  font: 600 10px/1.3 monospace;
+  font: 600 11px/1.3 monospace;
   white-space: nowrap;
   cursor: pointer;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 14px rgba(60, 35, 60, 0.1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 5px 18px rgba(60, 35, 60, 0.1);
   transition:
-    transform 220ms ease,
-    color 220ms ease,
-    border-color 220ms ease,
-    background 220ms ease,
-    box-shadow 220ms ease;
+    transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 250ms ease,
+    border-color 250ms ease,
+    background 250ms ease,
+    box-shadow 300ms ease;
 }
 
 .tool3d-label:hover,
 .tool3d-label.is-hovered {
-  transform: translateY(-3px);
+  transform: translateY(-5px) scale(1.08);
   border-color: var(--tool-color);
   color: #302633;
-  box-shadow: 0 0 22px color-mix(in srgb, var(--tool-color) 35%, transparent);
+  box-shadow:
+    0 8px 24px color-mix(in srgb, var(--tool-color) 22%, transparent),
+    0 0 0 4px color-mix(in srgb, var(--tool-color) 9%, transparent);
 }
 
 .tool3d-label.is-active {
+  transform: scale(1.05);
   border-color: var(--tool-color);
-  background: color-mix(in srgb, var(--tool-color) 24%, white);
+  background: color-mix(in srgb, var(--tool-color) 20%, white);
   color: #302633;
-  box-shadow: 0 0 18px color-mix(in srgb, var(--tool-color) 25%, transparent);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--tool-color) 12%, transparent),
+    0 8px 26px color-mix(in srgb, var(--tool-color) 25%, transparent);
 }
+
+.tool3d-label:focus-visible {
+  outline: 3px solid var(--tool-color);
+  outline-offset: 5px;
+}
+
+/* ================= INDICATION D'INTERACTION ================= */
 
 .toolbox3d-hint {
   position: absolute;
@@ -145,11 +198,14 @@
 .toolbox3d-hint-dot {
   width: 6px;
   height: 6px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: #d83c91;
   box-shadow: 0 0 12px rgba(231, 97, 170, 0.9);
   animation: toolbox3d-pulse 1.8s ease-in-out infinite;
 }
+
+/* ================= PANNEAU DES COMPÉTENCES ================= */
 
 .toolbox3d-panel {
   --active-color: #e761aa;
@@ -163,11 +219,24 @@
   border: 1px solid color-mix(in srgb, var(--active-color) 35%, #e8dfe8);
   border-radius: 24px;
   background:
-    radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--active-color) 10%, transparent), transparent 58%),
+    radial-gradient(
+      ellipse at 100% 0%,
+      color-mix(in srgb, var(--active-color) 10%, transparent),
+      transparent 58%
+    ),
     rgba(255, 255, 255, 0.94);
   box-shadow: 0 12px 35px rgba(74, 43, 70, 0.07);
   animation: toolbox3d-enter 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  transition: border-color 300ms ease, background 300ms ease;
+  transition:
+    border-color 300ms ease,
+    background 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.toolbox3d-panel:hover {
+  box-shadow:
+    0 18px 45px rgba(74, 43, 70, 0.1),
+    0 0 28px color-mix(in srgb, var(--active-color) 8%, transparent);
 }
 
 .toolbox3d-panel::after {
@@ -179,7 +248,13 @@
   content: "";
   background: var(--active-color);
   box-shadow: 0 0 18px var(--active-color);
-  transition: background 300ms ease;
+  transition:
+    background 300ms ease,
+    width 350ms ease;
+}
+
+.toolbox3d-panel:hover::after {
+  width: 80px;
 }
 
 .toolbox3d-number {
@@ -201,6 +276,8 @@
   line-height: 1.6;
 }
 
+/* ================= TAGS DES OUTILS ================= */
+
 .toolbox3d-tags {
   display: flex;
   flex-wrap: wrap;
@@ -209,19 +286,24 @@
 }
 
 .toolbox3d-tags span {
-  padding: 8px 11px;
+  position: relative;
+  padding: 9px 12px;
   border: 1px solid color-mix(in srgb, var(--active-color) 35%, #e8dfe8);
-  border-radius: 9px;
-  background: color-mix(in srgb, var(--active-color) 12%, white);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--active-color) 10%, white);
   color: #493c4b;
   font-size: 11px;
-  animation: toolbox3d-tag-enter 360ms ease both;
-  transition: border-color 220ms ease, transform 220ms ease;
+  animation: toolbox3d-tag-enter 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transition:
+    border-color 220ms ease,
+    transform 220ms ease,
+    box-shadow 220ms ease;
 }
 
 .toolbox3d-tags span:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px) scale(1.04);
   border-color: var(--active-color);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--active-color) 18%, transparent);
 }
 
 .toolbox3d-indicator {
@@ -231,27 +313,21 @@
   border-radius: 5px;
   background: var(--active-color);
   box-shadow: 0 0 15px color-mix(in srgb, var(--active-color) 60%, transparent);
-  transition: background 300ms ease;
+  transition:
+    width 350ms ease,
+    background 300ms ease,
+    box-shadow 300ms ease;
 }
+
+.toolbox3d-panel:hover .toolbox3d-indicator {
+  width: 65px;
+}
+
+/* ================= LISTE MOBILE ================= */
 
 .toolbox3d-mobile-list {
   display: none;
 }
-
-.tool3d-caption {
-  position: absolute;
-  top: calc(100% + 5px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: 180px;
-  color: #77717d;
-  font-size: 10px;
-  text-align: center;
-  line-height: 1.4;
-  pointer-events: none;
-}
-
 
 .toolbox3d-mobile-list button {
   display: flex;
@@ -286,11 +362,30 @@
   color: #817985;
 }
 
+/* ================= LÉGENDE ÉVENTUELLE ================= */
+
+.tool3d-caption {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 180px;
+  color: #77717d;
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+/* ================= ANIMATIONS ================= */
+
 @keyframes toolbox3d-enter {
   from {
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -302,6 +397,7 @@
     opacity: 0;
     transform: translateY(7px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -309,10 +405,12 @@
 }
 
 @keyframes toolbox3d-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.55;
     transform: scale(0.85);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.2);
@@ -323,10 +421,13 @@
   from {
     transform: translate3d(-10px, -8px, 0) scale(0.9);
   }
+
   to {
     transform: translate3d(20px, 16px, 0) scale(1.15);
   }
 }
+
+/* ================= RESPONSIVE ================= */
 
 @media (max-width: 760px) {
   .toolbox3d {
@@ -376,19 +477,24 @@
     --tool-color: #e761aa;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border: 1px solid #e1d5e3;
+    gap: 9px;
+    padding: 11px 14px;
+    border: 1px solid color-mix(in srgb, var(--tool-color) 30%, #e1d5e3);
     border-radius: 30px;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.85);
     color: #493c4b;
     font: inherit;
     font-size: 11px;
     cursor: pointer;
     transition:
+      transform 200ms ease,
       border-color 220ms ease,
       background 220ms ease,
-      color 220ms ease;
+      box-shadow 220ms ease;
+  }
+
+  .toolbox3d-mobile-list button:active {
+    transform: scale(0.96);
   }
 
   .toolbox3d-mobile-list button > span {
@@ -403,6 +509,15 @@
   .toolbox3d-mobile-list button.is-active {
     border-color: var(--tool-color);
     background: color-mix(in srgb, var(--tool-color) 18%, white);
+    box-shadow: 0 4px 15px color-mix(in srgb, var(--tool-color) 16%, transparent);
+  }
+
+  .toolbox3d-mobile-text strong {
+    font-size: 12px;
+  }
+
+  .toolbox3d-mobile-text small {
+    font-size: 10px;
   }
 
   .tool3d-label {
@@ -413,29 +528,63 @@
   .toolbox3d-hint {
     bottom: 12px;
     left: 12px;
+    gap: 7px;
     font-size: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .toolbox3d-hint-dot {
+    width: 5px;
+    height: 5px;
   }
 }
 
-/* Thème sombre */
+/* ================= THÈME SOMBRE ================= */
+
 [data-theme="dark"] .toolbox3d {
   color: #f5f0f4;
 }
 
 [data-theme="dark"] .toolbox3d-stage {
   background:
-    radial-gradient(ellipse at 50% 45%, rgba(231, 97, 170, 0.11), transparent 48%),
-    radial-gradient(ellipse at 80% 20%, rgba(185, 201, 255, 0.07), transparent 40%),
+    radial-gradient(
+      ellipse at 50% 45%,
+      rgba(231, 97, 170, 0.11),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(185, 201, 255, 0.07),
+      transparent 40%
+    ),
     #19151d;
+  border-color: rgba(190, 130, 175, 0.3);
+}
+
+[data-theme="dark"] .toolbox3d-stage:hover {
+  border-color: rgba(190, 130, 175, 0.55);
+  box-shadow:
+    inset 0 0 60px rgba(231, 97, 170, 0.09),
+    0 20px 60px rgba(0, 0, 0, 0.25);
 }
 
 [data-theme="dark"] .toolbox3d-stage::before {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.28) 0.7px, transparent 0.7px);
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.28) 0.7px,
+    transparent 0.7px
+  );
 }
 
 [data-theme="dark"] .tool3d-label {
   background: rgba(24, 22, 30, 0.92);
   color: #f7f1f5;
+  border-color: color-mix(in srgb, var(--tool-color) 45%, #38303c);
+}
+
+[data-theme="dark"] .tool3d-label:hover,
+[data-theme="dark"] .tool3d-label.is-hovered {
+  color: #ffffff;
+  background: color-mix(in srgb, var(--tool-color) 14%, #18161e);
 }
 
 [data-theme="dark"] .tool3d-label.is-active {
@@ -445,7 +594,11 @@
 
 [data-theme="dark"] .toolbox3d-panel {
   background:
-    radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--active-color) 9%, transparent), transparent 58%),
+    radial-gradient(
+      ellipse at 100% 0%,
+      color-mix(in srgb, var(--active-color) 9%, transparent),
+      transparent 58%
+    ),
     rgba(28, 24, 32, 0.94);
   border-color: color-mix(in srgb, var(--active-color) 30%, #48404c);
 }
@@ -465,15 +618,31 @@
   border-color: color-mix(in srgb, var(--active-color) 30%, #48404c);
 }
 
+[data-theme="dark"] .toolbox3d-tags span:hover {
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--active-color) 15%, transparent);
+}
+
 [data-theme="dark"] .toolbox3d-mobile-list button {
-  background: transparent;
+  background: rgba(28, 24, 32, 0.8);
   color: #f5f0f4;
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+[data-theme="dark"] .toolbox3d-mobile-list button.is-active {
+  border-color: var(--tool-color);
+  background: color-mix(in srgb, var(--tool-color) 12%, #1c1820);
+}
+
+/* ================= ACCESSIBILITÉ ================= */
+
 @media (hover: none) {
   .tool3d-label:hover {
     transform: none;
+  }
+
+  .toolbox3d-stage:hover .toolbox3d-orb {
+    opacity: 0.2;
+    filter: blur(65px);
   }
 }
 
@@ -489,7 +658,10 @@
   }
 
   .tool3d-label,
-  .toolbox3d-tags span {
+  .toolbox3d-tags span,
+  .toolbox3d-stage,
+  .toolbox3d-panel,
+  .toolbox3d-indicator {
     transition: none;
   }
 }
