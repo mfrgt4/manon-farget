@@ -1,9 +1,13 @@
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float, Html } from "@react-three/drei";
 import type { ThreeElements } from "@react-three/fiber";
-import type { Group } from "three";
+import {
+  CatmullRomCurve3,
+  Vector3,
+  type Group,
+} from "three";
 import "./ToolBox3D.css";
 
 type Domain = {
@@ -52,21 +56,42 @@ const DOMAINS: Domain[] = [
   },
 ];
 
-type Shape = "sphere" | "box" | "torus" | "octahedron" | "icosahedron";
-
 type SkillObjectProps = ThreeElements["group"] & {
   domain: Domain;
   active: boolean;
   index: number;
-  shape: Shape;
   onSelect: () => void;
 };
 
-function SkillObject({
+function createHeartCurve() {
+  const points: Vector3[] = [];
+  const segments = 120;
+
+  for (let i = 0; i <= segments; i++) {
+    const t = (i / segments) * Math.PI * 2;
+
+    // Courbe classique d'un cœur, transformée en contour 3D.
+    const x = (16 * Math.pow(Math.sin(t), 3)) / 17;
+    const y =
+      (13 * Math.cos(t) -
+        5 * Math.cos(2 * t) -
+        2 * Math.cos(3 * t) -
+        Math.cos(4 * t)) /
+      17;
+
+    // Profondeur douce pour donner du relief au contour.
+    const z = Math.sin(t * 2) * 0.12;
+
+    points.push(new Vector3(x, y, z));
+  }
+
+  return new CatmullRomCurve3(points, true, "catmullrom", 0.5);
+}
+
+function HeartOutline({
   domain,
   active,
   index,
-  shape,
   onSelect,
   ...props
 }: SkillObjectProps) {
@@ -74,28 +99,31 @@ function SkillObject({
   const [hovered, setHovered] = useState(false);
   const { pointer } = useThree();
 
+  const curve = useMemo(() => createHeartCurve(), []);
+
   useFrame((state, delta) => {
     if (!group.current) return;
 
     const t = state.clock.elapsedTime;
-    const influence = hovered ? 0.28 : 0.1;
+    const influence = hovered ? 0.32 : 0.12;
 
-    // Inclinaison progressive selon la position de la souris.
     const targetX = -pointer.y * influence;
-    const targetY = pointer.x * influence;
+    const targetY =
+      pointer.x * influence + Math.sin(t * 0.55 + index) * 0.08;
 
     group.current.rotation.x +=
-      (targetX - group.current.rotation.x) * Math.min(delta * 3, 1);
-
-    group.current.rotation.y +=
-      (targetY + Math.sin(t * 0.45 + index) * 0.08 -
-        group.current.rotation.y) *
+      (targetX - group.current.rotation.x) *
       Math.min(delta * 3, 1);
 
-    const targetScale = hovered ? 1.23 : active ? 1.12 : 1;
-    const currentScale = group.current.scale.x;
+    group.current.rotation.y +=
+      (targetY - group.current.rotation.y) *
+      Math.min(delta * 3, 1);
+
+    const targetScale = hovered ? 1.28 : active ? 1.12 : 1;
     const nextScale =
-      currentScale + (targetScale - currentScale) * Math.min(delta * 7, 1);
+      group.current.scale.x +
+      (targetScale - group.current.scale.x) *
+        Math.min(delta * 7, 1);
 
     group.current.scale.setScalar(nextScale);
   });
@@ -123,43 +151,46 @@ function SkillObject({
             document.body.style.cursor = "auto";
           }}
         >
-          {/* Halo lumineux derrière l'objet */}
-          <mesh position={[0, 0, -0.13]} scale={hovered ? 1.3 : active ? 1.15 : 1}>
-            {shape === "sphere" && <sphereGeometry args={[0.82, 32, 32]} />}
-            {shape === "box" && <boxGeometry args={[1.3, 1.3, 1.3]} />}
-            {shape === "torus" && <torusGeometry args={[0.72, 0.27, 16, 48]} />}
-            {shape === "octahedron" && <octahedronGeometry args={[0.98, 0]} />}
-            {shape === "icosahedron" && <icosahedronGeometry args={[0.95, 1]} />}
+          {/* Halo coloré derrière le cœur */}
+          <mesh position={[0, 0, -0.12]} scale={hovered ? 1.3 : 1.12}>
+            <sphereGeometry args={[0.78, 32, 32]} />
             <meshBasicMaterial
               color={domain.color}
               transparent
-              opacity={hovered ? 0.25 : active ? 0.17 : 0.07}
+              opacity={hovered ? 0.12 : active ? 0.075 : 0.035}
+              depthWrite={false}
             />
           </mesh>
 
+          {/* Lueur du contour */}
+          <mesh>
+            <tubeGeometry args={[curve, 120, 0.065, 8, true]} />
+            <meshBasicMaterial
+              color={domain.color}
+              transparent
+              opacity={hovered ? 0.28 : active ? 0.2 : 0.1}
+              depthWrite={false}
+            />
+          </mesh>
+
+          {/* Contour principal du cœur */}
+          <mesh>
+            <tubeGeometry args={[curve, 120, 0.025, 8, true]} />
+            <meshStandardMaterial
+              color={domain.color}
+              emissive={domain.color}
+              emissiveIntensity={hovered ? 2.5 : active ? 1.7 : 0.8}
+              metalness={0.45}
+              roughness={0.25}
+            />
+          </mesh>
+
+          {/* Petit point lumineux sur le cœur */}
           <pointLight
             color={domain.color}
-            intensity={hovered ? 5 : active ? 2.8 : 0.7}
+            intensity={hovered ? 4 : active ? 2 : 0.7}
             distance={hovered ? 4 : 2.8}
           />
-
-          <mesh>
-            {shape === "sphere" && <sphereGeometry args={[0.72, 48, 48]} />}
-            {shape === "box" && <boxGeometry args={[1.05, 1.05, 1.05]} />}
-            {shape === "torus" && <torusGeometry args={[0.62, 0.22, 20, 64]} />}
-            {shape === "octahedron" && <octahedronGeometry args={[0.85, 0]} />}
-            {shape === "icosahedron" && <icosahedronGeometry args={[0.82, 1]} />}
-
-            <meshPhysicalMaterial
-              color={domain.color}
-              roughness={hovered ? 0.13 : 0.25}
-              metalness={0.25}
-              clearcoat={1}
-              clearcoatRoughness={0.15}
-              emissive={domain.color}
-              emissiveIntensity={hovered ? 0.65 : active ? 0.35 : 0.12}
-            />
-          </mesh>
 
           <Html
             center
@@ -171,7 +202,9 @@ function SkillObject({
               className={`tool3d-label ${active ? "is-active" : ""} ${
                 hovered ? "is-hovered" : ""
               }`}
-              style={{ "--tool-color": domain.color } as React.CSSProperties}
+              style={
+                { "--tool-color": domain.color } as React.CSSProperties
+              }
               onClick={(event) => {
                 event.stopPropagation();
                 onSelect();
@@ -201,13 +234,8 @@ function WorkshopScene({
   activeId: string;
   onSelect: (id: string) => void;
 }) {
-  const shapes: Shape[] = [
-    "sphere",
-    "torus",
-    "box",
-    "octahedron",
-    "icosahedron",
-  ];
+  const { pointer } = useThree();
+  const scene = useRef<Group>(null);
 
   const positions: [number, number, number][] = [
     [-2.25, 0.8, 0],
@@ -216,9 +244,6 @@ function WorkshopScene({
     [-1.25, -1.35, 0.2],
     [1.25, -1.35, 0.2],
   ];
-
-  const { pointer } = useThree();
-  const scene = useRef<Group>(null);
 
   useFrame((_, delta) => {
     if (!scene.current) return;
@@ -241,27 +266,14 @@ function WorkshopScene({
       <pointLight position={[0, 3, -2]} intensity={8} color="#b9c9ff" />
 
       <group ref={scene}>
-        <Float speed={0.7} floatIntensity={0.16} rotationIntensity={0.08}>
-          <mesh position={[0, 0, -1.6]} scale={1.8}>
-            <icosahedronGeometry args={[1, 1]} />
-            <meshBasicMaterial
-              color="#e761aa"
-              wireframe
-              transparent
-              opacity={0.1}
-            />
-          </mesh>
-        </Float>
-
         {DOMAINS.map((domain, index) => (
-          <SkillObject
+          <HeartOutline
             key={domain.id}
             domain={domain}
             active={activeId === domain.id}
             index={index}
-            shape={shapes[index]}
             position={positions[index]}
-            rotation={[index * 0.3, index * 0.4, 0]}
+            rotation={[0, index * 0.2, index * 0.06]}
             onSelect={() => onSelect(domain.id)}
           />
         ))}
@@ -272,14 +284,16 @@ function WorkshopScene({
 
 export default function ToolBox3D() {
   const [activeId, setActiveId] = useState("design");
-  const active = DOMAINS.find((domain) => domain.id === activeId) ?? DOMAINS[0];
+
+  const active =
+    DOMAINS.find((domain) => domain.id === activeId) ?? DOMAINS[0];
 
   return (
     <div className="toolbox3d">
       <div className="toolbox3d-heading">
         <p>
           Un mélange de design, de web et d’expérimentation numérique.
-          Sélectionne un objet pour explorer mon univers.
+          Sélectionne un cœur pour explorer mon univers.
         </p>
       </div>
 
@@ -293,21 +307,29 @@ export default function ToolBox3D() {
             dpr={[1, 1.5]}
             gl={{ antialias: true, alpha: true }}
           >
-            <WorkshopScene activeId={activeId} onSelect={setActiveId} />
+            <WorkshopScene
+              activeId={activeId}
+              onSelect={setActiveId}
+            />
           </Canvas>
 
           <span className="toolbox3d-hint">
             <span className="toolbox3d-hint-dot" />
-            CLIQUE SUR UN OBJET POUR EXPLORER
+            CLIQUE SUR UN CŒUR POUR EXPLORER
           </span>
         </div>
 
         <aside
           className="toolbox3d-panel"
           key={active.id}
-          style={{ "--active-color": active.color } as React.CSSProperties}
+          style={
+            { "--active-color": active.color } as React.CSSProperties
+          }
         >
-          <span className="toolbox3d-number" style={{ color: active.color }}>
+          <span
+            className="toolbox3d-number"
+            style={{ color: active.color }}
+          >
             DOMAINE / 0{DOMAINS.indexOf(active) + 1}
           </span>
 
@@ -316,7 +338,10 @@ export default function ToolBox3D() {
 
           <div className="toolbox3d-tags">
             {active.tools.map((tool, index) => (
-              <span key={tool} style={{ animationDelay: `${index * 70}ms` }}>
+              <span
+                key={tool}
+                style={{ animationDelay: `${index * 70}ms` }}
+              >
                 {tool}
               </span>
             ))}
@@ -331,7 +356,9 @@ export default function ToolBox3D() {
           <button
             key={domain.id}
             className={activeId === domain.id ? "is-active" : ""}
-            style={{ "--tool-color": domain.color } as React.CSSProperties}
+            style={
+              { "--tool-color": domain.color } as React.CSSProperties
+            }
             onClick={() => setActiveId(domain.id)}
           >
             <span />
