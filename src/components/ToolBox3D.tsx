@@ -352,19 +352,23 @@ export default function ToolBox3D() {
         </aside>
       </div>
 
-      <div className="toolbox3d-mobile-list">
+
+        <div className="toolbox3d-mobile-list">
         {DOMAINS.map((domain) => (
-          <button
+            <button
             key={domain.id}
             className={activeId === domain.id ? "is-active" : ""}
             style={{ "--tool-color": domain.color } as React.CSSProperties}
             onClick={() => setActiveId(domain.id)}
-          >
-            <span />
-            {domain.title}
-          </button>
+            >
+            <span className="toolbox3d-mobile-dot" />
+            <span className="toolbox3d-mobile-text">
+                <strong>{domain.title}</strong>
+                <small>{domain.subtitle}</small>
+            </span>
+            </button>
         ))}
-      </div>
+        </div>
     </div>
   );
 }

@@ -238,6 +238,20 @@
   display: none;
 }
 
+.tool3d-caption {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 180px;
+  color: #77717d;
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
 @keyframes toolbox3d-enter {
   from {
     opacity: 0;
