@@ -459,7 +459,7 @@ function useTheme() {
 const cover = (p: Project) =>
   p.thumbnail ?? p.media?.find((m) => m.type === "image")?.src;
 
-const BAND = ["Intégration web", "UI/UX design", "Motion design", "SEO", "Gestion de projet"];
+const BAND = ["Communication", "Design graphique", "Développement web", "Audiovisuel", "UI/UX design"];
 const ids = nav.map(([id]) => id) as string[];
 
 const delay = (d: number) =>
@@ -656,7 +656,7 @@ export default function App() {
         <div className="h-band" aria-hidden="true">
           <div className="h-band-t">
             {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => (
-              <span key={i}>{t}<b>✦</b></span>
+              <span key={i}>{t}<b>𖹭</b></span>
             ))}
           </div>
         </div>
