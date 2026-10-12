@@ -956,7 +956,7 @@ export default function App() {
       )}
 
       <footer className="mono">
-        © 2026 {profile.name} · Fait avec React, three.js et Vercel ·{" "}
+        © 2026 {profile.name} · Imaginé avec créativité, conçu avec passion ·{" "}
         <a href="#accueil" style={{ color: "var(--acc)" }}>
           ↑ haut
         </a>
