@@ -96,6 +96,7 @@
   --active-color: #e761aa;
 
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
 
@@ -126,10 +127,11 @@
     background 300ms ease,
     box-shadow 300ms ease;
 
-  animation: toolbox3d-panel-in 350ms ease both;
+  animation: toolbox3d-panel-in 450ms ease both;
 }
 
 .toolbox3d-panel::before {
+  content: "";
   position: absolute;
   top: 0;
   left: 30px;
@@ -137,19 +139,17 @@
   height: 3px;
   border-radius: 0 0 4px 4px;
   background: var(--active-color);
-  content: "";
-  transition:
-    width 300ms ease,
-    background 300ms ease;
+  transition: width 300ms ease, background 300ms ease;
+  pointer-events: none;
 }
 
 .toolbox3d-panel:hover::before {
-  width: 76px;
+  width: 90px;
 }
 
 @keyframes toolbox3d-panel-in {
   from {
-    opacity: 0.7;
+    opacity: 0;
   }
   to {
     opacity: 1;
@@ -173,6 +173,8 @@
   letter-spacing: 0.12em;
 }
 
+/* Symbole PNG du panneau */
+
 .toolbox3d-panel-symbol {
   display: flex;
   align-items: center;
@@ -193,22 +195,22 @@
     background 300ms ease;
 }
 
+.toolbox3d-panel-symbol img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 300ms cubic-bezier(.2, .8, .2, 1);
+}
+
 .toolbox3d-panel:hover .toolbox3d-panel-symbol {
   transform: rotate(-5deg);
   border-radius: 21px;
   background: color-mix(in srgb, var(--active-color) 18%, white);
 }
 
-.toolbox3d-panel-symbol img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 300ms ease;
-}
-
 .toolbox3d-panel:hover .toolbox3d-panel-symbol img {
-  transform: scale(1.08);
+  transform: scale(1.1);
 }
 
 /* Titres et descriptions */
@@ -230,6 +232,11 @@
   font-weight: 650;
   line-height: 1.15;
   overflow-wrap: break-word;
+  transition: color 250ms ease;
+}
+
+.toolbox3d-panel:hover h3 {
+  color: color-mix(in srgb, var(--active-color) 85%, #302633);
 }
 
 .toolbox3d-panel-subtitle {
@@ -250,7 +257,7 @@
   margin: 22px 0 18px;
   background: color-mix(in srgb, var(--active-color) 20%, #e8dfe8);
   transform-origin: left;
-  animation: toolbox3d-divider-in 350ms ease both;
+  animation: toolbox3d-divider-in 450ms ease both;
 }
 
 @keyframes toolbox3d-divider-in {
@@ -264,7 +271,7 @@
   }
 }
 
-/* Libellé */
+/* Libellé des compétences */
 
 .toolbox3d-tools-label {
   display: block;
@@ -299,7 +306,9 @@
   box-sizing: border-box;
 
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--active-color) 50%, transparent) transparent;
+  scrollbar-color:
+    color-mix(in srgb, var(--active-color) 50%, transparent)
+    transparent;
 }
 
 .toolbox3d-tags::-webkit-scrollbar {
@@ -316,6 +325,7 @@
 }
 
 .toolbox3d-tags span {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -331,33 +341,36 @@
   font-size: 10px;
   overflow-wrap: anywhere;
 
-  animation: toolbox3d-tag-in 350ms both;
+  animation: toolbox3d-tag-in 450ms both;
   transition:
-    transform 200ms ease,
-    border-color 200ms ease,
-    background 200ms ease,
-    box-shadow 200ms ease;
+    transform 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease,
+    box-shadow 220ms ease;
 }
 
 .toolbox3d-tags span:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.025);
   border-color: var(--active-color);
   background: color-mix(in srgb, var(--active-color) 16%, white);
-  box-shadow: 0 5px 12px color-mix(in srgb, var(--active-color) 12%, transparent);
+  box-shadow:
+    0 7px 15px color-mix(in srgb, var(--active-color) 15%, transparent);
 }
 
 @keyframes toolbox3d-tag-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px) scale(.96);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-/* Pied du panneau */
+/* =========================================================
+   PIED DU PANNEAU
+   ========================================================= */
 
 .toolbox3d-panel-footer {
   display: flex;
@@ -390,7 +403,7 @@
 
 @keyframes toolbox3d-dot-pulse {
   0%, 100% {
-    opacity: 0.7;
+    opacity: .7;
     box-shadow: 0 0 4px color-mix(in srgb, var(--active-color) 35%, transparent);
   }
   50% {
@@ -419,16 +432,31 @@
 
   border: 1px solid rgba(190, 130, 175, 0.35);
   border-radius: 28px;
-  background: #fffdfd;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(231, 97, 170, .09), transparent 35%),
+    radial-gradient(circle at 85% 85%, rgba(130, 156, 244, .11), transparent 35%),
+    #fffdfd;
+  background-size: 130% 130%;
   overflow: hidden;
 
   box-shadow: 0 18px 45px rgba(74, 43, 70, 0.04);
   transition: border-color 300ms ease, box-shadow 300ms ease;
+
+  animation: toolbox3d-stage-bg 12s ease-in-out infinite alternate;
 }
 
 .toolbox3d-stage:hover {
-  border-color: rgba(216, 60, 145, 0.42);
-  box-shadow: 0 20px 45px rgba(74, 43, 70, 0.07);
+  border-color: rgba(216, 60, 145, .42);
+  box-shadow: 0 20px 45px rgba(74, 43, 70, .07);
+}
+
+@keyframes toolbox3d-stage-bg {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 100%;
+  }
 }
 
 /* Grain décoratif */
@@ -438,8 +466,8 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.22;
-  background-image: radial-gradient(rgba(120, 83, 117, 0.18) 0.6px, transparent 0.6px);
+  opacity: .22;
+  background-image: radial-gradient(rgba(120, 83, 117, .18) .6px, transparent .6px);
   background-size: 7px 7px;
   animation: toolbox3d-grain-drift 12s ease-in-out infinite alternate;
 }
@@ -462,7 +490,7 @@
   height: 230px;
   border-radius: 50%;
   filter: blur(55px);
-  opacity: 0.3;
+  opacity: .3;
   pointer-events: none;
   will-change: transform, opacity;
 }
@@ -470,36 +498,36 @@
 .toolbox3d-glow--pink {
   top: 2%;
   left: -5%;
-  background: rgba(231, 97, 170, 0.38);
+  background: rgba(231, 97, 170, .38);
   animation: toolbox3d-glow-pink 8s ease-in-out infinite alternate;
 }
 
 .toolbox3d-glow--blue {
   right: -7%;
   bottom: 0;
-  background: rgba(130, 156, 244, 0.32);
+  background: rgba(130, 156, 244, .32);
   animation: toolbox3d-glow-blue 10s ease-in-out infinite alternate;
 }
 
 @keyframes toolbox3d-glow-pink {
   from {
-    transform: translate(-8px, 5px) scale(0.96);
-    opacity: 0.2;
+    transform: translate(-8px, 5px) scale(.96);
+    opacity: .2;
   }
   to {
     transform: translate(10px, -8px) scale(1.05);
-    opacity: 0.42;
+    opacity: .42;
   }
 }
 
 @keyframes toolbox3d-glow-blue {
   from {
     transform: translate(7px, -5px) scale(1.02);
-    opacity: 0.2;
+    opacity: .2;
   }
   to {
-    transform: translate(-10px, 8px) scale(0.95);
-    opacity: 0.4;
+    transform: translate(-10px, 8px) scale(.95);
+    opacity: .4;
   }
 }
 
@@ -518,7 +546,9 @@
   padding: 30px;
 }
 
-/* Cartes interactives */
+/* =========================================================
+   CARTES INTERACTIVES
+   ========================================================= */
 
 .toolbox3d-icon {
   --tool-color: #e761aa;
@@ -542,12 +572,11 @@
   border: 1px solid color-mix(in srgb, var(--tool-color) 40%, white);
   border-radius: 25px;
 
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, .9);
   color: var(--tool-color);
   cursor: pointer;
 
-  box-shadow: 0 8px 22px rgba(61, 40, 62, 0.06);
-
+  box-shadow: 0 8px 22px rgba(61, 40, 62, .06);
   transform: translateY(0) scale(1);
   transform-origin: center;
 
@@ -560,36 +589,40 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Halo de la carte */
+/* Reflet glossy */
+
+.toolbox3d-icon::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 15%,
+    rgba(255, 255, 255, .9) 45%,
+    transparent 70%
+  );
+  background-size: 250% 250%;
+  background-position: 120% 120%;
+  opacity: .55;
+  pointer-events: none;
+  transition: background-position 600ms ease, opacity 250ms ease;
+}
+
+/* Halo */
 
 .toolbox3d-icon::before {
   content: "";
   position: absolute;
   inset: -1px;
-  z-index: -1;
+  z-index: -2;
   border-radius: inherit;
   background: var(--tool-color);
   opacity: 0;
   filter: blur(18px);
   transition: opacity 260ms ease;
   pointer-events: none;
-}
-
-/* Reflet */
-
-.toolbox3d-icon::after {
-  content: "";
-  position: absolute;
-  inset: 1px;
-  border-radius: 24px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.8),
-    transparent 45%
-  );
-  opacity: 0.6;
-  pointer-events: none;
-  transition: opacity 260ms ease;
 }
 
 /* Numéro */
@@ -600,10 +633,11 @@
   left: 12px;
   color: #998d9b;
   font: 500 9px/1.2 monospace;
-  transition: color 220ms ease;
+  transition: color 220ms ease, transform 220ms ease;
 }
 
 .toolbox3d-icon:hover .toolbox3d-icon-number,
+.toolbox3d-icon:focus-visible .toolbox3d-icon-number,
 .toolbox3d-icon.is-active .toolbox3d-icon-number {
   color: var(--tool-color);
 }
@@ -636,11 +670,11 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-
+  transform-origin: center;
   transition: transform 300ms cubic-bezier(.2, .8, .2, 1);
 }
 
-/* Titre de l'icône */
+/* Titre */
 
 .toolbox3d-icon-title {
   margin-top: 8px;
@@ -663,7 +697,8 @@
   font-size: 17px;
 
   opacity: 0;
-  transform: rotate(-35deg) scale(0.4);
+  transform: rotate(-35deg) scale(.4);
+  transform-origin: center;
   pointer-events: none;
 
   transition:
@@ -671,26 +706,55 @@
     transform 300ms cubic-bezier(.2, .8, .2, 1);
 }
 
+/* Flottement permanent subtil, avec délais décalés */
+
+.toolbox3d-icon {
+  animation: toolbox3d-card-float 4.5s ease-in-out infinite;
+}
+
+.toolbox3d-icon:nth-child(2) {
+  animation-delay: -1.1s;
+}
+
+.toolbox3d-icon:nth-child(3) {
+  animation-delay: -2.2s;
+}
+
+.toolbox3d-icon:nth-child(4) {
+  animation-delay: -.7s;
+}
+
+@keyframes toolbox3d-card-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-4px) rotate(-.5deg);
+  }
+}
+
 /* Survol et focus */
 
 .toolbox3d-icon:hover,
 .toolbox3d-icon:focus-visible {
   z-index: 4;
-  transform: translateY(-6px) scale(1.035);
+  animation: none;
+  transform: translateY(-8px) scale(1.045) rotate(-1deg);
 
   border-color: var(--tool-color);
   background: #fff;
 
   box-shadow:
-    0 15px 28px color-mix(in srgb, var(--tool-color) 18%, transparent),
+    0 18px 32px color-mix(in srgb, var(--tool-color) 22%, transparent),
     0 0 0 3px color-mix(in srgb, var(--tool-color) 10%, transparent);
 
   outline: none;
 }
 
-/* Domaine sélectionné */
+/* Domaine actif */
 
-.toolbox3d-icon.is-active {
+.toolbox3d-icon.is-active:not(:hover):not(:focus-visible) {
+  animation: toolbox3d-active-float 3.5s ease-in-out infinite;
   border-color: var(--tool-color);
   background: #fff;
 
@@ -699,20 +763,30 @@
     inset 0 0 0 1px color-mix(in srgb, var(--tool-color) 20%, transparent);
 }
 
-/* Halo actif */
+@keyframes toolbox3d-active-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.015);
+  }
+}
+
+/* Halo et reflet au survol */
 
 .toolbox3d-icon.is-active::before,
 .toolbox3d-icon:hover::before,
 .toolbox3d-icon:focus-visible::before {
-  opacity: 0.16;
+  opacity: .16;
 }
 
 .toolbox3d-icon:hover::after,
 .toolbox3d-icon:focus-visible::after {
+  background-position: -20% -20%;
   opacity: 1;
 }
 
-/* Rotation légère du bloc PNG */
+/* Rotation du bloc PNG */
 
 .toolbox3d-icon:hover .toolbox3d-icon-drawing,
 .toolbox3d-icon:focus-visible .toolbox3d-icon-drawing {
@@ -723,10 +797,17 @@
 
 .toolbox3d-icon:hover .toolbox3d-icon-drawing img,
 .toolbox3d-icon:focus-visible .toolbox3d-icon-drawing img {
-  transform: scale(1.12) rotate(5deg);
+  animation: toolbox3d-icon-bounce 550ms cubic-bezier(.2, .8, .2, 1);
 }
 
-/* Changement de couleur du titre */
+@keyframes toolbox3d-icon-bounce {
+  0% { transform: scale(1) rotate(0); }
+  35% { transform: scale(1.2) rotate(-9deg); }
+  65% { transform: scale(.94) rotate(5deg); }
+  100% { transform: scale(1.12) rotate(0); }
+}
+
+/* Couleur du titre au survol */
 
 .toolbox3d-icon:hover .toolbox3d-icon-title,
 .toolbox3d-icon:focus-visible .toolbox3d-icon-title,
@@ -734,25 +815,48 @@
   color: var(--tool-color);
 }
 
-/* Étoile au survol */
+/* Numéro qui se décale légèrement */
+
+.toolbox3d-icon:hover .toolbox3d-icon-number,
+.toolbox3d-icon:focus-visible .toolbox3d-icon-number {
+  transform: translate(2px, -2px);
+}
+
+/* Étoile animée */
 
 .toolbox3d-icon:hover .toolbox3d-icon-sparkle,
-.toolbox3d-icon:focus-visible .toolbox3d-icon-sparkle,
+.toolbox3d-icon:focus-visible .toolbox3d-icon-sparkle {
+  animation: toolbox3d-sparkle-spin 650ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
 .toolbox3d-icon.is-active .toolbox3d-icon-sparkle {
   opacity: 1;
-  transform: rotate(0) scale(1);
+  animation: toolbox3d-sparkle-idle 3s ease-in-out infinite;
 }
 
-.toolbox3d-icon.is-active .toolbox3d-icon-sparkle {
-  animation: toolbox3d-sparkle 2.4s ease-in-out infinite;
+@keyframes toolbox3d-sparkle-spin {
+  0% {
+    opacity: 0;
+    transform: rotate(-90deg) scale(.2);
+  }
+  70% {
+    opacity: 1;
+    transform: rotate(25deg) scale(1.3);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
 }
 
-@keyframes toolbox3d-sparkle {
+@keyframes toolbox3d-sparkle-idle {
   0%, 100% {
+    opacity: .8;
     transform: rotate(0) scale(1);
   }
   50% {
-    transform: rotate(18deg) scale(1.2);
+    opacity: 1;
+    transform: rotate(22deg) scale(1.25);
   }
 }
 
@@ -771,7 +875,7 @@
 
   color: #8b7d8b;
   font: 8px/1.4 monospace;
-  letter-spacing: 0.08em;
+  letter-spacing: .08em;
 
   pointer-events: none;
 }
@@ -784,13 +888,13 @@
   border-radius: 50%;
   background: #e761aa;
 
-  box-shadow: 0 0 0 0 rgba(231, 97, 170, 0.35);
+  box-shadow: 0 0 0 0 rgba(231, 97, 170, .35);
   animation: toolbox3d-hint-pulse 2s ease-out infinite;
 }
 
 @keyframes toolbox3d-hint-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(231, 97, 170, 0.35);
+    box-shadow: 0 0 0 0 rgba(231, 97, 170, .35);
   }
   70% {
     box-shadow: 0 0 0 7px rgba(231, 97, 170, 0);
@@ -836,6 +940,7 @@
   }
 
   .toolbox3d-pockets-grid {
+    grid-template-columns: repeat(2, 112px);
     gap: 16px;
     padding: 20px;
   }
@@ -972,9 +1077,9 @@
   .toolbox3d *,
   .toolbox3d *::before,
   .toolbox3d *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: .01ms !important;
     scroll-behavior: auto !important;
   }
 }
