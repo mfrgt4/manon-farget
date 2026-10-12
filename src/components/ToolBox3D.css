@@ -386,7 +386,7 @@
     0 18px 36px color-mix(in srgb, var(--tool-color) 18%, transparent),
     0 0 0 5px color-mix(in srgb, var(--tool-color) 9%, transparent);
   outline: none;
-  transform: translateY(-3px);
+  /* Suppression de transform: translateY(-3px); pour garder une taille et une position fixes */
 }
 
 .toolbox3d-icon:hover .toolbox3d-icon-drawing,
@@ -394,12 +394,12 @@
 .toolbox3d-icon.is-active .toolbox3d-icon-drawing {
   background: color-mix(in srgb, var(--tool-color) 19%, white);
   box-shadow: 0 0 25px color-mix(in srgb, var(--tool-color) 23%, transparent);
-  transform: rotate(-5deg) scale(1.07);
+  transform: rotate(-5deg); /* Suppression de scale(1.07) */
 }
 
 .toolbox3d-icon:hover .toolbox3d-icon-drawing svg,
 .toolbox3d-icon:focus-visible .toolbox3d-icon-drawing svg {
-  transform: rotate(5deg) scale(1.08);
+  transform: rotate(5deg); /* Suppression de scale(1.08) */
 }
 
 .toolbox3d-icon:hover .toolbox3d-icon-number,
@@ -415,7 +415,7 @@
 }
 
 .toolbox3d-icon:active {
-  transform: translateY(-2px) scale(0.98);
+  transform: none; /* Remplacement de translateY(-2px) scale(0.98) */
 }
 
 /* =========================

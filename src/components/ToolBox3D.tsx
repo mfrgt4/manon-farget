@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import "./ToolBox3D.css";
 
@@ -8,6 +9,8 @@ type Domain = {
   color: string;
   tools: string[];
   number: string;
+  icon: string;
+  months: string[];
 };
 
 const DOMAINS: Domain[] = [
@@ -17,6 +20,8 @@ const DOMAINS: Domain[] = [
     subtitle: "Créer un univers visuel",
     color: "#e761aa",
     number: "01",
+    icon: "/icons/palette_pink.png",
+    months: [],
     tools: ["Photoshop", "Illustrator", "InDesign", "Affinity"],
   },
   {
@@ -25,6 +30,8 @@ const DOMAINS: Domain[] = [
     subtitle: "Imaginer des interfaces",
     color: "#9ab88b",
     number: "02",
+    icon: "/icons/code_pink.png",
+    months: [],
     tools: [
       "Figma",
       "UX Design",
@@ -40,6 +47,8 @@ const DOMAINS: Domain[] = [
     subtitle: "Donner vie aux idées",
     color: "#829cf4",
     number: "03",
+    icon: "/icons/clap_pink.png",
+    months: [],
     tools: [
       "WordPress",
       "HTML5",
@@ -61,62 +70,11 @@ const DOMAINS: Domain[] = [
     subtitle: "Raconter en images",
     color: "#efaa82",
     number: "04",
+    icon: "/icons/mobile_pink.png",
+    months: [],
     tools: ["Premiere Pro", "After Effects"],
   },
 ];
-
-function DomainIcon({ id }: { id: string }) {
-  const common = {
-    width: 42,
-    height: 42,
-    viewBox: "0 0 48 48",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.7,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true as const,
-  };
-
-  switch (id) {
-    case "design":
-      return (
-        <svg {...common}>
-          <path d="M9 34 31 12a5 5 0 0 1 7 7L16 41l-9 2 2-9Z" />
-          <path d="m27 16 7 7M9 34l7 7M6 43h36" />
-          <path d="m14 29 5 5" />
-        </svg>
-      );
-
-    case "uiux":
-      return (
-        <svg {...common}>
-          <rect x="8" y="6" width="32" height="36" rx="5" />
-          <path d="M8 15h32M14 11h.01M18 11h.01M22 11h.01" />
-          <rect x="14" y="21" width="9" height="8" rx="2" />
-          <path d="M27 22h7M27 26h7M14 34h20" />
-        </svg>
-      );
-
-    case "web":
-      return (
-        <svg {...common}>
-          <rect x="5" y="8" width="38" height="31" rx="5" />
-          <path d="M5 17h38M12 12.5h.01M16 12.5h.01M20 12.5h.01" />
-          <path d="m17 24-5 4 5 4M31 24l5 4-5 4M27 22l-6 12" />
-        </svg>
-      );
-
-    default:
-      return (
-        <svg {...common}>
-          <rect x="5" y="11" width="38" height="26" rx="6" />
-          <path d="m20 18 11 6-11 6V18Z" />
-          <path d="M12 6h24M12 42h24" />
-        </svg>
-      );
-  }
-}
 
 export default function ToolBox3D() {
   const [activeId, setActiveId] = useState("design");
@@ -142,7 +100,9 @@ export default function ToolBox3D() {
           <div className="toolbox3d-orbit toolbox3d-orbit--two" />
 
           <div className="toolbox3d-center" aria-live="polite">
-            <span className="toolbox3d-center-kicker">CRÉER · IMAGINER · RACONTER</span>
+            <span className="toolbox3d-center-kicker">
+              CRÉER · IMAGINER · RACONTER
+            </span>
             <h3>
               Y'a quoi dans
               <br />
@@ -171,9 +131,11 @@ export default function ToolBox3D() {
               onClick={() => setActiveId(domain.id)}
             >
               <span className="toolbox3d-icon-number">{domain.number}</span>
+
               <span className="toolbox3d-icon-drawing">
-                <DomainIcon id={domain.id} />
+                <img src={domain.icon} alt="" aria-hidden="true" />
               </span>
+
               <span className="toolbox3d-icon-title">{domain.title}</span>
               <span className="toolbox3d-icon-sparkle">✳</span>
             </button>
@@ -195,14 +157,27 @@ export default function ToolBox3D() {
             <span className="toolbox3d-number">
               DOMAINE / {active.number}
             </span>
+
             <span className="toolbox3d-panel-symbol">
-              <DomainIcon id={active.id} />
+              <img src={active.icon} alt="" aria-hidden="true" />
             </span>
           </div>
 
           <span className="toolbox3d-panel-overline">MON SAVOIR-FAIRE</span>
           <h3>{active.title}</h3>
           <p className="toolbox3d-panel-subtitle">{active.subtitle}</p>
+
+          {active.months.length > 0 && (
+            <>
+              <div className="toolbox3d-panel-divider" />
+              <span className="toolbox3d-tools-label">MOIS</span>
+              <div className="toolbox3d-tags">
+                {active.months.map((month) => (
+                  <span key={month}>{month}</span>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className="toolbox3d-panel-divider" />
 
@@ -221,7 +196,9 @@ export default function ToolBox3D() {
           <div className="toolbox3d-panel-footer">
             <span className="toolbox3d-footer-dot" />
             <span>TOUJOURS EN EXPLORATION</span>
-            <span className="toolbox3d-footer-number">{active.number} / 04</span>
+            <span className="toolbox3d-footer-number">
+              {active.number} / 04
+            </span>
           </div>
         </aside>
       </div>
