@@ -114,8 +114,8 @@ function HeartOutline({
     const targetScale = active ? 1.55 : hovered ? 1.3 : 1;
 
     const nextScale =
-    group.current.scale.x +
-    (targetScale - group.current.scale.x) * Math.min(delta * 10, 1);
+      group.current.scale.x +
+      (targetScale - group.current.scale.x) * Math.min(delta * 10, 1);
 
     group.current.scale.setScalar(nextScale);
   });
