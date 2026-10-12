@@ -124,7 +124,7 @@ function HeartOutline({
     group.current.rotation.y +=
       (targetY - group.current.rotation.y) * Math.min(delta * 3, 1);
 
-    const targetScale = active ? 1.55 : hovered ? 1.3 : 1;
+    const targetScale = active ? 1.4 : hovered ? 1.25 : 1;
 
     const nextScale =
       group.current.scale.x +
@@ -262,10 +262,10 @@ function WorkshopScene({
   const scene = useRef<Group>(null);
 
   const positions: [number, number, number][] = [
-    [-2.4, 1.2, 0], // Design graphique : haut gauche
-    [1.8, 1.65, -0.4], // UI/UX : plus haut à droite
-    [0.1, -0.15, 0.2], // Développement web : centre
-    [-1.65, -1.55, 0.1], // Audiovisuel : bas gauche
+    [-2.8, 1.35, 0], // Design graphique : haut gauche
+    [2.5, 1.8, -0.4], // UI/UX : haut droite
+    [0.0, -0.15, 0.2], // Développement web : centre
+    [-2.1, -1.75, 0.1], // Audiovisuel : bas gauche
   ];
 
   useFrame((_, delta) => {
