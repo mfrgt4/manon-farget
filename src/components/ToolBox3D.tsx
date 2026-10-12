@@ -182,18 +182,18 @@ function HeartOutline({
           <mesh>
             <tubeGeometry args={[curve, 160, 0.052, 16, true]} />
             <meshPhysicalMaterial
-              color={domain.color}
-              metalness={0}
-              roughness={0.07}
-              transmission={0.88}
-              thickness={0.6}
-              ior={1.45}
-              clearcoat={1}
-              clearcoatRoughness={0.04}
-              attenuationColor={domain.color}
-              attenuationDistance={1.4}
-              emissive={domain.color}
-              emissiveIntensity={hovered ? 0.22 : active ? 0.12 : 0.035}
+            color={domain.color}
+            roughness={0.08}
+            metalness={0.05}
+            transmission={0.85}
+            thickness={0.7}
+            ior={1.45}
+            clearcoat={1}
+            clearcoatRoughness={0.05}
+            emissive={domain.color}
+            emissiveIntensity={active ? 0.35 : 0.12}
+            transparent
+            opacity={0.95}
             />
           </mesh>
 
@@ -258,12 +258,12 @@ function WorkshopScene({
   const scene = useRef<Group>(null);
 
   const positions: [number, number, number][] = [
-    [-2.15, 0.75, 0],
-    [1.9, 0.85, -0.35],
-    [0, -0.15, 0.3],
-    [-1.35, -1.25, 0],
-    [1.35, -1.25, 0.1],
-  ];
+    [-2.5, 1.1, 0],
+    [0, 0.2, -0.4],
+    [2.5, 1.1, 0],
+    [-1.6, -1.3, 0.2],
+    [1.6, -1.3, 0.2],
+    ];
 
   useFrame((_, delta) => {
     if (!scene.current) return;
