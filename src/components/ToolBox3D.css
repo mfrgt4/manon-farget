@@ -122,11 +122,15 @@
 
   box-shadow: 0 18px 45px rgba(74, 43, 70, 0.065);
 
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
+  transform-origin: center;
   transition:
+    transform 180ms ease-out,
     border-color 300ms ease,
     background 300ms ease,
     box-shadow 300ms ease;
 
+  will-change: transform;
   animation: toolbox3d-panel-in 450ms ease both;
 }
 
@@ -139,12 +143,19 @@
   height: 3px;
   border-radius: 0 0 4px 4px;
   background: var(--active-color);
-  transition: width 300ms ease, background 300ms ease;
   pointer-events: none;
+  transition: width 300ms ease, background 300ms ease;
 }
 
 .toolbox3d-panel:hover::before {
   width: 90px;
+}
+
+/* Effet de survol du panneau droit */
+
+.toolbox3d-panel:hover {
+  transform: perspective(1000px) rotateX(-1deg) rotateY(1deg) scale(1.015);
+  box-shadow: 0 28px 65px rgba(48, 38, 51, 0.12);
 }
 
 @keyframes toolbox3d-panel-in {
@@ -156,7 +167,9 @@
   }
 }
 
-/* Haut du panneau */
+/* =========================================================
+   HAUT DU PANNEAU
+   ========================================================= */
 
 .toolbox3d-panel-top {
   display: flex;
@@ -173,7 +186,7 @@
   letter-spacing: 0.12em;
 }
 
-/* Symbole PNG du panneau */
+/* Symbole du panneau */
 
 .toolbox3d-panel-symbol {
   display: flex;
@@ -200,7 +213,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: transform 300ms cubic-bezier(.2, .8, .2, 1);
+  transition: transform 300ms ease;
 }
 
 .toolbox3d-panel:hover .toolbox3d-panel-symbol {
@@ -210,10 +223,12 @@
 }
 
 .toolbox3d-panel:hover .toolbox3d-panel-symbol img {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
-/* Titres et descriptions */
+/* =========================================================
+   TITRES ET DESCRIPTIONS
+   ========================================================= */
 
 .toolbox3d-panel-overline {
   display: block;
@@ -248,7 +263,9 @@
   overflow-wrap: break-word;
 }
 
-/* Séparateur */
+/* =========================================================
+   SÉPARATEUR
+   ========================================================= */
 
 .toolbox3d-panel-divider {
   width: 100%;
@@ -257,7 +274,7 @@
   margin: 22px 0 18px;
   background: color-mix(in srgb, var(--active-color) 20%, #e8dfe8);
   transform-origin: left;
-  animation: toolbox3d-divider-in 450ms ease both;
+  animation: toolbox3d-divider-in 350ms ease both;
 }
 
 @keyframes toolbox3d-divider-in {
@@ -270,8 +287,6 @@
     opacity: 1;
   }
 }
-
-/* Libellé des compétences */
 
 .toolbox3d-tools-label {
   display: block;
@@ -301,9 +316,7 @@
 
   overflow-y: auto;
   overflow-x: hidden;
-
   padding: 1px 4px 4px 0;
-  box-sizing: border-box;
 
   scrollbar-width: thin;
   scrollbar-color:
@@ -353,8 +366,7 @@
   transform: translateY(-3px) scale(1.025);
   border-color: var(--active-color);
   background: color-mix(in srgb, var(--active-color) 16%, white);
-  box-shadow:
-    0 7px 15px color-mix(in srgb, var(--active-color) 15%, transparent);
+  box-shadow: 0 7px 15px color-mix(in srgb, var(--active-color) 15%, transparent);
 }
 
 @keyframes toolbox3d-tag-in {
@@ -432,10 +444,12 @@
 
   border: 1px solid rgba(190, 130, 175, 0.35);
   border-radius: 28px;
+
   background:
-    radial-gradient(circle at 15% 15%, rgba(231, 97, 170, .09), transparent 35%),
-    radial-gradient(circle at 85% 85%, rgba(130, 156, 244, .11), transparent 35%),
+    radial-gradient(circle at 15% 15%, rgba(231, 97, 170, .07), transparent 35%),
+    radial-gradient(circle at 85% 85%, rgba(130, 156, 244, .07), transparent 35%),
     #fffdfd;
+
   background-size: 130% 130%;
   overflow: hidden;
 
@@ -466,7 +480,7 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: .22;
+  opacity: .16;
   background-image: radial-gradient(rgba(120, 83, 117, .18) .6px, transparent .6px);
   background-size: 7px 7px;
   animation: toolbox3d-grain-drift 12s ease-in-out infinite alternate;
@@ -481,7 +495,7 @@
   }
 }
 
-/* Halos colorés */
+/* Halos supprimés : les éléments restent décoratifs, sans lumière */
 
 .toolbox3d-glow {
   position: absolute;
@@ -489,46 +503,23 @@
   width: 230px;
   height: 230px;
   border-radius: 50%;
-  filter: blur(55px);
-  opacity: .3;
+  filter: none;
+  opacity: 0;
   pointer-events: none;
-  will-change: transform, opacity;
 }
 
 .toolbox3d-glow--pink {
   top: 2%;
   left: -5%;
-  background: rgba(231, 97, 170, .38);
-  animation: toolbox3d-glow-pink 8s ease-in-out infinite alternate;
+  background: transparent;
+  animation: none;
 }
 
 .toolbox3d-glow--blue {
   right: -7%;
   bottom: 0;
-  background: rgba(130, 156, 244, .32);
-  animation: toolbox3d-glow-blue 10s ease-in-out infinite alternate;
-}
-
-@keyframes toolbox3d-glow-pink {
-  from {
-    transform: translate(-8px, 5px) scale(.96);
-    opacity: .2;
-  }
-  to {
-    transform: translate(10px, -8px) scale(1.05);
-    opacity: .42;
-  }
-}
-
-@keyframes toolbox3d-glow-blue {
-  from {
-    transform: translate(7px, -5px) scale(1.02);
-    opacity: .2;
-  }
-  to {
-    transform: translate(-10px, 8px) scale(.95);
-    opacity: .4;
-  }
+  background: transparent;
+  animation: none;
 }
 
 /* =========================================================
@@ -587,9 +578,31 @@
     box-shadow 260ms ease;
 
   -webkit-tap-highlight-color: transparent;
+  animation: toolbox3d-card-float 4.5s ease-in-out infinite;
 }
 
-/* Reflet glossy */
+.toolbox3d-icon:nth-child(2) {
+  animation-delay: -1.1s;
+}
+
+.toolbox3d-icon:nth-child(3) {
+  animation-delay: -2.2s;
+}
+
+.toolbox3d-icon:nth-child(4) {
+  animation-delay: -.7s;
+}
+
+@keyframes toolbox3d-card-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-4px) rotate(-.5deg);
+  }
+}
+
+/* Reflet neutre, sans effet lumineux */
 
 .toolbox3d-icon::after {
   content: "";
@@ -598,19 +611,15 @@
   z-index: -1;
   border-radius: inherit;
   background: linear-gradient(
-    115deg,
-    transparent 15%,
-    rgba(255, 255, 255, .9) 45%,
-    transparent 70%
+    135deg,
+    rgba(255, 255, 255, .45),
+    transparent 45%
   );
-  background-size: 250% 250%;
-  background-position: 120% 120%;
-  opacity: .55;
+  opacity: .35;
   pointer-events: none;
-  transition: background-position 600ms ease, opacity 250ms ease;
 }
 
-/* Halo */
+/* Halo désactivé */
 
 .toolbox3d-icon::before {
   content: "";
@@ -618,10 +627,9 @@
   inset: -1px;
   z-index: -2;
   border-radius: inherit;
-  background: var(--tool-color);
+  background: transparent;
   opacity: 0;
-  filter: blur(18px);
-  transition: opacity 260ms ease;
+  filter: none;
   pointer-events: none;
 }
 
@@ -642,7 +650,12 @@
   color: var(--tool-color);
 }
 
-/* PNG */
+.toolbox3d-icon:hover .toolbox3d-icon-number,
+.toolbox3d-icon:focus-visible .toolbox3d-icon-number {
+  transform: translate(2px, -2px);
+}
+
+/* PNG — aucun bounce */
 
 .toolbox3d-icon-drawing {
   display: flex;
@@ -660,7 +673,7 @@
   background: color-mix(in srgb, var(--tool-color) 11%, white);
 
   transition:
-    transform 260ms cubic-bezier(.2, .8, .2, 1),
+    transform 260ms ease,
     background 260ms ease,
     border-radius 260ms ease;
 }
@@ -670,8 +683,9 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transform-origin: center;
-  transition: transform 300ms cubic-bezier(.2, .8, .2, 1);
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
 }
 
 /* Titre */
@@ -706,52 +720,22 @@
     transform 300ms cubic-bezier(.2, .8, .2, 1);
 }
 
-/* Flottement permanent subtil, avec délais décalés */
-
-.toolbox3d-icon {
-  animation: toolbox3d-card-float 4.5s ease-in-out infinite;
-}
-
-.toolbox3d-icon:nth-child(2) {
-  animation-delay: -1.1s;
-}
-
-.toolbox3d-icon:nth-child(3) {
-  animation-delay: -2.2s;
-}
-
-.toolbox3d-icon:nth-child(4) {
-  animation-delay: -.7s;
-}
-
-@keyframes toolbox3d-card-float {
-  0%, 100% {
-    transform: translateY(0) rotate(0);
-  }
-  50% {
-    transform: translateY(-4px) rotate(-.5deg);
-  }
-}
-
 /* Survol et focus */
 
 .toolbox3d-icon:hover,
 .toolbox3d-icon:focus-visible {
   z-index: 4;
   animation: none;
-  transform: translateY(-8px) scale(1.045) rotate(-1deg);
+  transform: translateY(-7px) scale(1.035);
 
   border-color: var(--tool-color);
   background: #fff;
 
-  box-shadow:
-    0 18px 32px color-mix(in srgb, var(--tool-color) 22%, transparent),
-    0 0 0 3px color-mix(in srgb, var(--tool-color) 10%, transparent);
-
+  box-shadow: 0 15px 28px rgba(61, 40, 62, .10);
   outline: none;
 }
 
-/* Domaine actif */
+/* Domaine sélectionné */
 
 .toolbox3d-icon.is-active:not(:hover):not(:focus-visible) {
   animation: toolbox3d-active-float 3.5s ease-in-out infinite;
@@ -759,7 +743,7 @@
   background: #fff;
 
   box-shadow:
-    0 10px 25px color-mix(in srgb, var(--tool-color) 16%, transparent),
+    0 10px 25px color-mix(in srgb, var(--tool-color) 12%, transparent),
     inset 0 0 0 1px color-mix(in srgb, var(--tool-color) 20%, transparent);
 }
 
@@ -768,46 +752,28 @@
     transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateY(-4px) scale(1.015);
+    transform: translateY(-3px) scale(1.01);
   }
 }
 
-/* Halo et reflet au survol */
+/* Pas de halo au survol */
 
 .toolbox3d-icon.is-active::before,
 .toolbox3d-icon:hover::before,
 .toolbox3d-icon:focus-visible::before {
-  opacity: .16;
+  opacity: 0;
 }
 
-.toolbox3d-icon:hover::after,
-.toolbox3d-icon:focus-visible::after {
-  background-position: -20% -20%;
-  opacity: 1;
-}
-
-/* Rotation du bloc PNG */
+/* Petit mouvement du cadre derrière le PNG, sans bounce */
 
 .toolbox3d-icon:hover .toolbox3d-icon-drawing,
 .toolbox3d-icon:focus-visible .toolbox3d-icon-drawing {
-  transform: rotate(-5deg);
+  transform: rotate(-3deg);
   border-radius: 17px;
-  background: color-mix(in srgb, var(--tool-color) 18%, white);
+  background: color-mix(in srgb, var(--tool-color) 15%, white);
 }
 
-.toolbox3d-icon:hover .toolbox3d-icon-drawing img,
-.toolbox3d-icon:focus-visible .toolbox3d-icon-drawing img {
-  animation: toolbox3d-icon-bounce 550ms cubic-bezier(.2, .8, .2, 1);
-}
-
-@keyframes toolbox3d-icon-bounce {
-  0% { transform: scale(1) rotate(0); }
-  35% { transform: scale(1.2) rotate(-9deg); }
-  65% { transform: scale(.94) rotate(5deg); }
-  100% { transform: scale(1.12) rotate(0); }
-}
-
-/* Couleur du titre au survol */
+/* Couleur du titre */
 
 .toolbox3d-icon:hover .toolbox3d-icon-title,
 .toolbox3d-icon:focus-visible .toolbox3d-icon-title,
@@ -815,38 +781,17 @@
   color: var(--tool-color);
 }
 
-/* Numéro qui se décale légèrement */
-
-.toolbox3d-icon:hover .toolbox3d-icon-number,
-.toolbox3d-icon:focus-visible .toolbox3d-icon-number {
-  transform: translate(2px, -2px);
-}
-
-/* Étoile animée */
+/* Étoile discrète */
 
 .toolbox3d-icon:hover .toolbox3d-icon-sparkle,
-.toolbox3d-icon:focus-visible .toolbox3d-icon-sparkle {
-  animation: toolbox3d-sparkle-spin 650ms cubic-bezier(.2, .8, .2, 1) both;
+.toolbox3d-icon:focus-visible .toolbox3d-icon-sparkle,
+.toolbox3d-icon.is-active .toolbox3d-icon-sparkle {
+  opacity: 1;
+  transform: rotate(0) scale(1);
 }
 
 .toolbox3d-icon.is-active .toolbox3d-icon-sparkle {
-  opacity: 1;
   animation: toolbox3d-sparkle-idle 3s ease-in-out infinite;
-}
-
-@keyframes toolbox3d-sparkle-spin {
-  0% {
-    opacity: 0;
-    transform: rotate(-90deg) scale(.2);
-  }
-  70% {
-    opacity: 1;
-    transform: rotate(25deg) scale(1.3);
-  }
-  100% {
-    opacity: 1;
-    transform: rotate(0) scale(1);
-  }
 }
 
 @keyframes toolbox3d-sparkle-idle {
@@ -856,7 +801,7 @@
   }
   50% {
     opacity: 1;
-    transform: rotate(22deg) scale(1.25);
+    transform: rotate(15deg) scale(1.12);
   }
 }
 
@@ -888,13 +833,13 @@
   border-radius: 50%;
   background: #e761aa;
 
-  box-shadow: 0 0 0 0 rgba(231, 97, 170, .35);
+  box-shadow: 0 0 0 0 rgba(231, 97, 170, .25);
   animation: toolbox3d-hint-pulse 2s ease-out infinite;
 }
 
 @keyframes toolbox3d-hint-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(231, 97, 170, .35);
+    box-shadow: 0 0 0 0 rgba(231, 97, 170, .25);
   }
   70% {
     box-shadow: 0 0 0 7px rgba(231, 97, 170, 0);
@@ -1081,5 +1026,10 @@
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .toolbox3d-panel,
+  .toolbox3d-panel:hover {
+    transform: none !important;
   }
 }
