@@ -131,7 +131,7 @@
 .toolbox3d-hint {
   position: absolute;
   z-index: 2;
-  bottom: 18px;
+  bottom: 30px;
   left: 20px;
   display: flex;
   align-items: center;
@@ -140,7 +140,6 @@
   font: 10px monospace;
   letter-spacing: 0.08em;
   pointer-events: none;
-  margin-top: 100px;
 }
 
 .toolbox3d-hint-dot {

@@ -111,10 +111,11 @@ function HeartOutline({
     group.current.rotation.y +=
       (targetY - group.current.rotation.y) * Math.min(delta * 3, 1);
 
-    const targetScale = hovered ? 1.35 : active ? 1.5 : 1;
+    const targetScale = active ? 1.85 : hovered ? 1.5 : 1;
+
     const nextScale =
-      group.current.scale.x +
-      (targetScale - group.current.scale.x) * Math.min(delta * 7, 1);
+    group.current.scale.x +
+    (targetScale - group.current.scale.x) * Math.min(delta * 10, 1);
 
     group.current.scale.setScalar(nextScale);
   });
