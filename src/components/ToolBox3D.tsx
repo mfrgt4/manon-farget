@@ -10,7 +10,6 @@ type Domain = {
   number: string;
   icon: string;
   months: string[];
-  positionClass: string;
 };
 
 const DOMAINS: Domain[] = [
@@ -23,7 +22,6 @@ const DOMAINS: Domain[] = [
     icon: "/icons/palette_pink.png",
     months: [],
     tools: ["Photoshop", "Illustrator", "InDesign", "Affinity"],
-    positionClass: "item-design",
   },
   {
     id: "uiux",
@@ -41,7 +39,6 @@ const DOMAINS: Domain[] = [
       "Responsive",
       "Accessibilité",
     ],
-    positionClass: "item-uiux",
   },
   {
     id: "web",
@@ -65,7 +62,6 @@ const DOMAINS: Domain[] = [
       "SQL",
       "SEO",
     ],
-    positionClass: "item-web",
   },
   {
     id: "video",
@@ -76,7 +72,6 @@ const DOMAINS: Domain[] = [
     icon: "/icons/clap_pink.png",
     months: [],
     tools: ["Premiere Pro", "After Effects"],
-    positionClass: "item-video",
   },
 ];
 
@@ -87,87 +82,98 @@ export default function ToolBox3D() {
     DOMAINS.find((domain) => domain.id === activeId) ?? DOMAINS[0];
 
   return (
-    <section id="boite-a-outils" className="toolbox3d desk-container">
-      {/* En-tête style "What's on My Desk" */}
-      <div className="desk-header">
-        <h2 className="desk-title">What's on My Desk</h2>
-        <div className="desk-badge">graphic designer edition</div>
+    <section id="boite-a-outils" className="toolbox3d">
+      <div className="toolbox3d-heading">
+        <span className="toolbox3d-eyebrow">// 03 — MON UNIVERS</span>
+        <h2>Y'a quoi dans mes poches ?</h2>
+        <span className="toolbox3d-heading-line" />
+        <p>Survole les éléments pour découvrir leur contenu.</p>
       </div>
 
-      {/* Zone principale avec les éléments dispersés */}
-      <div className="toolbox3d-stage desk-stage">
-        <div className="toolbox3d-grain" />
-        <div className="toolbox3d-glow toolbox3d-glow--pink" />
-        <div className="toolbox3d-glow toolbox3d-glow--blue" />
-        
-        {DOMAINS.map((domain) => (
-          <button
-            key={domain.id}
-            type="button"
-            className={`toolbox3d-icon desk-object ${domain.positionClass} ${
-              activeId === domain.id ? "is-active" : ""
-            }`}
-            style={{ "--tool-color": domain.color } as React.CSSProperties}
-            aria-label={`Explorer ${domain.title}`}
-            aria-pressed={activeId === domain.id}
-            onMouseEnter={() => setActiveId(domain.id)}
-            onFocus={() => setActiveId(domain.id)}
-            onClick={() => setActiveId(domain.id)}
-          >
-            <span className="toolbox3d-icon-number">({domain.number})</span>
-
-            <span className="toolbox3d-icon-drawing">
-              <img src={domain.icon} alt="" aria-hidden="true" />
+      <div className="toolbox3d-layout">
+        {/* À GAUCHE : La page d'infos fixe */}
+        <aside
+          className="toolbox3d-panel"
+          key={active.id}
+          style={{ "--active-color": active.color } as React.CSSProperties}
+          aria-live="polite"
+        >
+          <div className="toolbox3d-panel-top">
+            <span className="toolbox3d-number">
+              DOMAINE / {active.number}
             </span>
 
-            <span className="toolbox3d-icon-title">{domain.title}</span>
-          </button>
-        ))}
+            <span className="toolbox3d-panel-symbol">
+              <img src={active.icon} alt="" aria-hidden="true" />
+            </span>
+          </div>
 
-        <span className="toolbox3d-hint">
-          <span className="toolbox3d-hint-dot" />
-          SURVOLE UNE ICÔNE POUR EXPLORER
-        </span>
-      </div>
-
-      {/* Panneau récapitulatif en bas */}
-      <aside
-        className="toolbox3d-panel desk-panel"
-        key={active.id}
-        style={{ "--active-color": active.color } as React.CSSProperties}
-        aria-live="polite"
-      >
-        <div className="toolbox3d-panel-top desk-panel-info">
-          <span className="toolbox3d-number desk-panel-number">
-            DOMAINE / {active.number}
-          </span>
+          <span className="toolbox3d-panel-overline">MON SAVOIR-FAIRE</span>
           <h3>{active.title}</h3>
           <p className="toolbox3d-panel-subtitle">{active.subtitle}</p>
-        </div>
 
-        <div className="desk-panel-tools">
-          <span className="toolbox3d-tools-label desk-tools-title">OUTILS & COMPÉTENCES</span>
-          <div className="toolbox3d-tags desk-tags">
+          <div className="toolbox3d-panel-divider" />
+
+          <span className="toolbox3d-tools-label">OUTILS & COMPÉTENCES</span>
+          <div className="toolbox3d-tags">
             {active.tools.map((tool, index) => (
               <span
                 key={tool}
-                className="desk-tag"
                 style={{ animationDelay: `${index * 45}ms` }}
               >
                 {tool}
               </span>
             ))}
           </div>
-        </div>
 
-        <div className="toolbox3d-panel-footer" style={{ display: "none" }}>
-          <span className="toolbox3d-footer-dot" />
-          <span>TOUJOURS EN EXPLORATION</span>
-          <span className="toolbox3d-footer-number">
-            {active.number} / 04
+          <div className="toolbox3d-panel-footer">
+            <span className="toolbox3d-footer-dot" />
+            <span>TOUJOURS EN EXPLORATION</span>
+            <span className="toolbox3d-footer-number">
+              {active.number} / 04
+            </span>
+          </div>
+        </aside>
+
+        {/* À DROITE : Les 4 icônes et leur nom */}
+        <div className="toolbox3d-stage">
+          <div className="toolbox3d-grain" />
+          <div className="toolbox3d-glow toolbox3d-glow--pink" />
+          <div className="toolbox3d-glow toolbox3d-glow--blue" />
+
+          <div className="toolbox3d-pockets-grid">
+            {DOMAINS.map((domain) => (
+              <button
+                key={domain.id}
+                type="button"
+                className={`toolbox3d-icon ${
+                  activeId === domain.id ? "is-active" : ""
+                }`}
+                style={{ "--tool-color": domain.color } as React.CSSProperties}
+                aria-label={`Explorer ${domain.title}`}
+                aria-pressed={activeId === domain.id}
+                onMouseEnter={() => setActiveId(domain.id)}
+                onFocus={() => setActiveId(domain.id)}
+                onClick={() => setActiveId(domain.id)}
+              >
+                <span className="toolbox3d-icon-number">{domain.number}</span>
+
+                <span className="toolbox3d-icon-drawing">
+                  <img src={domain.icon} alt="" aria-hidden="true" />
+                </span>
+
+                <span className="toolbox3d-icon-title">{domain.title}</span>
+                <span className="toolbox3d-icon-sparkle">✳</span>
+              </button>
+            ))}
+          </div>
+
+          <span className="toolbox3d-hint">
+            <span className="toolbox3d-hint-dot" />
+            SURVOLE UNE ICÔNE POUR EXPLORER
           </span>
         </div>
-      </aside>
+      </div>
     </section>
   );
 }
