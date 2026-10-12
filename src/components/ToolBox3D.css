@@ -7,7 +7,7 @@
   isolation: isolate;
   padding: 38px 0 48px;
   color: var(--toolbox-text);
-  max-width: 1040px;
+  max-width: 1024px;
   margin: 0 auto;
 }
 
@@ -48,7 +48,7 @@
   line-height: 1.7;
 }
 
-/* MISE EN PAGE : Largeurs fixes strictes pour éviter tout mouvement */
+/* MISE EN PAGE : Largeurs fixes strictes alignées à 1024px au total */
 .toolbox3d-layout {
   display: grid;
   grid-template-columns: 500px 500px;
