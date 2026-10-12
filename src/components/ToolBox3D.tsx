@@ -1,7 +1,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Float, Html } from "@react-three/drei";
+import { Float, Html, Environment } from "@react-three/drei";
 import type { ThreeElements } from "@react-three/fiber";
 import {
   CatmullRomCurve3,
@@ -30,28 +30,28 @@ const DOMAINS: Domain[] = [
     id: "uiux",
     title: "UI/UX design",
     subtitle: "Imaginer des interfaces",
-    color: "#b7d6a4",
+    color: "#9ab88b",
     tools: ["Maquettes", "Prototypes", "Ergonomie"],
   },
   {
     id: "web",
     title: "Développement web",
     subtitle: "Donner vie aux idées",
-    color: "#b9c9ff",
+    color: "#829cf4",
     tools: ["WordPress", "HTML", "CSS", "JavaScript"],
   },
   {
     id: "video",
     title: "Audiovisuel",
     subtitle: "Raconter en images",
-    color: "#ffc69b",
+    color: "#efaa82",
     tools: ["Premiere Pro", "After Effects", "Montage vidéo"],
   },
   {
     id: "ai",
     title: "IA & création",
     subtitle: "Explorer de nouvelles possibilités",
-    color: "#d7b5ff",
+    color: "#b68be9",
     tools: ["Création assistée par IA", "Expérimentation"],
   },
 ];
@@ -65,12 +65,11 @@ type SkillObjectProps = ThreeElements["group"] & {
 
 function createHeartCurve() {
   const points: Vector3[] = [];
-  const segments = 120;
+  const segments = 160;
 
-  for (let i = 0; i <= segments; i++) {
+  for (let i = 0; i < segments; i++) {
     const t = (i / segments) * Math.PI * 2;
 
-    // Courbe classique d'un cœur, transformée en contour 3D.
     const x = (16 * Math.pow(Math.sin(t), 3)) / 17;
     const y =
       (13 * Math.cos(t) -
@@ -79,13 +78,13 @@ function createHeartCurve() {
         Math.cos(4 * t)) /
       17;
 
-    // Profondeur douce pour donner du relief au contour.
+    // Profondeur alternée pour donner du relief au cœur.
     const z = Math.sin(t * 2) * 0.12;
 
     points.push(new Vector3(x, y, z));
   }
 
-  return new CatmullRomCurve3(points, true, "catmullrom", 0.5);
+  return new CatmullRomCurve3(points, true, "centripetal", 0.5);
 }
 
 function HeartOutline({
@@ -104,12 +103,13 @@ function HeartOutline({
   useFrame((state, delta) => {
     if (!group.current) return;
 
-    const t = state.clock.elapsedTime;
+    const time = state.clock.elapsedTime;
     const influence = hovered ? 0.32 : 0.12;
 
     const targetX = -pointer.y * influence;
     const targetY =
-      pointer.x * influence + Math.sin(t * 0.55 + index) * 0.08;
+      pointer.x * influence +
+      Math.sin(time * 0.55 + index) * 0.08;
 
     group.current.rotation.x +=
       (targetX - group.current.rotation.x) *
@@ -119,7 +119,7 @@ function HeartOutline({
       (targetY - group.current.rotation.y) *
       Math.min(delta * 3, 1);
 
-    const targetScale = hovered ? 1.28 : active ? 1.12 : 1;
+    const targetScale = hovered ? 1.22 : active ? 1.1 : 1;
     const nextScale =
       group.current.scale.x +
       (targetScale - group.current.scale.x) *
@@ -128,12 +128,17 @@ function HeartOutline({
     group.current.scale.setScalar(nextScale);
   });
 
+  const handlePointerOut = () => {
+    setHovered(false);
+    document.body.style.cursor = "auto";
+  };
+
   return (
     <group {...props}>
       <Float
         speed={1.1 + index * 0.16}
-        rotationIntensity={0.12}
-        floatIntensity={0.45 + index * 0.06}
+        rotationIntensity={0.1}
+        floatIntensity={0.35 + index * 0.05}
       >
         <group
           ref={group}
@@ -146,50 +151,68 @@ function HeartOutline({
             setHovered(true);
             document.body.style.cursor = "pointer";
           }}
-          onPointerOut={() => {
-            setHovered(false);
-            document.body.style.cursor = "auto";
-          }}
+          onPointerOut={handlePointerOut}
         >
-          {/* Halo coloré derrière le cœur */}
-          <mesh position={[0, 0, -0.12]} scale={hovered ? 1.3 : 1.12}>
-            <sphereGeometry args={[0.78, 32, 32]} />
+          {/* Halo doux derrière le cœur */}
+          <mesh
+            position={[0, 0, -0.16]}
+            scale={hovered ? 1.35 : active ? 1.2 : 1.08}
+          >
+            <sphereGeometry args={[0.72, 32, 32]} />
             <meshBasicMaterial
               color={domain.color}
               transparent
-              opacity={hovered ? 0.12 : active ? 0.075 : 0.035}
+              opacity={hovered ? 0.12 : active ? 0.07 : 0.035}
               depthWrite={false}
             />
           </mesh>
 
-          {/* Lueur du contour */}
+          {/* Lueur large autour du tube */}
           <mesh>
-            <tubeGeometry args={[curve, 120, 0.065, 8, true]} />
+            <tubeGeometry args={[curve, 160, 0.09, 12, true]} />
             <meshBasicMaterial
               color={domain.color}
               transparent
-              opacity={hovered ? 0.28 : active ? 0.2 : 0.1}
+              opacity={hovered ? 0.2 : active ? 0.12 : 0.055}
               depthWrite={false}
             />
           </mesh>
 
-          {/* Contour principal du cœur */}
+          {/* Corps de verre transparent */}
           <mesh>
-            <tubeGeometry args={[curve, 120, 0.025, 8, true]} />
-            <meshStandardMaterial
+            <tubeGeometry args={[curve, 160, 0.052, 16, true]} />
+            <meshPhysicalMaterial
               color={domain.color}
+              metalness={0}
+              roughness={0.07}
+              transmission={0.88}
+              thickness={0.6}
+              ior={1.45}
+              clearcoat={1}
+              clearcoatRoughness={0.04}
+              attenuationColor={domain.color}
+              attenuationDistance={1.4}
               emissive={domain.color}
-              emissiveIntensity={hovered ? 2.5 : active ? 1.7 : 0.8}
-              metalness={0.45}
-              roughness={0.25}
+              emissiveIntensity={hovered ? 0.22 : active ? 0.12 : 0.035}
             />
           </mesh>
 
-          {/* Petit point lumineux sur le cœur */}
+          {/* Petit reflet blanc pour souligner le verre */}
+          <mesh>
+            <tubeGeometry args={[curve, 160, 0.012, 8, true]} />
+            <meshBasicMaterial
+              color="#ffffff"
+              transparent
+              opacity={hovered ? 0.95 : active ? 0.75 : 0.5}
+              depthWrite={false}
+            />
+          </mesh>
+
+          {/* Lumière colorée locale */}
           <pointLight
             color={domain.color}
-            intensity={hovered ? 4 : active ? 2 : 0.7}
-            distance={hovered ? 4 : 2.8}
+            intensity={hovered ? 3 : active ? 1.6 : 0.45}
+            distance={hovered ? 3.5 : 2.5}
           />
 
           <Html
@@ -213,10 +236,7 @@ function HeartOutline({
                 setHovered(true);
                 document.body.style.cursor = "pointer";
               }}
-              onPointerOut={() => {
-                setHovered(false);
-                document.body.style.cursor = "auto";
-              }}
+              onPointerOut={handlePointerOut}
             >
               {domain.title}
             </button>
@@ -238,11 +258,11 @@ function WorkshopScene({
   const scene = useRef<Group>(null);
 
   const positions: [number, number, number][] = [
-    [-2.25, 0.8, 0],
-    [0, 1.3, -0.4],
-    [2.25, 0.8, 0],
-    [-1.25, -1.35, 0.2],
-    [1.25, -1.35, 0.2],
+    [-2.15, 0.75, 0],
+    [1.9, 0.85, -0.35],
+    [0, -0.15, 0.3],
+    [-1.35, -1.25, 0],
+    [1.35, -1.25, 0.1],
   ];
 
   useFrame((_, delta) => {
@@ -259,11 +279,28 @@ function WorkshopScene({
 
   return (
     <>
-      <ambientLight intensity={0.8} />
-      <hemisphereLight args={["#fff1fb", "#252039", 1.3]} />
-      <pointLight position={[3, 4, 4]} intensity={24} color="#ffffff" />
-      <pointLight position={[-4, -2, 2]} intensity={12} color="#e761aa" />
-      <pointLight position={[0, 3, -2]} intensity={8} color="#b9c9ff" />
+      <ambientLight intensity={1.1} />
+      <hemisphereLight args={["#fff8fc", "#6f5578", 1.5]} />
+
+      <directionalLight
+        position={[4, 5, 6]}
+        intensity={2.5}
+        color="#ffffff"
+      />
+
+      <pointLight
+        position={[-4, 1, 3]}
+        intensity={12}
+        color="#ffd9f0"
+      />
+
+      <pointLight
+        position={[3, -2, 2]}
+        intensity={10}
+        color="#dce3ff"
+      />
+
+      <Environment preset="studio" />
 
       <group ref={scene}>
         {DOMAINS.map((domain, index) => (
@@ -306,6 +343,9 @@ export default function ToolBox3D() {
             camera={{ position: [0, 0, 8], fov: 45 }}
             dpr={[1, 1.5]}
             gl={{ antialias: true, alpha: true }}
+            onCreated={({ gl }) => {
+              gl.toneMappingExposure = 1.15;
+            }}
           >
             <WorkshopScene
               activeId={activeId}
