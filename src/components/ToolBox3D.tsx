@@ -1,13 +1,8 @@
-
 import { useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float, Html, Environment } from "@react-three/drei";
 import type { ThreeElements } from "@react-three/fiber";
-import {
-  CatmullRomCurve3,
-  Vector3,
-  type Group,
-} from "three";
+import { CatmullRomCurve3, Vector3, type Group } from "three";
 import "./ToolBox3D.css";
 
 type Domain = {
@@ -108,22 +103,18 @@ function HeartOutline({
 
     const targetX = -pointer.y * influence;
     const targetY =
-      pointer.x * influence +
-      Math.sin(time * 0.55 + index) * 0.08;
+      pointer.x * influence + Math.sin(time * 0.55 + index) * 0.08;
 
     group.current.rotation.x +=
-      (targetX - group.current.rotation.x) *
-      Math.min(delta * 3, 1);
+      (targetX - group.current.rotation.x) * Math.min(delta * 3, 1);
 
     group.current.rotation.y +=
-      (targetY - group.current.rotation.y) *
-      Math.min(delta * 3, 1);
+      (targetY - group.current.rotation.y) * Math.min(delta * 3, 1);
 
     const targetScale = hovered ? 1.22 : active ? 1.1 : 1;
     const nextScale =
       group.current.scale.x +
-      (targetScale - group.current.scale.x) *
-        Math.min(delta * 7, 1);
+      (targetScale - group.current.scale.x) * Math.min(delta * 7, 1);
 
     group.current.scale.setScalar(nextScale);
   });
@@ -167,7 +158,7 @@ function HeartOutline({
             />
           </mesh>
 
-          {/* Lueur large autour du tube */}
+          {/* Lueur large autour du contour */}
           <mesh>
             <tubeGeometry args={[curve, 160, 0.09, 12, true]} />
             <meshBasicMaterial
@@ -178,26 +169,26 @@ function HeartOutline({
             />
           </mesh>
 
-          {/* Corps de verre transparent */}
+          {/* Corps en verre transparent */}
           <mesh>
             <tubeGeometry args={[curve, 160, 0.052, 16, true]} />
             <meshPhysicalMaterial
-            color={domain.color}
-            roughness={0.08}
-            metalness={0.05}
-            transmission={0.85}
-            thickness={0.7}
-            ior={1.45}
-            clearcoat={1}
-            clearcoatRoughness={0.05}
-            emissive={domain.color}
-            emissiveIntensity={active ? 0.35 : 0.12}
-            transparent
-            opacity={0.95}
+              color={domain.color}
+              roughness={0.08}
+              metalness={0.05}
+              transmission={0.85}
+              thickness={0.7}
+              ior={1.45}
+              clearcoat={1}
+              clearcoatRoughness={0.05}
+              emissive={domain.color}
+              emissiveIntensity={active ? 0.35 : 0.12}
+              transparent
+              opacity={0.95}
             />
           </mesh>
 
-          {/* Petit reflet blanc pour souligner le verre */}
+          {/* Reflet blanc pour accentuer l'effet verre */}
           <mesh>
             <tubeGeometry args={[curve, 160, 0.012, 8, true]} />
             <meshBasicMaterial
@@ -215,6 +206,7 @@ function HeartOutline({
             distance={hovered ? 3.5 : 2.5}
           />
 
+          {/* Étiquette du domaine */}
           <Html
             center
             distanceFactor={8}
@@ -225,9 +217,7 @@ function HeartOutline({
               className={`tool3d-label ${active ? "is-active" : ""} ${
                 hovered ? "is-hovered" : ""
               }`}
-              style={
-                { "--tool-color": domain.color } as React.CSSProperties
-              }
+              style={{ "--tool-color": domain.color } as React.CSSProperties}
               onClick={(event) => {
                 event.stopPropagation();
                 onSelect();
@@ -258,23 +248,21 @@ function WorkshopScene({
   const scene = useRef<Group>(null);
 
   const positions: [number, number, number][] = [
-    [-2.5, 1.1, 0],
-    [0, 0.2, -0.4],
-    [2.5, 1.1, 0],
-    [-1.6, -1.3, 0.2],
-    [1.6, -1.3, 0.2],
-    ];
+    [-3.0, 1.35, 0], // Design graphique : haut gauche
+    [2.1, 1.35, -0.4], // UI/UX : haut droite
+    [-0.15, 0.0, 0.2], // Développement web : centre
+    [-2.45, -1.65, 0.1], // Audiovisuel : bas gauche
+    [2.2, -1.65, 0.2], // IA : bas droite
+  ];
 
   useFrame((_, delta) => {
     if (!scene.current) return;
 
     scene.current.rotation.y +=
-      (pointer.x * 0.035 - scene.current.rotation.y) *
-      Math.min(delta * 2, 1);
+      (pointer.x * 0.035 - scene.current.rotation.y) * Math.min(delta * 2, 1);
 
     scene.current.rotation.x +=
-      (-pointer.y * 0.025 - scene.current.rotation.x) *
-      Math.min(delta * 2, 1);
+      (-pointer.y * 0.025 - scene.current.rotation.x) * Math.min(delta * 2, 1);
   });
 
   return (
@@ -282,23 +270,11 @@ function WorkshopScene({
       <ambientLight intensity={1.1} />
       <hemisphereLight args={["#fff8fc", "#6f5578", 1.5]} />
 
-      <directionalLight
-        position={[4, 5, 6]}
-        intensity={2.5}
-        color="#ffffff"
-      />
+      <directionalLight position={[4, 5, 6]} intensity={2.5} color="#ffffff" />
 
-      <pointLight
-        position={[-4, 1, 3]}
-        intensity={12}
-        color="#ffd9f0"
-      />
+      <pointLight position={[-4, 1, 3]} intensity={12} color="#ffd9f0" />
 
-      <pointLight
-        position={[3, -2, 2]}
-        intensity={10}
-        color="#dce3ff"
-      />
+      <pointLight position={[3, -2, 2]} intensity={10} color="#dce3ff" />
 
       <Environment preset="studio" />
 
@@ -322,16 +298,12 @@ function WorkshopScene({
 export default function ToolBox3D() {
   const [activeId, setActiveId] = useState("design");
 
-  const active =
-    DOMAINS.find((domain) => domain.id === activeId) ?? DOMAINS[0];
+  const active = DOMAINS.find((domain) => domain.id === activeId) ?? DOMAINS[0];
 
   return (
     <div className="toolbox3d">
       <div className="toolbox3d-heading">
-        <p>
-          Un mélange de design, de web et d’expérimentation numérique.
-          Sélectionne un cœur pour explorer mon univers.
-        </p>
+        <p>sélectionne un cœur pour explorer mon univers.</p>
       </div>
 
       <div className="toolbox3d-layout">
@@ -347,10 +319,7 @@ export default function ToolBox3D() {
               gl.toneMappingExposure = 1.15;
             }}
           >
-            <WorkshopScene
-              activeId={activeId}
-              onSelect={setActiveId}
-            />
+            <WorkshopScene activeId={activeId} onSelect={setActiveId} />
           </Canvas>
 
           <span className="toolbox3d-hint">
@@ -362,14 +331,9 @@ export default function ToolBox3D() {
         <aside
           className="toolbox3d-panel"
           key={active.id}
-          style={
-            { "--active-color": active.color } as React.CSSProperties
-          }
+          style={{ "--active-color": active.color } as React.CSSProperties}
         >
-          <span
-            className="toolbox3d-number"
-            style={{ color: active.color }}
-          >
+          <span className="toolbox3d-number" style={{ color: active.color }}>
             DOMAINE / 0{DOMAINS.indexOf(active) + 1}
           </span>
 
@@ -378,10 +342,7 @@ export default function ToolBox3D() {
 
           <div className="toolbox3d-tags">
             {active.tools.map((tool, index) => (
-              <span
-                key={tool}
-                style={{ animationDelay: `${index * 70}ms` }}
-              >
+              <span key={tool} style={{ animationDelay: `${index * 70}ms` }}>
                 {tool}
               </span>
             ))}
@@ -396,9 +357,7 @@ export default function ToolBox3D() {
           <button
             key={domain.id}
             className={activeId === domain.id ? "is-active" : ""}
-            style={
-              { "--tool-color": domain.color } as React.CSSProperties
-            }
+            style={{ "--tool-color": domain.color } as React.CSSProperties}
             onClick={() => setActiveId(domain.id)}
           >
             <span />
