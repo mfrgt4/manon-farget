@@ -762,7 +762,7 @@ export default function App() {
 
         <div className="cell sk-goal rv" data-tilt="3">
           <h3 className="mono" style={{ color: "var(--acc)" }}>&gt; objectif.txt</h3>
-          <p className="mono">Stage dev web · avril 2027.</p>
+          <p className="mono">Stage UI/UX ou Audiovisuel · avril 2027.</p>
         </div>
       </section>
       
