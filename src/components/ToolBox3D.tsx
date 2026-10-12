@@ -262,10 +262,10 @@ function WorkshopScene({
   const scene = useRef<Group>(null);
 
   const positions: [number, number, number][] = [
-    [-2.8, 1.35, 0], // Design graphique : haut gauche
-    [2.5, 1.8, -0.4], // UI/UX : haut droite
-    [0.0, -0.15, 0.2], // Développement web : centre
-    [-2.1, -1.75, 0.1], // Audiovisuel : bas gauche
+    [-3.5, 1.7, 0],
+    [3.0, 1.9, -0.4],
+    [0.8, -0.5, 0.2],
+    [-2.8, -1.9, 0.1],
   ];
 
   useFrame((_, delta) => {
