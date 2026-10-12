@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import "./ToolBox3D.css";
 
@@ -83,10 +82,10 @@ export default function ToolBox3D() {
     DOMAINS.find((domain) => domain.id === activeId) ?? DOMAINS[0];
 
   return (
-    <section className="toolbox3d">
+    <section id="boite-a-outils" className="toolbox3d">
       <div className="toolbox3d-heading">
-        <span className="toolbox3d-eyebrow">// 03 — MON UNIVERS</span>
-        <h2>Ma boîte à outils.</h2>
+        <p className="tag mono rv">// 03</p>
+        <h2 className="rv">Ma boîte à outils.</h2>
         <span className="toolbox3d-heading-line" />
         <p>Survole les icônes pour explorer mes domaines créatifs.</p>
       </div>
