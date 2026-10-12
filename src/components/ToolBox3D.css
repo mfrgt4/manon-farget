@@ -1,4 +1,3 @@
-
 /* =========================================================
    TOOLBOX 3D — VARIABLES ET CONTENEUR
    ========================================================= */
@@ -69,7 +68,6 @@
     transform: scaleX(0);
     opacity: 0;
   }
-
   to {
     transform: scaleX(1);
     opacity: 1;
@@ -128,8 +126,7 @@
   transform:
     perspective(1000px)
     rotateX(var(--rotate-x))
-    rotateY(var(--rotate-y))
-    scale(1);
+    rotateY(var(--rotate-y));
 
   transform-origin: center;
   transform-style: preserve-3d;
@@ -161,8 +158,6 @@
   width: 90px;
 }
 
-/* Ombre subtile au survol, sans inclinaison fixe */
-
 .toolbox3d-panel:hover {
   box-shadow: 0 28px 65px rgba(48, 38, 51, 0.12);
 }
@@ -171,7 +166,6 @@
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
   }
@@ -285,10 +279,9 @@
 
 @keyframes toolbox3d-divider-in {
   from {
-    transform: scaleX(0.5);
+    transform: scaleX(.5);
     opacity: 0;
   }
-
   to {
     transform: scaleX(1);
     opacity: 1;
@@ -381,7 +374,6 @@
     opacity: 0;
     transform: translateY(7px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -424,7 +416,6 @@
   0%, 100% {
     opacity: .7;
   }
-
   50% {
     opacity: 1;
   }
@@ -476,7 +467,6 @@
   from {
     background-position: 0% 0%;
   }
-
   to {
     background-position: 100% 100%;
   }
@@ -499,7 +489,6 @@
   from {
     transform: translate3d(-1%, -1%, 0);
   }
-
   to {
     transform: translate3d(1%, 1%, 0);
   }
@@ -540,7 +529,7 @@
 }
 
 /* =========================================================
-   CARTES INTERACTIVES — SURVOL FLUIDE
+   CARTES INTERACTIVES — TREMBLEMENT LÉGER
    ========================================================= */
 
 .toolbox3d-icon {
@@ -574,6 +563,8 @@
   transform: translateY(0) scale(1);
   transform-origin: center;
 
+  animation: toolbox3d-icon-shake 3s ease-in-out infinite;
+
   transition:
     transform 420ms cubic-bezier(.22, 1, .36, 1),
     background 320ms ease,
@@ -583,14 +574,43 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Suppression des animations de flottement et de rebond */
+/* Décalage léger entre les icônes pour un mouvement moins mécanique */
 
-.toolbox3d-icon,
-.toolbox3d-icon:nth-child(2),
-.toolbox3d-icon:nth-child(3),
-.toolbox3d-icon:nth-child(4),
-.toolbox3d-icon.is-active {
-  animation: none;
+.toolbox3d-icon:nth-child(2) {
+  animation-delay: -.7s;
+}
+
+.toolbox3d-icon:nth-child(3) {
+  animation-delay: -1.4s;
+}
+
+.toolbox3d-icon:nth-child(4) {
+  animation-delay: -2.1s;
+}
+
+/* Tremblement discret, sans rebond ni flottement important */
+
+@keyframes toolbox3d-icon-shake {
+  0%, 100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  20% {
+    translate: .4px -.3px;
+    rotate: -.25deg;
+  }
+  40% {
+    translate: -.3px .4px;
+    rotate: .2deg;
+  }
+  60% {
+    translate: .3px .2px;
+    rotate: -.15deg;
+  }
+  80% {
+    translate: -.4px -.2px;
+    rotate: .2deg;
+  }
 }
 
 /* Reflet discret, sans halo */
@@ -655,7 +675,7 @@
     border-radius 320ms ease;
 }
 
-/* Images PNG : aucune animation, aucun filtre lumineux */
+/* Images PNG : aucun halo, le tremblement reste sur la carte */
 
 .toolbox3d-icon-drawing img {
   display: block;
@@ -877,7 +897,6 @@
     max-height: 430px;
     padding: 24px;
 
-    /* Désactive l'inclinaison sur les écrans tactiles */
     transform: none;
     transition:
       border-color 300ms ease,
