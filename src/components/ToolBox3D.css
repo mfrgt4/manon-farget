@@ -7,8 +7,7 @@
   isolation: isolate;
   padding: 38px 0 48px;
   color: var(--toolbox-text);
-  width: 1024px !important;
-  max-width: 1024px !important;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
@@ -49,16 +48,14 @@
   line-height: 1.7;
 }
 
-/* MISE EN PAGE : Largeur totale forcée à 1024px */
+/* MISE EN PAGE : Largeurs fixes alignées à 1180px au total (578px + 24px + 578px) */
 .toolbox3d-layout {
   display: grid;
-  grid-template-columns: 500px 500px;
+  grid-template-columns: 578px 578px;
   gap: 24px;
   justify-content: center;
   align-items: stretch;
-  width: 1024px !important;
-  max-width: 1024px !important;
-  margin: 0 auto;
+  width: 100%;
 }
 
 /* FICHE D'INFO FIXE (À GAUCHE) */
@@ -68,9 +65,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 500px !important;
-  min-width: 500px !important;
-  max-width: 500px !important;
+  width: 578px !important;
+  min-width: 578px !important;
+  max-width: 578px !important;
 
   height: 540px !important;
   min-height: 540px !important;
@@ -229,9 +226,9 @@
 /* ZONE DES 4 ICÔNES (À DROITE) */
 .toolbox3d-stage {
   position: relative;
-  width: 500px !important;
-  min-width: 500px !important;
-  max-width: 500px !important;
+  width: 578px !important;
+  min-width: 578px !important;
+  max-width: 578px !important;
 
   height: 540px !important;
   min-height: 540px !important;
@@ -358,13 +355,7 @@
 }
 
 /* RESPONSIVE MOBILE / TABLETTE */
-@media (max-width: 1050px) {
-  .toolbox3d,
-  .toolbox3d-layout {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
+@media (max-width: 1200px) {
   .toolbox3d-layout {
     grid-template-columns: 100%;
     justify-content: center;
