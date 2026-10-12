@@ -771,18 +771,7 @@ export default function App() {
         <p className="tag mono rv">// 03</p>
         <h2 className="rv">Ma boîte à outils.</h2>
 
-        <p className="tools-credit">
-          Inspiré par{" "}
-          <a
-            href="https://heaven-ghobrial.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Heaven Ghobrial ↗
-          </a>
-        </p>
-
-        <WordSphere words={tools} />
+        <ToolBox3D />
       </section>
 
       <section id="projets" className={!folderOpened ? "showing-folders" : "showing-projects"}>
