@@ -7,7 +7,8 @@
   isolation: isolate;
   padding: 38px 0 48px;
   color: var(--toolbox-text);
-  max-width: 1024px;
+  width: 1024px !important;
+  max-width: 1024px !important;
   margin: 0 auto;
 }
 
@@ -48,14 +49,16 @@
   line-height: 1.7;
 }
 
-/* MISE EN PAGE : Largeurs fixes strictes alignées à 1024px au total */
+/* MISE EN PAGE : Largeur totale forcée à 1024px */
 .toolbox3d-layout {
   display: grid;
   grid-template-columns: 500px 500px;
   gap: 24px;
   justify-content: center;
   align-items: stretch;
-  width: 100%;
+  width: 1024px !important;
+  max-width: 1024px !important;
+  margin: 0 auto;
 }
 
 /* FICHE D'INFO FIXE (À GAUCHE) */
@@ -356,6 +359,12 @@
 
 /* RESPONSIVE MOBILE / TABLETTE */
 @media (max-width: 1050px) {
+  .toolbox3d,
+  .toolbox3d-layout {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
   .toolbox3d-layout {
     grid-template-columns: 100%;
     justify-content: center;
