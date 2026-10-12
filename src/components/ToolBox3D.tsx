@@ -26,14 +26,34 @@ const DOMAINS: Domain[] = [
     title: "UI/UX design",
     subtitle: "Imaginer des interfaces",
     color: "#9ab88b",
-    tools: ["Figma", "UX Design", "Maquettes", "Ergonomie", "Responsive", "Accessibilité"],
+    tools: [
+      "Figma",
+      "UX Design",
+      "Maquettes",
+      "Ergonomie",
+      "Responsive",
+      "Accessibilité",
+    ],
   },
   {
     id: "web",
     title: "Développement web",
     subtitle: "Donner vie aux idées",
     color: "#829cf4",
-    tools: ["WordPress", "HTML5", "CSS3", "JavaScript", "TypeScript", "React", "three.js", "Vite", "Node.js", "PHP", "SQL", "SEO"],
+    tools: [
+      "WordPress",
+      "HTML5",
+      "CSS3",
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "three.js",
+      "Vite",
+      "Node.js",
+      "PHP",
+      "SQL",
+      "SEO",
+    ],
   },
   {
     id: "video",
@@ -242,11 +262,10 @@ function WorkshopScene({
   const scene = useRef<Group>(null);
 
   const positions: [number, number, number][] = [
-    [-3.0, 1.35, 0], // Design graphique : haut gauche
-    [2.1, 1.35, -0.4], // UI/UX : haut droite
-    [-0.15, 0.0, 0.2], // Développement web : centre
-    [-2.45, -1.65, 0.1], // Audiovisuel : bas gauche
-    [2.2, -1.65, 0.2], // IA : bas droite
+    [-2.1, 1.25, 0], // Design graphique : haut gauche
+    [2.1, 1.25, -0.4], // UI/UX : haut droite
+    [-2.1, -1.35, 0.2], // Développement web : bas gauche
+    [2.1, -1.35, 0.1], // Audiovisuel : bas droite
   ];
 
   useFrame((_, delta) => {
@@ -280,7 +299,7 @@ function WorkshopScene({
             active={activeId === domain.id}
             index={index}
             position={positions[index]}
-            rotation={[0, index * 0.2, index * 0.06]}
+            rotation={[0, index * 0.12, index * 0.04]}
             onSelect={() => onSelect(domain.id)}
           />
         ))}
