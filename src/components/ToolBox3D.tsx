@@ -83,12 +83,6 @@ export default function ToolBox3D() {
 
   return (
     <section id="boite-a-outils" className="toolbox3d">
-      <div className="toolbox3d-heading">
-        <p className="tag mono rv">// 03</p>
-        <h2 className="rv">Ma boîte à outils.</h2>
-        <span className="toolbox3d-heading-line" />
-        <p>Survole les icônes pour explorer mes domaines créatifs.</p>
-      </div>
 
       <div className="toolbox3d-layout">
         <div className="toolbox3d-stage">
