@@ -1,62 +1,79 @@
 import React, { useRef } from "react";
-import "./CDCase.css";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Float, MeshReflectorMaterial, OrbitControls } from "@react-three/drei";
+import * as THREE from "three";
 
-type CdCardProps = {
-  imgSrc?: string;
-  alt?: string;
-};
+function CDJewelCase() {
+  const groupRef = useRef<THREE.Group>(null);
 
-export default function CdCard({
-  imgSrc = "/icons/CD.png", // Remplace par le chemin de ton image CD
-  alt = "CD Holographique",
-}: CdCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Calcul des pourcentages pour le gradient lumineux (0% à 100%)
-    const mouseX = (x / rect.width) * 100;
-    const mouseY = (y / rect.height) * 100;
-
-    // Calcul pour l'inclinaison 3D (Tilt)
-    const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -12;
-    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 12;
-
-    card.style.setProperty("--mouse-x", `${mouseX}%`);
-    card.style.setProperty("--mouse-y", `${mouseY}%`);
-    card.style.setProperty("--rx", `${rotateX}deg`);
-    card.style.setProperty("--ry", `${rotateY}deg`);
-  };
-
-  const handlePointerLeave = () => {
-    const card = cardRef.current;
-    if (!card) return;
-    // Remise à zéro fluide
-    card.style.setProperty("--rx", `0deg`);
-    card.style.setProperty("--ry", `0deg`);
-    card.style.setProperty("--mouse-x", `50%`);
-    card.style.setProperty("--mouse-y", `50%`);
-  };
+  // Animation légère de flottement et suivi doux de la souris
+  useFrame((state) => {
+    if (!groupRef.current) return;
+    const { x, y } = state.pointer;
+    // Inclinaison fluide en fonction de la position de la souris
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(
+      groupRef.current.rotation.y,
+      x * 0.5,
+      0.1
+    );
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(
+      groupRef.current.rotation.x,
+      -y * 0.5,
+      0.1
+    );
+  });
 
   return (
-    <div
-      ref={cardRef}
-      className="cd-card"
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
-    >
-      {/* L'image de ton CD / boîtier */}
-      <img src={imgSrc} alt={alt} className="cd-card__img" />
+    <group ref={groupRef}>
+      {/* Ombre portée au sol */}
+      <ambientLight intensity={1.2} />
+      <directionalLight position={[5, 5, 5]} intensity={2.5} castShadow />
+      <pointLight position={[-5, -5, -5]} intensity={1} color="#ff65a3" />
 
-      {/* Couches de brillance et lumière au survol */}
-      <div className="cd-card__glare" aria-hidden="true" />
-      <div className="cd-card__shine" aria-hidden="true" />
+      <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
+        {/* Boîtier arrière (Tray noir/graphite) */}
+        <mesh position={[0, 0, -0.1]}>
+          <boxGeometry args={[3, 3, 0.15]} />
+          <meshStandardMaterial color="#1a1a1f" roughness={0.3} metalness={0.8} />
+        </mesh>
+
+        {/* Le CD à l'intérieur (Disque) */}
+        <mesh position={[0, 0, -0.02]}>
+          <cylinderGeometry args={[1.3, 1.3, 0.02, 32]} />
+          <meshStandardMaterial 
+            color="#222" 
+            roughness={0.1} 
+            metalness={0.9} 
+          />
+        </mesh>
+
+        {/* Couvercle transparent en verre (Jewel Case Cover) */}
+        <mesh position={[0, 0, 0.08]}>
+          <boxGeometry args={[3, 3, 0.05]} />
+          <meshPhysicalMaterial
+            color="#ffffff"
+            transmission={0.95} // Effet verre transparent
+            opacity={1}
+            transparent
+            roughness={0.05}
+            ior={1.5} // Indice de réfraction du verre
+            thickness={0.5}
+            specularIntensity={1}
+          />
+        </mesh>
+      </Float>
+    </group>
+  );
+}
+
+export default function CDCase3D() {
+  return (
+    <div style={{ width: "100%", height: "400px", cursor: "grab" }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <color attach="background" args={["#0d0d12"]} />
+        <CDJewelCase />
+        <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.6} />
+      </Canvas>
     </div>
   );
 }

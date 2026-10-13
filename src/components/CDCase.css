@@ -1,4 +1,12 @@
-.cd-card {
+.cd-case-wrapper {
+  perspective: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.cd-case {
   --mouse-x: 50%;
   --mouse-y: 50%;
   --rx: 0deg;
@@ -7,68 +15,132 @@
   position: relative;
   width: min(100%, 320px);
   aspect-ratio: 1 / 1;
-  border-radius: 16px;
   cursor: pointer;
-  isolation: isolate;
-
-  /* Inclinaison 3D fluide */
-  transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry));
-  transition: transform 0.15s cubic-bezier(0.2, 0, 0.4, 1);
-  will-change: transform;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.15s ease-out;
+  user-select: none;
 }
 
-.cd-card__img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  pointer-events: none;
-  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.25));
-}
-
-/* Lumière interactive au passage de la souris */
-.cd-card__glare {
+/* 1. Fond du boîtier */
+.cd-case__tray {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
+  background: rgba(20, 20, 25, 0.85);
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tranche gauche du boîtier (plastique) */
+.cd-case__spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.4), rgba(200,200,200,0.1));
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Image / Rondelle du CD */
+.cd-case__disc {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.cd-case__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cd-case__center-hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18%;
+  height: 18%;
+  background: #111;
+  border: 4px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+}
+
+/* 2. Couvercle transparent en verre (ouvre à 140deg au clic ou survol) */
+.cd-case__cover {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  backdrop-filter: blur(1px);
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Animation d'ouverture du boîtier */
+.cd-case.is-open .cd-case__cover,
+.cd-case:hover .cd-case__cover {
+  transform: rotateY(-135deg);
+}
+
+/* Reflet en diagonale sur le verre */
+.cd-case__glass-reflection {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    transparent 60%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  pointer-events: none;
+}
+
+/* Charnières en plastique sur la tranche */
+.cd-case__hinge {
+  position: absolute;
+  left: -2px;
+  width: 8px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+}
+
+.cd-case__hinge.top { top: 12px; }
+.cd-case__hinge.bottom { bottom: 12px; }
+
+/* Lumière dynamique au mouvement de la souris */
+.cd-case__glare {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
   opacity: 0;
   mix-blend-mode: overlay;
   background: radial-gradient(
     circle at var(--mouse-x) var(--mouse-y),
     rgba(255, 255, 255, 0.8) 0%,
-    rgba(255, 255, 255, 0.2) 30%,
+    rgba(0, 212, 255, 0.3) 30%,
     transparent 65%
   );
   transition: opacity 0.3s ease;
+  border-radius: 8px;
 }
 
-/* Effet reflets iridescents / holographique */
-.cd-card__shine {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0.15;
-  mix-blend-mode: color-dodge;
-  background: linear-gradient(
-    115deg,
-    transparent 20%,
-    rgba(255, 0, 150, 0.4) 40%,
-    rgba(0, 225, 255, 0.6) 50%,
-    rgba(255, 230, 0, 0.4) 60%,
-    transparent 80%
-  );
-  background-size: 200% 200%;
-  background-position: var(--mouse-x) var(--mouse-y);
-  transition: opacity 0.3s ease;
-}
-
-/* Intensification de la lumière au survol */
-.cd-card:hover .cd-card__glare {
+.cd-case:hover .cd-case__glare {
   opacity: 1;
-}
-
-.cd-card:hover .cd-card__shine {
-  opacity: 0.6;
 }
