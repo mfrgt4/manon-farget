@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import "./CdCard.css";
+import "./CDCase.css";
 
 type CdCardProps = {
   imgSrc?: string;
