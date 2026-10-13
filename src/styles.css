@@ -1259,3 +1259,10 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
 .arch--cloud img {
   display: none;
 }
+
+.photo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
