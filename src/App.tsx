@@ -788,6 +788,7 @@ export default function App() {
               <i className="mono">🗓️ Stage avril 2027</i>
             </div>
           </div>
+        </div>  
 
         <div className="photo rv rv-r">
           <div className="h-visual about-visual">
