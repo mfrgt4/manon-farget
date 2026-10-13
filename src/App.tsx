@@ -5,7 +5,6 @@ import { categories, nav, profile, projects, skills, studies, tools } from "./da
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
-import CloudAvatar from "./components/CloudAvatar";
 
 
 // ================= SONS =================
@@ -690,11 +689,28 @@ export default function App() {
             </div>
           </div>
 
-          {/* Emplacement propre du Nuage Mascotte (sans les effets de cadre / tilt de la photo) */}
-        <div className="photo-wrapper">
-          <CloudAvatar />
-        </div>
-
+          <div className="photo rv rv-r">
+            <div className="p-tilt" data-tilt="11" data-persp="none">
+              <span className="p-outline" aria-hidden="true" />
+              <div className="p-frame">
+                {profile.photo ? (
+                  <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+                ) : (
+                  <div className="photo-ph mono">
+                    <span>{profile.name.split(" ").map((w) => w[0]).join("")}</span>
+                    <small>ta photo ici</small>
+                  </div>
+                )}
+                <span className="p-sheen" aria-hidden="true" />
+                <span className="p-glare" aria-hidden="true" />
+              </div>
+              <span className="p-corner c-tl" aria-hidden="true" />
+              <span className="p-corner c-tr" aria-hidden="true" />
+              <span className="p-corner c-bl" aria-hidden="true" />
+              <span className="p-corner c-br" aria-hidden="true" />
+              <span className="p-tag" aria-hidden="true">hello !</span>
+            </div>
+          </div>
         </div>
       </section>
 
