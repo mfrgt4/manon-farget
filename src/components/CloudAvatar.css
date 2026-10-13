@@ -1,0 +1,83 @@
+.cloud-avatar {
+  --cloud-pink: #f4a9c9;
+  position: relative;
+  width: min(100%, 340px);
+  aspect-ratio: 320 / 250;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.cloud-avatar__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: cloud-avatar-float 4.4s ease-in-out infinite;
+  transform-origin: 50% 60%;
+}
+.cloud-avatar__body {
+  transform-origin: 160px 125px;
+  animation: cloud-avatar-breathe 5.5s ease-in-out infinite;
+}
+.cloud-avatar__eyes {
+  transition: opacity 100ms ease;
+}
+.cloud-avatar__eyes.is-blinking {
+  transform: scaleY(0.08);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.cloud-avatar__sparkle {
+  position: absolute;
+  z-index: 2;
+  color: #eaa4ce;
+  line-height: 1;
+  pointer-events: none;
+  animation: cloud-avatar-twinkle 2.8s ease-in-out infinite;
+}
+.cloud-avatar__sparkle--one { top: 18%; left: 9%; font-size: 22px; }
+.cloud-avatar__sparkle--two { top: 29%; right: 5%; font-size: 27px; animation-delay: 1.1s; }
+.cloud-avatar__caption {
+  position: absolute;
+  bottom: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  border: 1px solid rgba(223, 194, 233, 0.75);
+  border-radius: 999px;
+  background: rgba(255, 248, 253, 0.88);
+  color: #a56d9a;
+  font: 600 11px/1.2 inherit;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  box-shadow: 0 5px 18px rgba(155, 117, 177, 0.1);
+}
+.cloud-avatar:active .cloud-avatar__svg { animation: cloud-avatar-pop 420ms ease; }
+@keyframes cloud-avatar-float {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-10px) rotate(1.3deg); }
+}
+@keyframes cloud-avatar-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.018, 0.985); }
+}
+@keyframes cloud-avatar-twinkle {
+  0%, 100% { opacity: 0.45; transform: scale(0.85) rotate(-8deg); }
+  50% { opacity: 1; transform: scale(1.12) rotate(10deg); }
+}
+@keyframes cloud-avatar-pop {
+  0%, 100% { transform: scale(1); }
+  45% { transform: scale(1.06, 0.94); }
+  75% { transform: scale(0.98, 1.03); }
+}
+@media (max-width: 640px) {
+  .cloud-avatar { width: min(100%, 270px); }
+  .cloud-avatar__sparkle--one { font-size: 18px; }
+  .cloud-avatar__sparkle--two { font-size: 21px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cloud-avatar__svg, .cloud-avatar__body, .cloud-avatar__sparkle { animation: none !important; }
+}
