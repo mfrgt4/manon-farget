@@ -5,6 +5,7 @@ import { categories, nav, profile, projects, skills, studies, tools } from "./da
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
+import CDCase from "./components/CDCase";
 
 
 // ================= SONS =================
@@ -771,7 +772,7 @@ export default function App() {
         <p className="tag mono rv">// 03</p>
         <h2 className="rv">Ma boîte à outils.</h2>
 
-        <ToolBox3D />
+        <CDCase />
       </section>
 
       <section id="projets" className={!folderOpened ? "showing-folders" : "showing-projects"}>
