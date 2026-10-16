@@ -1,4 +1,3 @@
-
 /* =========================================
    PAGE D'ACCUEIL — WINDOWS RETRO
 ========================================= */
@@ -75,7 +74,7 @@
 }
 
 /* =========================================
-   FENÊTRE WINDOWS — PLEINE LARGEUR
+   FENÊTRE WINDOWS — PLEIN ÉCRAN
 ========================================= */
 
 .welcome-window {
@@ -105,9 +104,14 @@
     cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-/* Barre de titre Windows */
+/* =========================================
+   BARRE WINDOWS DU HAUT
+========================================= */
 
 .welcome-titlebar {
+  position: relative;
+  z-index: 2;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -117,6 +121,7 @@
   min-height: 39px;
   flex-shrink: 0;
 
+  margin: 0;
   padding: 6px 12px;
 
   color: white;
@@ -128,7 +133,9 @@
     #c73570 100%
   );
 
+  border: none;
   border-bottom: 1px solid rgba(130, 31, 69, 0.25);
+
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.65);
 }
 
@@ -195,7 +202,7 @@
 }
 
 /* =========================================
-   CONTENU — CENTRÉ DANS L'ÉCRAN
+   CONTENU CENTRÉ
 ========================================= */
 
 .welcome-content {
@@ -249,7 +256,7 @@
 }
 
 /* =========================================
-   CADRE PHOTO
+   CADRE PHOTO — SANS EFFET AU SURVOL
 ========================================= */
 
 .welcome-photo-frame {
@@ -279,19 +286,18 @@
     inset 0 0 0 1px rgba(209, 54, 112, 0.15);
 
   transform: rotate(-2deg);
-
-  transition:
-    transform 250ms ease,
-    box-shadow 250ms ease;
+  transition: none;
 }
 
+/* Neutralise aussi les anciens effets de survol */
+
 .welcome-photo-frame:hover {
-  transform: rotate(0deg) translateY(-3px);
+  transform: rotate(-2deg);
 
   box-shadow:
-    0 8px 0 rgba(154, 177, 156, 0.45),
-    0 16px 28px rgba(30, 48, 77, 0.25),
-    0 0 22px rgba(242, 150, 187, 0.38);
+    0 8px 0 rgba(154, 177, 156, 0.5),
+    0 12px 22px rgba(30, 48, 77, 0.24),
+    inset 0 0 0 1px rgba(209, 54, 112, 0.15);
 }
 
 .welcome-photo {
@@ -361,12 +367,16 @@
   text-shadow: 0 1px 0 white;
 }
 
+/* Design · Web · Motion en blanc */
+
 .welcome-subtitle {
   margin: 10px 0 0;
 
-  color: #6c626b;
+  color: #ffffff;
   font-size: 12px;
   letter-spacing: 0.04em;
+
+  text-shadow: 0 1px 5px rgba(80, 20, 50, 0.35);
 }
 
 /* =========================================
@@ -482,15 +492,19 @@
   transform: translateX(3px);
 }
 
+/* Clique sur la flèche pour continuer en blanc */
+
 .welcome-hint {
   margin: 13px 0 0;
 
-  color: #756975;
+  color: #ffffff;
   font-size: 10px;
+
+  text-shadow: 0 1px 5px rgba(80, 20, 50, 0.35);
 }
 
 /* =========================================
-   BARRE D'ÉTAT WINDOWS
+   BARRE WINDOWS DU BAS
 ========================================= */
 
 .welcome-statusbar {
@@ -503,9 +517,12 @@
   min-height: 29px;
   flex-shrink: 0;
 
+  margin: 0;
   padding: 6px 12px;
 
-  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+
   background: rgba(255, 255, 255, 0.45);
 
   color: #5b4c58;
@@ -536,7 +553,7 @@
 .welcome-desktop-note {
   position: absolute;
   right: 20px;
-  bottom: 15px;
+  bottom: 48px;
   left: 20px;
 
   margin: 0;
@@ -573,6 +590,11 @@
 ========================================= */
 
 @media (max-width: 600px) {
+  .welcome-titlebar {
+    min-height: 36px;
+    padding: 5px 8px;
+  }
+
   .welcome-content {
     padding: 16px;
   }
@@ -601,9 +623,14 @@
   }
 
   .welcome-desktop-note {
-    bottom: 5px;
+    bottom: 40px;
     font-size: 7px;
     letter-spacing: 0.07em;
+  }
+
+  .welcome-statusbar {
+    min-height: 27px;
+    padding: 5px 8px;
   }
 }
 
@@ -654,7 +681,9 @@
   }
 }
 
-/* Très petits écrans */
+/* =========================================
+   TRÈS PETITS ÉCRANS
+========================================= */
 
 @media (max-height: 580px) {
   .welcome-titlebar {
@@ -722,7 +751,7 @@
   }
 }
 
-/* Bloquer le scroll uniquement pendant la page d'accueil */
+/* Bloquer le scroll pendant la page d'accueil */
 
 html:has(.welcome-screen),
 body:has(.welcome-screen) {
