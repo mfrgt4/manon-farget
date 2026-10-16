@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import "./WelcomePage.css";
 
 type WelcomePageProps = {
@@ -12,10 +13,26 @@ const PORTRAIT_GIF =
   "https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyOWo2Z3UxbHhyeDNxMjhiYTZzNmRrMmRmaHQyOWhoY3ZiZW4zMTJrNCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kZqbBT64ECtjy/giphy.gif";
 
 export default function WelcomePage({ onEnter }: WelcomePageProps) {
+  const [exiting, setExiting] = useState(false);
+
+  const handleEnter = () => {
+    if (exiting) return;
+
+    setExiting(true);
+
+    window.setTimeout(() => {
+      onEnter();
+    }, 1100);
+  };
+
   return (
     <main
-      className="welcome-screen"
-      style={{ "--welcome-background": `url("${BACKGROUND_IMAGE}")` } as React.CSSProperties}
+      className={`welcome-screen ${exiting ? "welcome-exit" : ""}`}
+      style={
+        {
+          "--welcome-background": `url("${BACKGROUND_IMAGE}")`,
+        } as React.CSSProperties
+      }
     >
       <div className="welcome-overlay" aria-hidden="true" />
 
@@ -40,12 +57,15 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
             <div className="welcome-photo">
               <img src={PORTRAIT_GIF} alt="Animation rétro" />
             </div>
+
             <span className="welcome-photo-glint" aria-hidden="true">
               ✧
             </span>
           </div>
 
-          <p className="welcome-eyebrow">MANON FARGET · PORTFOLIO CRÉATIF</p>
+          <p className="welcome-eyebrow">
+            MANON FARGET · PORTFOLIO CRÉATIF
+          </p>
 
           <h1 id="welcome-title">
             Prêt·e à découvrir
@@ -53,23 +73,27 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
             mon univers créatif ?
           </h1>
 
-          <p className="welcome-subtitle">
-            Design · Web · Motion
-          </p>
+          <p className="welcome-subtitle">Design · Web · Motion</p>
 
           <button
             className="welcome-enter"
             type="button"
-            onClick={onEnter}
+            onClick={handleEnter}
+            disabled={exiting}
             aria-label="Entrer dans mon portfolio"
           >
-            <span className="welcome-enter-label">Entrer dans mon univers</span>
+            <span className="welcome-enter-label">
+              Entrer dans mon univers
+            </span>
+
             <span className="welcome-arrow" aria-hidden="true">
               →
             </span>
           </button>
 
-          <p className="welcome-hint">Clique sur la flèche pour continuer</p>
+          <p className="welcome-hint">
+            Clique sur la flèche pour continuer
+          </p>
         </div>
 
         <footer className="welcome-statusbar">
@@ -77,6 +101,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
             <span className="welcome-status-dot" />
             Système prêt
           </span>
+
           <span>© Manon Farget</span>
         </footer>
       </section>

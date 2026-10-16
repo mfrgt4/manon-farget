@@ -836,3 +836,25 @@ body:has(.welcome-screen) {
     filter: none;
   }
 }
+
+/* Transition fluide à la sortie de l'intro */
+
+.welcome-screen {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+
+  transition:
+    opacity 1100ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1100ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  will-change: opacity, transform, filter;
+}
+
+.welcome-screen.welcome-exit {
+  opacity: 0;
+  transform: scale(1.035);
+  filter: blur(10px);
+  pointer-events: none;
+}
