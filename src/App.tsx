@@ -14,6 +14,7 @@ import type { Category, Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
 import SkillsPanel from "./components/SkillsPanel";
+import WelcomePage from "./WelcomePage";
 
 // ================= SONS =================
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
@@ -520,7 +521,7 @@ const delay = (d: number) => ({ "--d": d + "s" }) as React.CSSProperties;
 
 // ================= COMPOSANT PRINCIPAL =================
 
-export default function App() {
+function PortfolioContent() {
   const [folderOpened, setFolderOpened] = useState(false);
   const [opening, setOpening] = useState<Category | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -1208,4 +1209,14 @@ export default function App() {
       </footer>
     </>
   );
+}
+
+export default function App() {
+  const [entered, setEntered] = useState(false);
+
+  if (!entered) {
+    return <WelcomePage onEnter={() => setEntered(true)} />;
+  }
+
+  return <PortfolioContent />;
 }
