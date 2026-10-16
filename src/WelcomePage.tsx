@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./WelcomePage.css";
 
 type WelcomePageProps = {
@@ -14,13 +13,55 @@ const PORTRAIT_GIF =
 
 export default function WelcomePage({ onEnter }: WelcomePageProps) {
   const [exiting, setExiting] = useState(false);
+  const introSoundRef = useRef<HTMLAudioElement | null>(null);
+  const hasStartedRef = useRef(false);
+
+  useEffect(() => {
+    const introSound = new Audio("/sounds/Intro-welcome.mp3");
+    introSound.volume = 0.15;
+    introSoundRef.current = introSound;
+
+    const playIntroSound = () => {
+      if (hasStartedRef.current) return;
+
+      hasStartedRef.current = true;
+
+      introSound.play().catch(() => {
+        // Le navigateur peut bloquer la lecture automatique.
+        hasStartedRef.current = false;
+      });
+    };
+
+    const startIntro = () => {
+      playIntroSound();
+    };
+
+    // Tentative de lecture dès l'arrivée sur la welcome page.
+    playIntroSound();
+
+    // Si la lecture automatique est bloquée, attendre une interaction.
+    window.addEventListener("pointerdown", startIntro);
+    window.addEventListener("keydown", startIntro);
+
+    return () => {
+      window.removeEventListener("pointerdown", startIntro);
+      window.removeEventListener("keydown", startIntro);
+
+      introSound.pause();
+      introSound.currentTime = 0;
+      introSoundRef.current = null;
+      hasStartedRef.current = false;
+    };
+  }, []);
 
   const handleEnter = () => {
     if (exiting) return;
 
     setExiting(true);
 
+    // Laisse le temps à la transition de se terminer.
     window.setTimeout(() => {
+      introSoundRef.current?.pause();
       onEnter();
     }, 1100);
   };
