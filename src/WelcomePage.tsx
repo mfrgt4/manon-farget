@@ -98,10 +98,6 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
             <div className="welcome-photo">
               <img src={PORTRAIT_GIF} alt="Animation rétro" />
             </div>
-
-            <span className="welcome-photo-glint" aria-hidden="true">
-              ✧
-            </span>
           </div>
 
           <p className="welcome-eyebrow">
