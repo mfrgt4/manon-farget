@@ -1,3 +1,4 @@
+
 /* =========================================
    PAGE D'ACCUEIL — WINDOWS RETRO
 ========================================= */
@@ -28,6 +29,17 @@
 
   background: #b8dff5;
   font-family: "Space Grotesk", Arial, sans-serif;
+
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+
+  transition:
+    opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1100ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 900ms ease;
+
+  will-change: opacity, transform, filter;
 }
 
 .welcome-screen *,
@@ -74,6 +86,17 @@
 }
 
 /* =========================================
+   TRANSITION DE SORTIE DE L'INTRO
+========================================= */
+
+.welcome-screen.welcome-exit {
+  opacity: 0;
+  transform: scale(1.06);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+/* =========================================
    FENÊTRE WINDOWS — PLEIN ÉCRAN
 ========================================= */
 
@@ -100,8 +123,7 @@
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 
-  animation: welcome-appear 700ms
-    cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: welcome-appear 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 /* =========================================
@@ -109,8 +131,11 @@
 ========================================= */
 
 .welcome-titlebar {
-  position: relative;
-  z-index: 2;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10002;
 
   display: flex;
   align-items: center;
@@ -206,17 +231,23 @@
 ========================================= */
 
 .welcome-content {
+  position: absolute;
+  top: 39px;
+  right: 0;
+  bottom: 29px;
+  left: 0;
+
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
   width: 100%;
+  height: auto;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
 
-  padding: 24px;
+  padding: 20px;
 
   text-align: center;
   background: transparent;
@@ -256,7 +287,7 @@
 }
 
 /* =========================================
-   CADRE PHOTO — SANS EFFET AU SURVOL
+   CADRE PHOTO
 ========================================= */
 
 .welcome-photo-frame {
@@ -281,23 +312,23 @@
   );
 
   box-shadow:
-    0 8px 0 rgba(154, 177, 156, 0.5),
-    0 12px 22px rgba(30, 48, 77, 0.24),
-    inset 0 0 0 1px rgba(209, 54, 112, 0.15);
+    0 8px 0 rgba(255, 255, 255, 0.9),
+    0 12px 22px rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
 
   transform: rotate(-2deg);
   transition: none;
 }
 
-/* Neutralise aussi les anciens effets de survol */
+/* Pas d'ombre verte au survol */
 
 .welcome-photo-frame:hover {
   transform: rotate(-2deg);
 
   box-shadow:
-    0 8px 0 rgba(154, 177, 156, 0.5),
-    0 12px 22px rgba(30, 48, 77, 0.24),
-    inset 0 0 0 1px rgba(209, 54, 112, 0.15);
+    0 8px 0 rgba(255, 255, 255, 0.9),
+    0 12px 22px rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
 }
 
 .welcome-photo {
@@ -367,12 +398,10 @@
   text-shadow: 0 1px 0 white;
 }
 
-/* Design · Web · Motion en blanc */
-
 .welcome-subtitle {
   margin: 10px 0 0;
 
-  color: var(--welcome-pink);
+  color: #ffffff;
   font-size: 12px;
   letter-spacing: 0.04em;
 
@@ -492,8 +521,6 @@
   transform: translateX(3px);
 }
 
-/* Clique sur la flèche pour continuer en blanc */
-
 .welcome-hint {
   margin: 13px 0 0;
 
@@ -508,6 +535,12 @@
 ========================================= */
 
 .welcome-statusbar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10002;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -570,7 +603,7 @@
 }
 
 /* =========================================
-   ANIMATION D'APPARITION
+   ANIMATIONS
 ========================================= */
 
 @keyframes welcome-appear {
@@ -585,6 +618,35 @@
   }
 }
 
+/* Apparition du portfolio après l'intro.
+   Ajoute cette classe au conteneur principal
+   du portfolio dans ton JSX. */
+
+.portfolio-content {
+  animation: portfolio-reveal 1200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes portfolio-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Bloquer le scroll pendant la page d'accueil */
+
+html:has(.welcome-screen),
+body:has(.welcome-screen) {
+  overflow: hidden;
+}
+
 /* =========================================
    TABLETTES ET MOBILES
 ========================================= */
@@ -596,7 +658,9 @@
   }
 
   .welcome-content {
-    padding: 16px;
+    top: 36px;
+    bottom: 27px;
+    padding: 12px;
   }
 
   .welcome-photo-frame {
@@ -751,104 +815,24 @@
   }
 }
 
-/* Bloquer le scroll pendant la page d'accueil */
-
-html:has(.welcome-screen),
-body:has(.welcome-screen) {
-  overflow: hidden;
-}
-
-/* Accessibilité : animations réduites */
+/* =========================================
+   ACCESSIBILITÉ — ANIMATIONS RÉDUITES
+========================================= */
 
 @media (prefers-reduced-motion: reduce) {
-  .welcome-window {
-    animation: none;
-  }
-
+  .welcome-screen,
+  .welcome-window,
+  .portfolio-content,
   .welcome-photo-frame,
   .welcome-enter,
   .welcome-arrow {
+    animation: none;
     transition: none;
   }
-}
 
-/* =========================================
-   FIX — BARRES WINDOWS AUX BORDS DE L'ÉCRAN
-========================================= */
-
-/* Barre du haut */
-.welcome-titlebar {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-
-  width: 100vw !important;
-  min-height: 39px;
-  margin: 0 !important;
-
-  z-index: 10002;
-}
-
-/* Barre du bas */
-.welcome-statusbar {
-  position: fixed !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-
-  width: 100vw !important;
-  min-height: 29px;
-  margin: 0 !important;
-
-  z-index: 10002;
-}
-
-/* La fenêtre ne doit pas créer de décalage */
-.welcome-window {
-  width: 100% !important;
-  height: 100dvh !important;
-  max-height: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-}
-
-/* Le contenu reste centré entre les deux barres */
-.welcome-content {
-  position: absolute;
-  top: 39px;
-  right: 0;
-  bottom: 29px;
-  left: 0;
-
-  width: 100%;
-  height: auto;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 20px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Sur les petits écrans */
-@media (max-width: 600px) {
-  .welcome-titlebar {
-    min-height: 36px;
-  }
-
-  .welcome-content {
-    top: 36px;
-    bottom: 27px;
-    padding: 12px;
-  }
-
-  .welcome-statusbar {
-    min-height: 27px;
+  .welcome-screen.welcome-exit {
+    opacity: 0;
+    transform: none;
+    filter: none;
   }
 }
