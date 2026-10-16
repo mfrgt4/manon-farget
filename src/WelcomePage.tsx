@@ -36,11 +36,6 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
         </header>
 
         <div className="welcome-content">
-          <div className="welcome-logo" aria-hidden="true">
-            <span>✦</span>
-            <span className="welcome-logo-dot">✧</span>
-          </div>
-
           <div className="welcome-photo-frame">
             <div className="welcome-photo">
               <img src={PORTRAIT_GIF} alt="Animation rétro" />
