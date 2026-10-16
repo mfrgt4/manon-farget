@@ -6,7 +6,7 @@ type WelcomePageProps = {
 };
 
 const BACKGROUND_IMAGE =
-  "https://i.pinimg.com/1200x/4f/c9/8e/4fc98e50f7f99f768006607357c039f5.jpg";
+  "https://image.noelshack.com/fichiers/2026/42/5/1792155953-image-b21f86-je-veux-cette-photo-mais-dans-des-tons-blancs.jpg";
 
 const PORTRAIT_GIF =
   "https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyOWo2Z3UxbHhyeDNxMjhiYTZzNmRrMmRmaHQyOWhoY3ZiZW4zMTJrNCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kZqbBT64ECtjy/giphy.gif";
