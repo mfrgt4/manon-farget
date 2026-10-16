@@ -1,19 +1,28 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
-import { categories, nav, profile, projects, skills, studies, tools } from "./data";
+import {
+  categories,
+  nav,
+  profile,
+  projects,
+  skills,
+  studies,
+  tools,
+} from "./data";
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
 import SkillsPanel from "./components/SkillsPanel";
 
-
 // ================= SONS =================
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
 const projectSound = new Audio("/sounds/Click-projets.mp3");
+const introSound = new Audio("/sounds/Intro-site.mp3");
 
 buttonSound.volume = 0.08;
 projectSound.volume = 0.12;
+introSound.volume = 0.15;
 
 function playButtonClick() {
   buttonSound.currentTime = 0;
@@ -25,13 +34,30 @@ function playProjectClick() {
   projectSound.play().catch(() => {});
 }
 
+// Son d'intro, sans bouton
+function playIntroSound() {
+  introSound.play().catch(() => {
+    const startIntro = () => {
+      introSound.play().catch(() => {});
+      window.removeEventListener("pointerdown", startIntro);
+      window.removeEventListener("keydown", startIntro);
+    };
+
+    window.addEventListener("pointerdown", startIntro, { once: true });
+    window.addEventListener("keydown", startIntro, { once: true });
+  });
+}
+
 // ================= TEXTE ANIMÉ =================
 
 function useTyped(words: string[]) {
   const [txt, setTxt] = useState("");
 
   useEffect(() => {
-    let wi = 0, ci = 0, del = false, id = 0;
+    let wi = 0,
+      ci = 0,
+      del = false,
+      id = 0;
 
     const tick = () => {
       const w = words[wi];
@@ -71,7 +97,7 @@ function useEffects() {
             rv.unobserve(e.target);
           }
         }),
-      { threshold: 0.12 }
+      { threshold: 0.12 },
     );
 
     document.querySelectorAll(".rv").forEach((el) => rv.observe(el));
@@ -113,9 +139,15 @@ function useActive(ids: string[]) {
         es.forEach(
           (e) =>
             e.isIntersecting &&
-            setActive(e.target.id === "accueil" ? null : e.target.id === "competences" ? "a-propos" : e.target.id)
+            setActive(
+              e.target.id === "accueil"
+                ? null
+                : e.target.id === "competences"
+                  ? "a-propos"
+                  : e.target.id,
+            ),
         ),
-      { rootMargin: "-45% 0px -50% 0px" }
+      { rootMargin: "-45% 0px -50% 0px" },
     );
 
     ["accueil", ...ids, "competences"].forEach((id) => {
@@ -148,9 +180,7 @@ function Count({ to }: { to: number }) {
       const step = (t: number) => {
         const k = Math.min(1, (t - t0) / 1400);
 
-        el.textContent = String(
-          Math.round(to * (1 - Math.pow(1 - k, 3)))
-        );
+        el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3))));
 
         if (k < 1) {
           raf = requestAnimationFrame(step);
@@ -207,11 +237,11 @@ function useTimeline() {
 
       tl.style.setProperty(
         "--tl",
-        String(Math.min(1, Math.max(0, (y - r.top) / r.height)))
+        String(Math.min(1, Math.max(0, (y - r.top) / r.height))),
       );
 
       items.forEach((it) =>
-        it.classList.toggle("reached", it.getBoundingClientRect().top + 30 < y)
+        it.classList.toggle("reached", it.getBoundingClientRect().top + 30 < y),
       );
     };
 
@@ -240,7 +270,8 @@ function useTilt() {
     if (
       !matchMedia("(hover:hover)").matches ||
       matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) return;
+    )
+      return;
 
     type S = {
       rx: number;
@@ -254,7 +285,9 @@ function useTilt() {
     };
 
     const map = new Map<HTMLElement, S>();
-    let raf = 0, last = 0, cur: HTMLElement | null = null;
+    let raf = 0,
+      last = 0,
+      cur: HTMLElement | null = null;
 
     const loop = (t: number) => {
       const dt = Math.min(0.05, (t - (last || t)) / 1000);
@@ -270,15 +303,19 @@ function useTilt() {
         s.ry += (s.ty - s.ry) * kt;
         s.p += (s.tp - s.p) * kp;
 
-        if (!on && Math.abs(s.rx) < 0.01 && Math.abs(s.ry) < 0.01 && s.p < 0.001) {
+        if (
+          !on &&
+          Math.abs(s.rx) < 0.01 &&
+          Math.abs(s.ry) < 0.01 &&
+          s.p < 0.001
+        ) {
           el.style.transform = "";
           el.style.removeProperty("--p");
           map.delete(el);
           return;
         }
 
-        el.style.transform =
-          `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-6 * s.p).toFixed(3)}px) scale(${(1 + 0.015 * s.p).toFixed(4)})`;
+        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-6 * s.p).toFixed(3)}px) scale(${(1 + 0.015 * s.p).toFixed(4)})`;
 
         el.style.setProperty("--p", s.p.toFixed(4));
         busy = true;
@@ -378,7 +415,7 @@ function useAes(dep: string) {
             io.unobserve(e.target);
           }
         }),
-      { threshold: 0.18, rootMargin: "0px 0px -6% 0px" }
+      { threshold: 0.18, rootMargin: "0px 0px -6% 0px" },
     );
 
     document.querySelectorAll(".aes:not(.in)").forEach((el) => io.observe(el));
@@ -391,9 +428,18 @@ function useAes(dep: string) {
 function useAnchorCenter() {
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      if (
+        e.defaultPrevented ||
+        e.button !== 0 ||
+        e.metaKey ||
+        e.ctrlKey ||
+        e.shiftKey
+      )
+        return;
 
-      const a = (e.target as HTMLElement).closest?.<HTMLAnchorElement>('a[href^="#"]');
+      const a = (e.target as HTMLElement).closest?.<HTMLAnchorElement>(
+        'a[href^="#"]',
+      );
       const id = a?.getAttribute("href")?.slice(1);
       const sec = id ? document.getElementById(id) : null;
 
@@ -423,7 +469,7 @@ type Theme = "light" | "dark";
 
 function useTheme() {
   const [theme, setTheme] = useState<Theme>(() =>
-    document.documentElement.dataset.theme === "dark" ? "dark" : "light"
+    document.documentElement.dataset.theme === "dark" ? "dark" : "light",
   );
 
   const choose = (next: Theme) => {
@@ -461,11 +507,16 @@ function useTheme() {
 const cover = (p: Project) =>
   p.thumbnail ?? p.media?.find((m) => m.type === "image")?.src;
 
-const BAND = ["Communication", "Design graphique", "Développement web", "Audiovisuel", "UI/UX design"];
+const BAND = [
+  "Communication",
+  "Design graphique",
+  "Développement web",
+  "Audiovisuel",
+  "UI/UX design",
+];
 const ids = nav.map(([id]) => id) as string[];
 
-const delay = (d: number) =>
-  ({ "--d": d + "s" } as React.CSSProperties);
+const delay = (d: number) => ({ "--d": d + "s" }) as React.CSSProperties;
 
 // ================= COMPOSANT PRINCIPAL =================
 
@@ -474,17 +525,24 @@ export default function App() {
   const [opening, setOpening] = useState<Category | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  useEffect(() => {
+    playIntroSound();
+  }, []);
+
   const openFolder = (id: Category) => {
     if (opening) return;
     playButtonClick();
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     setOpening(id);
-    window.setTimeout(() => {
-      setCat(id);
-      setType("all");
-      setFolderOpened(true);
-      setOpening(null);
-    }, reduce ? 0 : 520);
+    window.setTimeout(
+      () => {
+        setCat(id);
+        setType("all");
+        setFolderOpened(true);
+        setOpening(null);
+      },
+      reduce ? 0 : 520,
+    );
   };
 
   const active = useActive(ids);
@@ -533,35 +591,34 @@ export default function App() {
       <Particles />
       <div id="glow" />
 
-<nav>
-  <div className="nav-inner">
-    <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
-      {nav.map(([id, label]) => (
-        <a
-          key={id}
-          href={`#${id}`}
-          className={active === id ? "on" : ""}
-          onClick={() => setMenuOpen(false)}
-        >
-          {label}
-        </a>
-      ))}
-    </div>
+      <nav>
+        <div className="nav-inner">
+          <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
+            {nav.map(([id, label]) => (
+              <a
+                key={id}
+                href={`#${id}`}
+                className={active === id ? "on" : ""}
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
 
-    <button
-      type="button"
-      className="mobile-menu-btn"
-      aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-      aria-expanded={menuOpen}
-      onClick={() => setMenuOpen(!menuOpen)}
-    >
-      <span />
-      <span />
-      <span />
-    </button>
-  </div>
-</nav>
-
+          <button
+            type="button"
+            className="mobile-menu-btn"
+            aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+      </nav>
 
       <div
         className="theme-toggle"
@@ -579,7 +636,16 @@ export default function App() {
             chooseTheme("light");
           }}
         >
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
             <circle cx="12" cy="12" r="4" />
             <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
           </svg>
@@ -594,7 +660,17 @@ export default function App() {
             chooseTheme("dark");
           }}
         >
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
             <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
           </svg>
           <span>Sombre</span>
@@ -603,7 +679,9 @@ export default function App() {
 
       <section id="accueil">
         <div id="hero">
-          <div className="h-word" aria-hidden="true">PORTFOLIO</div>
+          <div className="h-word" aria-hidden="true">
+            PORTFOLIO
+          </div>
 
           <div className="h-text">
             <span className="badge mono rv">
@@ -618,13 +696,18 @@ export default function App() {
             </h1>
 
             <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
-              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université Clermont Auvergne au Puy-en-Velay.
-              Je mêle créativité, webdesign et nouvelles technologie pour donner vie à mes idées.
+              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
+              Clermont Auvergne au Puy-en-Velay. Je mêle créativité, webdesign
+              et nouvelles technologie pour donner vie à mes idées.
             </p>
 
             <div className="btns rv" style={delay(0.4)}>
-              <a className="btn p" href="#projets">Voir mes projets →</a>
-              <a className="btn" href="#contact">Me contacter</a>
+              <a className="btn p" href="#projets">
+                Voir mes projets →
+              </a>
+              <a className="btn" href="#contact">
+                Me contacter
+              </a>
             </div>
           </div>
 
@@ -637,50 +720,86 @@ export default function App() {
               <svg viewBox="0 0 120 120">
                 <circle cx="60" cy="60" r="60" fill="#d84b7d" />
                 <defs>
-                  <path id="hb" d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0" />
+                  <path
+                    id="hb"
+                    d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0"
+                  />
                 </defs>
-                <text fontSize="10.5" fontWeight="700" fill="#fff" letterSpacing="1">
+                <text
+                  fontSize="10.5"
+                  fontWeight="700"
+                  fill="#fff"
+                  letterSpacing="1"
+                >
                   <textPath href="#hb" textLength="252" lengthAdjust="spacing">
                     DÉVELOPPEUSE WEB • UI/UX • MOTION •
                   </textPath>
                 </text>
-                <text x="60" y="68" textAnchor="middle" fontSize="22" fill="#fff">✦</text>
+                <text
+                  x="60"
+                  y="68"
+                  textAnchor="middle"
+                  fontSize="22"
+                  fill="#fff"
+                >
+                  ✦
+                </text>
               </svg>
             </div>
 
-            <span className="h-chip c1"><i />Créative</span>
-            <span className="h-chip c2 sage"><i />Autonome</span>
-            <span className="h-chip c3"><i />Rigoureuse</span>
-            <span className="h-chip c4 sage"><i />Polyvalente</span>
+            <span className="h-chip c1">
+              <i />
+              Créative
+            </span>
+            <span className="h-chip c2 sage">
+              <i />
+              Autonome
+            </span>
+            <span className="h-chip c3">
+              <i />
+              Rigoureuse
+            </span>
+            <span className="h-chip c4 sage">
+              <i />
+              Polyvalente
+            </span>
           </div>
         </div>
 
         <div className="h-band" aria-hidden="true">
           <div className="h-band-t">
             {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => (
-              <span key={i}>{t}<b>✦</b></span>
+              <span key={i}>
+                {t}
+                <b>✦</b>
+              </span>
             ))}
           </div>
         </div>
       </section>
-      
-      <section id="a-propos">
 
+      <section id="a-propos">
         <div className="about">
           <div className="rv rv-l" style={delay(0.15)}>
             <p className="tag mono">// 01</p>
             <h2>Un peu plus sur moi.</h2>
 
             <p className="about-p">
-              Hello ! Moi, c’est Manon. Étudiante en BUT MMI, je m’intéresse au développement web, au design d’interfaces et à la création visuelle. J’aime concevoir des expériences web esthétiques et donner vie à mes idées grâce au graphisme et au montage vidéo.
+              Hello ! Moi, c’est Manon. Étudiante en BUT MMI, je m’intéresse au
+              développement web, au design d’interfaces et à la création
+              visuelle. J’aime concevoir des expériences web esthétiques et
+              donner vie à mes idées grâce au graphisme et au montage vidéo.
             </p>
 
             <p className="about-p">
-              En dehors des cours, je réalise des projets personnels en web, design graphique et montage vidéo pour explorer ma créativité et continuer à apprendre.
+              En dehors des cours, je réalise des projets personnels en web,
+              design graphique et montage vidéo pour explorer ma créativité et
+              continuer à apprendre.
             </p>
 
             <p className="about-p">
-              Je cherche un stage à partir d'avril 2027 pour progresser au sein d'une équipe, et y apporter ma curiosité et mon sens du détail.
+              Je cherche un stage à partir d'avril 2027 pour progresser au sein
+              d'une équipe, et y apporter ma curiosité et mon sens du détail.
             </p>
 
             <div className="chips about-facts">
@@ -695,17 +814,27 @@ export default function App() {
               <span className="p-outline" aria-hidden="true" />
               <div className="p-frame">
                 {profile.photo ? (
-                  <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+                  <img
+                    src={profile.photo}
+                    alt={`Portrait de ${profile.name}`}
+                  />
                 ) : (
                   <div className="photo-ph mono">
-                    <span>{profile.name.split(" ").map((w) => w[0]).join("")}</span>
+                    <span>
+                      {profile.name
+                        .split(" ")
+                        .map((w) => w[0])
+                        .join("")}
+                    </span>
                     <small>ta photo ici</small>
                   </div>
                 )}
                 <span className="p-sheen" aria-hidden="true" />
                 <span className="p-glare" aria-hidden="true" />
               </div>
-              <span className="p-tag" aria-hidden="true">hello !</span>
+              <span className="p-tag" aria-hidden="true">
+                hello !
+              </span>
             </div>
           </div>
         </div>
@@ -716,7 +845,9 @@ export default function App() {
           <div className="sk-side">
             <p className="tag mono rv">// 02</p>
             <h2 className="rv">Mes 5 compétences clés.</h2>
-            <p className="sk-note rv">survole ou touche une ligne pour la découvrir.</p>
+            <p className="sk-note rv">
+              survole ou touche une ligne pour la découvrir.
+            </p>
 
             <div className="sk-count mono rv">
               <b key={sel}>{String(sel + 1).padStart(2, "0")}</b>
@@ -742,15 +873,21 @@ export default function App() {
                   }}
                   onFocus={() => setSel(i)}
                 >
-                  <span className="sk-n mono">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="sk-n mono">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                   <span className="sk-t">{s.title}</span>
-                  <span className="sk-plus" aria-hidden="true">+</span>
+                  <span className="sk-plus" aria-hidden="true">
+                    +
+                  </span>
                 </button>
 
                 <div className="sk-body">
                   <div>
                     <p>{s.text}</p>
-                    <span className="sk-ico" aria-hidden="true">{s.icon}</span>
+                    <span className="sk-ico" aria-hidden="true">
+                      {s.icon}
+                    </span>
                   </div>
                 </div>
               </li>
@@ -759,19 +896,17 @@ export default function App() {
         </div>
 
         <div className="cell sk-goal rv" data-tilt="3">
-          <h3 className="mono" style={{ color: "var(--acc)" }}>&gt; objectif.txt</h3>
+          <h3 className="mono" style={{ color: "var(--acc)" }}>
+            &gt; objectif.txt
+          </h3>
           <p className="mono">Stage UI/UX ou Audiovisuel · avril 2027.</p>
         </div>
       </section>
-      
-      <section id="boite-a-outils">
-        <p className="tag mono rv">
-          // 03
-        </p>
 
-        <h2 className="rv">
-          Ma boîte à outils.
-        </h2>
+      <section id="boite-a-outils">
+        <p className="tag mono rv">// 03</p>
+
+        <h2 className="rv">Ma boîte à outils.</h2>
 
         <p className="tools-inspiration rv">
           Inspirée de{" "}
@@ -789,18 +924,34 @@ export default function App() {
         <SkillsPanel />
       </section>
 
-      <section id="projets" className={!folderOpened ? "showing-folders" : "showing-projects"}>
+      <section
+        id="projets"
+        className={!folderOpened ? "showing-folders" : "showing-projects"}
+      >
         <p className="tag mono rv">// 04</p>
         <h2 className="rv">Mes projets.</h2>
 
         {!folderOpened ? (
           <div className={"project-folders" + (opening ? " is-opening" : "")}>
             {[
-              { id: "perso" as Category, name: "Projets personnels", emoji: "✳", className: "folder-personal" },
-              { id: "universitaire" as Category, name: "Projets universitaires", emoji: "✳", className: "folder-university" },
+              {
+                id: "perso" as Category,
+                name: "Projets personnels",
+                emoji: "✳",
+                className: "folder-personal",
+              },
+              {
+                id: "universitaire" as Category,
+                name: "Projets universitaires",
+                emoji: "✳",
+                className: "folder-university",
+              },
             ].map((folder, fi) => {
-              const folderProjects = projects.filter((p) => p.category === folder.id);
-              const state = opening === folder.id ? "chosen" : opening ? "other" : "idle";
+              const folderProjects = projects.filter(
+                (p) => p.category === folder.id,
+              );
+              const state =
+                opening === folder.id ? "chosen" : opening ? "other" : "idle";
 
               return (
                 <button
@@ -813,8 +964,15 @@ export default function App() {
                 >
                   <div className="folder-stack" data-tilt="6">
                     {folderProjects.slice(0, 3).map((p, i) => (
-                      <div className={`folder-preview preview-${i + 1}`} key={p.title}>
-                        {cover(p) ? <img src={cover(p)} alt="" /> : <span>{p.icon}</span>}
+                      <div
+                        className={`folder-preview preview-${i + 1}`}
+                        key={p.title}
+                      >
+                        {cover(p) ? (
+                          <img src={cover(p)} alt="" />
+                        ) : (
+                          <span>{p.icon}</span>
+                        )}
                       </div>
                     ))}
 
@@ -828,7 +986,9 @@ export default function App() {
 
                   <div className="folder-caption">
                     <span className="folder-name">{folder.name}</span>
-                    <span className="folder-count mono">{folderProjects.length} créations</span>
+                    <span className="folder-count mono">
+                      {folderProjects.length} créations
+                    </span>
                   </div>
                 </button>
               );
@@ -859,12 +1019,32 @@ export default function App() {
 
             <div className={`subtabs${cat === "universitaire" ? " open" : ""}`}>
               <div>
-                <div className="tabs sub" role="tablist" aria-label="Type de projet universitaire">
+                <div
+                  className="tabs sub"
+                  role="tablist"
+                  aria-label="Type de projet universitaire"
+                >
                   {["all", ...types].map((t) => (
-                    <button key={t} type="button" role="tab" tabIndex={cat === "universitaire" ? 0 : -1} aria-selected={type === t}
-                      className={type === t ? "on" : ""} onClick={() => { playButtonClick(); setType(t); }}>
+                    <button
+                      key={t}
+                      type="button"
+                      role="tab"
+                      tabIndex={cat === "universitaire" ? 0 : -1}
+                      aria-selected={type === t}
+                      className={type === t ? "on" : ""}
+                      onClick={() => {
+                        playButtonClick();
+                        setType(t);
+                      }}
+                    >
                       {t === "all" ? "Tous les types" : t}{" "}
-                      <span className="mono">({t === "all" ? univ.length : univ.filter((p) => typeOf(p) === t).length})</span>
+                      <span className="mono">
+                        (
+                        {t === "all"
+                          ? univ.length
+                          : univ.filter((p) => typeOf(p) === t).length}
+                        )
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -874,19 +1054,49 @@ export default function App() {
             <div key={`${cat}|${type}`}>
               {groups.map(([name, list]) => (
                 <div className="grp" key={name || "all"}>
-                  {name && (<h3 className="grp-h mono aes"><span>{name}</span><small>({list.length})</small></h3>)}
+                  {name && (
+                    <h3 className="grp-h mono aes">
+                      <span>{name}</span>
+                      <small>({list.length})</small>
+                    </h3>
+                  )}
                   <div className="grid3">
                     {list.map((p, i) => (
-                      <a key={p.title} href={p.href} className="cell proj aes" data-tilt="9" style={delay((i % 3) * 0.08)}
-                        onClick={(e) => { e.preventDefault(); playProjectClick(); setOpen(shown.indexOf(p)); }}>
+                      <a
+                        key={p.title}
+                        href={p.href}
+                        className="cell proj aes"
+                        data-tilt="9"
+                        style={delay((i % 3) * 0.08)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          playProjectClick();
+                          setOpen(shown.indexOf(p));
+                        }}
+                      >
                         <span className="arrow">↗</span>
-                        <div className="thumb" style={{ "--c": p.color } as React.CSSProperties}>
-                          {cover(p) ? <img src={cover(p)} alt="" loading="lazy" /> : p.icon}
+                        <div
+                          className="thumb"
+                          style={{ "--c": p.color } as React.CSSProperties}
+                        >
+                          {cover(p) ? (
+                            <img src={cover(p)} alt="" loading="lazy" />
+                          ) : (
+                            p.icon
+                          )}
                         </div>
-                        <span className="when mono">{p.collaboration ?? p.kind}</span>
+                        <span className="when mono">
+                          {p.collaboration ?? p.kind}
+                        </span>
                         <h3>{p.title}</h3>
                         <p>{p.text}</p>
-                        <div className="chips">{p.stack.map((c) => <i key={c} className="mono">{c}</i>)}</div>
+                        <div className="chips">
+                          {p.stack.map((c) => (
+                            <i key={c} className="mono">
+                              {c}
+                            </i>
+                          ))}
+                        </div>
                       </a>
                     ))}
                   </div>
@@ -896,7 +1106,6 @@ export default function App() {
           </div>
         )}
       </section>
-
 
       <section id="parcours">
         <p className="tag mono rv">// 05</p>
@@ -912,7 +1121,9 @@ export default function App() {
               style={delay(i * 0.08)}
             >
               <span className="when mono">{s.when}</span>
-              <h3 style={s.accent ? { color: "var(--acc)" } : undefined}>{s.title}</h3>
+              <h3 style={s.accent ? { color: "var(--acc)" } : undefined}>
+                {s.title}
+              </h3>
               <p>{s.text}</p>
             </div>
           ))}
@@ -927,8 +1138,18 @@ export default function App() {
           <div className="cell s2 rv">
             <form onSubmit={send}>
               <input name="name" placeholder="Ton nom" required />
-              <input name="email" type="email" placeholder="Ton email" required />
-              <textarea name="message" rows={4} placeholder="Ton message" required />
+              <input
+                name="email"
+                type="email"
+                placeholder="Ton email"
+                required
+              />
+              <textarea
+                name="message"
+                rows={4}
+                placeholder="Ton message"
+                required
+              />
 
               <button className="btn p" type="submit">
                 Envoyer ↗
@@ -943,12 +1164,20 @@ export default function App() {
                 <span className="mono">{profile.email}</span>
               </a>
 
-              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span>LinkedIn</span>
                 <span>↗</span>
               </a>
 
-              <a href={profile.github} target="_blank" rel="noopener noreferrer">
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span>GitHub</span>
                 <span>↗</span>
               </a>
