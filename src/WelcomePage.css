@@ -858,3 +858,232 @@ body:has(.welcome-screen) {
   filter: blur(10px);
   pointer-events: none;
 }
+
+
+/* =========================================
+   EFFETS VISUELS — PORTFOLIO
+========================================= */
+
+/* Fond avec grille subtile */
+.welcome-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+
+  background-size: 42px 42px;
+  opacity: 0.3;
+
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+}
+
+/* Lumière douce animée dans le fond */
+.welcome-overlay {
+  background:
+    radial-gradient(
+      circle at 20% 25%,
+      rgba(242, 150, 187, 0.4),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 75%,
+      rgba(155, 177, 156, 0.35),
+      transparent 32%
+    ),
+    radial-gradient(
+      ellipse at center,
+      transparent 15%,
+      rgba(12, 38, 78, 0.18) 100%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(244, 241, 236, 0.08),
+      rgba(209, 54, 112, 0.12)
+    );
+
+  animation: welcome-light 12s ease-in-out infinite alternate;
+}
+
+@keyframes welcome-light {
+  from {
+    background-position: 0% 0%, 100% 100%, center, center;
+  }
+  to {
+    background-position: 15% 20%, 85% 75%, center, center;
+  }
+}
+
+/* Apparition progressive des éléments */
+.welcome-photo-frame,
+.welcome-eyebrow,
+.welcome-content h1,
+.welcome-subtitle,
+.welcome-enter,
+.welcome-hint {
+  opacity: 0;
+  animation: welcome-item-appear 750ms
+    cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.welcome-photo-frame {
+  animation-delay: 150ms;
+}
+
+.welcome-eyebrow {
+  animation-delay: 300ms;
+}
+
+.welcome-content h1 {
+  animation-delay: 420ms;
+}
+
+.welcome-subtitle {
+  animation-delay: 540ms;
+}
+
+.welcome-enter {
+  animation-delay: 650ms;
+}
+
+.welcome-hint {
+  animation-delay: 800ms;
+}
+
+@keyframes welcome-item-appear {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Photo : profondeur et lueur */
+.welcome-photo-frame {
+  box-shadow:
+    0 8px 0 rgba(255, 255, 255, 0.9),
+    0 12px 28px rgba(255, 255, 255, 0.28),
+    0 0 35px rgba(242, 150, 187, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+
+  transform-origin: center;
+  animation:
+    welcome-item-appear 750ms
+      cubic-bezier(0.22, 1, 0.36, 1) 150ms forwards,
+    welcome-float 5s ease-in-out 1s infinite;
+}
+
+.welcome-photo-frame:hover {
+  box-shadow:
+    0 8px 0 rgba(255, 255, 255, 0.9),
+    0 12px 30px rgba(255, 255, 255, 0.4),
+    0 0 28px rgba(242, 150, 187, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes welcome-float {
+  0%, 100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(-1deg);
+  }
+}
+
+/* Petit scintillement */
+.welcome-photo-glint {
+  animation: welcome-glint 2.5s ease-in-out infinite;
+}
+
+@keyframes welcome-glint {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(0.85) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotate(15deg);
+  }
+}
+
+/* Titre avec une légère lueur */
+.welcome-content h1 {
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    0 0 24px rgba(255, 255, 255, 0.35);
+}
+
+/* Bouton avec une lueur animée */
+.welcome-enter {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.welcome-enter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.32) 45%,
+    transparent 70%
+  );
+
+  transform: translateX(-130%);
+  animation: welcome-button-shine 5s ease-in-out 1.5s infinite;
+}
+
+@keyframes welcome-button-shine {
+  0%, 65% {
+    transform: translateX(-130%);
+  }
+  90%, 100% {
+    transform: translateX(130%);
+  }
+}
+
+/* Barre supérieure légèrement brillante */
+.welcome-titlebar {
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.65),
+    0 2px 15px rgba(209, 54, 112, 0.15);
+}
+
+/* Accessibilité : respecter les préférences de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .welcome-overlay,
+  .welcome-photo-frame,
+  .welcome-photo-glint,
+  .welcome-enter::before {
+    animation: none !important;
+  }
+
+  .welcome-photo-frame,
+  .welcome-eyebrow,
+  .welcome-content h1,
+  .welcome-subtitle,
+  .welcome-enter,
+  .welcome-hint {
+    opacity: 1;
+    filter: none;
+  }
+}
