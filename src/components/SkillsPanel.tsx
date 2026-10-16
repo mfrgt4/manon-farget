@@ -75,9 +75,8 @@ export default function SkillsPanel() {
       <div className="skills-panel-heading">
         <div>
           <span className="skills-panel-kicker mono">
-            // COMPÉTENCES
+            // MES DOMAINES
           </span>
-          <h3>Ce que je sais faire.</h3>
         </div>
 
         <span className="skills-panel-count mono">
