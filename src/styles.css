@@ -1266,3 +1266,8 @@ html[data-theme="dark"] .folder-university .folder-open { border-color: #c4d8bb;
   align-items: center;
   width: 100%;
 }
+
+html:has(.welcome-screen),
+body:has(.welcome-screen) {
+  overflow: hidden;
+}
