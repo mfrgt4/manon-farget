@@ -107,8 +107,6 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
             mon univers créatif ?
           </h1>
 
-          <p className="welcome-subtitle">Design · Web · Motion</p>
-
           <button
             className="welcome-enter"
             type="button"
@@ -116,7 +114,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
             disabled={exiting}
             aria-label="Entrer dans mon portfolio"
           >
-            <span className="welcome-enter-label">Entrer dans mon univers</span>
+            <span className="welcome-enter-label">Voir mon portfolio</span>
 
             <span className="welcome-arrow" aria-hidden="true">
               →
