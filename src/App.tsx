@@ -705,10 +705,6 @@ export default function App() {
                 <span className="p-sheen" aria-hidden="true" />
                 <span className="p-glare" aria-hidden="true" />
               </div>
-              <span className="p-corner c-tl" aria-hidden="true" />
-              <span className="p-corner c-tr" aria-hidden="true" />
-              <span className="p-corner c-bl" aria-hidden="true" />
-              <span className="p-corner c-br" aria-hidden="true" />
               <span className="p-tag" aria-hidden="true">hello !</span>
             </div>
           </div>
