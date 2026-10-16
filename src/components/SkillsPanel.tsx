@@ -127,7 +127,6 @@ export default function SkillsPanel() {
       </div>
 
       <p className="skills-panel-footer mono">
-        <span className="skills-footer-dot" />
         CRÉATIVITÉ · CONCEPTION · TECHNIQUE
       </p>
     </div>
