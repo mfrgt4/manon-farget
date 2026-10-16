@@ -85,10 +85,6 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
           <span>© Manon Farget</span>
         </footer>
       </section>
-
-      <p className="welcome-desktop-note">
-        UN PETIT VOYAGE DANS MON UNIVERS NUMÉRIQUE ✦
-      </p>
     </main>
   );
 }
