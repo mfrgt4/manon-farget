@@ -26,7 +26,8 @@
   overflow: hidden;
   isolation: isolate;
 
-  background: #b8dff5;
+  /* Fond blanc */
+  background: #ffffff;
   font-family: "Space Grotesk", Arial, sans-serif;
 }
 
@@ -36,40 +37,17 @@
   box-sizing: border-box;
 }
 
-/* Fond flouté plein écran */
+/* Fond blanc : aucune image en arrière-plan */
 
 .welcome-screen::before {
-  content: "";
-  position: absolute;
-  z-index: -2;
-  inset: -14px;
-
-  background-image: var(--welcome-background);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  filter: blur(5px);
-  transform: scale(1.04);
+  content: none;
 }
 
 .welcome-overlay {
   position: absolute;
-  z-index: -1;
   inset: 0;
-
-  background:
-    radial-gradient(
-      ellipse at center,
-      transparent 15%,
-      rgba(12, 38, 78, 0.18) 100%
-    ),
-    linear-gradient(
-      135deg,
-      rgba(244, 241, 236, 0.08),
-      rgba(209, 54, 112, 0.12)
-    );
-
+  z-index: -1;
+  background: #ffffff;
   pointer-events: none;
 }
 
@@ -81,9 +59,7 @@
   position: relative;
 
   width: 100%;
-  max-width: none;
   height: 100%;
-  max-height: none;
   min-height: 0;
   flex: 1 1 auto;
 
@@ -94,7 +70,7 @@
 
   border: none;
   border-radius: 0;
-  background: transparent;
+  background: #ffffff;
   box-shadow: none;
 
   backdrop-filter: none;
@@ -109,8 +85,11 @@
 ========================================= */
 
 .welcome-titlebar {
-  position: relative;
-  z-index: 2;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10002;
 
   display: flex;
   align-items: center;
@@ -119,11 +98,10 @@
 
   width: 100%;
   min-height: 39px;
-  flex-shrink: 0;
-
   margin: 0;
   padding: 6px 12px;
 
+  flex-shrink: 0;
   color: white;
 
   background: linear-gradient(
@@ -135,7 +113,6 @@
 
   border: none;
   border-bottom: 1px solid rgba(130, 31, 69, 0.25);
-
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.65);
 }
 
@@ -143,7 +120,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-
   min-width: 0;
 
   font-family: "Space Grotesk", Arial, sans-serif;
@@ -202,27 +178,33 @@
 }
 
 /* =========================================
-   CONTENU CENTRÉ
+   CONTENU CENTRÉ ENTRE LES BARRES
 ========================================= */
 
 .welcome-content {
+  position: absolute;
+  top: 39px;
+  right: 0;
+  bottom: 29px;
+  left: 0;
+
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
   width: 100%;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
 
-  padding: 24px;
-
+  padding: 20px;
   text-align: center;
-  background: transparent;
+  background: #ffffff;
 }
 
-/* Petit logo décoratif */
+/* =========================================
+   PETIT LOGO DÉCORATIF
+========================================= */
 
 .welcome-logo {
   position: relative;
@@ -256,7 +238,7 @@
 }
 
 /* =========================================
-   CADRE PHOTO — SANS EFFET AU SURVOL
+   PHOTO AVEC GIF — SANS HOVER
 ========================================= */
 
 .welcome-photo-frame {
@@ -272,6 +254,7 @@
   border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: 17px;
 
+  /* Cadre rose conservé */
   background: linear-gradient(
     145deg,
     #ffffff 0%,
@@ -282,21 +265,21 @@
 
   box-shadow:
     0 8px 0 rgba(154, 177, 156, 0.5),
-    0 12px 22px rgba(30, 48, 77, 0.24),
+    0 12px 22px rgba(30, 48, 77, 0.18),
     inset 0 0 0 1px rgba(209, 54, 112, 0.15);
 
   transform: rotate(-2deg);
   transition: none;
 }
 
-/* Neutralise aussi les anciens effets de survol */
+/* Aucun effet au survol */
 
 .welcome-photo-frame:hover {
   transform: rotate(-2deg);
 
   box-shadow:
     0 8px 0 rgba(154, 177, 156, 0.5),
-    0 12px 22px rgba(30, 48, 77, 0.24),
+    0 12px 22px rgba(30, 48, 77, 0.18),
     inset 0 0 0 1px rgba(209, 54, 112, 0.15);
 }
 
@@ -492,7 +475,7 @@
   transform: translateX(3px);
 }
 
-/* Clique sur la flèche pour continuer en blanc */
+/* Indication en blanc */
 
 .welcome-hint {
   margin: 13px 0 0;
@@ -508,6 +491,12 @@
 ========================================= */
 
 .welcome-statusbar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10002;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -515,14 +504,13 @@
 
   width: 100%;
   min-height: 29px;
-  flex-shrink: 0;
-
   margin: 0;
   padding: 6px 12px;
 
+  flex-shrink: 0;
+
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.45);
-
   background: rgba(255, 255, 255, 0.45);
 
   color: #5b4c58;
@@ -548,7 +536,7 @@
   box-shadow: 0 0 7px rgba(88, 139, 98, 0.6);
 }
 
-/* Texte décoratif au bas de l'écran */
+/* Texte décoratif juste au-dessus de la barre du bas */
 
 .welcome-desktop-note {
   position: absolute;
@@ -596,7 +584,9 @@
   }
 
   .welcome-content {
-    padding: 16px;
+    top: 36px;
+    bottom: 27px;
+    padding: 12px;
   }
 
   .welcome-photo-frame {
@@ -769,86 +759,5 @@ body:has(.welcome-screen) {
   .welcome-enter,
   .welcome-arrow {
     transition: none;
-  }
-}
-
-/* =========================================
-   FIX — BARRES WINDOWS AUX BORDS DE L'ÉCRAN
-========================================= */
-
-/* Barre du haut */
-.welcome-titlebar {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-
-  width: 100vw !important;
-  min-height: 39px;
-  margin: 0 !important;
-
-  z-index: 10002;
-}
-
-/* Barre du bas */
-.welcome-statusbar {
-  position: fixed !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-
-  width: 100vw !important;
-  min-height: 29px;
-  margin: 0 !important;
-
-  z-index: 10002;
-}
-
-/* La fenêtre ne doit pas créer de décalage */
-.welcome-window {
-  width: 100% !important;
-  height: 100dvh !important;
-  max-height: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-}
-
-/* Le contenu reste centré entre les deux barres */
-.welcome-content {
-  position: absolute;
-  top: 39px;
-  right: 0;
-  bottom: 29px;
-  left: 0;
-
-  width: 100%;
-  height: auto;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 20px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Sur les petits écrans */
-@media (max-width: 600px) {
-  .welcome-titlebar {
-    min-height: 36px;
-  }
-
-  .welcome-content {
-    top: 36px;
-    bottom: 27px;
-    padding: 12px;
-  }
-
-  .welcome-statusbar {
-    min-height: 27px;
   }
 }
