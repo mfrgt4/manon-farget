@@ -9,7 +9,7 @@ const BACKGROUND_IMAGE =
   "https://image.noelshack.com/fichiers/2026/42/5/1792155953-image-b21f86-je-veux-cette-photo-mais-dans-des-tons-blancs.jpg";
 
 const PORTRAIT_GIF =
-  "https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyOWo2Z3UxbHhyeDNxMjhiYTZzNmRrMmRmaHQyOWhoY3ZiZW4zMTJrNCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kZqbBT64ECtjy/giphy.gif";
+  "https://i.pinimg.com/originals/ef/ba/62/efba62f209ca2cc400e8083212d64472.gif";
 
 export default function WelcomePage({ onEnter }: WelcomePageProps) {
   const [exiting, setExiting] = useState(false);
