@@ -308,8 +308,8 @@
   border: 2px solid white;
   border-radius: 10px;
 
-  background: #fff;
-  box-shadow: inset 0 0 0 1px rgba(40, 30, 40, 0.12);
+  background: #e7c8d5;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .welcome-photo img {
