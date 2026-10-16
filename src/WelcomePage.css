@@ -23,7 +23,7 @@
   justify-content: center;
 
   box-sizing: border-box;
-  padding: 16px;
+  padding: 24px;
   overflow: hidden;
   isolation: isolate;
 
@@ -75,14 +75,15 @@
 }
 
 /* =========================================
-   FENÊTRE WINDOWS
+   FENÊTRE WINDOWS — LARGE SUR ORDINATEUR
 ========================================= */
 
 .welcome-window {
   position: relative;
 
-  width: min(440px, 100%);
-  max-height: 100%;
+  width: min(1200px, 100%);
+  max-width: 1200px;
+  max-height: calc(100dvh - 48px);
   min-height: 0;
   flex-shrink: 1;
 
@@ -92,7 +93,7 @@
   overflow: hidden;
 
   border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 12px;
+  border-radius: 14px;
 
   background: rgba(244, 241, 236, 0.94);
 
@@ -206,7 +207,7 @@
   align-items: center;
 
   min-height: 0;
-  padding: 27px 28px 22px;
+  padding: 35px 40px 28px;
 
   text-align: center;
 }
@@ -251,12 +252,12 @@
 .welcome-photo-frame {
   position: relative;
 
-  width: 174px;
-  height: 174px;
+  width: 200px;
+  height: 200px;
   flex-shrink: 0;
 
   padding: 9px;
-  margin-bottom: 24px;
+  margin-bottom: 25px;
 
   border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: 17px;
@@ -343,15 +344,15 @@
 }
 
 .welcome-content h1 {
-  max-width: 350px;
+  max-width: 700px;
   margin: 0;
 
   color: #302b32;
 
   font-family: "Space Grotesk", Arial, sans-serif;
-  font-size: clamp(24px, 5vw, 31px);
+  font-size: clamp(30px, 3vw, 42px);
   font-weight: 700;
-  line-height: 1.16;
+  line-height: 1.15;
   letter-spacing: -0.055em;
 
   text-shadow: 0 1px 0 white;
@@ -378,7 +379,7 @@
   min-height: 54px;
   flex-shrink: 0;
 
-  margin-top: 24px;
+  margin-top: 28px;
   padding: 6px 7px 6px 19px;
 
   border: 1px solid #a9255a;
@@ -564,16 +565,17 @@
 }
 
 /* =========================================
-   ÉCRANS ÉTROITS
+   TABLETTES ET MOBILES
 ========================================= */
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .welcome-screen {
     padding: 12px;
   }
 
   .welcome-window {
     width: 100%;
+    max-height: calc(100dvh - 24px);
   }
 
   .welcome-content {
@@ -581,9 +583,9 @@
   }
 
   .welcome-photo-frame {
-    width: 150px;
-    height: 150px;
-    margin-bottom: 21px;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 18px;
   }
 
   .welcome-logo {
@@ -596,11 +598,11 @@
   }
 
   .welcome-content h1 {
-    font-size: clamp(23px, 7vw, 29px);
+    font-size: clamp(23px, 6vw, 29px);
   }
 
   .welcome-enter {
-    margin-top: 21px;
+    margin-top: 18px;
   }
 
   .welcome-desktop-note {
@@ -612,7 +614,6 @@
 
 /* =========================================
    ÉCRANS PEU HAUTS
-   La fenêtre reste centrée et se compacte.
 ========================================= */
 
 @media (max-height: 760px) {
@@ -629,8 +630,8 @@
   }
 
   .welcome-photo-frame {
-    width: 110px;
-    height: 110px;
+    width: 140px;
+    height: 140px;
     margin-bottom: 13px;
   }
 
@@ -667,6 +668,7 @@
 
   .welcome-window {
     width: min(390px, 100%);
+    max-height: calc(100dvh - 12px);
   }
 
   .welcome-titlebar {
