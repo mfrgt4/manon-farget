@@ -8,8 +8,7 @@ type WelcomePageProps = {
 const BACKGROUND_IMAGE =
   "https://image.noelshack.com/fichiers/2026/42/5/1792155953-image-b21f86-je-veux-cette-photo-mais-dans-des-tons-blancs.jpg";
 
-const PORTRAIT_GIF =
-  "https://i.redd.it/fa7yzfkz14u71.gif";
+const PORTRAIT_GIF = "https://i.redd.it/fa7yzfkz14u71.gif";
 
 export default function WelcomePage({ onEnter }: WelcomePageProps) {
   const [exiting, setExiting] = useState(false);
@@ -100,9 +99,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
             </div>
           </div>
 
-          <p className="welcome-eyebrow">
-            MANON FARGET · PORTFOLIO CRÉATIF
-          </p>
+          <p className="welcome-eyebrow">MANON FARGET · PORTFOLIO CRÉATIF</p>
 
           <h1 id="welcome-title">
             Prêt·e à découvrir
@@ -119,18 +116,14 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
             disabled={exiting}
             aria-label="Entrer dans mon portfolio"
           >
-            <span className="welcome-enter-label">
-              Entrer dans mon univers
-            </span>
+            <span className="welcome-enter-label">Entrer dans mon univers</span>
 
             <span className="welcome-arrow" aria-hidden="true">
               →
             </span>
           </button>
 
-          <p className="welcome-hint">
-            Clique sur la flèche pour continuer
-          </p>
+          <p className="welcome-hint">Clique sur la flèche pour continuer</p>
         </div>
 
         <footer className="welcome-statusbar">

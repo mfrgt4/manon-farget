@@ -314,7 +314,7 @@
   background: transparent;
 }
 
-/* Petit logo décoratif */
+/* Petit logo décoratif éventuel */
 
 .welcome-logo {
   position: relative;
@@ -348,130 +348,104 @@
 }
 
 /* =========================================
-   CADRE PHOTO
-   Inclinaison présente dès le départ
+   GIF SEUL — AUCUN CADRE NI DÉCORATION
 ========================================= */
 
 .welcome-photo-frame {
   position: relative;
 
+  display: block;
   width: 200px;
   height: 200px;
   flex-shrink: 0;
 
-  padding: 9px;
-  margin-bottom: 25px;
+  padding: 0;
+  margin: 0 0 25px;
 
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  border-radius: 17px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 
-  background: linear-gradient(
-    145deg,
-    #ffffff 0%,
-    #f8dce7 22%,
-    #e6e2df 48%,
-    #f296bb 100%
-  );
+  opacity: 1;
+  transform: none;
+  filter: none;
 
-  box-shadow:
-    0 8px 0 rgba(255, 255, 255, 0.9),
-    0 12px 28px rgba(255, 255, 255, 0.28),
-    0 0 35px rgba(242, 150, 187, 0.22),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-
-  transform-origin: center;
-
-  /* La photo est déjà penchée pendant son apparition.
-     L'animation ne fait varier que sa hauteur, pas son angle. */
-  opacity: 0;
-  animation:
-    welcome-photo-appear 750ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both,
-    welcome-float 5s ease-in-out 900ms infinite;
+  animation: welcome-float 5s ease-in-out infinite;
 }
 
-@keyframes welcome-photo-appear {
-  from {
-    opacity: 0;
-    transform: translateY(18px) rotate(-2deg);
-    filter: blur(5px);
-  }
+/* Aucun effet au survol */
 
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(-2deg);
-    filter: blur(0);
-  }
+.welcome-photo-frame:hover {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  filter: none;
 }
+
+/* Conteneur du GIF */
+
+.welcome-photo {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+
+  transform: none;
+  filter: none;
+}
+
+/* Image sans contour, ombre ou filtre */
+
+.welcome-photo img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  object-fit: contain;
+  object-position: center;
+
+  border: none;
+  border-radius: 0;
+  outline: none;
+
+  background: transparent;
+  box-shadow: none;
+
+  transform: none;
+  filter: none;
+}
+
+/* Mouvement flottant uniquement */
 
 @keyframes welcome-float {
   0%,
   100% {
-    transform: translateY(0) rotate(-2deg);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translateY(-7px) rotate(-2deg);
+    transform: translateY(-7px);
   }
 }
 
-.welcome-photo-frame:hover {
-  box-shadow:
-    0 8px 0 rgba(255, 255, 255, 0.9),
-    0 12px 30px rgba(255, 255, 255, 0.4),
-    0 0 28px rgba(242, 150, 187, 0.45),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-}
-
-.welcome-photo {
-  width: 200px;
-  height: 200px;
-  overflow: hidden;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 0;
-  transform: none;
-}
-
-.welcome-photo img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-}
+/* Masquer l'ancienne décoration scintillante */
 
 .welcome-photo-glint {
-  position: absolute;
-  top: -10px;
-  right: -9px;
-
-  color: white;
-  font-size: 27px;
-
-  text-shadow:
-    0 0 5px var(--welcome-pink),
-    0 0 14px var(--welcome-pink-light);
-
-  pointer-events: none;
-
-  animation: welcome-glint 2.5s ease-in-out infinite;
-}
-
-@keyframes welcome-glint {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(0.85) rotate(0deg);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.15) rotate(15deg);
-  }
+  display: none !important;
 }
 
 /* =========================================
@@ -930,7 +904,6 @@ body:has(.welcome-screen) {
   .welcome-photo-frame {
     width: 82px;
     height: 82px;
-    padding: 5px;
     margin-bottom: 9px;
   }
 
@@ -1008,7 +981,7 @@ body:has(.welcome-screen) {
 
   .welcome-photo-frame {
     opacity: 1;
-    transform: rotate(-2deg);
+    transform: none;
     filter: none;
   }
 
