@@ -35,9 +35,9 @@
   filter: blur(0);
 
   transition:
-    opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1100ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 900ms ease;
+    opacity 1100ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1100ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1100ms cubic-bezier(0.16, 1, 0.3, 1);
 
   will-change: opacity, transform, filter;
 }
@@ -48,7 +48,9 @@
   box-sizing: border-box;
 }
 
-/* Fond flouté plein écran */
+/* =========================================
+   FOND FLOUTÉ
+========================================= */
 
 .welcome-screen::before {
   content: "";
@@ -63,14 +65,49 @@
 
   filter: blur(5px);
   transform: scale(1.04);
+  pointer-events: none;
+}
+
+.welcome-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+
+  background-size: 42px 42px;
+  opacity: 0.3;
+
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
 }
 
 .welcome-overlay {
   position: absolute;
   z-index: -1;
   inset: 0;
+  pointer-events: none;
 
   background:
+    radial-gradient(
+      circle at 20% 25%,
+      rgba(242, 150, 187, 0.4),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 75%,
+      rgba(155, 177, 156, 0.35),
+      transparent 32%
+    ),
     radial-gradient(
       ellipse at center,
       transparent 15%,
@@ -82,26 +119,37 @@
       rgba(209, 54, 112, 0.12)
     );
 
-  pointer-events: none;
+  animation: welcome-light 12s ease-in-out infinite alternate;
+}
+
+@keyframes welcome-light {
+  from {
+    background-position: 0% 0%, 100% 100%, center, center;
+  }
+
+  to {
+    background-position: 15% 20%, 85% 75%, center, center;
+  }
 }
 
 /* =========================================
-   TRANSITION DE SORTIE DE L'INTRO
+   TRANSITION DE SORTIE
 ========================================= */
 
 .welcome-screen.welcome-exit {
   opacity: 0;
-  transform: scale(1.06);
-  filter: blur(12px);
+  transform: scale(1.035);
+  filter: blur(10px);
   pointer-events: none;
 }
 
 /* =========================================
-   FENÊTRE WINDOWS — PLEIN ÉCRAN
+   FENÊTRE PRINCIPALE
 ========================================= */
 
 .welcome-window {
   position: relative;
+  z-index: 1;
 
   width: 100%;
   max-width: none;
@@ -124,6 +172,18 @@
   -webkit-backdrop-filter: none;
 
   animation: welcome-appear 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes welcome-appear {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* =========================================
@@ -161,14 +221,15 @@
   border: none;
   border-bottom: 1px solid rgba(130, 31, 69, 0.25);
 
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.65);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.65),
+    0 2px 15px rgba(209, 54, 112, 0.15);
 }
 
 .welcome-title {
   display: flex;
   align-items: center;
   gap: 8px;
-
   min-width: 0;
 
   font-family: "Space Grotesk", Arial, sans-serif;
@@ -288,6 +349,7 @@
 
 /* =========================================
    CADRE PHOTO
+   Inclinaison présente dès le départ
 ========================================= */
 
 .welcome-photo-frame {
@@ -313,21 +375,50 @@
 
   box-shadow:
     0 8px 0 rgba(255, 255, 255, 0.9),
-    0 12px 22px rgba(255, 255, 255, 0.35),
+    0 12px 28px rgba(255, 255, 255, 0.28),
+    0 0 35px rgba(242, 150, 187, 0.22),
     inset 0 0 0 1px rgba(255, 255, 255, 0.8);
 
-  transform: rotate(-2deg);
-  transition: none;
+  transform-origin: center;
+
+  /* La photo est déjà penchée pendant son apparition.
+     L'animation ne fait varier que sa hauteur, pas son angle. */
+  opacity: 0;
+  animation:
+    welcome-photo-appear 750ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both,
+    welcome-float 5s ease-in-out 900ms infinite;
 }
 
-/* Pas d'ombre verte au survol */
+@keyframes welcome-photo-appear {
+  from {
+    opacity: 0;
+    transform: translateY(18px) rotate(-2deg);
+    filter: blur(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(-2deg);
+    filter: blur(0);
+  }
+}
+
+@keyframes welcome-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+
+  50% {
+    transform: translateY(-7px) rotate(-2deg);
+  }
+}
 
 .welcome-photo-frame:hover {
-  transform: rotate(-2deg);
-
   box-shadow:
     0 8px 0 rgba(255, 255, 255, 0.9),
-    0 12px 22px rgba(255, 255, 255, 0.35),
+    0 12px 30px rgba(255, 255, 255, 0.4),
+    0 0 28px rgba(242, 150, 187, 0.45),
     inset 0 0 0 1px rgba(255, 255, 255, 0.8);
 }
 
@@ -366,6 +457,21 @@
     0 0 14px var(--welcome-pink-light);
 
   pointer-events: none;
+
+  animation: welcome-glint 2.5s ease-in-out infinite;
+}
+
+@keyframes welcome-glint {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.85) rotate(0deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotate(15deg);
+  }
 }
 
 /* =========================================
@@ -381,6 +487,9 @@
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.12em;
+
+  opacity: 0;
+  animation: welcome-item-appear 750ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
 }
 
 .welcome-content h1 {
@@ -395,7 +504,12 @@
   line-height: 1.15;
   letter-spacing: -0.055em;
 
-  text-shadow: 0 1px 0 white;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    0 0 24px rgba(255, 255, 255, 0.35);
+
+  opacity: 0;
+  animation: welcome-item-appear 750ms cubic-bezier(0.22, 1, 0.36, 1) 420ms both;
 }
 
 .welcome-subtitle {
@@ -406,6 +520,23 @@
   letter-spacing: 0.04em;
 
   text-shadow: 0 1px 5px rgba(80, 20, 50, 0.35);
+
+  opacity: 0;
+  animation: welcome-item-appear 750ms cubic-bezier(0.22, 1, 0.36, 1) 540ms both;
+}
+
+@keyframes welcome-item-appear {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 
 /* =========================================
@@ -413,6 +544,10 @@
 ========================================= */
 
 .welcome-enter {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -453,6 +588,27 @@
     transform 180ms ease,
     filter 180ms ease,
     box-shadow 180ms ease;
+
+  opacity: 0;
+  animation: welcome-item-appear 750ms cubic-bezier(0.22, 1, 0.36, 1) 650ms both;
+}
+
+.welcome-enter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.32) 45%,
+    transparent 70%
+  );
+
+  transform: translateX(-130%);
+  animation: welcome-button-shine 5s ease-in-out 1.5s infinite;
 }
 
 .welcome-enter:hover {
@@ -478,8 +634,26 @@
   outline-offset: 4px;
 }
 
+.welcome-enter-label,
+.welcome-arrow {
+  position: relative;
+  z-index: 1;
+}
+
 .welcome-enter-label {
   white-space: nowrap;
+}
+
+@keyframes welcome-button-shine {
+  0%,
+  65% {
+    transform: translateX(-130%);
+  }
+
+  90%,
+  100% {
+    transform: translateX(130%);
+  }
 }
 
 .welcome-arrow {
@@ -528,6 +702,9 @@
   font-size: 10px;
 
   text-shadow: 0 1px 5px rgba(80, 20, 50, 0.35);
+
+  opacity: 0;
+  animation: welcome-item-appear 750ms cubic-bezier(0.22, 1, 0.36, 1) 800ms both;
 }
 
 /* =========================================
@@ -581,7 +758,9 @@
   box-shadow: 0 0 7px rgba(88, 139, 98, 0.6);
 }
 
-/* Texte décoratif au bas de l'écran */
+/* =========================================
+   TEXTE DÉCORATIF
+========================================= */
 
 .welcome-desktop-note {
   position: absolute;
@@ -603,24 +782,8 @@
 }
 
 /* =========================================
-   ANIMATIONS
+   APPARITION DU PORTFOLIO
 ========================================= */
-
-@keyframes welcome-appear {
-  from {
-    opacity: 0;
-    transform: translateY(15px) scale(0.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Apparition du portfolio après l'intro.
-   Ajoute cette classe au conteneur principal
-   du portfolio dans ton JSX. */
 
 .portfolio-content {
   animation: portfolio-reveal 1200ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -640,7 +803,7 @@
   }
 }
 
-/* Bloquer le scroll pendant la page d'accueil */
+/* Bloquer le scroll pendant l'intro */
 
 html:has(.welcome-screen),
 body:has(.welcome-screen) {
@@ -824,10 +987,17 @@ body:has(.welcome-screen) {
   .welcome-window,
   .portfolio-content,
   .welcome-photo-frame,
+  .welcome-photo-glint,
+  .welcome-eyebrow,
+  .welcome-content h1,
+  .welcome-subtitle,
   .welcome-enter,
-  .welcome-arrow {
-    animation: none;
-    transition: none;
+  .welcome-arrow,
+  .welcome-hint,
+  .welcome-overlay,
+  .welcome-enter::before {
+    animation: none !important;
+    transition: none !important;
   }
 
   .welcome-screen.welcome-exit {
@@ -835,249 +1005,13 @@ body:has(.welcome-screen) {
     transform: none;
     filter: none;
   }
-}
 
-/* Transition fluide à la sortie de l'intro */
-
-.welcome-screen {
-  opacity: 1;
-  transform: scale(1);
-  filter: blur(0);
-
-  transition:
-    opacity 1100ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 1100ms cubic-bezier(0.16, 1, 0.3, 1),
-    filter 1100ms cubic-bezier(0.16, 1, 0.3, 1);
-
-  will-change: opacity, transform, filter;
-}
-
-.welcome-screen.welcome-exit {
-  opacity: 0;
-  transform: scale(1.035);
-  filter: blur(10px);
-  pointer-events: none;
-}
-
-
-/* =========================================
-   EFFETS VISUELS — PORTFOLIO
-========================================= */
-
-/* Fond avec grille subtile */
-.welcome-screen::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
-
-  background-size: 42px 42px;
-  opacity: 0.3;
-
-  mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    black 20%,
-    black 80%,
-    transparent
-  );
-}
-
-/* Lumière douce animée dans le fond */
-.welcome-overlay {
-  background:
-    radial-gradient(
-      circle at 20% 25%,
-      rgba(242, 150, 187, 0.4),
-      transparent 35%
-    ),
-    radial-gradient(
-      circle at 80% 75%,
-      rgba(155, 177, 156, 0.35),
-      transparent 32%
-    ),
-    radial-gradient(
-      ellipse at center,
-      transparent 15%,
-      rgba(12, 38, 78, 0.18) 100%
-    ),
-    linear-gradient(
-      135deg,
-      rgba(244, 241, 236, 0.08),
-      rgba(209, 54, 112, 0.12)
-    );
-
-  animation: welcome-light 12s ease-in-out infinite alternate;
-}
-
-@keyframes welcome-light {
-  from {
-    background-position: 0% 0%, 100% 100%, center, center;
-  }
-  to {
-    background-position: 15% 20%, 85% 75%, center, center;
-  }
-}
-
-/* Apparition progressive des éléments */
-.welcome-photo-frame,
-.welcome-eyebrow,
-.welcome-content h1,
-.welcome-subtitle,
-.welcome-enter,
-.welcome-hint {
-  opacity: 0;
-  animation: welcome-item-appear 750ms
-    cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.welcome-photo-frame {
-  animation-delay: 150ms;
-}
-
-.welcome-eyebrow {
-  animation-delay: 300ms;
-}
-
-.welcome-content h1 {
-  animation-delay: 420ms;
-}
-
-.welcome-subtitle {
-  animation-delay: 540ms;
-}
-
-.welcome-enter {
-  animation-delay: 650ms;
-}
-
-.welcome-hint {
-  animation-delay: 800ms;
-}
-
-@keyframes welcome-item-appear {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-    filter: blur(5px);
-  }
-  to {
+  .welcome-photo-frame {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-/* Photo : profondeur et lueur */
-.welcome-photo-frame {
-  box-shadow:
-    0 8px 0 rgba(255, 255, 255, 0.9),
-    0 12px 28px rgba(255, 255, 255, 0.28),
-    0 0 35px rgba(242, 150, 187, 0.22),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-
-  transform-origin: center;
-  animation:
-    welcome-item-appear 750ms
-      cubic-bezier(0.22, 1, 0.36, 1) 150ms forwards,
-    welcome-float 5s ease-in-out 1s infinite;
-}
-
-.welcome-photo-frame:hover {
-  box-shadow:
-    0 8px 0 rgba(255, 255, 255, 0.9),
-    0 12px 30px rgba(255, 255, 255, 0.4),
-    0 0 28px rgba(242, 150, 187, 0.45),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-}
-
-@keyframes welcome-float {
-  0%, 100% {
-    transform: translateY(0) rotate(-2deg);
-  }
-  50% {
-    transform: translateY(-7px) rotate(-1deg);
-  }
-}
-
-/* Petit scintillement */
-.welcome-photo-glint {
-  animation: welcome-glint 2.5s ease-in-out infinite;
-}
-
-@keyframes welcome-glint {
-  0%, 100% {
-    opacity: 0.55;
-    transform: scale(0.85) rotate(0deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.15) rotate(15deg);
-  }
-}
-
-/* Titre avec une légère lueur */
-.welcome-content h1 {
-  text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.95),
-    0 0 24px rgba(255, 255, 255, 0.35);
-}
-
-/* Bouton avec une lueur animée */
-.welcome-enter {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.welcome-enter::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-
-  background: linear-gradient(
-    110deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.32) 45%,
-    transparent 70%
-  );
-
-  transform: translateX(-130%);
-  animation: welcome-button-shine 5s ease-in-out 1.5s infinite;
-}
-
-@keyframes welcome-button-shine {
-  0%, 65% {
-    transform: translateX(-130%);
-  }
-  90%, 100% {
-    transform: translateX(130%);
-  }
-}
-
-/* Barre supérieure légèrement brillante */
-.welcome-titlebar {
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.65),
-    0 2px 15px rgba(209, 54, 112, 0.15);
-}
-
-/* Accessibilité : respecter les préférences de mouvement */
-@media (prefers-reduced-motion: reduce) {
-  .welcome-overlay,
-  .welcome-photo-frame,
-  .welcome-photo-glint,
-  .welcome-enter::before {
-    animation: none !important;
+    transform: rotate(-2deg);
+    filter: none;
   }
 
-  .welcome-photo-frame,
   .welcome-eyebrow,
   .welcome-content h1,
   .welcome-subtitle,
@@ -1085,5 +1019,6 @@ body:has(.welcome-screen) {
   .welcome-hint {
     opacity: 1;
     filter: none;
+    transform: none;
   }
 }
