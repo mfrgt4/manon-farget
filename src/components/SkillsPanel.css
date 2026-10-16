@@ -9,13 +9,7 @@
   padding: clamp(1.2rem, 3vw, 2rem);
   border: 1px solid rgba(231, 97, 170, 0.3);
   border-radius: 22px;
-  background:
-    radial-gradient(
-      circle at 0% 0%,
-      rgba(231, 97, 170, 0.08),
-      transparent 42%
-    ),
-    var(--skills-surface);
+  background: var(--skills-surface);
   color: var(--skills-text);
 }
 
@@ -280,13 +274,7 @@
   --skills-border: rgba(65, 45, 65, 0.14);
 
   color: var(--skills-text);
-  background:
-    radial-gradient(
-      circle at 0% 0%,
-      rgba(231, 97, 170, 0.08),
-      transparent 42%
-    ),
-    #fffdfd;
+  background: #fffdfd;
 }
 
 [data-theme="light"] .skills-panel-heading h3,
@@ -334,13 +322,7 @@
   --skills-border: rgba(255, 255, 255, 0.1);
 
   color: var(--skills-text);
-  background:
-    radial-gradient(
-      circle at 0% 0%,
-      rgba(231, 97, 170, 0.12),
-      transparent 42%
-    ),
-    #17131d;
+  background: #17131d;
   border-color: rgba(231, 97, 170, 0.24);
 }
 
