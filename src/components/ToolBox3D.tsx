@@ -14,6 +14,7 @@ type Domain = {
   months: string[];
 };
 
+
 const DOMAINS: Domain[] = [
   {
     id: "design",
@@ -40,6 +41,8 @@ const DOMAINS: Domain[] = [
       "Ergonomie",
       "Responsive",
       "Accessibilité",
+      "Gestion de projet",
+      "Notion",
     ],
   },
   {
@@ -59,9 +62,12 @@ const DOMAINS: Domain[] = [
       "React",
       "three.js",
       "Vite",
+      "Vercel",
       "Node.js",
       "PHP",
       "SQL",
+      "Git",
+      "GitHub",
       "SEO",
     ],
   },
