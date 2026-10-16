@@ -5,7 +5,7 @@ import { categories, nav, profile, projects, skills, studies, tools } from "./da
 import type { Category, Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
-import CDCase from "./components/CDCase";
+import SkillsPanel from "./components/SkillsPanel";
 
 
 // ================= SONS =================
@@ -790,6 +790,7 @@ export default function App() {
         </p>
 
         <WordSphere words={tools} />
+        <SkillsPanel />
       </section>
 
       <section id="projets" className={!folderOpened ? "showing-folders" : "showing-projects"}>
