@@ -658,7 +658,7 @@ export default function App() {
         <div className="h-band" aria-hidden="true">
           <div className="h-band-t">
             {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => (
-              <span key={i}>{t}<b>✧</b></span>
+              <span key={i}>{t}<b>𖹭</b></span>
             ))}
           </div>
         </div>
