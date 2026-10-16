@@ -1,10 +1,13 @@
 
 .skills-panel {
-  --skills-text: var(--text, #f5f2f5);
-  --skills-muted: var(--muted, #a6a0aa);
+  --skills-text: #29232d;
+  --skills-muted: #706775;
+  --skills-surface: #fffdfd;
+  --skills-border: rgba(65, 45, 65, 0.14);
+
   margin-top: 2.5rem;
   padding: clamp(1.2rem, 3vw, 2rem);
-  border: 1px solid rgba(231, 97, 170, 0.2);
+  border: 1px solid rgba(231, 97, 170, 0.3);
   border-radius: 22px;
   background:
     radial-gradient(
@@ -12,7 +15,8 @@
       rgba(231, 97, 170, 0.08),
       transparent 42%
     ),
-    var(--card, rgba(255, 255, 255, 0.025));
+    var(--skills-surface);
+  color: var(--skills-text);
 }
 
 .skills-panel-heading {
@@ -24,7 +28,7 @@
 }
 
 .skills-panel-kicker {
-  color: #e761aa;
+  color: #d13686;
   font-size: 0.68rem;
   letter-spacing: 0.12em;
 }
@@ -38,9 +42,10 @@
 
 .skills-panel-count {
   padding: 0.45rem 0.65rem;
-  border: 1px solid rgba(231, 97, 170, 0.22);
+  border: 1px solid rgba(209, 54, 134, 0.3);
   border-radius: 7px;
   color: var(--skills-muted);
+  background: rgba(255, 255, 255, 0.7);
   font-size: 0.62rem;
   white-space: nowrap;
 }
@@ -53,17 +58,18 @@
 
 .skills-domain {
   --skill-color: #e761aa;
+
   position: relative;
   min-width: 0;
   padding: 1.15rem;
   overflow: hidden;
   border: 1px solid color-mix(
     in srgb,
-    var(--skill-color) 20%,
-    transparent
+    var(--skill-color) 35%,
+    #ffffff
   );
   border-radius: 15px;
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(255, 255, 255, 0.78);
   transition:
     transform 0.28s ease,
     border-color 0.28s ease,
@@ -80,25 +86,21 @@
   height: 2px;
   border-radius: 10px;
   background: var(--skill-color);
-  opacity: 0.75;
+  opacity: 0.85;
   transition: width 0.3s ease;
 }
 
 .skills-domain:hover {
   transform: translateY(-4px);
-  border-color: color-mix(
-    in srgb,
-    var(--skill-color) 60%,
-    transparent
-  );
+  border-color: var(--skill-color);
   background: color-mix(
     in srgb,
-    var(--skill-color) 5%,
-    transparent
+    var(--skill-color) 7%,
+    #ffffff
   );
   box-shadow: 0 12px 32px color-mix(
     in srgb,
-    var(--skill-color) 10%,
+    var(--skill-color) 13%,
     transparent
   );
 }
@@ -129,14 +131,14 @@
   height: 38px;
   border: 1px solid color-mix(
     in srgb,
-    var(--skill-color) 35%,
-    transparent
+    var(--skill-color) 40%,
+    #ffffff
   );
   border-radius: 11px;
   background: color-mix(
     in srgb,
-    var(--skill-color) 9%,
-    transparent
+    var(--skill-color) 12%,
+    #ffffff
   );
   transition: transform 0.3s ease;
 }
@@ -159,20 +161,20 @@
   margin: 0;
   color: var(--skills-text);
   font-size: 0.94rem;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .skills-domain-title p {
   margin: 0.25rem 0 0;
   color: var(--skills-muted);
   font-size: 0.76rem;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .skills-domain-arrow {
   color: var(--skill-color);
   font-size: 1rem;
-  opacity: 0.55;
+  opacity: 0.65;
   transform: translate(-2px, 2px);
   transition:
     opacity 0.25s ease,
@@ -196,12 +198,12 @@
   gap: 0.4rem;
   max-width: 100%;
   padding: 0.43rem 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(65, 45, 65, 0.14);
   border-radius: 7px;
-  color: var(--skills-muted);
-  background: rgba(255, 255, 255, 0.025);
+  color: #625967;
+  background: #ffffff;
   font-size: 0.72rem;
-  line-height: 1.3;
+  line-height: 1.4;
   overflow-wrap: anywhere;
   transition:
     color 0.22s ease,
@@ -217,7 +219,7 @@
   height: 5px;
   border-radius: 50%;
   background: var(--skill-color);
-  opacity: 0.6;
+  opacity: 0.85;
   transition:
     opacity 0.22s ease,
     box-shadow 0.22s ease;
@@ -226,14 +228,14 @@
 .skills-domain:hover .skills-tag {
   border-color: color-mix(
     in srgb,
-    var(--skill-color) 30%,
-    transparent
+    var(--skill-color) 45%,
+    #ffffff
   );
-  color: var(--skills-text);
+  color: #29232d;
   background: color-mix(
     in srgb,
-    var(--skill-color) 7%,
-    transparent
+    var(--skill-color) 10%,
+    #ffffff
   );
   transform: translateY(-1px);
   transition-delay: calc(var(--tag-index, 0) * 25ms);
@@ -248,6 +250,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.55rem;
   margin: 1.5rem 0 0;
   color: var(--skills-muted);
@@ -257,12 +260,147 @@
 }
 
 .skills-footer-dot {
+  flex: 0 0 6px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #9ab88b;
-  box-shadow: 0 0 9px rgba(154, 184, 139, 0.65);
+  background: #78976a;
+  box-shadow: 0 0 9px rgba(120, 151, 106, 0.4);
 }
+
+/* =========================================
+   MODE CLAIR
+   Compatible avec data-theme="light"
+========================================= */
+
+[data-theme="light"] .skills-panel {
+  --skills-text: #29232d;
+  --skills-muted: #706775;
+  --skills-surface: #fffdfd;
+  --skills-border: rgba(65, 45, 65, 0.14);
+
+  color: var(--skills-text);
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(231, 97, 170, 0.08),
+      transparent 42%
+    ),
+    #fffdfd;
+}
+
+[data-theme="light"] .skills-panel-heading h3,
+[data-theme="light"] .skills-domain-title h4 {
+  color: #29232d;
+}
+
+[data-theme="light"] .skills-domain-title p,
+[data-theme="light"] .skills-panel-footer {
+  color: #706775;
+}
+
+[data-theme="light"] .skills-domain {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] .skills-domain:hover {
+  background: color-mix(
+    in srgb,
+    var(--skill-color) 7%,
+    #ffffff
+  );
+}
+
+[data-theme="light"] .skills-tag {
+  color: #625967;
+  background: #ffffff;
+  border-color: rgba(65, 45, 65, 0.14);
+}
+
+[data-theme="light"] .skills-panel-count {
+  color: #706775;
+  background: #ffffff;
+}
+
+/* =========================================
+   MODE SOMBRE
+   Compatible avec data-theme="dark"
+========================================= */
+
+[data-theme="dark"] .skills-panel {
+  --skills-text: #f5f0f6;
+  --skills-muted: #c1b6c8;
+  --skills-surface: #17131d;
+  --skills-border: rgba(255, 255, 255, 0.1);
+
+  color: var(--skills-text);
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(231, 97, 170, 0.12),
+      transparent 42%
+    ),
+    #17131d;
+  border-color: rgba(231, 97, 170, 0.24);
+}
+
+[data-theme="dark"] .skills-panel-heading h3,
+[data-theme="dark"] .skills-domain-title h4 {
+  color: #f5f0f6;
+}
+
+[data-theme="dark"] .skills-domain-title p,
+[data-theme="dark"] .skills-panel-footer {
+  color: #c1b6c8;
+}
+
+[data-theme="dark"] .skills-domain {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: color-mix(
+    in srgb,
+    var(--skill-color) 28%,
+    transparent
+  );
+}
+
+[data-theme="dark"] .skills-domain:hover {
+  background: color-mix(
+    in srgb,
+    var(--skill-color) 12%,
+    #17131d
+  );
+  border-color: var(--skill-color);
+}
+
+[data-theme="dark"] .skills-tag {
+  color: #d2c8d8;
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .skills-domain:hover .skills-tag {
+  color: #ffffff;
+  background: color-mix(
+    in srgb,
+    var(--skill-color) 17%,
+    #17131d
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--skill-color) 55%,
+    transparent
+  );
+}
+
+[data-theme="dark"] .skills-panel-count {
+  color: #c1b6c8;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(231, 97, 170, 0.28);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
 
 @media (max-width: 650px) {
   .skills-panel {
@@ -273,6 +411,10 @@
 
   .skills-panel-heading {
     align-items: flex-start;
+  }
+
+  .skills-panel-heading h3 {
+    font-size: 1.4rem;
   }
 
   .skills-panel-count {
@@ -304,22 +446,38 @@
     height: 21px;
   }
 
+  .skills-domain-title h4 {
+    font-size: 0.9rem;
+  }
+
+  .skills-domain-title p {
+    font-size: 0.73rem;
+  }
+
+  .skills-tag {
+    font-size: 0.7rem;
+  }
+
   .skills-panel-footer {
     font-size: 0.55rem;
     letter-spacing: 0.06em;
   }
 }
 
+/* SURVOL SUR ÉCRAN TACTILE */
+
 @media (hover: none) {
   .skills-domain:active {
     border-color: var(--skill-color);
     background: color-mix(
       in srgb,
-      var(--skill-color) 7%,
-      transparent
+      var(--skill-color) 9%,
+      #ffffff
     );
   }
 }
+
+/* ACCESSIBILITÉ : LIMITER LES ANIMATIONS */
 
 @media (prefers-reduced-motion: reduce) {
   .skills-domain,
@@ -329,5 +487,9 @@
   .skills-tag,
   .skills-tag-dot {
     transition: none;
+  }
+
+  .skills-domain:hover {
+    transform: none;
   }
 }
