@@ -520,7 +520,7 @@ const delay = (d: number) => ({ "--d": d + "s" }) as React.CSSProperties;
 
 // ================= COMPOSANT PRINCIPAL =================
 
-function PortfolioContent() {
+export default function App() {
   const [folderOpened, setFolderOpened] = useState(false);
   const [opening, setOpening] = useState<Category | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
