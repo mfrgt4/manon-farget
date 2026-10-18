@@ -1209,13 +1209,3 @@ function PortfolioContent() {
     </>
   );
 }
-
-export default function App() {
-  const [entered, setEntered] = useState(false);
-
-  if (!entered) {
-    return <WelcomePage onEnter={() => setEntered(true)} />;
-  }
-
-  return <PortfolioContent />;
-}
