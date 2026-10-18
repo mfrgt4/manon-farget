@@ -14,7 +14,6 @@ import type { Category, Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
 import SkillsPanel from "./components/SkillsPanel";
-import WelcomePage from "./WelcomePage";
 
 // ================= SONS =================
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
