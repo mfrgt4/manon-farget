@@ -900,7 +900,7 @@ function PortfolioContent() {
           <h3 className="mono" style={{ color: "var(--acc)" }}>
             &gt; objectif.txt
           </h3>
-          <p className="mono">Stage UI/UX ou Audiovisuel · avril 2027.</p>
+          <p className="mono">Stage Montage vidéo ou UI/UX · avril 2027.</p>
         </div>
       </section>
 
