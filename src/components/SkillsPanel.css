@@ -1,4 +1,3 @@
-
 .skills-panel {
   --skills-text: #29232d;
   --skills-muted: #706775;
@@ -44,6 +43,10 @@
   white-space: nowrap;
 }
 
+/* =========================================
+   GRILLE DES DOMAINES
+========================================= */
+
 .skills-domains {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -64,12 +67,21 @@
   );
   border-radius: 15px;
   background: rgba(255, 255, 255, 0.78);
+
+  opacity: 0;
+  transform: translateY(24px);
+
   transition:
-    transform 0.28s ease,
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
     border-color 0.28s ease,
     background 0.28s ease,
     box-shadow 0.28s ease;
+
+  will-change: opacity, transform;
 }
+
+/* Barre colorée en haut de la carte */
 
 .skills-domain::before {
   content: "";
@@ -83,6 +95,20 @@
   opacity: 0.85;
   transition: width 0.3s ease;
 }
+
+/* Apparition progressive */
+
+.skills-domain.is-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: calc(var(--i, 0) * 100ms);
+}
+
+.skills-domain.is-settled {
+  transition-delay: 0ms;
+}
+
+/* Survol simple : aucun tilt X/Y */
 
 .skills-domain:hover {
   transform: translateY(-4px);
@@ -102,6 +128,10 @@
 .skills-domain:hover::before {
   width: calc(100% - 2.3rem);
 }
+
+/* =========================================
+   EN-TÊTE DES CARTES
+========================================= */
 
 .skills-domain-header {
   display: grid;
@@ -180,6 +210,10 @@
   transform: translate(0, 0);
 }
 
+/* =========================================
+   TAGS DES COMPÉTENCES
+========================================= */
+
 .skills-tags {
   display: flex;
   flex-wrap: wrap;
@@ -199,11 +233,13 @@
   font-size: 0.72rem;
   line-height: 1.4;
   overflow-wrap: anywhere;
+
   transition:
     color 0.22s ease,
     background 0.22s ease,
     border-color 0.22s ease,
     transform 0.22s ease;
+
   transition-delay: 0ms;
 }
 
@@ -240,6 +276,10 @@
   box-shadow: 0 0 8px var(--skill-color);
 }
 
+/* =========================================
+   PIED DU PANNEAU
+========================================= */
+
 .skills-panel-footer {
   display: flex;
   align-items: center;
@@ -264,7 +304,6 @@
 
 /* =========================================
    MODE CLAIR
-   Compatible avec data-theme="light"
 ========================================= */
 
 [data-theme="light"] .skills-panel {
@@ -312,7 +351,6 @@
 
 /* =========================================
    MODE SOMBRE
-   Compatible avec data-theme="dark"
 ========================================= */
 
 [data-theme="dark"] .skills-panel {
@@ -446,7 +484,9 @@
   }
 }
 
-/* SURVOL SUR ÉCRAN TACTILE */
+/* =========================================
+   ÉCRANS TACTILES
+========================================= */
 
 @media (hover: none) {
   .skills-domain:active {
@@ -459,7 +499,9 @@
   }
 }
 
-/* ACCESSIBILITÉ : LIMITER LES ANIMATIONS */
+/* =========================================
+   ACCESSIBILITÉ
+========================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .skills-domain,
@@ -471,86 +513,19 @@
     transition: none;
   }
 
-  .skills-domain:hover {
-    transform: none;
-  }
-}
-
-
-/* =========================================
-   ANIMATIONS 3D
-========================================= */
-
-.skills-domains {
-  perspective: 1200px;
-  transform-style: preserve-3d;
-}
-
-.skills-domain {
-  transform-style: preserve-3d;
-  transform:
-    perspective(1000px)
-    rotateX(var(--rx, 0deg))
-    rotateY(var(--ry, 0deg))
-    translateY(calc(var(--p, 0) * -4px));
-
-  will-change: transform;
-}
-
-/* Apparition au défilement */
-
-.skills-domain:not(.is-in) {
-  opacity: 0;
-  transform:
-    perspective(1000px)
-    rotateX(8deg)
-    rotateY(-4deg)
-    translateY(24px);
-}
-
-.skills-domain.is-in {
-  opacity: 1;
-  transform:
-    perspective(1000px)
-    rotateX(var(--rx, 0deg))
-    rotateY(var(--ry, 0deg))
-    translateY(calc(var(--p, 0) * -4px));
-
-  transition:
-    opacity 0.7s ease,
-    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
-    border-color 0.28s ease,
-    background 0.28s ease,
-    box-shadow 0.28s ease;
-
-  transition-delay: calc(var(--i, 0) * 100ms);
-}
-
-.skills-domain.is-settled {
-  transition-delay: 0ms;
-}
-
-/* Inclinaison 3D au survol */
-
-.skills-domain:hover {
-  transform:
-    perspective(1000px)
-    rotateX(var(--rx, 0deg))
-    rotateY(var(--ry, 0deg))
-    translateY(-4px);
-}
-
-/* Respect des préférences d'accessibilité */
-
-@media (prefers-reduced-motion: reduce) {
   .skills-domain,
-  .skills-domain:not(.is-in),
   .skills-domain.is-in,
   .skills-domain.is-settled {
     opacity: 1;
     transform: none;
-    transition: none;
-    animation: none;
+    transition-delay: 0ms;
     will-change: auto;
+  }
+
+  .skills-domain:hover,
+  .skills-domain:hover .skills-domain-icon,
+  .skills-domain:hover .skills-domain-arrow,
+  .skills-domain:hover .skills-tag {
+    transform: none;
   }
 }

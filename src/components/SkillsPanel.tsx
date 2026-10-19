@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import "./SkillsPanel.css";
@@ -72,18 +71,6 @@ const DOMAINS: Domain[] = [
   },
 ];
 
-const MAX_X = 8;
-const MAX_Y = 11;
-
-type CardMotion = {
-  rx: number;
-  ry: number;
-  p: number;
-  tx: number;
-  ty: number;
-  tp: number;
-};
-
 export default function SkillsPanel() {
   const root = useRef<HTMLDivElement>(null);
 
@@ -91,267 +78,57 @@ export default function SkillsPanel() {
     const el = root.current;
     if (!el) return;
 
-    const grid = el.querySelector<HTMLElement>(".skills-domains");
     const cards = Array.from(
       el.querySelectorAll<HTMLElement>(".skills-domain")
     );
 
-    const reduce = window.matchMedia(
+    const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    const fine = window.matchMedia(
-      "(hover: hover) and (pointer: fine)"
-    ).matches;
-
     const timers: number[] = [];
-    const cleanups: Array<() => void> = [];
 
     cards.forEach((card, index) => {
       card.style.setProperty("--i", String(index));
     });
 
-    // Apparition progressive lorsque les cartes entrent dans l'écran
-    if (reduce || typeof IntersectionObserver === "undefined") {
+    // Affichage immédiat si les animations sont désactivées.
+    if (
+      reduceMotion ||
+      typeof IntersectionObserver === "undefined"
+    ) {
       cards.forEach((card) => {
         card.classList.add("is-in", "is-settled");
       });
-    } else {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
 
-            const card = entry.target as HTMLElement;
-
-            card.classList.add("is-in");
-            observer.unobserve(card);
-
-            timers.push(
-              window.setTimeout(() => {
-                card.classList.add("is-settled");
-              }, 1500)
-            );
-          });
-        },
-        { threshold: 0.2 }
-      );
-
-      cards.forEach((card) => observer.observe(card));
-      cleanups.push(() => observer.disconnect());
+      return;
     }
 
-    if (reduce) {
-      return () => {
-        cleanups.forEach((cleanup) => cleanup());
-        timers.forEach((timer) => window.clearTimeout(timer));
-      };
-    }
+    // Apparition progressive lorsque les cartes entrent dans l'écran.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
 
-    // Mobile : inclinaison des cartes selon leur position au défilement
-    if (!fine) {
-      let ticking = false;
+          const card = entry.target as HTMLElement;
 
-      const update = () => {
-        ticking = false;
+          card.classList.add("is-in");
+          observer.unobserve(card);
 
-        cards.forEach((card) => {
-          const rect = card.getBoundingClientRect();
-          const position =
-            (rect.top + rect.height / 2 - window.innerHeight / 2) /
-            window.innerHeight;
+          const timer = window.setTimeout(() => {
+            card.classList.add("is-settled");
+          }, 1500);
 
-          const rotationX = Math.max(
-            -7,
-            Math.min(7, -position * 12)
-          );
-
-          card.style.setProperty(
-            "--rx",
-            `${rotationX.toFixed(2)}deg`
-          );
-          card.style.setProperty("--ry", "0deg");
+          timers.push(timer);
         });
-      };
+      },
+      { threshold: 0.2 }
+    );
 
-      const onScroll = () => {
-        if (ticking) return;
-
-        ticking = true;
-        requestAnimationFrame(update);
-      };
-
-      window.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", onScroll);
-
-      update();
-
-      cleanups.push(() => {
-        window.removeEventListener("scroll", onScroll);
-        window.removeEventListener("resize", onScroll);
-      });
-
-      return () => {
-        cleanups.forEach((cleanup) => cleanup());
-        timers.forEach((timer) => window.clearTimeout(timer));
-      };
-    }
-
-    // Ordinateur : inclinaison 3D fluide à la souris
-    const motion = new Map<HTMLElement, CardMotion>();
-
-    let raf = 0;
-    let last = 0;
-    let currentCard: HTMLElement | null = null;
-
-    const loop = (time: number) => {
-      const dt = Math.min(0.05, (time - (last || time)) / 1000);
-      last = time;
-
-      let busy = false;
-
-      motion.forEach((state, card) => {
-        const active = state.tp > 0;
-
-        const kt = 1 - Math.exp(-dt / (active ? 0.09 : 0.3));
-        const kp = 1 - Math.exp(-dt / (active ? 0.2 : 0.35));
-
-        state.rx += (state.tx - state.rx) * kt;
-        state.ry += (state.ty - state.ry) * kt;
-        state.p += (state.tp - state.p) * kp;
-
-        if (
-          !active &&
-          Math.abs(state.rx) < 0.01 &&
-          Math.abs(state.ry) < 0.01 &&
-          state.p < 0.001
-        ) {
-          ["--rx", "--ry", "--p", "--tx", "--ty"].forEach((property) => {
-            card.style.removeProperty(property);
-          });
-
-          motion.delete(card);
-          return;
-        }
-
-        card.style.setProperty("--rx", `${state.rx.toFixed(3)}deg`);
-        card.style.setProperty("--ry", `${state.ry.toFixed(3)}deg`);
-        card.style.setProperty("--p", state.p.toFixed(4));
-        card.style.setProperty("--tx", (state.ry / MAX_Y).toFixed(3));
-        card.style.setProperty("--ty", (state.rx / MAX_X).toFixed(3));
-
-        busy = true;
-      });
-
-      if (busy) {
-        raf = requestAnimationFrame(loop);
-      } else {
-        raf = 0;
-        last = 0;
-      }
-    };
-
-    const kick = () => {
-      if (!raf) raf = requestAnimationFrame(loop);
-    };
-
-    const release = (card: HTMLElement) => {
-      const state = motion.get(card);
-
-      if (state) {
-        state.tx = 0;
-        state.ty = 0;
-        state.tp = 0;
-      }
-    };
-
-    const onMove = (event: PointerEvent) => {
-      const target = event.target;
-
-      if (!(target instanceof HTMLElement)) return;
-
-      const card = target.closest<HTMLElement>(".skills-domain");
-
-      if (currentCard && currentCard !== card) {
-        release(currentCard);
-        kick();
-      }
-
-      currentCard = card;
-
-      if (grid) {
-        const rect = grid.getBoundingClientRect();
-
-        if (rect.width > 0 && rect.height > 0) {
-          const sx =
-            -((event.clientY - rect.top) / rect.height - 0.5) * 3;
-
-          const sy =
-            ((event.clientX - rect.left) / rect.width - 0.5) * 4;
-
-          grid.style.setProperty("--sx", `${sx.toFixed(2)}deg`);
-          grid.style.setProperty("--sy", `${sy.toFixed(2)}deg`);
-        }
-      }
-
-      if (!card) return;
-
-      const rect = card.getBoundingClientRect();
-
-      if (!rect.width || !rect.height) return;
-
-      const x = (event.clientX - rect.left) / rect.width;
-      const y = (event.clientY - rect.top) / rect.height;
-
-      let state = motion.get(card);
-
-      if (!state) {
-        state = {
-          rx: 0,
-          ry: 0,
-          p: 0,
-          tx: 0,
-          ty: 0,
-          tp: 0,
-        };
-
-        motion.set(card, state);
-      }
-
-      state.ty = (x - 0.5) * 2 * MAX_Y;
-      state.tx = -(y - 0.5) * 2 * MAX_X;
-      state.tp = 1;
-
-      card.style.setProperty("--gx", `${(x * 100).toFixed(1)}%`);
-      card.style.setProperty("--gy", `${(y * 100).toFixed(1)}%`);
-
-      kick();
-    };
-
-    const onLeave = () => {
-      if (currentCard) {
-        release(currentCard);
-        currentCard = null;
-        kick();
-      }
-
-      if (grid) {
-        grid.style.setProperty("--sx", "0deg");
-        grid.style.setProperty("--sy", "0deg");
-      }
-    };
-
-    el.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
-
-    cleanups.push(() => {
-      el.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-      cancelAnimationFrame(raf);
-    });
+    cards.forEach((card) => observer.observe(card));
 
     return () => {
-      cleanups.forEach((cleanup) => cleanup());
+      observer.disconnect();
       timers.forEach((timer) => window.clearTimeout(timer));
     };
   }, []);
@@ -375,7 +152,11 @@ export default function SkillsPanel() {
           <article
             className="skills-domain"
             key={domain.id}
-            style={{ "--skill-color": domain.color } as CSSProperties}
+            style={
+              {
+                "--skill-color": domain.color,
+              } as CSSProperties
+            }
           >
             <div className="skills-domain-header">
               <span className="skills-domain-number mono">
@@ -383,7 +164,11 @@ export default function SkillsPanel() {
               </span>
 
               <div className="skills-domain-icon">
-                <img src={domain.icon} alt="" aria-hidden="true" />
+                <img
+                  src={domain.icon}
+                  alt=""
+                  aria-hidden="true"
+                />
               </div>
 
               <div className="skills-domain-title">
@@ -391,7 +176,10 @@ export default function SkillsPanel() {
                 <p>{domain.subtitle}</p>
               </div>
 
-              <span className="skills-domain-arrow" aria-hidden="true">
+              <span
+                className="skills-domain-arrow"
+                aria-hidden="true"
+              >
                 ↗
               </span>
             </div>
@@ -404,9 +192,16 @@ export default function SkillsPanel() {
                 <span
                   className="skills-tag"
                   key={tool}
-                  style={{ "--tag-index": index } as CSSProperties}
+                  style={
+                    {
+                      "--tag-index": index,
+                    } as CSSProperties
+                  }
                 >
-                  <span className="skills-tag-dot" aria-hidden="true" />
+                  <span
+                    className="skills-tag-dot"
+                    aria-hidden="true"
+                  />
                   {tool}
                 </span>
               ))}
