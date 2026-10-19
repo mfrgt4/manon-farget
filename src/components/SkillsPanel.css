@@ -796,3 +796,36 @@
     transform: none !important;
   }
 }
+
+
+/* ---------- Stabilisation des grands numéros au refresh ---------- */
+
+.skills-domain-bignum,
+[data-theme="light"] .skills-domain-bignum,
+[data-theme="dark"] .skills-domain-bignum {
+  opacity: 1 !important;
+  visibility: visible !important;
+  color: transparent !important;
+
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke-width: 1.5px !important;
+
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Couleur constante en mode clair */
+[data-theme="light"] .skills-domain-bignum {
+  -webkit-text-stroke-color: #d13686 !important;
+}
+
+/* Couleur constante en mode sombre */
+[data-theme="dark"] .skills-domain-bignum {
+  -webkit-text-stroke-color: #e761aa !important;
+}
+
+/* Évite que la perspective des cartes masque les contours */
+.skills-domain-bignum {
+  backface-visibility: visible !important;
+  pointer-events: none;
+}
