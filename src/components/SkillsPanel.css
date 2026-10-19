@@ -3,7 +3,7 @@
   --skills-text: #29232d;
   --skills-muted: #706775;
   --skills-surface: #fffdfd;
-  --skills-border: rgba(65, 45, 65, 0.14);
+  --skills-border: rgba(23,23,23,.12);
 
   margin-top: 2.5rem;
   padding: clamp(1.2rem, 3vw, 2rem);
@@ -473,5 +473,84 @@
 
   .skills-domain:hover {
     transform: none;
+  }
+}
+
+
+/* =========================================
+   ANIMATIONS 3D
+========================================= */
+
+.skills-domains {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.skills-domain {
+  transform-style: preserve-3d;
+  transform:
+    perspective(1000px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    translateY(calc(var(--p, 0) * -4px));
+
+  will-change: transform;
+}
+
+/* Apparition au défilement */
+
+.skills-domain:not(.is-in) {
+  opacity: 0;
+  transform:
+    perspective(1000px)
+    rotateX(8deg)
+    rotateY(-4deg)
+    translateY(24px);
+}
+
+.skills-domain.is-in {
+  opacity: 1;
+  transform:
+    perspective(1000px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    translateY(calc(var(--p, 0) * -4px));
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    border-color 0.28s ease,
+    background 0.28s ease,
+    box-shadow 0.28s ease;
+
+  transition-delay: calc(var(--i, 0) * 100ms);
+}
+
+.skills-domain.is-settled {
+  transition-delay: 0ms;
+}
+
+/* Inclinaison 3D au survol */
+
+.skills-domain:hover {
+  transform:
+    perspective(1000px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    translateY(-4px);
+}
+
+/* Respect des préférences d'accessibilité */
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-domain,
+  .skills-domain:not(.is-in),
+  .skills-domain.is-in,
+  .skills-domain.is-settled {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+    will-change: auto;
   }
 }
