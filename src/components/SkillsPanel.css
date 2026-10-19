@@ -1,21 +1,17 @@
 
-
 .skills-panel {
   --skills-text: #29232d;
   --skills-muted: #706775;
-  --skills-surface: #ffffff;
-  --skills-border: #d1d1d8;
+  --skills-surface: #fffdfd;
+  --skills-border: rgba(65, 45, 65, 0.14);
 
   margin-top: 2.5rem;
   padding: clamp(1.2rem, 3vw, 2rem);
-
-  border: 1px solid #d1d1d8;
+  border: 1px solid rgba(231, 97, 170, 0.3);
   border-radius: 22px;
-
-  background: #ffffff;
+  background: var(--skills-surface);
   color: var(--skills-text);
 }
-
 
 .skills-panel-heading {
   display: flex;
