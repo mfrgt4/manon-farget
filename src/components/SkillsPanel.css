@@ -559,3 +559,33 @@
     transition: none;
   }
 }
+
+/* =========================================
+   CONTENEUR — MODE CLAIR
+   ========================================= */
+
+[data-theme="light"] .skills-panel {
+  background: #ffffff !important;
+  border: 1px solid #d1d1d8 !important;
+  box-shadow: none;
+}
+
+/* Supprime les dégradés colorés du conteneur */
+[data-theme="light"] .skills-panel .skills-orb {
+  display: none;
+}
+
+/* Grands numéros plus visibles en mode clair */
+[data-theme="light"] .skills-domain-bignum {
+  opacity: 1;
+  -webkit-text-stroke: 1.5px
+    color-mix(in srgb, var(--skill-color) 55%, #777780);
+}
+
+/* =========================================
+   CONTENEUR — MODE SOMBRE
+   ========================================= */
+
+[data-theme="dark"] .skills-panel {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
