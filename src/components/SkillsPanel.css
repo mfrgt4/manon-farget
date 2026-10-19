@@ -1,7 +1,7 @@
 
 /* =========================================================
    SKILLS PANEL — animation d'entrée + 3D
-   Visibilité stable, transitions fluides et icônes animées
+   Numéros toujours visibles, transitions fluides et icônes animées
    ========================================================= */
 
 .skills-panel {
@@ -118,6 +118,7 @@
   background: rgba(255, 255, 255, 0.82);
 
   transform-style: preserve-3d;
+
   transform:
     rotateX(var(--rx, 0deg))
     rotateY(var(--ry, 0deg))
@@ -134,30 +135,36 @@
 
   backface-visibility: hidden;
 
-  /* État final stable si l'animation n'est pas disponible */
-  opacity: 1;
+  /* Les cartes restent visibles dès le premier rendu */
+  opacity: 1 !important;
+  visibility: visible;
   translate: 0 0;
   scale: 1;
 }
 
+/* ---------- Animation d'entrée ---------- */
+
 /*
-  L'animation d'entrée ne s'active que lorsque le conteneur
-  porte skills-anim-ready. Les cartes attendent leur visibilité.
+   Important :
+   on anime uniquement le déplacement et l'échelle.
+   On ne réduit jamais l'opacité de la carte, car les grands
+   numéros héritent aussi de l'opacité de leur parent.
 */
 
 .skills-domains.skills-anim-ready .skills-domain:not(.is-in) {
-  opacity: 0;
-  translate: 0 24px;
-  scale: 0.97;
+  opacity: 1 !important;
+  visibility: visible;
+  translate: 0 18px;
+  scale: 0.98;
 }
 
-.skills-domain.is-in {
-  opacity: 1;
+.skills-domains .skills-domain.is-in {
+  opacity: 1 !important;
+  visibility: visible;
   translate: 0 0;
   scale: 1;
 
   transition:
-    opacity 650ms ease,
     translate 750ms cubic-bezier(0.2, 0.8, 0.2, 1),
     scale 750ms cubic-bezier(0.2, 0.8, 0.2, 1),
     border-color 300ms ease,
@@ -182,7 +189,7 @@
   transition-delay: 390ms;
 }
 
-/* Flottement léger après l'entrée */
+/* ---------- Flottement léger après l'entrée ---------- */
 
 .skills-domain.is-settled {
   animation: skills-float 7s ease-in-out infinite;
@@ -235,17 +242,23 @@
   --skill-number-color: #d13686;
 
   position: absolute;
+  z-index: 0;
   right: 0.8rem;
   bottom: -0.9rem;
 
+  display: block;
+
   color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.5px var(--skill-number-color);
+
   font-size: 6.2rem;
   font-weight: 800;
   letter-spacing: -0.06em;
   line-height: 1;
 
-  opacity: 1;
-  -webkit-text-stroke: 1.5px var(--skill-number-color);
+  opacity: 1 !important;
+  visibility: visible;
 
   transform:
     translateZ(-6px)
@@ -256,6 +269,11 @@
 
   pointer-events: none;
   user-select: none;
+  backface-visibility: visible;
+
+  /* Aucun effet d'apparition sur les numéros */
+  animation: none;
+  transition: none;
 }
 
 /* ---------- Barre colorée ---------- */
@@ -348,7 +366,7 @@
     background 350ms ease;
 }
 
-/* ---------- Nouvelle animation des icônes ---------- */
+/* ---------- Animation des icônes ---------- */
 
 .skills-domain-icon img {
   width: 23px;
@@ -358,8 +376,6 @@
   transform-origin: center;
   transition: transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-
-/* Rotation douce au survol */
 
 .skills-domain:hover .skills-domain-icon img {
   transform: rotate(-8deg) scale(1.12);
@@ -556,8 +572,10 @@
 
 [data-theme="light"] .skills-domain-bignum {
   --skill-number-color: #d13686;
-  opacity: 1;
-  -webkit-text-stroke: 1.5px #d13686;
+
+  opacity: 1 !important;
+  visibility: visible;
+  -webkit-text-stroke-color: #d13686;
 }
 
 /* =========================================================
@@ -624,8 +642,10 @@
 
 [data-theme="dark"] .skills-domain-bignum {
   --skill-number-color: #e761aa;
-  opacity: 1;
-  -webkit-text-stroke: 1.5px #e761aa;
+
+  opacity: 1 !important;
+  visibility: visible;
+  -webkit-text-stroke-color: #e761aa;
 }
 
 [data-theme="dark"] .skills-tag {
@@ -775,9 +795,10 @@
     animation: none !important;
   }
 
-  /* Les cartes restent visibles sans animation */
-  .skills-domains.skills-anim-ready .skills-domain:not(.is-in) {
-    opacity: 1;
+  .skills-domains.skills-anim-ready .skills-domain:not(.is-in),
+  .skills-domains .skills-domain.is-in {
+    opacity: 1 !important;
+    visibility: visible;
     translate: 0 0;
     scale: 1;
   }
@@ -795,37 +816,4 @@
   .skills-domain-icon img {
     transform: none !important;
   }
-}
-
-
-/* ---------- Stabilisation des grands numéros au refresh ---------- */
-
-.skills-domain-bignum,
-[data-theme="light"] .skills-domain-bignum,
-[data-theme="dark"] .skills-domain-bignum {
-  opacity: 1 !important;
-  visibility: visible !important;
-  color: transparent !important;
-
-  -webkit-text-fill-color: transparent !important;
-  -webkit-text-stroke-width: 1.5px !important;
-
-  transition: none !important;
-  animation: none !important;
-}
-
-/* Couleur constante en mode clair */
-[data-theme="light"] .skills-domain-bignum {
-  -webkit-text-stroke-color: #d13686 !important;
-}
-
-/* Couleur constante en mode sombre */
-[data-theme="dark"] .skills-domain-bignum {
-  -webkit-text-stroke-color: #e761aa !important;
-}
-
-/* Évite que la perspective des cartes masque les contours */
-.skills-domain-bignum {
-  backface-visibility: visible !important;
-  pointer-events: none;
 }
