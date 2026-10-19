@@ -1,9 +1,17 @@
+/* =========================================================
+   SKILLS PANEL — version 3D animée
+   (mêmes classes et mêmes couleurs que ta version d'origine)
+   ========================================================= */
 
 .skills-panel {
   --skills-text: #29232d;
   --skills-muted: #706775;
   --skills-surface: #fffdfd;
   --skills-border: rgba(65, 45, 65, 0.14);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
 
   margin-top: 2.5rem;
   padding: clamp(1.2rem, 3vw, 2rem);
@@ -12,6 +20,43 @@
   background: var(--skills-surface);
   color: var(--skills-text);
 }
+
+/* Deux lueurs qui dérivent doucement derrière les cartes */
+
+.skills-orb {
+  position: absolute;
+  z-index: -1;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  filter: blur(72px);
+  opacity: 0.26;
+  pointer-events: none;
+}
+
+.skills-orb--a {
+  top: -110px;
+  left: -90px;
+  background: #e761aa;
+  animation: skills-orb-a 15s ease-in-out infinite alternate;
+}
+
+.skills-orb--b {
+  right: -100px;
+  bottom: -120px;
+  background: #829cf4;
+  animation: skills-orb-b 18s ease-in-out infinite alternate;
+}
+
+@keyframes skills-orb-a {
+  to { transform: translate(120px, 70px) scale(1.25); }
+}
+
+@keyframes skills-orb-b {
+  to { transform: translate(-110px, -60px) scale(1.2); }
+}
+
+/* ---------- En-tête ---------- */
 
 .skills-panel-heading {
   display: flex;
@@ -27,13 +72,6 @@
   letter-spacing: 0.12em;
 }
 
-.skills-panel-heading h3 {
-  margin: 0.6rem 0 0;
-  color: var(--skills-text);
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  letter-spacing: -0.045em;
-}
-
 .skills-panel-count {
   padding: 0.45rem 0.65rem;
   border: 1px solid rgba(209, 54, 134, 0.3);
@@ -44,11 +82,23 @@
   white-space: nowrap;
 }
 
+/* ---------- Scène 3D ---------- */
+
 .skills-domains {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.8rem;
+  gap: 0.9rem;
+
+  perspective: 1100px;
+  perspective-origin: 50% 35%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--sx, 0deg)) rotateY(var(--sy, 0deg));
+  transition: transform 600ms cubic-bezier(.2, .8, .2, 1);
 }
+
+/* ---------- Carte ---------- */
+/* --p : progression du survol (0 → 1), lissée en JavaScript.
+   --rx / --ry : inclinaison de la carte. --tx / --ty : décalage de profondeur. */
 
 .skills-domain {
   --skill-color: #e761aa;
@@ -56,52 +106,131 @@
   position: relative;
   min-width: 0;
   padding: 1.15rem;
-  overflow: hidden;
-  border: 1px solid color-mix(
-    in srgb,
-    var(--skill-color) 35%,
-    #ffffff
-  );
+
+  border: 1px solid color-mix(in srgb, var(--skill-color) 35%, #ffffff);
   border-radius: 15px;
-  background: rgba(255, 255, 255, 0.78);
-  transition:
-    transform 0.28s ease,
-    border-color 0.28s ease,
-    background 0.28s ease,
-    box-shadow 0.28s ease;
+  background: rgba(255, 255, 255, 0.82);
+
+  transform-style: preserve-3d;
+  transform:
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    translateZ(calc(var(--p, 0) * 26px));
+
+  box-shadow:
+    0 calc(6px + 20px * var(--p, 0)) calc(18px + 26px * var(--p, 0))
+    color-mix(in srgb, var(--skill-color) calc(8% + 14% * var(--p, 0)), transparent);
+
+  will-change: transform;
 }
+
+/* Arrivée en 3D : la carte se redresse quand elle entre à l'écran */
+
+.skills-domain:not(.is-in) {
+  opacity: 0;
+  translate: 0 70px;
+  rotate: 1 0 0 38deg;
+  scale: 0.9;
+}
+
+.skills-domain.is-in {
+  opacity: 1;
+  translate: 0 0;
+  rotate: 1 0 0 0deg;
+  scale: 1;
+
+  transition:
+    opacity 800ms calc(var(--i, 0) * 110ms),
+    translate 1000ms cubic-bezier(.2, .8, .2, 1) calc(var(--i, 0) * 110ms),
+    rotate 1000ms cubic-bezier(.2, .8, .2, 1) calc(var(--i, 0) * 110ms),
+    scale 1000ms cubic-bezier(.2, .8, .2, 1) calc(var(--i, 0) * 110ms),
+    border-color 300ms ease,
+    background 300ms ease;
+}
+
+/* Une fois posées, les cartes flottent doucement, chacune à son rythme */
+
+.skills-domain.is-settled {
+  animation: skills-float 7s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -1.4s);
+}
+
+@keyframes skills-float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -6px; }
+}
+
+.skills-domain:hover {
+  border-color: var(--skill-color);
+  background: color-mix(in srgb, var(--skill-color) 7%, #ffffff);
+}
+
+/* Plaque arrière : donne de l'épaisseur à la carte quand elle s'incline */
+
+.skills-domain-depth {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--skill-color) 40%, transparent);
+  background: color-mix(in srgb, var(--skill-color) 16%, transparent);
+  opacity: calc(0.25 + 0.6 * var(--p, 0));
+  transform: translateZ(-14px);
+  pointer-events: none;
+}
+
+/* Grand numéro en contour, en retrait : il bouge en sens inverse de l'inclinaison */
+
+.skills-domain-bignum {
+  position: absolute;
+  right: 0.8rem;
+  bottom: -0.9rem;
+  color: transparent;
+  font-size: 6.2rem;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  opacity: 0.85;
+  -webkit-text-stroke: 1.2px color-mix(in srgb, var(--skill-color) 38%, transparent);
+  transform:
+    translateZ(-6px)
+    translate(calc(var(--tx, 0) * -12px), calc(var(--ty, 0) * 10px));
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Barre de couleur en haut : elle s'allonge avec le survol */
 
 .skills-domain::before {
   content: "";
   position: absolute;
   top: 0;
   left: 1.15rem;
-  width: 2rem;
+  width: calc(2rem + (100% - 4.3rem) * var(--p, 0));
   height: 2px;
   border-radius: 10px;
   background: var(--skill-color);
   opacity: 0.85;
-  transition: width 0.3s ease;
+  transform: translateZ(2px);
 }
 
-.skills-domain:hover {
-  transform: translateY(-4px);
-  border-color: var(--skill-color);
-  background: color-mix(
-    in srgb,
-    var(--skill-color) 7%,
-    #ffffff
+/* Reflet lumineux qui suit la souris */
+
+.skills-domain-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--gx, 50%) var(--gy, 0%),
+    rgba(255, 255, 255, 0.7),
+    transparent 55%
   );
-  box-shadow: 0 12px 32px color-mix(
-    in srgb,
-    var(--skill-color) 13%,
-    transparent
-  );
+  mix-blend-mode: soft-light;
+  opacity: calc(var(--p, 0) * 0.9);
+  transform: translateZ(40px);
+  pointer-events: none;
 }
 
-.skills-domain:hover::before {
-  width: calc(100% - 2.3rem);
-}
+/* ---------- Contenu de la carte, étagé en profondeur ---------- */
 
 .skills-domain-header {
   display: grid;
@@ -109,6 +238,7 @@
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 1.15rem;
+  transform-style: preserve-3d;
 }
 
 .skills-domain-number {
@@ -123,22 +253,13 @@
   place-items: center;
   width: 38px;
   height: 38px;
-  border: 1px solid color-mix(
-    in srgb,
-    var(--skill-color) 40%,
-    #ffffff
-  );
+  border: 1px solid color-mix(in srgb, var(--skill-color) 40%, #ffffff);
   border-radius: 11px;
-  background: color-mix(
-    in srgb,
-    var(--skill-color) 12%,
-    #ffffff
-  );
-  transition: transform 0.3s ease;
-}
-
-.skills-domain:hover .skills-domain-icon {
-  transform: rotate(-7deg) scale(1.08);
+  background: color-mix(in srgb, var(--skill-color) 12%, #ffffff);
+  transform-style: preserve-3d;
+  transform: translateZ(calc(6px + var(--p, 0) * 34px));
+  box-shadow: 0 calc(var(--p, 0) * 12px) calc(var(--p, 0) * 18px)
+    color-mix(in srgb, var(--skill-color) 22%, transparent);
 }
 
 .skills-domain-icon img {
@@ -147,8 +268,20 @@
   object-fit: contain;
 }
 
+/* L'icône fait un tour sur elle-même à chaque survol (comme une pièce) */
+
+.skills-domain:hover .skills-domain-icon img {
+  animation: skills-coin 900ms cubic-bezier(.3, .7, .2, 1);
+}
+
+@keyframes skills-coin {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+
 .skills-domain-title {
   min-width: 0;
+  transform: translateZ(calc(var(--p, 0) * 18px));
 }
 
 .skills-domain-title h4 {
@@ -168,22 +301,19 @@
 .skills-domain-arrow {
   color: var(--skill-color);
   font-size: 1rem;
-  opacity: 0.65;
-  transform: translate(-2px, 2px);
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-}
-
-.skills-domain:hover .skills-domain-arrow {
-  opacity: 1;
-  transform: translate(0, 0);
+  opacity: calc(0.6 + 0.4 * var(--p, 0));
+  transform: translate3d(
+    calc(-2px * (1 - var(--p, 0))),
+    calc(2px * (1 - var(--p, 0))),
+    calc(var(--p, 0) * 30px)
+  );
 }
 
 .skills-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+  transform-style: preserve-3d;
 }
 
 .skills-tag {
@@ -192,6 +322,7 @@
   gap: 0.4rem;
   max-width: 100%;
   padding: 0.43rem 0.6rem;
+
   border: 1px solid rgba(65, 45, 65, 0.14);
   border-radius: 7px;
   color: #625967;
@@ -199,12 +330,13 @@
   font-size: 0.72rem;
   line-height: 1.4;
   overflow-wrap: anywhere;
+
+  /* chaque outil se détache un peu plus que le précédent */
+  transform: translateZ(calc(var(--p, 0) * (8px + var(--tag-index, 0) * 1.6px)));
   transition:
-    color 0.22s ease,
-    background 0.22s ease,
-    border-color 0.22s ease,
-    transform 0.22s ease;
-  transition-delay: 0ms;
+    color 220ms ease,
+    background 220ms ease,
+    border-color 220ms ease;
 }
 
 .skills-tag-dot {
@@ -214,24 +346,13 @@
   border-radius: 50%;
   background: var(--skill-color);
   opacity: 0.85;
-  transition:
-    opacity 0.22s ease,
-    box-shadow 0.22s ease;
+  transition: opacity 220ms ease, box-shadow 220ms ease;
 }
 
 .skills-domain:hover .skills-tag {
-  border-color: color-mix(
-    in srgb,
-    var(--skill-color) 45%,
-    #ffffff
-  );
+  border-color: color-mix(in srgb, var(--skill-color) 45%, #ffffff);
   color: #29232d;
-  background: color-mix(
-    in srgb,
-    var(--skill-color) 10%,
-    #ffffff
-  );
-  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--skill-color) 10%, #ffffff);
   transition-delay: calc(var(--tag-index, 0) * 25ms);
 }
 
@@ -253,18 +374,8 @@
   text-align: center;
 }
 
-.skills-footer-dot {
-  flex: 0 0 6px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #78976a;
-  box-shadow: 0 0 9px rgba(120, 151, 106, 0.4);
-}
-
 /* =========================================
    MODE CLAIR
-   Compatible avec data-theme="light"
 ========================================= */
 
 [data-theme="light"] .skills-panel {
@@ -277,26 +388,15 @@
   background: #fffdfd;
 }
 
-[data-theme="light"] .skills-panel-heading h3,
-[data-theme="light"] .skills-domain-title h4 {
-  color: #29232d;
-}
+[data-theme="light"] .skills-domain-title h4 { color: #29232d; }
 
 [data-theme="light"] .skills-domain-title p,
-[data-theme="light"] .skills-panel-footer {
-  color: #706775;
-}
+[data-theme="light"] .skills-panel-footer { color: #706775; }
 
-[data-theme="light"] .skills-domain {
-  background: rgba(255, 255, 255, 0.85);
-}
+[data-theme="light"] .skills-domain { background: rgba(255, 255, 255, 0.85); }
 
 [data-theme="light"] .skills-domain:hover {
-  background: color-mix(
-    in srgb,
-    var(--skill-color) 7%,
-    #ffffff
-  );
+  background: color-mix(in srgb, var(--skill-color) 7%, #ffffff);
 }
 
 [data-theme="light"] .skills-tag {
@@ -312,7 +412,6 @@
 
 /* =========================================
    MODE SOMBRE
-   Compatible avec data-theme="dark"
 ========================================= */
 
 [data-theme="dark"] .skills-panel {
@@ -326,32 +425,30 @@
   border-color: rgba(231, 97, 170, 0.24);
 }
 
-[data-theme="dark"] .skills-panel-heading h3,
-[data-theme="dark"] .skills-domain-title h4 {
-  color: #f5f0f6;
-}
+[data-theme="dark"] .skills-orb { opacity: 0.34; }
+
+[data-theme="dark"] .skills-domain-title h4 { color: #f5f0f6; }
 
 [data-theme="dark"] .skills-domain-title p,
-[data-theme="dark"] .skills-panel-footer {
-  color: #c1b6c8;
-}
+[data-theme="dark"] .skills-panel-footer { color: #c1b6c8; }
 
 [data-theme="dark"] .skills-domain {
   background: rgba(255, 255, 255, 0.035);
-  border-color: color-mix(
-    in srgb,
-    var(--skill-color) 28%,
-    transparent
-  );
+  border-color: color-mix(in srgb, var(--skill-color) 28%, transparent);
 }
 
 [data-theme="dark"] .skills-domain:hover {
-  background: color-mix(
-    in srgb,
-    var(--skill-color) 12%,
-    #17131d
-  );
+  background: color-mix(in srgb, var(--skill-color) 12%, #17131d);
   border-color: var(--skill-color);
+}
+
+[data-theme="dark"] .skills-domain-icon {
+  border-color: color-mix(in srgb, var(--skill-color) 45%, transparent);
+  background: color-mix(in srgb, var(--skill-color) 16%, #17131d);
+}
+
+[data-theme="dark"] .skills-domain-bignum {
+  -webkit-text-stroke-color: color-mix(in srgb, var(--skill-color) 45%, transparent);
 }
 
 [data-theme="dark"] .skills-tag {
@@ -362,16 +459,8 @@
 
 [data-theme="dark"] .skills-domain:hover .skills-tag {
   color: #ffffff;
-  background: color-mix(
-    in srgb,
-    var(--skill-color) 17%,
-    #17131d
-  );
-  border-color: color-mix(
-    in srgb,
-    var(--skill-color) 55%,
-    transparent
-  );
+  background: color-mix(in srgb, var(--skill-color) 17%, #17131d);
+  border-color: color-mix(in srgb, var(--skill-color) 55%, transparent);
 }
 
 [data-theme="dark"] .skills-panel-count {
@@ -391,13 +480,7 @@
     border-radius: 17px;
   }
 
-  .skills-panel-heading {
-    align-items: flex-start;
-  }
-
-  .skills-panel-heading h3 {
-    font-size: 1.4rem;
-  }
+  .skills-panel-heading { align-items: flex-start; }
 
   .skills-panel-count {
     margin-top: 0.15rem;
@@ -406,11 +489,15 @@
 
   .skills-domains {
     grid-template-columns: 1fr;
-    gap: 0.65rem;
+    gap: 0.75rem;
+    perspective: 900px;
   }
 
-  .skills-domain {
-    padding: 1rem;
+  .skills-domain { padding: 1rem; }
+
+  .skills-domain:not(.is-in) {
+    translate: 0 50px;
+    rotate: 1 0 0 26deg;
   }
 
   .skills-domain-header {
@@ -418,27 +505,12 @@
     gap: 0.6rem;
   }
 
-  .skills-domain-icon {
-    width: 34px;
-    height: 34px;
-  }
-
-  .skills-domain-icon img {
-    width: 21px;
-    height: 21px;
-  }
-
-  .skills-domain-title h4 {
-    font-size: 0.9rem;
-  }
-
-  .skills-domain-title p {
-    font-size: 0.73rem;
-  }
-
-  .skills-tag {
-    font-size: 0.7rem;
-  }
+  .skills-domain-icon { width: 34px; height: 34px; }
+  .skills-domain-icon img { width: 21px; height: 21px; }
+  .skills-domain-title h4 { font-size: 0.9rem; }
+  .skills-domain-title p { font-size: 0.73rem; }
+  .skills-tag { font-size: 0.7rem; }
+  .skills-domain-bignum { font-size: 4.6rem; }
 
   .skills-panel-footer {
     font-size: 0.55rem;
@@ -446,32 +518,44 @@
   }
 }
 
-/* SURVOL SUR ÉCRAN TACTILE */
+/* ÉCRAN TACTILE : pas de survol, les cartes se balancent doucement */
 
 @media (hover: none) {
+  .skills-domain.is-settled {
+    animation-name: skills-sway;
+    animation-duration: 6s;
+  }
+
   .skills-domain:active {
     border-color: var(--skill-color);
-    background: color-mix(
-      in srgb,
-      var(--skill-color) 9%,
-      #ffffff
-    );
+    background: color-mix(in srgb, var(--skill-color) 9%, #ffffff);
   }
+}
+
+@keyframes skills-sway {
+  0%, 100% { translate: 0 0;    rotate: 0 1 0 -2deg; }
+  50%      { translate: 0 -5px; rotate: 0 1 0 2deg; }
 }
 
 /* ACCESSIBILITÉ : LIMITER LES ANIMATIONS */
 
 @media (prefers-reduced-motion: reduce) {
-  .skills-domain,
-  .skills-domain::before,
-  .skills-domain-icon,
-  .skills-domain-arrow,
-  .skills-tag,
-  .skills-tag-dot {
-    transition: none;
+  .skills-orb,
+  .skills-domain.is-settled,
+  .skills-domain:hover .skills-domain-icon img {
+    animation: none;
   }
 
-  .skills-domain:hover {
-    transform: none;
+  .skills-domain:not(.is-in) {
+    opacity: 1;
+    translate: none;
+    rotate: none;
+    scale: 1;
+  }
+
+  .skills-domain,
+  .skills-domain.is-in,
+  .skills-domains {
+    transition: none;
   }
 }
