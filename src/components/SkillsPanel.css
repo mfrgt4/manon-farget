@@ -1,69 +1,17 @@
 
-/* =========================================================
-   SKILLS PANEL — animation d'entrée + 3D
-   Numéros toujours visibles, transitions fluides et icônes animées
-   ========================================================= */
-
 .skills-panel {
   --skills-text: #29232d;
   --skills-muted: #706775;
   --skills-surface: #fffdfd;
   --skills-border: rgba(65, 45, 65, 0.14);
 
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-
   margin-top: 2.5rem;
   padding: clamp(1.2rem, 3vw, 2rem);
-
   border: 1px solid rgba(231, 97, 170, 0.3);
   border-radius: 22px;
-
   background: var(--skills-surface);
   color: var(--skills-text);
 }
-
-/* ---------- Lueurs d'arrière-plan ---------- */
-
-.skills-orb {
-  position: absolute;
-  z-index: -1;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  filter: blur(72px);
-  opacity: 0.26;
-  pointer-events: none;
-}
-
-.skills-orb--a {
-  top: -110px;
-  left: -90px;
-  background: #e761aa;
-  animation: skills-orb-a 15s ease-in-out infinite alternate;
-}
-
-.skills-orb--b {
-  right: -100px;
-  bottom: -120px;
-  background: #829cf4;
-  animation: skills-orb-b 18s ease-in-out infinite alternate;
-}
-
-@keyframes skills-orb-a {
-  to {
-    transform: translate(120px, 70px) scale(1.25);
-  }
-}
-
-@keyframes skills-orb-b {
-  to {
-    transform: translate(-110px, -60px) scale(1.2);
-  }
-}
-
-/* ---------- En-tête ---------- */
 
 .skills-panel-heading {
   display: flex;
@@ -79,6 +27,13 @@
   letter-spacing: 0.12em;
 }
 
+.skills-panel-heading h3 {
+  margin: 0.6rem 0 0;
+  color: var(--skills-text);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: -0.045em;
+}
+
 .skills-panel-count {
   padding: 0.45rem 0.65rem;
   border: 1px solid rgba(209, 54, 134, 0.3);
@@ -89,22 +44,11 @@
   white-space: nowrap;
 }
 
-/* ---------- Grille 3D ---------- */
-
 .skills-domains {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.9rem;
-
-  perspective: 1100px;
-  perspective-origin: 50% 35%;
-  transform-style: preserve-3d;
-
-  transform: rotateX(var(--sx, 0deg)) rotateY(var(--sy, 0deg));
-  transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  gap: 0.8rem;
 }
-
-/* ---------- Cartes ---------- */
 
 .skills-domain {
   --skill-color: #e761aa;
@@ -112,208 +56,52 @@
   position: relative;
   min-width: 0;
   padding: 1.15rem;
-
-  border: 1px solid color-mix(in srgb, var(--skill-color) 35%, #ffffff);
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.82);
-
-  transform-style: preserve-3d;
-
-  transform:
-    rotateX(var(--rx, 0deg))
-    rotateY(var(--ry, 0deg))
-    translateZ(calc(var(--p, 0) * 26px));
-
-  box-shadow:
-    0 calc(6px + 20px * var(--p, 0))
-    calc(18px + 26px * var(--p, 0))
-    color-mix(
-      in srgb,
-      var(--skill-color) calc(8% + 14% * var(--p, 0)),
-      transparent
-    );
-
-  backface-visibility: hidden;
-
-  /* Les cartes restent visibles dès le premier rendu */
-  opacity: 1 !important;
-  visibility: visible;
-  translate: 0 0;
-  scale: 1;
-}
-
-/* ---------- Animation d'entrée ---------- */
-
-/*
-   Important :
-   on anime uniquement le déplacement et l'échelle.
-   On ne réduit jamais l'opacité de la carte, car les grands
-   numéros héritent aussi de l'opacité de leur parent.
-*/
-
-.skills-domains.skills-anim-ready .skills-domain:not(.is-in) {
-  opacity: 1 !important;
-  visibility: visible;
-  translate: 0 18px;
-  scale: 0.98;
-}
-
-.skills-domains .skills-domain.is-in {
-  opacity: 1 !important;
-  visibility: visible;
-  translate: 0 0;
-  scale: 1;
-
-  transition:
-    translate 750ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    scale 750ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 300ms ease,
-    background 300ms ease;
-}
-
-/* Apparition en cascade */
-
-.skills-domains.skills-anim-ready .skills-domain:nth-child(1) {
-  transition-delay: 0ms;
-}
-
-.skills-domains.skills-anim-ready .skills-domain:nth-child(2) {
-  transition-delay: 130ms;
-}
-
-.skills-domains.skills-anim-ready .skills-domain:nth-child(3) {
-  transition-delay: 260ms;
-}
-
-.skills-domains.skills-anim-ready .skills-domain:nth-child(4) {
-  transition-delay: 390ms;
-}
-
-/* ---------- Flottement léger après l'entrée ---------- */
-
-.skills-domain.is-settled {
-  animation: skills-float 7s ease-in-out infinite;
-  animation-delay: 0s;
-}
-
-@keyframes skills-float {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-
-  50% {
-    translate: 0 -5px;
-  }
-}
-
-.skills-domain:hover {
-  border-color: var(--skill-color);
-  background: color-mix(in srgb, var(--skill-color) 7%, #ffffff);
-}
-
-/* ---------- Profondeur 3D ---------- */
-
-.skills-domain-depth {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-
+  overflow: hidden;
   border: 1px solid color-mix(
     in srgb,
-    var(--skill-color) 40%,
-    transparent
+    var(--skill-color) 35%,
+    #ffffff
   );
-
-  background: color-mix(
-    in srgb,
-    var(--skill-color) 16%,
-    transparent
-  );
-
-  opacity: calc(0.25 + 0.6 * var(--p, 0));
-  transform: translateZ(-14px);
-  pointer-events: none;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.78);
+  transition:
+    transform 0.28s ease,
+    border-color 0.28s ease,
+    background 0.28s ease,
+    box-shadow 0.28s ease;
 }
-
-/* ---------- Grands numéros ---------- */
-
-.skills-domain-bignum {
-  --skill-number-color: #d13686;
-
-  position: absolute;
-  z-index: 0;
-  right: 0.8rem;
-  bottom: -0.9rem;
-
-  display: block;
-
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 1.5px var(--skill-number-color);
-
-  font-size: 6.2rem;
-  font-weight: 800;
-  letter-spacing: -0.06em;
-  line-height: 1;
-
-  opacity: 1 !important;
-  visibility: visible;
-
-  transform:
-    translateZ(-6px)
-    translate(
-      calc(var(--tx, 0) * -12px),
-      calc(var(--ty, 0) * 10px)
-    );
-
-  pointer-events: none;
-  user-select: none;
-  backface-visibility: visible;
-
-  /* Aucun effet d'apparition sur les numéros */
-  animation: none;
-  transition: none;
-}
-
-/* ---------- Barre colorée ---------- */
 
 .skills-domain::before {
   content: "";
   position: absolute;
   top: 0;
   left: 1.15rem;
-
-  width: calc(2rem + (100% - 4.3rem) * var(--p, 0));
+  width: 2rem;
   height: 2px;
-
   border-radius: 10px;
   background: var(--skill-color);
   opacity: 0.85;
-
-  transform: translateZ(2px);
+  transition: width 0.3s ease;
 }
 
-/* ---------- Reflet lumineux ---------- */
-
-.skills-domain-glare {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-
-  background: radial-gradient(
-    circle at var(--gx, 50%) var(--gy, 0%),
-    rgba(255, 255, 255, 0.7),
-    transparent 55%
+.skills-domain:hover {
+  transform: translateY(-4px);
+  border-color: var(--skill-color);
+  background: color-mix(
+    in srgb,
+    var(--skill-color) 7%,
+    #ffffff
   );
-
-  mix-blend-mode: soft-light;
-  opacity: calc(var(--p, 0) * 0.9);
-  transform: translateZ(40px);
-  pointer-events: none;
+  box-shadow: 0 12px 32px color-mix(
+    in srgb,
+    var(--skill-color) 13%,
+    transparent
+  );
 }
 
-/* ---------- En-tête des cartes ---------- */
+.skills-domain:hover::before {
+  width: calc(100% - 2.3rem);
+}
 
 .skills-domain-header {
   display: grid;
@@ -321,7 +109,6 @@
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 1.15rem;
-  transform-style: preserve-3d;
 }
 
 .skills-domain-number {
@@ -334,72 +121,34 @@
 .skills-domain-icon {
   display: grid;
   place-items: center;
-
   width: 38px;
   height: 38px;
-
   border: 1px solid color-mix(
     in srgb,
     var(--skill-color) 40%,
     #ffffff
   );
-
   border-radius: 11px;
-
   background: color-mix(
     in srgb,
     var(--skill-color) 12%,
     #ffffff
   );
-
-  transform-style: preserve-3d;
-  transform: translateZ(calc(6px + var(--p, 0) * 34px));
-
-  box-shadow:
-    0 calc(var(--p, 0) * 12px)
-    calc(var(--p, 0) * 18px)
-    color-mix(in srgb, var(--skill-color) 22%, transparent);
-
-  transition:
-    box-shadow 350ms ease,
-    border-color 350ms ease,
-    background 350ms ease;
+  transition: transform 0.3s ease;
 }
 
-/* ---------- Animation des icônes ---------- */
+.skills-domain:hover .skills-domain-icon {
+  transform: rotate(-7deg) scale(1.08);
+}
 
 .skills-domain-icon img {
   width: 23px;
   height: 23px;
   object-fit: contain;
-
-  transform-origin: center;
-  transition: transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-
-.skills-domain:hover .skills-domain-icon img {
-  transform: rotate(-8deg) scale(1.12);
-}
-
-.skills-domain:hover .skills-domain-icon {
-  box-shadow:
-    0 0 0 4px color-mix(
-      in srgb,
-      var(--skill-color) 12%,
-      transparent
-    ),
-    0 0 18px color-mix(
-      in srgb,
-      var(--skill-color) 28%,
-      transparent
-    );
-}
-
-/* ---------- Titres ---------- */
 
 .skills-domain-title {
   min-width: 0;
-  transform: translateZ(calc(var(--p, 0) * 18px));
 }
 
 .skills-domain-title h4 {
@@ -419,22 +168,22 @@
 .skills-domain-arrow {
   color: var(--skill-color);
   font-size: 1rem;
-  opacity: calc(0.6 + 0.4 * var(--p, 0));
-
-  transform: translate3d(
-    calc(-2px * (1 - var(--p, 0))),
-    calc(2px * (1 - var(--p, 0))),
-    calc(var(--p, 0) * 30px)
-  );
+  opacity: 0.65;
+  transform: translate(-2px, 2px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
-/* ---------- Tags ---------- */
+.skills-domain:hover .skills-domain-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+}
 
 .skills-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  transform-style: preserve-3d;
 }
 
 .skills-tag {
@@ -443,39 +192,31 @@
   gap: 0.4rem;
   max-width: 100%;
   padding: 0.43rem 0.6rem;
-
   border: 1px solid rgba(65, 45, 65, 0.14);
   border-radius: 7px;
-
   color: #625967;
   background: #ffffff;
-
   font-size: 0.72rem;
   line-height: 1.4;
   overflow-wrap: anywhere;
-
-  transform: translateZ(
-    calc(var(--p, 0) * (8px + var(--tag-index, 0) * 1.6px))
-  );
-
   transition:
-    color 220ms ease,
-    background 220ms ease,
-    border-color 220ms ease;
+    color 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
+  transition-delay: 0ms;
 }
 
 .skills-tag-dot {
   flex: 0 0 5px;
   width: 5px;
   height: 5px;
-
   border-radius: 50%;
   background: var(--skill-color);
   opacity: 0.85;
-
   transition:
-    opacity 220ms ease,
-    box-shadow 220ms ease;
+    opacity 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
 .skills-domain:hover .skills-tag {
@@ -484,15 +225,13 @@
     var(--skill-color) 45%,
     #ffffff
   );
-
   color: #29232d;
-
   background: color-mix(
     in srgb,
     var(--skill-color) 10%,
     #ffffff
   );
-
+  transform: translateY(-1px);
   transition-delay: calc(var(--tag-index, 0) * 25ms);
 }
 
@@ -501,43 +240,44 @@
   box-shadow: 0 0 8px var(--skill-color);
 }
 
-/* ---------- Pied du panneau ---------- */
-
 .skills-panel-footer {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.55rem;
-
   margin: 1.5rem 0 0;
-
   color: var(--skills-muted);
   font-size: 0.62rem;
   letter-spacing: 0.1em;
   text-align: center;
 }
 
-/* =========================================================
+.skills-footer-dot {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #78976a;
+  box-shadow: 0 0 9px rgba(120, 151, 106, 0.4);
+}
+
+/* =========================================
    MODE CLAIR
-   ========================================================= */
+   Compatible avec data-theme="light"
+========================================= */
 
 [data-theme="light"] .skills-panel {
   --skills-text: #29232d;
   --skills-muted: #706775;
-  --skills-surface: #ffffff;
-  --skills-border: #d1d1d8;
+  --skills-surface: #fffdfd;
+  --skills-border: rgba(65, 45, 65, 0.14);
 
   color: var(--skills-text);
-  background: #ffffff !important;
-  border: 1px solid #d1d1d8 !important;
-  box-shadow: none;
+  background: #fffdfd;
 }
 
-[data-theme="light"] .skills-panel .skills-orb {
-  display: none;
-}
-
+[data-theme="light"] .skills-panel-heading h3,
 [data-theme="light"] .skills-domain-title h4 {
   color: #29232d;
 }
@@ -570,17 +310,10 @@
   background: #ffffff;
 }
 
-[data-theme="light"] .skills-domain-bignum {
-  --skill-number-color: #d13686;
-
-  opacity: 1 !important;
-  visibility: visible;
-  -webkit-text-stroke-color: #d13686;
-}
-
-/* =========================================================
+/* =========================================
    MODE SOMBRE
-   ========================================================= */
+   Compatible avec data-theme="dark"
+========================================= */
 
 [data-theme="dark"] .skills-panel {
   --skills-text: #f5f0f6;
@@ -590,13 +323,10 @@
 
   color: var(--skills-text);
   background: #17131d;
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(231, 97, 170, 0.24);
 }
 
-[data-theme="dark"] .skills-orb {
-  opacity: 0.34;
-}
-
+[data-theme="dark"] .skills-panel-heading h3,
 [data-theme="dark"] .skills-domain-title h4 {
   color: #f5f0f6;
 }
@@ -608,7 +338,6 @@
 
 [data-theme="dark"] .skills-domain {
   background: rgba(255, 255, 255, 0.035);
-
   border-color: color-mix(
     in srgb,
     var(--skill-color) 28%,
@@ -622,30 +351,7 @@
     var(--skill-color) 12%,
     #17131d
   );
-
   border-color: var(--skill-color);
-}
-
-[data-theme="dark"] .skills-domain-icon {
-  border-color: color-mix(
-    in srgb,
-    var(--skill-color) 45%,
-    transparent
-  );
-
-  background: color-mix(
-    in srgb,
-    var(--skill-color) 16%,
-    #17131d
-  );
-}
-
-[data-theme="dark"] .skills-domain-bignum {
-  --skill-number-color: #e761aa;
-
-  opacity: 1 !important;
-  visibility: visible;
-  -webkit-text-stroke-color: #e761aa;
 }
 
 [data-theme="dark"] .skills-tag {
@@ -656,13 +362,11 @@
 
 [data-theme="dark"] .skills-domain:hover .skills-tag {
   color: #ffffff;
-
   background: color-mix(
     in srgb,
     var(--skill-color) 17%,
     #17131d
   );
-
   border-color: color-mix(
     in srgb,
     var(--skill-color) 55%,
@@ -676,9 +380,9 @@
   border-color: rgba(231, 97, 170, 0.28);
 }
 
-/* =========================================================
+/* =========================================
    RESPONSIVE
-   ========================================================= */
+========================================= */
 
 @media (max-width: 650px) {
   .skills-panel {
@@ -691,6 +395,10 @@
     align-items: flex-start;
   }
 
+  .skills-panel-heading h3 {
+    font-size: 1.4rem;
+  }
+
   .skills-panel-count {
     margin-top: 0.15rem;
     font-size: 0.55rem;
@@ -698,8 +406,7 @@
 
   .skills-domains {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
-    perspective: 900px;
+    gap: 0.65rem;
   }
 
   .skills-domain {
@@ -733,87 +440,38 @@
     font-size: 0.7rem;
   }
 
-  .skills-domain-bignum {
-    font-size: 4.6rem;
-  }
-
   .skills-panel-footer {
     font-size: 0.55rem;
     letter-spacing: 0.06em;
   }
 }
 
-/* =========================================================
-   ÉCRANS TACTILES
-   ========================================================= */
+/* SURVOL SUR ÉCRAN TACTILE */
 
 @media (hover: none) {
-  .skills-domain.is-settled {
-    animation-name: skills-sway;
-    animation-duration: 6s;
-  }
-
   .skills-domain:active {
     border-color: var(--skill-color);
-
     background: color-mix(
       in srgb,
       var(--skill-color) 9%,
       #ffffff
     );
   }
-
-  .skills-domain:hover .skills-domain-icon img {
-    transform: none;
-  }
-
-  .skills-domain:hover .skills-domain-icon {
-    box-shadow: none;
-  }
 }
 
-@keyframes skills-sway {
-  0%,
-  100% {
-    translate: 0 0;
-    rotate: 0 1 0 -2deg;
-  }
-
-  50% {
-    translate: 0 -5px;
-    rotate: 0 1 0 2deg;
-  }
-}
-
-/* =========================================================
-   ACCESSIBILITÉ
-   ========================================================= */
+/* ACCESSIBILITÉ : LIMITER LES ANIMATIONS */
 
 @media (prefers-reduced-motion: reduce) {
-  .skills-orb,
-  .skills-domain.is-settled {
-    animation: none !important;
-  }
-
-  .skills-domains.skills-anim-ready .skills-domain:not(.is-in),
-  .skills-domains .skills-domain.is-in {
-    opacity: 1 !important;
-    visibility: visible;
-    translate: 0 0;
-    scale: 1;
-  }
-
   .skills-domain,
-  .skills-domain.is-in,
-  .skills-domains,
+  .skills-domain::before,
   .skills-domain-icon,
-  .skills-domain-icon img,
+  .skills-domain-arrow,
   .skills-tag,
   .skills-tag-dot {
-    transition: none !important;
+    transition: none;
   }
 
-  .skills-domain-icon img {
-    transform: none !important;
+  .skills-domain:hover {
+    transform: none;
   }
 }
