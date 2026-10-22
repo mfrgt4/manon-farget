@@ -18,6 +18,13 @@ padding-top:env(safe-area-inset-top,0px);
 padding-bottom:env(safe-area-inset-bottom,0px)
 }
 
+.profile-name {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 3rem;
+  color: #d84b7d;
+}
+
 .madi{font-family:'Ms Madi',cursive;font-weight:400}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth;scroll-padding-top:calc(76px + env(safe-area-inset-top,0px))}
@@ -36,7 +43,7 @@ nav a.on{color:#fff;background:var(--fg)}
 
 section{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:120px 24px 50px}
 .tag{font-size:12px;color:var(--acc-t);letter-spacing:.14em;text-transform:uppercase;font-weight:600}
-h2{font-family:'Instrument Serif',serif;font-size:clamp(42px,5.5vw,72px);font-weight:400;font-style:italic;letter-spacing:-.025em;line-height:1.05;margin:8px 0 34px;color:#b72d60}
+h2{font-family:'Instrument Serif',serif;font-size:clamp(42px,5.5vw,72px);font-weight:400;font-style:italic;letter-spacing:-.025em;line-height:1.05;margin:8px 0 34px;color:#d84b7d}
 /* Numéros des sections : conserver la couleur du texte du thème */
 .tag.mono{color:var(--fg,#171717)}
 
