@@ -1428,6 +1428,7 @@ body:has(.welcome-screen) {
   color: var(--muted, #706775);
   font-size: 0.9rem;
   line-height: 1.6;
+  white-space: nowrap;
 }
 
 /* Compteur */
@@ -1545,9 +1546,8 @@ body:has(.welcome-screen) {
   }
 
   #projets .project-section-description {
-    margin-top: 10px;
-    font-size: 0.78rem;
-    line-height: 1.5;
+    max-width: none;
+    white-space: nowrap;
   }
 
   #projets .project-section-count {

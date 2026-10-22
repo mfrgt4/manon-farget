@@ -905,7 +905,6 @@ export default function App() {
         </p>
 
         <WordSphere words={tools} />
-        <SkillsPanel />
       </section>
 
       <section id="projets" className="showing-projects">
