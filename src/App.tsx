@@ -888,7 +888,7 @@ export default function App() {
       </section>
 
       <section id="boite-a-outils">
-        <p className="tag mono rv">// 03</p>
+        <p className="tag mono rv">// avec quoi je crée</p>
 
         <h2 className="rv">Ma boîte à outils.</h2>
 
@@ -908,7 +908,7 @@ export default function App() {
       </section>
 
       <section id="projets" className="showing-projects">
-        <p className="tag mono rv">// 04</p>
+        <p className="tag mono rv">// ce que j'ai créé</p>
         <h2 className="rv">Mes projets.</h2>
 
         <div className="folder-list">
@@ -974,7 +974,7 @@ export default function App() {
       </section>
 
       <section id="parcours">
-        <p className="tag mono rv">// 05</p>
+        <p className="tag mono rv">// d'où je viens</p>
         <h2 className="rv">Mon parcours.</h2>
 
         <div className="tl">
@@ -997,7 +997,7 @@ export default function App() {
       </section>
 
       <section id="contact">
-        <p className="tag mono rv">// 06</p>
+        <p className="tag mono rv">// et maintenant ?</p>
         <h2 className="rv">Prêt·e à collaborer ?</h2>
 
         <div className="bento">
