@@ -765,7 +765,7 @@ export default function App() {
       <section id="a-propos">
         <div className="about">
           <div className="rv rv-l" style={delay(0.15)}>
-            <p className="tag mono">// 01</p>
+            <p className="tag mono">// qui suis-je ?</p>
             <h2>Un peu plus sur moi.</h2>
 
             <p className="about-p">
@@ -827,7 +827,7 @@ export default function App() {
       <section id="competences">
         <div className="sk">
           <div className="sk-side">
-            <p className="tag mono rv">// 02</p>
+            <p className="tag mono rv">// ce que je sais faire</p>
             <h2 className="rv">Mes compétences.</h2>
             <p className="sk-note rv">
               ↖ survole ou touche une ligne pour la découvrir.

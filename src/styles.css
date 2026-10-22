@@ -1747,9 +1747,3 @@ body:has(.welcome-screen) {
   right: -4px;
   bottom: -4px;
 }
-
-/* Masquer les numéros automatiques des bannières projets */
-#projets .cell.proj::before,
-#projets .cell.proj::after {
-  counter-increment: none;
-}
