@@ -1314,126 +1314,159 @@ body:has(.welcome-screen) {
   }
 }
 
-/* Catégories : composition horizontale */
-.project-section-heading {
+/* ========================================
+   CATÉGORIES DE PROJETS
+======================================== */
+
+#projets .project-section-heading {
+  position: relative;
   display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
-  column-gap: 1.2rem;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
   align-items: center;
+  gap: 20px;
 
-  margin: 3.5rem 0 1.5rem;
-  padding: 0;
-  border: none;
+  width: 100%;
+  margin: 0 0 28px;
+  padding: 0 4px 30px 0;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* Numéro à gauche du titre */
-.project-section-heading .tag {
-  grid-column: 1;
-  grid-row: 1;
-  align-self: center;
+/* Petit carré rose */
+#projets .project-section-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  margin: 0;
-  color: rgba(215, 107, 158, 0.65);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.04em;
+  width: 52px;
+  height: 52px;
 
-  transition: color 0.4s ease;
+  border-radius: 15px;
+  background: #f296bb;
+  color: #24151e;
+
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+
+  transition:
+    border-radius 0.3s ease,
+    transform 0.3s ease;
 }
 
-/* Titre à droite du numéro */
-.project-section-heading h3 {
-  grid-column: 2;
-  grid-row: 1;
+/* Légère animation au survol */
+#projets .project-group:hover .project-section-number {
+  border-radius: 19px;
+  transform: translateY(-2px);
+}
 
+/* Contenu textuel */
+#projets .project-section-copy {
+  min-width: 0;
+}
+
+/* Petit texte supérieur */
+#projets .project-section-kicker {
+  display: none;
+}
+
+/* Titre de catégorie */
+#projets .project-section-copy h3 {
   margin: 0;
-  color: #262226;
-  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
-  font-weight: 600;
+
+  color: var(--text, #fff5fa);
+  font-family: inherit;
+  font-size: clamp(1.5rem, 2.5vw, 2.15rem);
+  font-weight: 750;
+  line-height: 1.15;
   letter-spacing: -0.045em;
-  line-height: 1.2;
-
-  transition: transform 0.4s ease;
 }
 
-/* Compteur sous le titre */
-.project-section-count {
-  grid-column: 2;
-  grid-row: 2;
-  justify-self: start;
+/* Description */
+#projets .project-section-description {
+  max-width: 680px;
+  margin: 7px 0 0;
 
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-
-  margin-top: 0.55rem;
-  color: #898087;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.62rem;
+  color: rgba(255, 235, 245, 0.68);
+  font-size: 0.94rem;
   font-weight: 400;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 1;
+  line-height: 1.5;
 }
 
-.project-section-count::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #e761aa;
-  opacity: 0.7;
+/* Nombre de projets */
+#projets .project-section-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding-left: 20px;
+
+  color: rgba(242, 150, 187, 0.48);
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
 }
 
-/* Survol discret */
-.project-section-heading:hover .tag {
-  color: #e761aa;
+/* Nombre uniquement */
+#projets .project-section-count strong {
+  font: inherit;
 }
 
-.project-section-heading:hover h3 {
-  transform: translateX(3px);
+/* Libellé "projets" masqué pour retrouver le rendu de référence */
+#projets .project-section-count span {
+  display: none;
 }
 
 /* Espacement entre les catégories */
 #projets .grp + .grp {
-  margin-top: 3.5rem;
+  margin-top: 64px;
 }
 
-/* Mobile */
+/* Espace entre l'en-tête et les cartes */
+#projets .project-section-heading + .grid3 {
+  margin-top: 0;
+}
+
+/* ========================================
+   RESPONSIVE — MOBILE
+======================================== */
+
 @media (max-width: 600px) {
-  .project-section-heading {
-    column-gap: 0.8rem;
-    margin: 2.5rem 0 1.2rem;
+  #projets .project-section-heading {
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+
+    margin-bottom: 22px;
+    padding-bottom: 22px;
   }
 
-  .project-section-heading .tag {
+  #projets .project-section-number {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+
+  #projets .project-section-copy h3 {
+    font-size: clamp(1.15rem, 5vw, 1.5rem);
+    letter-spacing: -0.035em;
+  }
+
+  #projets .project-section-description {
+    margin-top: 6px;
     font-size: 0.8rem;
+    line-height: 1.45;
   }
 
-  .project-section-heading h3 {
-    font-size: clamp(1.15rem, 4.5vw, 1.4rem);
-  }
-
-  .project-section-count {
-    font-size: 0.55rem;
+  #projets .project-section-count {
+    padding-left: 0;
+    padding-top: 5px;
+    font-size: 1.65rem;
   }
 
   #projets .grp + .grp {
-    margin-top: 2.5rem;
-  }
-}
-
-/* Accessibilité */
-@media (prefers-reduced-motion: reduce) {
-  .project-section-heading .tag,
-  .project-section-heading h3 {
-    transition: none;
-  }
-
-  .project-section-heading:hover h3 {
-    transform: none;
+    margin-top: 42px;
   }
 }

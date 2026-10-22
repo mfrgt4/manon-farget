@@ -534,11 +534,19 @@ export default function App() {
   const universityProjects = projects.filter(
     (p) => p.category === "universitaire",
   );
-  const groups: [string, Project[]][] = [
-    ["Projets personnels", personalProjects],
-    ["Projets universitaires", universityProjects],
+  const groups: [string, string, Project[]][] = [
+    [
+      "Projets personnels",
+      "Des créations libres pour explorer mes idées, tester de nouvelles approches et développer mon univers visuel.",
+      personalProjects,
+    ],
+    [
+      "Projets universitaires",
+      "Des projets réalisés en BUT MMI, entre réflexion créative, conception graphique et production numérique.",
+      universityProjects,
+    ],
   ];
-  const shown = groups.flatMap(([, list]) => list);
+  const shown = groups.flatMap(([, , list]) => list);
 
   useEffects();
   useHeroParallax();
@@ -905,17 +913,22 @@ export default function App() {
         <h2 className="rv">Mes projets.</h2>
 
         <div className="folder-list">
-          {groups.map(([name, list], groupIndex) => (
-            <div className="grp" key={name}>
+          {groups.map(([name, description, list], groupIndex) => (
+            <div className={`grp project-group project-group--${groupIndex + 1}`} key={name}>
               <div className="project-section-heading">
-                <div>
-                  <p className="tag mono">
-                    // {String(groupIndex + 1).padStart(2, "0")}
+                <span className="project-section-number mono" aria-hidden="true">
+                  {String(groupIndex + 1).padStart(2, "0")}
+                </span>
+                <div className="project-section-copy">
+                  <p className="project-section-kicker mono">
+                    {groupIndex === 0 ? "PERSONAL WORK" : "UNIVERSITY WORK"}
                   </p>
                   <h3>{name}</h3>
+                  <p className="project-section-description">{description}</p>
                 </div>
                 <span className="mono project-section-count">
-                  {String(list.length).padStart(2, "0")} PROJETS
+                  <strong>{String(list.length).padStart(2, "0")}</strong>
+                  <span>projets</span>
                 </span>
               </div>
 
