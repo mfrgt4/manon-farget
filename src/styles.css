@@ -1698,3 +1698,52 @@ body:has(.welcome-screen) {
 #projets .project-group--2 .project-section-number {
   border-radius: 8px;
 }
+
+/* Même décoration gaming pour les deux numéros */
+#projets .project-group--1 .project-section-number,
+#projets .project-group--2 .project-section-number {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  background: transparent;
+  color: #e761aa;
+  border: 1px solid #e761aa;
+  border-radius: 3px;
+
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+
+  box-shadow: inset 0 0 0 3px rgba(231, 97, 170, 0.08);
+}
+
+/* Poignées de sélection aux coins */
+#projets .project-group--1 .project-section-number::before,
+#projets .project-group--1 .project-section-number::after,
+#projets .project-group--2 .project-section-number::before,
+#projets .project-group--2 .project-section-number::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #e761aa;
+  border: 1px solid var(--bg, #fff);
+}
+
+#projets .project-group--1 .project-section-number::before,
+#projets .project-group--2 .project-section-number::before {
+  top: -4px;
+  left: -4px;
+}
+
+#projets .project-group--1 .project-section-number::after,
+#projets .project-group--2 .project-section-number::after {
+  right: -4px;
+  bottom: -4px;
+}
