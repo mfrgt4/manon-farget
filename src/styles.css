@@ -1314,20 +1314,25 @@ body:has(.welcome-screen) {
   }
 }
 
-/* Conteneur des catégories */
-.project-category {
+/* Séparation des catégories de projets */
+.project-section-heading {
   position: relative;
   display: grid;
-  grid-template-columns: 90px 1fr auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 1.5rem;
 
-  margin-top: 1.5rem;
-  padding: 1.8rem 2rem;
+  margin: 2.5rem 0 1.5rem;
+  padding: 1.5rem 1.8rem;
 
-  background: rgba(255, 255, 255, 0.48);
-  border: 1px solid rgba(35, 30, 32, 0.09);
-  border-radius: 18px;
+  background: linear-gradient(
+    110deg,
+    rgba(231, 97, 170, 0.09),
+    rgba(255, 255, 255, 0.35) 65%
+  );
+
+  border: 1px solid rgba(231, 97, 170, 0.16);
+  border-radius: 16px;
 
   transition:
     background 0.3s ease,
@@ -1335,101 +1340,109 @@ body:has(.welcome-screen) {
     transform 0.3s ease;
 }
 
-.project-category:hover {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(231, 97, 170, 0.45);
-  transform: translateY(-3px);
+.project-section-heading:hover {
+  background: linear-gradient(
+    110deg,
+    rgba(231, 97, 170, 0.14),
+    rgba(255, 255, 255, 0.65) 75%
+  );
+
+  border-color: rgba(231, 97, 170, 0.35);
+  transform: translateY(-2px);
 }
 
-/* Numéro de catégorie */
-.project-category__number {
-  font-size: 2.8rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.08em;
-  color: #e761aa;
-}
-
-/* Bloc titre */
-.project-category__content {
+/* Petit numéro de section */
+.project-section-heading .tag {
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
+  align-items: center;
+  justify-content: center;
 
-.project-category__eyebrow {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #8c8188;
-}
-
-.project-category__title {
+  width: 58px;
+  height: 58px;
   margin: 0;
-  font-size: clamp(1.25rem, 2vw, 1.7rem);
-  font-weight: 650;
-  letter-spacing: -0.045em;
-  color: #201d20;
+
+  border-radius: 14px;
+  background: rgba(231, 97, 170, 0.12);
+
+  color: #d84691;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
-/* Badge du nombre de projets */
-.project-category__count {
+/* Titre de la catégorie */
+.project-section-heading h3 {
+  margin: 0;
+
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 650;
+  letter-spacing: -0.05em;
+  line-height: 1.2;
+}
+
+/* Compteur de projets */
+.project-section-count {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
 
-  min-width: 76px;
-  min-height: 76px;
-  padding: 0.8rem;
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
 
   border-radius: 50%;
-  background: #f8e8f0;
-  color: #bd3f82;
-}
+  background: rgba(231, 97, 170, 0.12);
+  color: #c43c82;
 
-.project-category__count strong {
-  font-size: 1.35rem;
-  line-height: 1;
-}
-
-.project-category__count span {
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.06em;
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  text-align: center;
   text-transform: uppercase;
+  opacity: 1;
 }
 
-/* Adaptation mobile */
+.project-section-count::first-line {
+  font-size: 0.7rem;
+}
+
+/* Espacement entre les catégories */
+#projets .grp + .grp {
+  margin-top: 3rem;
+}
+
+/* Version mobile */
 @media (max-width: 600px) {
-  .project-category {
-    grid-template-columns: 48px 1fr auto;
+  .project-section-heading {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
     gap: 0.8rem;
-    padding: 1.2rem 1rem;
-    border-radius: 14px;
+    margin: 2rem 0 1.2rem;
+    padding: 1rem;
+    border-radius: 13px;
   }
 
-  .project-category__number {
-    font-size: 2rem;
+  .project-section-heading .tag {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    font-size: 0.7rem;
   }
 
-  .project-category__title {
-    font-size: 1.1rem;
+  .project-section-heading h3 {
+    font-size: clamp(1.05rem, 4vw, 1.3rem);
+    letter-spacing: -0.04em;
   }
 
-  .project-category__count {
-    min-width: 54px;
-    min-height: 54px;
-    padding: 0.5rem;
+  .project-section-count {
+    width: 58px;
+    height: 58px;
+    font-size: 0.5rem;
   }
 
-  .project-category__count strong {
-    font-size: 1.1rem;
-  }
-
-  .project-category__count span {
-    font-size: 0.45rem;
+  #projets .grp + .grp {
+    margin-top: 2.5rem;
   }
 }
