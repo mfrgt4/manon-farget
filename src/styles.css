@@ -18,14 +18,7 @@ padding-top:env(safe-area-inset-top,0px);
 padding-bottom:env(safe-area-inset-bottom,0px)
 }
 
-.profile-name {
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
-  font-size: 3rem;
-  color: #d84b7d;
-}
-
-.madi{font-family:'Ms Madi',cursive;font-weight:400}
+.instrument{font-family: 'Instrument Serif', serif;font-style: italic;font-weight:400;color: #b72d60;}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth;scroll-padding-top:calc(76px + env(safe-area-inset-top,0px))}
 body{background:var(--bg);color:var(--fg);font:16px/1.6 'DM Sans',system-ui,sans-serif;overflow-x:hidden}
