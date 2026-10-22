@@ -1314,7 +1314,7 @@ body:has(.welcome-screen) {
   }
 }
 
-/* Catégories : style éditorial asymétrique */
+/* Catégories : composition horizontale */
 .project-section-heading {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -1324,45 +1324,42 @@ body:has(.welcome-screen) {
 
   margin: 3.5rem 0 1.5rem;
   padding: 0;
-
   border: none;
 }
 
-/* Numéro : grande signature visuelle */
+/* Numéro à gauche du titre */
 .project-section-heading .tag {
   grid-column: 1;
-  grid-row: 1 / 3;
+  grid-row: 1;
   align-self: center;
 
   margin: 0;
-  color: rgba(215, 107, 158, 0.55);
-
+  color: rgba(215, 107, 158, 0.65);
   font-family: "JetBrains Mono", monospace;
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 300;
+  font-size: 1rem;
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.1em;
+  letter-spacing: 0.04em;
 
-  transition: color 0.5s ease;
+  transition: color 0.4s ease;
 }
 
-/* Titre */
+/* Titre à droite du numéro */
 .project-section-heading h3 {
   grid-column: 2;
   grid-row: 1;
 
   margin: 0;
   color: #262226;
-
   font-size: clamp(1.35rem, 2.5vw, 1.8rem);
   font-weight: 600;
   letter-spacing: -0.045em;
   line-height: 1.2;
 
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.4s ease;
 }
 
-/* Compteur : étiquette discrète */
+/* Compteur sous le titre */
 .project-section-count {
   grid-column: 2;
   grid-row: 2;
@@ -1373,8 +1370,6 @@ body:has(.welcome-screen) {
   gap: 0.45rem;
 
   margin-top: 0.55rem;
-  padding: 0;
-
   color: #898087;
   font-family: "JetBrains Mono", monospace;
   font-size: 0.62rem;
@@ -1382,34 +1377,24 @@ body:has(.welcome-screen) {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   opacity: 1;
-
-  transition: color 0.4s ease;
 }
 
-/* Petit point décoratif */
 .project-section-count::before {
   content: "";
-  display: inline-block;
-
   width: 5px;
   height: 5px;
   border-radius: 50%;
-
   background: #e761aa;
   opacity: 0.7;
 }
 
-/* Animation subtile */
+/* Survol discret */
 .project-section-heading:hover .tag {
   color: #e761aa;
 }
 
 .project-section-heading:hover h3 {
-  transform: translateX(5px);
-}
-
-.project-section-heading:hover .project-section-count {
-  color: #bd5689;
+  transform: translateX(3px);
 }
 
 /* Espacement entre les catégories */
@@ -1420,12 +1405,12 @@ body:has(.welcome-screen) {
 /* Mobile */
 @media (max-width: 600px) {
   .project-section-heading {
-    column-gap: 0.9rem;
+    column-gap: 0.8rem;
     margin: 2.5rem 0 1.2rem;
   }
 
   .project-section-heading .tag {
-    font-size: 2.6rem;
+    font-size: 0.8rem;
   }
 
   .project-section-heading h3 {
@@ -1444,8 +1429,7 @@ body:has(.welcome-screen) {
 /* Accessibilité */
 @media (prefers-reduced-motion: reduce) {
   .project-section-heading .tag,
-  .project-section-heading h3,
-  .project-section-heading .project-section-count {
+  .project-section-heading h3 {
     transition: none;
   }
 
