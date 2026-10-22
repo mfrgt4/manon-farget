@@ -1314,99 +1314,88 @@ body:has(.welcome-screen) {
   }
 }
 
-/* Séparation des catégories de projets */
+/* Séparation douce des catégories de projets */
 .project-section-heading {
-  position: relative;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1.5rem;
 
-  margin: 2.5rem 0 1.5rem;
-  padding: 1.5rem 1.8rem;
+  margin: 3rem 0 1.5rem;
+  padding: 0.8rem 0 1.2rem;
 
-  background: linear-gradient(
-    110deg,
-    rgba(231, 97, 170, 0.09),
-    rgba(255, 255, 255, 0.35) 65%
-  );
+  border-bottom: 1px solid rgba(80, 65, 75, 0.12);
 
-  border: 1px solid rgba(231, 97, 170, 0.16);
-  border-radius: 16px;
-
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease,
-    transform 0.3s ease;
+  transition: border-color 0.4s ease;
 }
 
 .project-section-heading:hover {
-  background: linear-gradient(
-    110deg,
-    rgba(231, 97, 170, 0.14),
-    rgba(255, 255, 255, 0.65) 75%
-  );
-
-  border-color: rgba(231, 97, 170, 0.35);
-  transform: translateY(-2px);
+  border-bottom-color: rgba(231, 97, 170, 0.4);
 }
 
-/* Petit numéro de section */
+/* Numéro de catégorie */
 .project-section-heading .tag {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
+  margin: 0 0 0.6rem;
 
-  width: 58px;
-  height: 58px;
-  margin: 0;
-
-  border-radius: 14px;
-  background: rgba(231, 97, 170, 0.12);
-
-  color: #d84691;
+  color: #d76b9e;
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+
+  transition:
+    color 0.4s ease,
+    transform 0.4s ease;
 }
 
-/* Titre de la catégorie */
+.project-section-heading:hover .tag {
+  color: #bd5689;
+  transform: translateX(3px);
+}
+
+/* Titre de catégorie */
 .project-section-heading h3 {
   margin: 0;
 
-  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
-  font-weight: 650;
-  letter-spacing: -0.05em;
-  line-height: 1.2;
+  color: #262226;
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.25;
+
+  transition:
+    color 0.4s ease,
+    transform 0.4s ease;
 }
 
-/* Compteur de projets */
+.project-section-heading:hover h3 {
+  color: #b95687;
+  transform: translateX(3px);
+}
+
+/* Nombre de projets */
 .project-section-count {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
-
-  width: 76px;
-  height: 76px;
   flex-shrink: 0;
+  align-self: flex-end;
 
-  border-radius: 50%;
-  background: rgba(231, 97, 170, 0.12);
-  color: #c43c82;
+  margin-bottom: 0.2rem;
 
+  color: #827a80;
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.6rem;
+  font-size: 0.65rem;
+  font-weight: 400;
   letter-spacing: 0.04em;
-  text-align: center;
-  text-transform: uppercase;
-  opacity: 1;
+  opacity: 0.8;
+
+  transition:
+    color 0.4s ease,
+    opacity 0.4s ease;
 }
 
-.project-section-count::first-line {
-  font-size: 0.7rem;
+.project-section-heading:hover .project-section-count {
+  color: #bd5689;
+  opacity: 1;
 }
 
 /* Espacement entre les catégories */
@@ -1414,35 +1403,39 @@ body:has(.welcome-screen) {
   margin-top: 3rem;
 }
 
-/* Version mobile */
+/* Adaptation mobile */
 @media (max-width: 600px) {
   .project-section-heading {
-    grid-template-columns: 44px minmax(0, 1fr) auto;
-    gap: 0.8rem;
-    margin: 2rem 0 1.2rem;
-    padding: 1rem;
-    border-radius: 13px;
-  }
-
-  .project-section-heading .tag {
-    width: 42px;
-    height: 42px;
-    border-radius: 11px;
-    font-size: 0.7rem;
+    gap: 1rem;
+    margin: 2.5rem 0 1.2rem;
+    padding-bottom: 1rem;
   }
 
   .project-section-heading h3 {
-    font-size: clamp(1.05rem, 4vw, 1.3rem);
-    letter-spacing: -0.04em;
+    font-size: clamp(1.2rem, 5vw, 1.5rem);
   }
 
   .project-section-count {
-    width: 58px;
-    height: 58px;
-    font-size: 0.5rem;
+    font-size: 0.58rem;
+    white-space: nowrap;
   }
 
   #projets .grp + .grp {
     margin-top: 2.5rem;
+  }
+}
+
+/* Respect des préférences de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .project-section-heading,
+  .project-section-heading .tag,
+  .project-section-heading h3,
+  .project-section-count {
+    transition: none;
+  }
+
+  .project-section-heading:hover .tag,
+  .project-section-heading:hover h3 {
+    transform: none;
   }
 }
