@@ -1314,3 +1314,122 @@ body:has(.welcome-screen) {
   }
 }
 
+/* Conteneur des catégories */
+.project-category {
+  position: relative;
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 1.5rem;
+
+  margin-top: 1.5rem;
+  padding: 1.8rem 2rem;
+
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(35, 30, 32, 0.09);
+  border-radius: 18px;
+
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.project-category:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(231, 97, 170, 0.45);
+  transform: translateY(-3px);
+}
+
+/* Numéro de catégorie */
+.project-category__number {
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.08em;
+  color: #e761aa;
+}
+
+/* Bloc titre */
+.project-category__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.project-category__eyebrow {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8c8188;
+}
+
+.project-category__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  color: #201d20;
+}
+
+/* Badge du nombre de projets */
+.project-category__count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+
+  min-width: 76px;
+  min-height: 76px;
+  padding: 0.8rem;
+
+  border-radius: 50%;
+  background: #f8e8f0;
+  color: #bd3f82;
+}
+
+.project-category__count strong {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.project-category__count span {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Adaptation mobile */
+@media (max-width: 600px) {
+  .project-category {
+    grid-template-columns: 48px 1fr auto;
+    gap: 0.8rem;
+    padding: 1.2rem 1rem;
+    border-radius: 14px;
+  }
+
+  .project-category__number {
+    font-size: 2rem;
+  }
+
+  .project-category__title {
+    font-size: 1.1rem;
+  }
+
+  .project-category__count {
+    min-width: 54px;
+    min-height: 54px;
+    padding: 0.5rem;
+  }
+
+  .project-category__count strong {
+    font-size: 1.1rem;
+  }
+
+  .project-category__count span {
+    font-size: 0.45rem;
+  }
+}
