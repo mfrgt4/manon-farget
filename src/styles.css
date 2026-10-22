@@ -1314,10 +1314,7 @@ body:has(.welcome-screen) {
   }
 }
 
-/* ========================================
-   CATÉGORIES DE PROJETS
-======================================== */
-
+/* En-tête des catégories */
 #projets .project-section-heading {
   position: relative;
   display: grid;
@@ -1325,14 +1322,20 @@ body:has(.welcome-screen) {
   align-items: center;
   gap: 20px;
 
-  width: 100%;
-  margin: 0 0 28px;
-  padding: 0 4px 30px 0;
+  padding: 24px 26px;
+  margin-bottom: 28px;
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    115deg,
+    rgba(231, 97, 170, 0.16),
+    rgba(25, 18, 27, 0.98) 45%
+  );
+
+  border: 1px solid rgba(231, 97, 170, 0.25);
+  border-radius: 18px;
 }
 
-/* Petit carré rose */
+/* Carré rose */
 #projets .project-section-number {
   display: flex;
   align-items: center;
@@ -1341,41 +1344,25 @@ body:has(.welcome-screen) {
   width: 52px;
   height: 52px;
 
-  border-radius: 15px;
-  background: #f296bb;
-  color: #24151e;
+  background: #e761aa;
+  color: #251521;
 
-  font-family: inherit;
+  border-radius: 14px;
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 800;
 
-  transition:
-    border-radius 0.3s ease,
-    transform 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
-/* Légère animation au survol */
 #projets .project-group:hover .project-section-number {
-  border-radius: 19px;
   transform: translateY(-2px);
 }
 
-/* Contenu textuel */
-#projets .project-section-copy {
-  min-width: 0;
-}
-
-/* Petit texte supérieur */
-#projets .project-section-kicker {
-  display: none;
-}
-
-/* Titre de catégorie */
+/* Titre */
 #projets .project-section-copy h3 {
   margin: 0;
 
-  color: var(--text, #fff5fa);
-  font-family: inherit;
+  color: #fff5fa;
   font-size: clamp(1.5rem, 2.5vw, 2.15rem);
   font-weight: 750;
   line-height: 1.15;
@@ -1387,9 +1374,8 @@ body:has(.welcome-screen) {
   max-width: 680px;
   margin: 7px 0 0;
 
-  color: rgba(255, 235, 245, 0.68);
+  color: #d5c5d0;
   font-size: 0.94rem;
-  font-weight: 400;
   line-height: 1.5;
 }
 
@@ -1401,72 +1387,59 @@ body:has(.welcome-screen) {
 
   padding-left: 20px;
 
-  color: rgba(242, 150, 187, 0.48);
+  color: #e761aa;
   font-size: 2.6rem;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.06em;
 }
 
-/* Nombre uniquement */
 #projets .project-section-count strong {
   font: inherit;
 }
 
-/* Libellé "projets" masqué pour retrouver le rendu de référence */
 #projets .project-section-count span {
   display: none;
 }
 
-/* Espacement entre les catégories */
+/* Espacement entre catégories */
 #projets .grp + .grp {
-  margin-top: 64px;
+  margin-top: 48px;
 }
 
-/* Espace entre l'en-tête et les cartes */
-#projets .project-section-heading + .grid3 {
-  margin-top: 0;
-}
-
-/* ========================================
-   RESPONSIVE — MOBILE
-======================================== */
-
+/* Mobile */
 @media (max-width: 600px) {
   #projets .project-section-heading {
     grid-template-columns: 42px minmax(0, 1fr) auto;
-    align-items: start;
     gap: 12px;
-
+    padding: 18px 14px;
     margin-bottom: 22px;
-    padding-bottom: 22px;
+    border-radius: 14px;
   }
 
   #projets .project-section-number {
     width: 42px;
     height: 42px;
-    border-radius: 12px;
+    border-radius: 11px;
     font-size: 0.9rem;
   }
 
   #projets .project-section-copy h3 {
-    font-size: clamp(1.15rem, 5vw, 1.5rem);
+    font-size: clamp(1.1rem, 4.5vw, 1.5rem);
     letter-spacing: -0.035em;
   }
 
   #projets .project-section-description {
-    margin-top: 6px;
     font-size: 0.8rem;
     line-height: 1.45;
   }
 
   #projets .project-section-count {
     padding-left: 0;
-    padding-top: 5px;
-    font-size: 1.65rem;
+    font-size: 1.6rem;
   }
 
   #projets .grp + .grp {
-    margin-top: 42px;
+    margin-top: 36px;
   }
 }
