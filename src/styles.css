@@ -1315,245 +1315,57 @@ body:has(.welcome-screen) {
 }
 
 /* ==========================================
-   PROJECT HEADERS — GAMING / UI DESIGN
-========================================== */
-
-#projets .project-section-heading {
-  position: relative;
-  display: grid;
-  grid-template-columns: 54px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 20px;
-
-  padding: 18px 8px 28px;
-  margin-bottom: 32px;
-
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border, rgba(120, 100, 115, 0.25));
-  border-radius: 0;
-}
-
-/* Carré de catégorie */
-#projets .project-section-number {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 50px;
-  height: 50px;
-
-  background: #e761aa;
-  color: #251521;
-
-  border: none;
-  border-radius: 12px;
-
-  font-size: 1rem;
-  font-weight: 800;
-}
-
-/* Bloc de texte */
-#projets .project-section-copy {
-  position: relative;
-  min-width: 0;
-}
-
-/* Petit label supérieur */
-#projets .project-section-kicker {
-  display: inline-block;
-  margin: 0 0 5px;
-
-  color: #e761aa;
-
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-/* Titre principal */
-#projets .project-section-copy h3 {
-  display: inline-block;
-  position: relative;
-
-  margin: 0;
-  padding: 0 5px;
-
-  color: var(--text, #29232d);
-
-  font-size: clamp(1.8rem, 4vw, 3.2rem);
-  font-weight: 850;
-  line-height: 1.05;
-  letter-spacing: -0.055em;
-  text-transform: uppercase;
-}
-
-/* Cadre graphique autour du titre */
-#projets .project-section-copy h3::before {
-  content: "";
-  position: absolute;
-
-  inset: -5px -10px;
-  border: 1px solid #e761aa;
-
-  transform: rotate(-1deg);
-  pointer-events: none;
-}
-
-/* Petits angles façon sélection d'interface */
-#projets .project-section-copy h3::after {
-  content: "";
-  position: absolute;
-
-  top: -9px;
-  right: -14px;
-
-  width: 8px;
-  height: 8px;
-
-  background: #e761aa;
-  border: 2px solid var(--bg, #fff);
-
-  pointer-events: none;
-}
-
-/* Description */
-#projets .project-section-description {
-  max-width: 680px;
-  margin: 12px 0 0;
-
-  color: var(--muted, #706775);
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-/* Compteur */
-#projets .project-section-count {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding-left: 20px;
-
-  color: #e761aa;
-
-  font-family: "JetBrains Mono", monospace;
-  font-size: clamp(1.8rem, 3vw, 2.7rem);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.07em;
-}
-
-#projets .project-section-count strong {
-  font: inherit;
-}
-
-#projets .project-section-count span {
-  display: none;
-}
-
-/* ==========================================
-   PROJETS PERSONNELS
+   NUMÉRO 01 — PROJETS PERSONNELS
+   Style interface de création
 ========================================== */
 
 #projets .project-group--1 .project-section-number {
-  border-radius: 12px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  background: transparent;
+  color: #e761aa;
+
+  border: 1px solid #e761aa;
+  border-radius: 3px;
+
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+
+  box-shadow: inset 0 0 0 3px rgba(231, 97, 170, 0.08);
 }
 
-#projets .project-group--1 .project-section-copy h3::before {
-  border-color: #e761aa;
-  transform: rotate(-1deg);
+/* Petites poignées de sélection */
+#projets .project-group--1 .project-section-number::before,
+#projets .project-group--1 .project-section-number::after {
+  content: "";
+  position: absolute;
+
+  width: 6px;
+  height: 6px;
+
+  background: #e761aa;
+  border: 1px solid var(--bg, #fff);
 }
 
-/* Label distinctif */
-#projets .project-group--1 .project-section-kicker::before {
-  content: "✳ ";
+#projets .project-group--1 .project-section-number::before {
+  top: -4px;
+  left: -4px;
 }
 
-/* ==========================================
-   PROJETS UNIVERSITAIRES
-========================================== */
+#projets .project-group--1 .project-section-number::after {
+  right: -4px;
+  bottom: -4px;
+}
 
+/* Numéro universitaire : conserver son style distinct */
 #projets .project-group--2 .project-section-number {
-  border-radius: 5px;
-}
-
-#projets .project-group--2 .project-section-copy h3::before {
-  border-color: var(--muted, #706775);
-  transform: rotate(0.5deg);
-}
-
-#projets .project-group--2 .project-section-kicker {
-  color: var(--muted, #706775);
-}
-
-#projets .project-group--2 .project-section-kicker::before {
-  content: "// ";
-}
-
-/* Espacement entre les groupes */
-#projets .grp + .grp {
-  margin-top: 56px;
-}
-
-/* ==========================================
-   MOBILE
-========================================== */
-
-@media (max-width: 600px) {
-  #projets .project-section-heading {
-    grid-template-columns: 42px minmax(0, 1fr) auto;
-    align-items: start;
-    gap: 12px;
-
-    padding: 16px 2px 22px;
-    margin-bottom: 24px;
-  }
-
-  #projets .project-section-number {
-    width: 40px;
-    height: 40px;
-    border-radius: 9px;
-    font-size: 0.85rem;
-  }
-
-  #projets .project-group--2 .project-section-number {
-    border-radius: 5px;
-  }
-
-  #projets .project-section-kicker {
-    font-size: 0.58rem;
-  }
-
-  #projets .project-section-copy h3 {
-    font-size: clamp(1.15rem, 5vw, 1.65rem);
-    letter-spacing: -0.045em;
-  }
-
-  #projets .project-section-copy h3::before {
-    inset: -4px -7px;
-  }
-
-  #projets .project-section-copy h3::after {
-    top: -7px;
-    right: -10px;
-    width: 6px;
-    height: 6px;
-  }
-
-  #projets .project-section-description {
-    margin-top: 10px;
-    font-size: 0.78rem;
-    line-height: 1.5;
-  }
-
-  #projets .project-section-count {
-    padding: 3px 0 0;
-    font-size: 1.35rem;
-  }
-
-  #projets .grp + .grp {
-    margin-top: 40px;
-  }
+  border-radius: 8px;
 }
