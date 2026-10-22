@@ -1313,3 +1313,35 @@ body:has(.welcome-screen) {
     transform: none;
   }
 }
+
+/* Séparation des deux catégories de projets */
+.project-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.5rem 0 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line, rgba(128, 128, 128, 0.25));
+}
+
+.project-section-heading .tag {
+  margin-bottom: 0.5rem;
+}
+
+.project-section-heading h3 {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: -0.04em;
+}
+
+.project-section-count {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+/* Espacement entre les catégories */
+#projets .grp + .grp {
+  margin-top: 3.5rem;
+}

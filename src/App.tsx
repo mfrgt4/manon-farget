@@ -2,7 +2,6 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import {
-  categories,
   nav,
   profile,
   projects,
@@ -10,7 +9,7 @@ import {
   studies,
   tools,
 } from "./data";
-import type { Category, Project } from "./data";
+import type { Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
 import SkillsPanel from "./components/SkillsPanel";
@@ -521,54 +520,31 @@ const delay = (d: number) => ({ "--d": d + "s" }) as React.CSSProperties;
 // ================= COMPOSANT PRINCIPAL =================
 
 export default function App() {
-  const [folderOpened, setFolderOpened] = useState(false);
-  const [opening, setOpening] = useState<Category | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     playIntroSound();
   }, []);
 
-  const openFolder = (id: Category) => {
-    if (opening) return;
-    playButtonClick();
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setOpening(id);
-    window.setTimeout(
-      () => {
-        setCat(id);
-        setType("all");
-        setFolderOpened(true);
-        setOpening(null);
-      },
-      reduce ? 0 : 520,
-    );
-  };
-
   const active = useActive(ids);
-
   const [open, setOpen] = useState<number | null>(null);
-  const [cat, setCat] = useState<Category>("perso");
-  const [type, setType] = useState("all");
 
-  const univ = projects.filter((p) => p.category === "universitaire");
-  const typeOf = (p: Project) => p.type ?? "Autre";
-  const types = Array.from(new Set(univ.map(typeOf)));
-
-  const groups: [string, Project[]][] =
-    cat === "perso"
-      ? [["", projects.filter((p) => p.category === "perso")]]
-      : type === "all"
-        ? [["", univ]]
-        : [[type, univ.filter((p) => typeOf(p) === type)]];
-
-  const shown = groups.flatMap((g) => g[1]);
+  // Tous les projets sont affichés directement, regroupés par catégorie.
+  const personalProjects = projects.filter((p) => p.category === "perso");
+  const universityProjects = projects.filter(
+    (p) => p.category === "universitaire",
+  );
+  const groups: [string, Project[]][] = [
+    ["Projets personnels", personalProjects],
+    ["Projets universitaires", universityProjects],
+  ];
+  const shown = groups.flatMap(([, list]) => list);
 
   useEffects();
   useHeroParallax();
   useTimeline();
   useTilt();
-  useAes(cat + "|" + type + "|" + folderOpened);
+  useAes("projects");
   useAnchorCenter();
 
   const [theme, chooseTheme] = useTheme();
@@ -924,187 +900,68 @@ export default function App() {
         <SkillsPanel />
       </section>
 
-      <section
-        id="projets"
-        className={!folderOpened ? "showing-folders" : "showing-projects"}
-      >
+      <section id="projets" className="showing-projects">
         <p className="tag mono rv">// 04</p>
         <h2 className="rv">Mes projets.</h2>
 
-        {!folderOpened ? (
-          <div className={"project-folders" + (opening ? " is-opening" : "")}>
-            {[
-              {
-                id: "perso" as Category,
-                name: "Projets personnels",
-                emoji: "✳",
-                className: "folder-personal",
-              },
-              {
-                id: "universitaire" as Category,
-                name: "Projets universitaires",
-                emoji: "✳",
-                className: "folder-university",
-              },
-            ].map((folder, fi) => {
-              const folderProjects = projects.filter(
-                (p) => p.category === folder.id,
-              );
-              const state =
-                opening === folder.id ? "chosen" : opening ? "other" : "idle";
-
-              return (
-                <button
-                  key={folder.id}
-                  type="button"
-                  className={`project-folder aes ${folder.className}`}
-                  data-state={state}
-                  style={delay(fi * 0.14)}
-                  onClick={() => openFolder(folder.id)}
-                >
-                  <div className="folder-stack" data-tilt="6">
-                    {folderProjects.slice(0, 3).map((p, i) => (
-                      <div
-                        className={`folder-preview preview-${i + 1}`}
-                        key={p.title}
-                      >
-                        {cover(p) ? (
-                          <img src={cover(p)} alt="" />
-                        ) : (
-                          <span>{p.icon}</span>
-                        )}
-                      </div>
-                    ))}
-
-                    <div className="folder-back" />
-                    <div className="folder-tab" />
-                    <div className="folder-front">
-                      <span className="folder-emoji">{folder.emoji}</span>
-                      <span className="folder-open">↗</span>
-                    </div>
-                  </div>
-
-                  <div className="folder-caption">
-                    <span className="folder-name">{folder.name}</span>
-                    <span className="folder-count mono">
-                      {folderProjects.length} créations
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="folder-list">
-            <div className="folder-head">
-              <button
-                type="button"
-                className="back-to-folders"
-                onClick={() => {
-                  playButtonClick();
-                  setFolderOpened(false);
-                  setType("all");
-                }}
-              >
-                ← Retour aux dossiers
-              </button>
-
-              <h3 className="folder-title">
-                {categories.find(([id]) => id === cat)?.[1]}{" "}
-                <span className="mono">
-                  ({projects.filter((p) => p.category === cat).length})
-                </span>
-              </h3>
-            </div>
-
-            <div className={`subtabs${cat === "universitaire" ? " open" : ""}`}>
-              <div>
-                <div
-                  className="tabs sub"
-                  role="tablist"
-                  aria-label="Type de projet universitaire"
-                >
-                  {["all", ...types].map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      role="tab"
-                      tabIndex={cat === "universitaire" ? 0 : -1}
-                      aria-selected={type === t}
-                      className={type === t ? "on" : ""}
-                      onClick={() => {
-                        playButtonClick();
-                        setType(t);
-                      }}
-                    >
-                      {t === "all" ? "Tous les types" : t}{" "}
-                      <span className="mono">
-                        (
-                        {t === "all"
-                          ? univ.length
-                          : univ.filter((p) => typeOf(p) === t).length}
-                        )
-                      </span>
-                    </button>
-                  ))}
+        <div className="folder-list">
+          {groups.map(([name, list], groupIndex) => (
+            <div className="grp" key={name}>
+              <div className="project-section-heading">
+                <div>
+                  <p className="tag mono">
+                    // {String(groupIndex + 1).padStart(2, "0")}
+                  </p>
+                  <h3>{name}</h3>
                 </div>
+                <span className="mono project-section-count">
+                  {String(list.length).padStart(2, "0")} PROJETS
+                </span>
+              </div>
+
+              <div className="grid3">
+                {list.map((p, i) => (
+                  <a
+                    key={p.title}
+                    href={p.href}
+                    className="cell proj aes"
+                    data-tilt="9"
+                    style={delay((i % 3) * 0.08)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      playProjectClick();
+                      setOpen(shown.indexOf(p));
+                    }}
+                  >
+                    <span className="arrow">↗</span>
+                    <div
+                      className="thumb"
+                      style={{ "--c": p.color } as React.CSSProperties}
+                    >
+                      {cover(p) ? (
+                        <img src={cover(p)} alt="" loading="lazy" />
+                      ) : (
+                        p.icon
+                      )}
+                    </div>
+                    <span className="when mono">
+                      {p.collaboration ?? p.kind}
+                    </span>
+                    <h3>{p.title}</h3>
+                    <p>{p.text}</p>
+                    <div className="chips">
+                      {p.stack.map((c) => (
+                        <i key={c} className="mono">
+                          {c}
+                        </i>
+                      ))}
+                    </div>
+                  </a>
+                ))}
               </div>
             </div>
-
-            <div key={`${cat}|${type}`}>
-              {groups.map(([name, list]) => (
-                <div className="grp" key={name || "all"}>
-                  {name && (
-                    <h3 className="grp-h mono aes">
-                      <span>{name}</span>
-                      <small>({list.length})</small>
-                    </h3>
-                  )}
-                  <div className="grid3">
-                    {list.map((p, i) => (
-                      <a
-                        key={p.title}
-                        href={p.href}
-                        className="cell proj aes"
-                        data-tilt="9"
-                        style={delay((i % 3) * 0.08)}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          playProjectClick();
-                          setOpen(shown.indexOf(p));
-                        }}
-                      >
-                        <span className="arrow">↗</span>
-                        <div
-                          className="thumb"
-                          style={{ "--c": p.color } as React.CSSProperties}
-                        >
-                          {cover(p) ? (
-                            <img src={cover(p)} alt="" loading="lazy" />
-                          ) : (
-                            p.icon
-                          )}
-                        </div>
-                        <span className="when mono">
-                          {p.collaboration ?? p.kind}
-                        </span>
-                        <h3>{p.title}</h3>
-                        <p>{p.text}</p>
-                        <div className="chips">
-                          {p.stack.map((c) => (
-                            <i key={c} className="mono">
-                              {c}
-                            </i>
-                          ))}
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+          ))}
+        </div>
       </section>
 
       <section id="parcours">
