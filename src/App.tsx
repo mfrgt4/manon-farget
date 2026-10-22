@@ -681,7 +681,7 @@ export default function App() {
 
             <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
               Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
-              Clermont Auvergne au Puy-en-Velay. Je mêle créativité, webdesign
+              Clermont Auvergne au Puy-en-Velay. Je mêle créativité
               et nouvelles technologie pour donner vie à mes idées.
             </p>
 
