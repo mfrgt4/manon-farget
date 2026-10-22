@@ -1483,7 +1483,7 @@ body:has(.welcome-screen) {
 }
 
 #projets .project-group--2 .project-section-copy h3::before {
-  border-color: var(--muted, #706775);
+  border-color: #e761aa;
   transform: rotate(0.5deg);
 }
 
@@ -1561,24 +1561,24 @@ body:has(.welcome-screen) {
 }
 
 /* ==========================================
-   CONTOUR ANIMÉ — PROJETS PERSONNELS
+   CONTOUR ANIMÉ — LES DEUX CATÉGORIES
 ========================================== */
 
-#projets .project-group--1 .project-section-copy h3 {
+#projets .project-group--1 .project-section-copy h3,
+#projets .project-group--2 .project-section-copy h3 {
   position: relative;
   isolation: isolate;
 }
 
-/* Cadre de sélection */
-#projets .project-group--1 .project-section-copy h3::before {
+/* Cadre de sélection animé */
+#projets .project-group--1 .project-section-copy h3::before,
+#projets .project-group--2 .project-section-copy h3::before {
   content: "";
   position: absolute;
-
   inset: -9px -15px;
 
   border: 1px solid rgba(231, 97, 170, 0.9);
   border-radius: 2px;
-
   background: transparent;
   pointer-events: none;
 
@@ -1586,8 +1586,9 @@ body:has(.welcome-screen) {
   animation: selection-frame 5s ease-in-out infinite;
 }
 
-/* Petits carrés de sélection */
-#projets .project-group--1 .project-section-copy h3::after {
+/* Poignées de sélection */
+#projets .project-group--1 .project-section-copy h3::after,
+#projets .project-group--2 .project-section-copy h3::after {
   content: "";
   position: absolute;
 
@@ -1605,14 +1606,12 @@ body:has(.welcome-screen) {
     1px 1px 0 #e761aa;
 
   pointer-events: none;
-
   animation: selection-handle 5s ease-in-out infinite;
 }
 
-/* Mouvement subtil du cadre */
+/* Animation du cadre */
 @keyframes selection-frame {
-  0%,
-  100% {
+  0%, 100% {
     transform: rotate(-1deg) scale(1);
     border-color: rgba(231, 97, 170, 0.8);
   }
@@ -1623,10 +1622,9 @@ body:has(.welcome-screen) {
   }
 }
 
-/* Mouvement des poignées */
+/* Animation des poignées */
 @keyframes selection-handle {
-  0%,
-  100% {
+  0%, 100% {
     transform: translate(0, 0) rotate(0deg);
   }
 
@@ -1635,10 +1633,12 @@ body:has(.welcome-screen) {
   }
 }
 
-/* Accessibilité : respecter la préférence de mouvement réduit */
+/* Accessibilité */
 @media (prefers-reduced-motion: reduce) {
   #projets .project-group--1 .project-section-copy h3::before,
-  #projets .project-group--1 .project-section-copy h3::after {
+  #projets .project-group--1 .project-section-copy h3::after,
+  #projets .project-group--2 .project-section-copy h3::before,
+  #projets .project-group--2 .project-section-copy h3::after {
     animation: none;
   }
 }

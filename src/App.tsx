@@ -828,9 +828,9 @@ export default function App() {
         <div className="sk">
           <div className="sk-side">
             <p className="tag mono rv">// 02</p>
-            <h2 className="rv">Mes 5 compétences clés.</h2>
+            <h2 className="rv">Mes compétences.</h2>
             <p className="sk-note rv">
-              survole ou touche une ligne pour la découvrir.
+              ↖ survole ou touche une ligne pour la découvrir.
             </p>
 
             <div className="sk-count mono rv">
