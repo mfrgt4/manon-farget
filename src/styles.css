@@ -1747,3 +1747,16 @@ body:has(.welcome-screen) {
   right: -4px;
   bottom: -4px;
 }
+
+
+/* Sphère : prête à être manipulée */
+.word-sphere,
+.word-sphere canvas {
+  cursor: grab;
+}
+
+/* Pendant la rotation */
+.word-sphere:active,
+.word-sphere canvas:active {
+  cursor: grabbing;
+}
