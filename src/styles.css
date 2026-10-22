@@ -1314,7 +1314,10 @@ body:has(.welcome-screen) {
   }
 }
 
-/* En-tête des catégories */
+/* =========================================
+   BASE COMMUNE
+========================================= */
+
 #projets .project-section-heading {
   position: relative;
   display: grid;
@@ -1322,20 +1325,17 @@ body:has(.welcome-screen) {
   align-items: center;
   gap: 20px;
 
-  padding: 24px 26px;
+  padding: 25px 26px;
   margin-bottom: 28px;
 
-  background: linear-gradient(
-    115deg,
-    rgba(231, 97, 170, 0.16),
-    rgba(25, 18, 27, 0.98) 45%
-  );
+  border-radius: 16px;
+  overflow: hidden;
 
-  border: 1px solid rgba(231, 97, 170, 0.25);
-  border-radius: 18px;
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease;
 }
 
-/* Carré rose */
 #projets .project-section-number {
   display: flex;
   align-items: center;
@@ -1344,50 +1344,39 @@ body:has(.welcome-screen) {
   width: 52px;
   height: 52px;
 
-  background: #e761aa;
-  color: #251521;
-
-  border-radius: 14px;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 800;
 
-  transition: transform 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    border-radius 0.3s ease;
 }
 
-#projets .project-group:hover .project-section-number {
-  transform: translateY(-2px);
+#projets .project-section-copy {
+  min-width: 0;
 }
 
-/* Titre */
 #projets .project-section-copy h3 {
   margin: 0;
-
-  color: #fff5fa;
   font-size: clamp(1.5rem, 2.5vw, 2.15rem);
   font-weight: 750;
   line-height: 1.15;
   letter-spacing: -0.045em;
 }
 
-/* Description */
 #projets .project-section-description {
   max-width: 680px;
-  margin: 7px 0 0;
-
-  color: #d5c5d0;
-  font-size: 0.94rem;
+  margin: 8px 0 0;
+  font-size: 0.92rem;
   line-height: 1.5;
 }
 
-/* Nombre de projets */
 #projets .project-section-count {
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding-left: 20px;
 
-  color: #e761aa;
   font-size: 2.6rem;
   font-weight: 800;
   line-height: 1;
@@ -1402,25 +1391,122 @@ body:has(.welcome-screen) {
   display: none;
 }
 
-/* Espacement entre catégories */
-#projets .grp + .grp {
-  margin-top: 48px;
+
+/* =========================================
+   01 — PROJETS PERSONNELS
+   Créatif, lumineux, spontané
+========================================= */
+
+#projets .project-group--1 .project-section-heading {
+  background:
+    radial-gradient(
+      ellipse at 0% 100%,
+      rgba(231, 97, 170, 0.19),
+      transparent 55%
+    ),
+    linear-gradient(
+      115deg,
+      rgba(231, 97, 170, 0.10),
+      rgba(24, 17, 25, 0.98) 75%
+    );
+
+  border: 1px solid rgba(231, 97, 170, 0.30);
+  border-radius: 24px 8px 24px 8px;
 }
 
-/* Mobile */
+#projets .project-group--1 .project-section-number {
+  background: #e761aa;
+  color: #251521;
+  border-radius: 17px 7px 17px 7px;
+}
+
+#projets .project-group--1 .project-section-copy h3 {
+  color: #fff5fa;
+}
+
+#projets .project-group--1 .project-section-description {
+  color: #d9b8cc;
+}
+
+#projets .project-group--1 .project-section-count {
+  color: #e761aa;
+}
+
+#projets .project-group--1:hover .project-section-number {
+  transform: rotate(-4deg) scale(1.04);
+  border-radius: 10px 18px 10px 18px;
+}
+
+
+/* =========================================
+   02 — PROJETS UNIVERSITAIRES
+   Structuré, sobre, éditorial
+========================================= */
+
+#projets .project-group--2 .project-section-heading {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(231, 97, 170, 0.06),
+      rgba(255, 255, 255, 0.025) 45%,
+      rgba(255, 255, 255, 0.01)
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 3px solid #e761aa;
+  border-radius: 4px;
+}
+
+#projets .project-group--2 .project-section-number {
+  background: rgba(231, 97, 170, 0.12);
+  color: #e761aa;
+  border: 1px solid rgba(231, 97, 170, 0.4);
+  border-radius: 8px;
+}
+
+#projets .project-group--2 .project-section-copy h3 {
+  color: #fff5fa;
+}
+
+#projets .project-group--2 .project-section-description {
+  color: rgba(255, 245, 250, 0.65);
+}
+
+#projets .project-group--2 .project-section-count {
+  color: rgba(231, 97, 170, 0.65);
+}
+
+#projets .project-group--2:hover .project-section-number {
+  transform: translateY(-2px);
+  border-radius: 12px;
+}
+
+
+/* =========================================
+   SÉPARATION DES CATÉGORIES
+========================================= */
+
+#projets .grp + .grp {
+  margin-top: 52px;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
 @media (max-width: 600px) {
   #projets .project-section-heading {
     grid-template-columns: 42px minmax(0, 1fr) auto;
+    align-items: start;
     gap: 12px;
     padding: 18px 14px;
     margin-bottom: 22px;
-    border-radius: 14px;
   }
 
   #projets .project-section-number {
     width: 42px;
     height: 42px;
-    border-radius: 11px;
     font-size: 0.9rem;
   }
 
@@ -1430,12 +1516,14 @@ body:has(.welcome-screen) {
   }
 
   #projets .project-section-description {
+    margin-top: 6px;
     font-size: 0.8rem;
     line-height: 1.45;
   }
 
   #projets .project-section-count {
     padding-left: 0;
+    padding-top: 4px;
     font-size: 1.6rem;
   }
 
