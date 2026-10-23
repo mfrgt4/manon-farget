@@ -770,13 +770,13 @@ export default function App() {
 
             <p className="about-p">
               Hello ! Moi, c’est Manon. Étudiante en BUT MMI, je m’intéresse au
-              développement web, au design d’interfaces et à la création
+              au design d’interfaces et à la création
               visuelle. J’aime concevoir des expériences web esthétiques et
               donner vie à mes idées grâce au graphisme et au montage vidéo.
             </p>
 
             <p className="about-p">
-              En dehors des cours, je réalise des projets personnels en web,
+              En dehors des cours, je réalise des projets personnels en
               design graphique et montage vidéo pour explorer ma créativité et
               continuer à apprendre.
             </p>
@@ -787,7 +787,7 @@ export default function App() {
             </p>
 
             <div className="chips about-facts">
-              <i className="mono">📍 Le Puy-en-Velay</i>
+              <i className="mono">📍 Lyon</i>
               <i className="mono">🎓 BUT MMI · 2e année</i>
               <i className="mono">🗓️ Stage avril 2027</i>
             </div>
