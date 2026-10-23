@@ -1,49 +1,45 @@
 import { useEffect, useRef } from "react";
 
-type ParticlesProps = {
-  className?: string;
-  isHero?: boolean;
+type Props = {
+  colors?: string[];
+  line?: string;
+  hero?: boolean;
 };
 
-type Star = {
+type Sparkle = {
   x: number;
   y: number;
   size: number;
-  baseOpacity: number;
   phase: number;
   speed: number;
-  driftX: number;
-  driftY: number;
+  opacity: number;
+  color: string;
   vx: number;
   vy: number;
-  color: string;
+  star: boolean;
 };
 
-const COLORS = ["#ec65a7", "#ffffff", "#d77aa8", "#f5b4d1"];
-
 export default function Particles({
-  className = "",
-  isHero = false,
-}: ParticlesProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  colors = ["#ec65a7", "#ffffff", "#d77aa8", "#f5b4d1"],
+  hero = false,
+}: Props) {
+  const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const cv = ref.current;
+    const ctx = cv?.getContext("2d");
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!cv || !ctx) return;
 
-    let width = 0;
-    let height = 0;
-    let animationFrame = 0;
-    let stars: Star[] = [];
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    const STAR_COUNT = isHero ? 55 : 40;
-    const MOUSE_RADIUS = 150;
-    const MOUSE_FORCE = 0.045;
+    let sparkles: Sparkle[] = [];
+    let w = 0;
+    let h = 0;
+    let raf = 0;
+    let lastTime = 0;
 
     const mouse = {
       x: -1000,
@@ -51,40 +47,45 @@ export default function Particles({
       active: false,
     };
 
-    const createStar = (): Star => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 1.8 + 0.8,
-      baseOpacity: Math.random() * 0.25 + 0.18,
-      phase: Math.random() * Math.PI * 2,
-      speed: Math.random() * 0.025 + 0.008,
-      driftX: (Math.random() - 0.5) * 0.2,
-      driftY: (Math.random() - 0.5) * 0.2,
-      vx: 0,
-      vy: 0,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    });
+    const MOUSE_RADIUS = 140;
+    const MOUSE_FORCE = 0.12;
 
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect();
+    const init = () => {
+      const rect = cv.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-      width = rect.width;
-      height = rect.height;
+      w = rect.width;
+      h = rect.height;
 
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      stars = Array.from({ length: STAR_COUNT }, createStar);
+      const count = Math.min(
+        hero ? 48 : 65,
+        Math.max(12, Math.floor((w * h) / (hero ? 16000 : 13000))),
+      );
+
+      sparkles = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        size: 0.7 + Math.random() * 1.1,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.025 + Math.random() * 0.035,
+        opacity: 0.12 + Math.random() * 0.2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: (Math.random() - 0.5) * 0.15,
+        star: Math.random() > 0.72,
+      }));
     };
 
-    // La souris est suivie même si le canvas utilise pointer-events: none.
-    const handleMouseMove = (event: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
+    const updateMouse = (clientX: number, clientY: number) => {
+      const rect = cv.getBoundingClientRect();
 
-      mouse.x = event.clientX - rect.left;
-      mouse.y = event.clientY - rect.top;
+      mouse.x = clientX - rect.left;
+      mouse.y = clientY - rect.top;
 
       mouse.active =
         mouse.x >= 0 &&
@@ -93,110 +94,171 @@ export default function Particles({
         mouse.y <= rect.height;
     };
 
+    const handleMouseMove = (event: MouseEvent) => {
+      updateMouse(event.clientX, event.clientY);
+    };
+
     const handleMouseLeave = () => {
       mouse.active = false;
     };
 
-    const drawStar = (star: Star, time: number, mouseInfluence: number) => {
-      const twinkle = (Math.sin(time * star.speed + star.phase) + 1) / 2;
+    const drawStar = (
+      x: number,
+      y: number,
+      size: number,
+      alpha: number,
+      color: string,
+    ) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = color;
 
-      const opacity = Math.min(
-        star.baseOpacity + twinkle * 0.16 + mouseInfluence * 0.12,
-        0.65
+      ctx.beginPath();
+      ctx.moveTo(0, -size * 1.8);
+      ctx.quadraticCurveTo(
+        size * 0.18,
+        -size * 0.18,
+        size * 1.8,
+        0,
       );
-
-      ctx.globalAlpha = opacity;
-      ctx.fillStyle = star.color;
-
-      // Étoile scintillante à quatre branches.
-      ctx.beginPath();
-      ctx.moveTo(star.x, star.y - star.size * 2);
-      ctx.lineTo(star.x + star.size * 0.45, star.y);
-      ctx.lineTo(star.x, star.y + star.size * 2);
-      ctx.lineTo(star.x - star.size * 0.45, star.y);
-      ctx.closePath();
+      ctx.quadraticCurveTo(
+        size * 0.18,
+        size * 0.18,
+        0,
+        size * 1.8,
+      );
+      ctx.quadraticCurveTo(
+        -size * 0.18,
+        size * 0.18,
+        -size * 1.8,
+        0,
+      );
+      ctx.quadraticCurveTo(
+        -size * 0.18,
+        -size * 0.18,
+        0,
+        -size * 1.8,
+      );
       ctx.fill();
 
-      ctx.beginPath();
-      ctx.moveTo(star.x - star.size * 2, star.y);
-      ctx.lineTo(star.x, star.y + star.size * 0.45);
-      ctx.lineTo(star.x + star.size * 2, star.y);
-      ctx.lineTo(star.x, star.y - star.size * 0.45);
-      ctx.closePath();
-      ctx.fill();
-
-      // Petit centre lumineux, sans halo trop intense.
-      ctx.globalAlpha = opacity * 0.45;
-      ctx.beginPath();
-      ctx.arc(star.x, star.y, star.size * 0.5, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.restore();
     };
 
-    const animate = (time: number) => {
-      ctx.clearRect(0, 0, width, height);
+    const draw = (time: number) => {
+      const dt = lastTime
+        ? Math.min((time - lastTime) / 16.67, 2)
+        : 1;
 
-      for (const star of stars) {
-        let mouseInfluence = 0;
+      lastTime = time;
+
+      ctx.clearRect(0, 0, w, h);
+
+      for (const s of sparkles) {
+        if (!reduce) {
+          s.phase += s.speed * dt;
+
+          // Déplacement naturel.
+          s.x += s.vx * dt;
+          s.y += s.vy * dt;
+
+          // Les étoiles proches de la souris sont repoussées.
+          if (mouse.active) {
+            const dx = s.x - mouse.x;
+            const dy = s.y - mouse.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance > 0 && distance < MOUSE_RADIUS) {
+              const influence = 1 - distance / MOUSE_RADIUS;
+
+              s.vx +=
+                (dx / distance) * influence * MOUSE_FORCE * dt;
+
+              s.vy +=
+                (dy / distance) * influence * MOUSE_FORCE * dt;
+            }
+          }
+
+          // Retour progressif à un mouvement discret.
+          s.vx *= Math.pow(0.94, dt);
+          s.vy *= Math.pow(0.94, dt);
+
+          if (s.x < -5) s.x = w + 5;
+          if (s.x > w + 5) s.x = -5;
+          if (s.y < -5) s.y = h + 5;
+          if (s.y > h + 5) s.y = -5;
+        }
+
+        const twinkle = (Math.sin(s.phase) + 1) / 2;
+
+        // Opacité faible pour préserver la lisibilité du texte.
+        let alpha = s.opacity * (0.45 + twinkle * 0.45);
+        let size = s.size * (0.85 + twinkle * 0.25);
 
         if (mouse.active) {
-          const dx = star.x - mouse.x;
-          const dy = star.y - mouse.y;
+          const dx = s.x - mouse.x;
+          const dy = s.y - mouse.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance > 0 && distance < MOUSE_RADIUS) {
-            mouseInfluence = 1 - distance / MOUSE_RADIUS;
+          if (distance < MOUSE_RADIUS) {
+            const influence = 1 - distance / MOUSE_RADIUS;
 
-            // Répulsion douce des étoiles autour du curseur.
-            star.vx +=
-              (dx / distance) * mouseInfluence * MOUSE_FORCE;
-
-            star.vy +=
-              (dy / distance) * mouseInfluence * MOUSE_FORCE;
+            // Scintillement légèrement renforcé près du curseur.
+            alpha = Math.min(alpha + influence * 0.12, 0.42);
+            size *= 1 + influence * 0.25;
           }
         }
 
-        // Mouvement naturel et retour progressif au calme.
-        star.x += star.driftX + star.vx;
-        star.y += star.driftY + star.vy;
-
-        star.vx *= 0.94;
-        star.vy *= 0.94;
-
-        // Réapparition de l'autre côté du canvas.
-        if (star.x < -5) star.x = width + 5;
-        if (star.x > width + 5) star.x = -5;
-        if (star.y < -5) star.y = height + 5;
-        if (star.y > height + 5) star.y = -5;
-
-        drawStar(star, time, mouseInfluence);
+        if (s.star) {
+          drawStar(s.x, s.y, size, alpha, s.color);
+        } else {
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = s.color;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
       }
 
       ctx.globalAlpha = 1;
-      animationFrame = window.requestAnimationFrame(animate);
+
+      if (!reduce) {
+        raf = requestAnimationFrame(draw);
+      }
     };
 
-    resize();
+    init();
 
+    const ro = new ResizeObserver(init);
+    ro.observe(cv);
+
+    // window permet de suivre la souris même si le canvas
+    // utilise pointer-events: none.
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("blur", handleMouseLeave);
-    window.addEventListener("resize", resize);
 
-    animationFrame = window.requestAnimationFrame(animate);
+    raf = requestAnimationFrame(draw);
 
     return () => {
-      window.cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(raf);
+      ro.disconnect();
 
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("blur", handleMouseLeave);
-      window.removeEventListener("resize", resize);
     };
-  }, [isHero]);
+  }, [colors, hero]);
 
   return (
     <canvas
-      ref={canvasRef}
-      className={`particles-canvas ${className}`}
+      className={hero ? "p-hero" : undefined}
+      id={hero ? undefined : "particles"}
+      ref={ref}
       aria-hidden="true"
+      style={{
+        pointerEvents: "none",
+      }}
     />
   );
 }
