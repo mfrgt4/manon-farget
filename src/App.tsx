@@ -787,7 +787,7 @@ export default function App() {
             </p>
 
             <div className="chips about-facts">
-              <i className="mono">📍 Le Puy-en-Velay</i>
+              <i className="mono">📍 Lyon</i>
               <i className="mono">🎓 BUT MMI · 2e année</i>
               <i className="mono">🗓️ Stage avril 2027</i>
             </div>
