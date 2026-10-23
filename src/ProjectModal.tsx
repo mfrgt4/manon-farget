@@ -1,5 +1,4 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
 import type { Media, Project } from "./data";
 
 type Slide = Media | { type: "placeholder"; src: ""; alt: string };
@@ -174,12 +173,8 @@ export default function ProjectModal({
   if (!p) return null;
 
   return (
-    <motion.div
+    <div
       className="pm"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.28, ease: "easeOut" }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="pm-title"
@@ -241,10 +236,8 @@ export default function ProjectModal({
 
         {/* Visuels du projet */}
         <div className="pm-slide" key={p.title + "-media"}>
-          <motion.div
+          <div
             className={"pm-view" + (p.fit === "contain" ? " contain" : "")}
-            layoutId={`project-image-${p.title}`}
-            transition={{ layout: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}
             onTouchStart={(e) => {
               slideTouchX.current = e.touches[0].clientX;
             }}
@@ -287,7 +280,7 @@ export default function ProjectModal({
                 </span>
               </>
             )}
-          </motion.div>
+          </div>
 
           {/* Miniatures */}
           {slides.length > 1 && (
@@ -438,6 +431,6 @@ export default function ProjectModal({
           →
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }
