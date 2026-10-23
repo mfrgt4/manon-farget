@@ -1433,19 +1433,7 @@ body:has(.welcome-screen) {
 
 /* Compteur */
 #projets .project-section-count {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding-left: 20px;
-
-  color: #e761aa;
-
-  font-family: "JetBrains Mono", monospace;
-  font-size: clamp(1.8rem, 3vw, 2.7rem);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.07em;
+  display: none;
 }
 
 #projets .project-section-count strong {
