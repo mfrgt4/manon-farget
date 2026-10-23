@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import {
@@ -943,8 +944,10 @@ export default function App() {
                     }}
                   >
                     <span className="arrow">↗</span>
-                    <div
+                    <motion.div
                       className="thumb"
+                      layoutId={`project-image-${p.title}`}
+                      transition={{ layout: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}
                       style={{ "--c": p.color } as React.CSSProperties}
                     >
                       {cover(p) ? (
@@ -952,7 +955,7 @@ export default function App() {
                       ) : (
                         p.icon
                       )}
-                    </div>
+                    </motion.div>
                     <span className="when mono">
                       {p.collaboration ?? p.kind}
                     </span>
@@ -1057,14 +1060,16 @@ export default function App() {
         </div>
       </section>
 
-      {open !== null && (
-        <ProjectModal
-          list={shown}
-          index={open}
-          onIndex={setOpen}
-          onClose={() => setOpen(null)}
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {open !== null && (
+          <ProjectModal
+            list={shown}
+            index={open}
+            onIndex={setOpen}
+            onClose={() => setOpen(null)}
+          />
+        )}
+      </AnimatePresence>
 
       <footer className="mono">
         © 2026 {profile.name} · Imaginé avec créativité, conçu avec passion ·{" "}
