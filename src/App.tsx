@@ -919,9 +919,6 @@ export default function App() {
                   {String(groupIndex + 1).padStart(2, "0")}
                 </span>
                 <div className="project-section-copy">
-                  <p className="project-section-kicker mono">
-                    {groupIndex === 0 ? "PERSONAL WORK" : "UNIVERSITY WORK"}
-                  </p>
                   <h3>{name}</h3>
                   <p className="project-section-description">{description}</p>
                 </div>
