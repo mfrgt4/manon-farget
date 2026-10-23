@@ -14,10 +14,13 @@ type Sparkle = {
   speed: number;
   opacity: number;
   color: string;
+  vx: number;
+  vy: number;
+  star: boolean;
 };
 
 export default function Particles({
-  colors = ["#f296bb", "#ffffff", "#c9d9cf", "#e9a3bc"],
+  colors = ["#ec65a7", "#ffffff", "#d77aa8", "#f5b4d1"],
   hero = false,
 }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -36,6 +39,7 @@ export default function Particles({
     let w = 0;
     let h = 0;
     let raf = 0;
+    let lastTime = 0;
 
     const init = () => {
       const rect = cv.getBoundingClientRect();
@@ -50,18 +54,21 @@ export default function Particles({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const count = Math.min(
-        hero ? 18 : 28,
-        Math.max(5, Math.floor((w * h) / (hero ? 45000 : 35000))),
+        hero ? 65 : 100,
+        Math.max(12, Math.floor((w * h) / (hero ? 11000 : 8500))),
       );
 
       sparkles = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
-        size: 0.6 + Math.random() * 1.1,
+        size: 1 + Math.random() * 2.2,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.008 + Math.random() * 0.012,
-        opacity: 0.15 + Math.random() * 0.2,
+        speed: 0.025 + Math.random() * 0.045,
+        opacity: 0.25 + Math.random() * 0.5,
         color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        star: Math.random() > 0.58,
       }));
     };
 
@@ -70,49 +77,78 @@ export default function Particles({
     const ro = new ResizeObserver(init);
     ro.observe(cv);
 
-    const draw = () => {
+    const drawStar = (
+      x: number,
+      y: number,
+      size: number,
+      alpha: number,
+      color: string,
+    ) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.globalAlpha = alpha;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = size * 5;
+      ctx.fillStyle = color;
+
+      ctx.beginPath();
+      ctx.moveTo(0, -size * 1.8);
+      ctx.quadraticCurveTo(size * 0.18, -size * 0.18, size * 1.8, 0);
+      ctx.quadraticCurveTo(size * 0.18, size * 0.18, 0, size * 1.8);
+      ctx.quadraticCurveTo(-size * 0.18, size * 0.18, -size * 1.8, 0);
+      ctx.quadraticCurveTo(-size * 0.18, -size * 0.18, 0, -size * 1.8);
+      ctx.fill();
+
+      ctx.restore();
+    };
+
+    const draw = (time: number) => {
+      const dt = lastTime
+        ? Math.min((time - lastTime) / 16.67, 2)
+        : 1;
+
+      lastTime = time;
+
       ctx.clearRect(0, 0, w, h);
 
       for (const s of sparkles) {
         if (!reduce) {
-          s.phase += s.speed;
+          s.phase += s.speed * dt;
+          s.x += s.vx * dt;
+          s.y += s.vy * dt;
+
+          if (s.x < -10) s.x = w + 10;
+          if (s.x > w + 10) s.x = -10;
+          if (s.y < -10) s.y = h + 10;
+          if (s.y > h + 10) s.y = -10;
         }
 
-        const pulse = reduce
-          ? 0.7
-          : 0.35 + (Math.sin(s.phase) + 1) * 0.25;
+        const twinkle = (Math.sin(s.phase) + 1) / 2;
+        const alpha = s.opacity * (0.18 + twinkle * 0.82);
+        const size = s.size * (0.7 + twinkle * 0.7);
 
-        const alpha = s.opacity + pulse * 0.2;
-
+        // Halo lumineux pour rester visible sur les fonds clairs.
         ctx.save();
-        ctx.globalAlpha = alpha;
-
-        // Petit point lumineux, sans contour ni forme de bulle.
+        ctx.globalAlpha = alpha * 0.48;
+        ctx.shadowColor = s.color;
+        ctx.shadowBlur = size * 7;
         ctx.fillStyle = s.color;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.arc(s.x, s.y, size * 1.5, 0, Math.PI * 2);
         ctx.fill();
-
-        // Halo très léger autour du point.
-        const glow = ctx.createRadialGradient(
-          s.x,
-          s.y,
-          0,
-          s.x,
-          s.y,
-          s.size * 4,
-        );
-
-        glow.addColorStop(0, s.color);
-        glow.addColorStop(1, "rgba(255,255,255,0)");
-
-        ctx.globalAlpha = alpha * 0.3;
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size * 4, 0, Math.PI * 2);
-        ctx.fill();
-
         ctx.restore();
+
+        if (s.star) {
+          drawStar(s.x, s.y, size, alpha, s.color);
+        } else {
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = s.color;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
       }
 
       if (!reduce) {
@@ -120,7 +156,7 @@ export default function Particles({
       }
     };
 
-    draw();
+    draw(0);
 
     return () => {
       cancelAnimationFrame(raf);
