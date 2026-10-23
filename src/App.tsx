@@ -528,6 +528,7 @@ export default function App() {
 
   const active = useActive(ids);
   const [open, setOpen] = useState<number | null>(null);
+  const [modalProjects, setModalProjects] = useState<Project[]>([]);
 
   // Tous les projets sont affichés directement, regroupés par catégorie.
   const personalProjects = projects.filter((p) => p.category === "perso");
@@ -546,7 +547,6 @@ export default function App() {
       universityProjects,
     ],
   ];
-  const shown = groups.flatMap(([, , list]) => list);
 
   useEffects();
   useHeroParallax();
@@ -770,13 +770,13 @@ export default function App() {
 
             <p className="about-p">
               Hello ! Moi, c’est Manon. Étudiante en BUT MMI, je m’intéresse au
-              au design d’interfaces et à la création
+              développement web, au design d’interfaces et à la création
               visuelle. J’aime concevoir des expériences web esthétiques et
               donner vie à mes idées grâce au graphisme et au montage vidéo.
             </p>
 
             <p className="about-p">
-              En dehors des cours, je réalise des projets personnels en
+              En dehors des cours, je réalise des projets personnels en web,
               design graphique et montage vidéo pour explorer ma créativité et
               continuer à apprendre.
             </p>
@@ -787,7 +787,7 @@ export default function App() {
             </p>
 
             <div className="chips about-facts">
-              <i className="mono">📍 Lyon</i>
+              <i className="mono">📍 Le Puy-en-Velay</i>
               <i className="mono">🎓 BUT MMI · 2e année</i>
               <i className="mono">🗓️ Stage avril 2027</i>
             </div>
@@ -830,7 +830,7 @@ export default function App() {
             <p className="tag mono rv">// ce que je sais faire</p>
             <h2 className="rv">Mes compétences.</h2>
             <p className="sk-note rv">
-              ↖ survole ou touche une ligne pour la découvrir.
+              survole ou touche une ligne pour la découvrir.
             </p>
 
             <div className="sk-count mono rv">
@@ -919,6 +919,9 @@ export default function App() {
                   {String(groupIndex + 1).padStart(2, "0")}
                 </span>
                 <div className="project-section-copy">
+                  <p className="project-section-kicker mono">
+                    {groupIndex === 0 ? "PERSONAL WORK" : "UNIVERSITY WORK"}
+                  </p>
                   <h3>{name}</h3>
                   <p className="project-section-description">{description}</p>
                 </div>
@@ -939,7 +942,8 @@ export default function App() {
                     onClick={(e) => {
                       e.preventDefault();
                       playProjectClick();
-                      setOpen(shown.indexOf(p));
+                      setModalProjects(list);
+                      setOpen(i);
                     }}
                   >
                     <span className="arrow">↗</span>
@@ -1059,7 +1063,7 @@ export default function App() {
 
       {open !== null && (
         <ProjectModal
-          list={shown}
+          list={modalProjects}
           index={open}
           onIndex={setOpen}
           onClose={() => setOpen(null)}
