@@ -1,174 +1,198 @@
 import { useEffect, useRef } from "react";
 
-type Props = {
-  colors?: string[];
-  line?: string;
-  hero?: boolean;
+type ParticlesProps = {
+  className?: string;
+  isHero?: boolean;
 };
 
-type Sparkle = {
+type Star = {
   x: number;
   y: number;
   size: number;
+  opacity: number;
+  baseOpacity: number;
   phase: number;
   speed: number;
-  opacity: number;
-  color: string;
+  driftX: number;
+  driftY: number;
   vx: number;
   vy: number;
-  star: boolean;
+  color: string;
 };
 
+const COLORS = ["#ec65a7", "#ffffff", "#d77aa8", "#f5b4d1"];
+
 export default function Particles({
-  colors = ["#ec65a7", "#ffffff", "#d77aa8", "#f5b4d1"],
-  hero = false,
-}: Props) {
-  const ref = useRef<HTMLCanvasElement>(null);
+  className = "",
+  isHero = false,
+}: ParticlesProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const cv = ref.current;
-    const ctx = cv?.getContext("2d");
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    if (!cv || !ctx) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    let animationFrame = 0;
+    let width = 0;
+    let height = 0;
+    let stars: Star[] = [];
 
-    let sparkles: Sparkle[] = [];
-    let w = 0;
-    let h = 0;
-    let raf = 0;
-    let lastTime = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    const init = () => {
-      const rect = cv.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const mouse = {
+      x: -1000,
+      y: -1000,
+      active: false,
+    };
 
-      w = rect.width;
-      h = rect.height;
+    const STAR_COUNT = isHero ? 38 : 28;
+    const MOUSE_RADIUS = 130;
+    const MOUSE_FORCE = 0.035;
 
-      cv.width = Math.round(w * dpr);
-      cv.height = Math.round(h * dpr);
+    const createStar = (): Star => {
+      const size = Math.random() * 1.5 + 0.6;
+      const opacity = Math.random() * 0.18 + 0.08;
+
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size,
+        opacity,
+        baseOpacity: opacity,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.025 + 0.008,
+        driftX: (Math.random() - 0.5) * 0.25,
+        driftY: (Math.random() - 0.5) * 0.25,
+        vx: 0,
+        vy: 0,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      };
+    };
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+
+      width = rect.width;
+      height = rect.height;
+
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.min(
-        hero ? 65 : 100,
-        Math.max(12, Math.floor((w * h) / (hero ? 11000 : 8500))),
-      );
-
-      sparkles = Array.from({ length: count }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        size: 1 + Math.random() * 2.2,
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.025 + Math.random() * 0.045,
-        opacity: 0.25 + Math.random() * 0.5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        star: Math.random() > 0.58,
-      }));
+      stars = Array.from({ length: STAR_COUNT }, createStar);
     };
 
-    init();
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
 
-    const ro = new ResizeObserver(init);
-    ro.observe(cv);
+      mouse.x = event.clientX - rect.left;
+      mouse.y = event.clientY - rect.top;
+      mouse.active =
+        mouse.x >= 0 &&
+        mouse.x <= rect.width &&
+        mouse.y >= 0 &&
+        mouse.y <= rect.height;
+    };
 
-    const drawStar = (
-      x: number,
-      y: number,
-      size: number,
-      alpha: number,
-      color: string,
-    ) => {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.globalAlpha = alpha;
-      ctx.shadowColor = color;
-      ctx.shadowBlur = size * 5;
-      ctx.fillStyle = color;
+    const handleMouseLeave = () => {
+      mouse.active = false;
+    };
 
+    const drawStar = (star: Star, time: number) => {
+      const twinkle = (Math.sin(time * star.speed + star.phase) + 1) / 2;
+
+      // Les étoiles restent discrètes au repos.
+      const targetOpacity = star.baseOpacity + twinkle * 0.12;
+      star.opacity += (targetOpacity - star.opacity) * 0.08;
+
+      ctx.globalAlpha = star.opacity;
+      ctx.fillStyle = star.color;
+
+      // Petite étoile à quatre branches.
       ctx.beginPath();
-      ctx.moveTo(0, -size * 1.8);
-      ctx.quadraticCurveTo(size * 0.18, -size * 0.18, size * 1.8, 0);
-      ctx.quadraticCurveTo(size * 0.18, size * 0.18, 0, size * 1.8);
-      ctx.quadraticCurveTo(-size * 0.18, size * 0.18, -size * 1.8, 0);
-      ctx.quadraticCurveTo(-size * 0.18, -size * 0.18, 0, -size * 1.8);
+      ctx.moveTo(star.x, star.y - star.size * 2);
+      ctx.lineTo(star.x + star.size * 0.45, star.y);
+      ctx.lineTo(star.x, star.y + star.size * 2);
+      ctx.lineTo(star.x - star.size * 0.45, star.y);
+      ctx.closePath();
       ctx.fill();
 
-      ctx.restore();
+      ctx.beginPath();
+      ctx.moveTo(star.x - star.size * 2, star.y);
+      ctx.lineTo(star.x, star.y + star.size * 0.45);
+      ctx.lineTo(star.x + star.size * 2, star.y);
+      ctx.lineTo(star.x, star.y - star.size * 0.45);
+      ctx.closePath();
+      ctx.fill();
     };
 
-    const draw = (time: number) => {
-      const dt = lastTime
-        ? Math.min((time - lastTime) / 16.67, 2)
-        : 1;
+    const animate = (time: number) => {
+      ctx.clearRect(0, 0, width, height);
 
-      lastTime = time;
+      for (const star of stars) {
+        star.x += star.driftX + star.vx;
+        star.y += star.driftY + star.vy;
 
-      ctx.clearRect(0, 0, w, h);
+        // Retour progressif à un mouvement calme.
+        star.vx *= 0.94;
+        star.vy *= 0.94;
 
-      for (const s of sparkles) {
-        if (!reduce) {
-          s.phase += s.speed * dt;
-          s.x += s.vx * dt;
-          s.y += s.vy * dt;
+        if (mouse.active) {
+          const dx = star.x - mouse.x;
+          const dy = star.y - mouse.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (s.x < -10) s.x = w + 10;
-          if (s.x > w + 10) s.x = -10;
-          if (s.y < -10) s.y = h + 10;
-          if (s.y > h + 10) s.y = -10;
+          if (distance > 0 && distance < MOUSE_RADIUS) {
+            const influence = 1 - distance / MOUSE_RADIUS;
+
+            // Les étoiles sont légèrement repoussées par le curseur.
+            star.vx += (dx / distance) * influence * MOUSE_FORCE;
+            star.vy += (dy / distance) * influence * MOUSE_FORCE;
+
+            // Elles scintillent un peu plus près du curseur.
+            const glow = influence * 0.12;
+            ctx.globalAlpha = Math.min(star.baseOpacity + glow, 0.45);
+          }
         }
 
-        const twinkle = (Math.sin(s.phase) + 1) / 2;
-        const alpha = s.opacity * (0.18 + twinkle * 0.82);
-        const size = s.size * (0.7 + twinkle * 0.7);
+        // Réapparition de l'autre côté lorsqu'une étoile sort du canvas.
+        if (star.x < -5) star.x = width + 5;
+        if (star.x > width + 5) star.x = -5;
+        if (star.y < -5) star.y = height + 5;
+        if (star.y > height + 5) star.y = -5;
 
-        // Halo lumineux pour rester visible sur les fonds clairs.
-        ctx.save();
-        ctx.globalAlpha = alpha * 0.48;
-        ctx.shadowColor = s.color;
-        ctx.shadowBlur = size * 7;
-        ctx.fillStyle = s.color;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, size * 1.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-
-        if (s.star) {
-          drawStar(s.x, s.y, size, alpha, s.color);
-        } else {
-          ctx.save();
-          ctx.globalAlpha = alpha;
-          ctx.fillStyle = s.color;
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, size, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
+        drawStar(star, time);
       }
 
-      if (!reduce) {
-        raf = requestAnimationFrame(draw);
-      }
+      ctx.globalAlpha = 1;
+      animationFrame = window.requestAnimationFrame(animate);
     };
 
-    draw(0);
+    resize();
+
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+
+    window.addEventListener("resize", resize);
+
+    animationFrame = window.requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
+      window.cancelAnimationFrame(animationFrame);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("resize", resize);
     };
-  }, [colors, hero]);
+  }, [isHero]);
 
   return (
     <canvas
-      className={hero ? "p-hero" : undefined}
-      id={hero ? undefined : "particles"}
-      ref={ref}
+      ref={canvasRef}
+      className={`particles-canvas ${className}`}
       aria-hidden="true"
     />
   );
