@@ -716,7 +716,7 @@ export default function App() {
                   letterSpacing="1"
                 >
                   <textPath href="#hb" textLength="252" lengthAdjust="spacing">
-                    DÉVELOPPEUSE WEB • UI/UX • MOTION •
+                    GRAPHISME • UI/UX • MOTION •
                   </textPath>
                 </text>
                 <text
@@ -769,14 +769,12 @@ export default function App() {
             <h2>Un peu plus sur moi.</h2>
 
             <p className="about-p">
-              Hello ! Moi, c’est Manon. Étudiante en BUT MMI, je m’intéresse au
-              développement web, au design d’interfaces et à la création
-              visuelle. J’aime concevoir des expériences web esthétiques et
-              donner vie à mes idées grâce au graphisme et au montage vidéo.
+              Hello ! Moi, c’est Manon, étudiante en BUT MMI, parcours Création Numérique. Je m’intéresse particulièrement au design graphique, à l’UI/UX design et à l’audiovisuel.
+              J’aime explorer les univers visuels, imaginer des interfaces et donner vie à mes idées à travers des projets créatifs.
             </p>
 
             <p className="about-p">
-              En dehors des cours, je réalise des projets personnels en web,
+              En dehors des cours, je réalise des projets personnels en
               design graphique et montage vidéo pour explorer ma créativité et
               continuer à apprendre.
             </p>
