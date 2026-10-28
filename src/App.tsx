@@ -499,6 +499,30 @@ function useTheme() {
 const cover = (p: Project) =>
   p.thumbnail ?? p.media?.find((m) => m.type === "image")?.src;
 
+// Utilise le genre explicite du projet, avec un fallback sur son type
+// pour éviter qu'un filtre vide les projets si genre n'est pas renseigné.
+const getProjectGenre = (p: Project): Genre | undefined => {
+  if (p.genre) return p.genre;
+
+  const type = p.type?.toLocaleLowerCase("fr") ?? "";
+  const title = p.title.toLocaleLowerCase("fr");
+
+  if (type.includes("développement web") || type.includes("developpement web")) {
+    return "developpement";
+  }
+  if (type.includes("audiovisuel") || type.includes("vidéo") || type.includes("video")) {
+    return "audiovisuel";
+  }
+  if (title.includes("d'jam") || title.includes("the pit")) {
+    return "branding";
+  }
+  if (type.includes("communication") || type.includes("marketing")) {
+    return "communication";
+  }
+
+  return undefined;
+};
+
 const BAND = [
   "Communication",
   "Design graphique",
@@ -535,7 +559,7 @@ export default function App() {
   const universityProjectsByGenre = projectGenres.map(([genre, label]) => ({
     genre,
     label,
-    projects: universityProjects.filter((p) => p.genre === genre),
+    projects: universityProjects.filter((p) => getProjectGenre(p) === genre),
   }));
   const groups: [string, string, Project[]][] = [
     [
@@ -554,7 +578,8 @@ export default function App() {
   useHeroParallax();
   useTimeline();
   useTilt();
-  useAes("projects");
+  // Relance les animations d’apparition lorsque le filtre change.
+  useAes(`projects-${selectedGenre}`);
   useAnchorCenter();
 
   const [theme, chooseTheme] = useTheme();
@@ -918,7 +943,7 @@ export default function App() {
           {groups.map(([name, description, list], groupIndex) => {
             const displayedList =
               groupIndex === 1 && selectedGenre !== "all"
-                ? list.filter((p) => p.genre === selectedGenre)
+                ? list.filter((p) => getProjectGenre(p) === selectedGenre)
                 : list;
 
             return (
