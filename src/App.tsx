@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import { nav, profile, projects, projectGenres, skills, studies, tools } from "./data";
-import type { Project } from "./data";
+import type { Genre, Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
 import SkillsPanel from "./components/SkillsPanel";
@@ -522,6 +522,7 @@ export default function App() {
   const active = useActive(ids);
   const [open, setOpen] = useState<number | null>(null);
   const [modalProjects, setModalProjects] = useState<Project[]>([]);
+  const [selectedGenre, setSelectedGenre] = useState<Genre | "all">("all");
 
   // Tous les projets sont regroupés par catégorie.
   const personalProjects = projects.filter((p) => p.category === "perso");
@@ -914,71 +915,152 @@ export default function App() {
         <h2 className="rv">Mes projets.</h2>
 
         <div className="folder-list">
-          {groups.map(([name, description, list], groupIndex) => (
-            <div
-              className={`grp project-group project-group--${groupIndex + 1}`}
-              key={name}
-            >
-              <div className="project-section-heading">
-                <span
-                  className="project-section-number mono"
-                  aria-hidden="true"
-                >
-                  {String(groupIndex + 1).padStart(2, "0")}
-                </span>
-                <div className="project-section-copy">
-                  <h3>{name}</h3>
-                  <p className="project-section-description">{description}</p>
-                </div>
-                <span className="mono project-section-count">
-                  <strong>{String(list.length).padStart(2, "0")}</strong>
-                  <span>projets</span>
-                </span>
-              </div>
+          {groups.map(([name, description, list], groupIndex) => {
+            const displayedList =
+              groupIndex === 1 && selectedGenre !== "all"
+                ? list.filter((p) => p.genre === selectedGenre)
+                : list;
 
-              <div className="grid3">
-                {list.map((p, i) => (
-                  <a
-                    key={p.title}
-                    href={p.href}
-                    className="cell proj aes"
-                    data-tilt="9"
-                    style={delay((i % 3) * 0.08)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      playProjectClick();
-                      setModalProjects(list);
-                      setOpen(i);
+            return (
+              <div
+                className={`grp project-group project-group--${groupIndex + 1}`}
+                key={name}
+              >
+                <div className="project-section-heading">
+                  <span
+                    className="project-section-number mono"
+                    aria-hidden="true"
+                  >
+                    {String(groupIndex + 1).padStart(2, "0")}
+                  </span>
+                  <div className="project-section-copy">
+                    <h3>{name}</h3>
+                    <p className="project-section-description">{description}</p>
+                  </div>
+                  <span className="mono project-section-count">
+                    <strong>{String(list.length).padStart(2, "0")}</strong>
+                    <span>projets</span>
+                  </span>
+                </div>
+
+                {groupIndex === 1 && (
+                  <div
+                    role="group"
+                    aria-label="Filtrer les projets universitaires par genre"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      gap: 9,
+                      margin: "0 0 28px",
                     }}
                   >
-                    <span className="arrow">↗</span>
-                    <div
-                      className="thumb"
-                      style={{ "--c": p.color } as React.CSSProperties}
+                    <button
+                      type="button"
+                      aria-pressed={selectedGenre === "all"}
+                      onClick={() => {
+                        playButtonClick();
+                        setSelectedGenre("all");
+                      }}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 7,
+                        minHeight: 44,
+                        padding: "10px 18px",
+                        border: `1px solid ${selectedGenre === "all" ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : (theme === "dark" ? "#40323b" : "#e8dbe2")}`,
+                        borderRadius: 999,
+                        background: selectedGenre === "all" ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : "transparent",
+                        color: selectedGenre === "all" ? (theme === "dark" ? "#17181c" : "#c63e70") : "var(--muted, #706775)",
+                        font: "inherit",
+                        fontSize: 13,
+                        cursor: "pointer",
+                        transition: "color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease",
+                      }}
                     >
-                      {cover(p) ? (
-                        <img src={cover(p)} alt="" loading="lazy" />
-                      ) : (
-                        p.icon
-                      )}
-                    </div>
-                    <span className="when mono">
-                      {p.collaboration ?? p.kind}
-                    </span>
-                    <h3>{p.title}</h3>
-                    <p>{p.text}</p>
-                    <div className="chips">
-                      {p.stack.map((c) => (
-                        <i key={c} className="mono">
-                          {c}
-                        </i>
-                      ))}
-                    </div>
-                  </a>
-                ))}
+                      Tout <sup style={{ fontSize: 10, opacity: 0.7 }}>{universityProjects.length}</sup>
+                    </button>
+
+                    {universityProjectsByGenre.map(({ genre, label, projects: genreProjects }) => {
+                      const isActive = selectedGenre === genre;
+                      return (
+                        <button
+                          key={genre}
+                          type="button"
+                          aria-pressed={isActive}
+                          onClick={() => {
+                            playButtonClick();
+                            setSelectedGenre(genre);
+                          }}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 7,
+                            minHeight: 44,
+                            padding: "10px 18px",
+                            border: `1px solid ${isActive ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : (theme === "dark" ? "#40323b" : "#e8dbe2")}`,
+                            borderRadius: 999,
+                            background: isActive ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : "transparent",
+                            color: isActive ? (theme === "dark" ? "#17181c" : "#c63e70") : "var(--muted, #706775)",
+                            font: "inherit",
+                            fontSize: 13,
+                            cursor: "pointer",
+                            transition: "color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease",
+                          }}
+                        >
+                          {label} <sup style={{ fontSize: 10, opacity: 0.7 }}>{genreProjects.length}</sup>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <div className="grid3">
+                  {displayedList.map((p, i) => (
+                    <a
+                      key={p.title}
+                      href={p.href}
+                      className="cell proj aes"
+                      data-tilt="9"
+                      style={delay((i % 3) * 0.08)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        playProjectClick();
+                        setModalProjects(displayedList);
+                        setOpen(i);
+                      }}
+                    >
+                      <span className="arrow">↗</span>
+                      <div
+                        className="thumb"
+                        style={{ "--c": p.color } as React.CSSProperties}
+                      >
+                        {cover(p) ? (
+                          <img src={cover(p)} alt="" loading="lazy" />
+                        ) : (
+                          p.icon
+                        )}
+                      </div>
+                      <span className="when mono">
+                        {p.collaboration ?? p.kind}
+                      </span>
+                      <h3>{p.title}</h3>
+                      <p>{p.text}</p>
+                      <div className="chips">
+                        {p.stack.map((c) => (
+                          <i key={c} className="mono">
+                            {c}
+                          </i>
+                        ))}
+                      </div>
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
