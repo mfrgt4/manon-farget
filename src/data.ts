@@ -23,6 +23,12 @@ export const skills: Skill[] = [
 export const tools = ["React", "TypeScript", "three.js", "Vite", "Vercel", "HTML5", "CSS3", "JavaScript", "PHP", "SQL", "Git", "GitHub", "Figma", "InDesign", "Photoshop", "Illustrator", "After Effects", "Premiere Pro", "WordPress", "SEO", "UX Design", "Maquettes", "Ergonomie", "Responsive", "Accessibilité", "Notion", "Affinity"];
 export type Media = { type: "image" | "video"; src: string; alt: string; poster?: string };
 export type Category = "perso" | "universitaire";
+export type Genre =
+  | "branding"
+  | "developpement"
+  | "communication"
+  | "audiovisuel";
+
 export type Project = {
   icon: string;
   title: string;
@@ -36,6 +42,7 @@ export type Project = {
   link2?: string;
   linkLabel2?: string;
   category: Category;
+  genre?: Genre;
   type?: string;
   media?: Media[];
   pitch?: string;
@@ -45,6 +52,12 @@ export type Project = {
 };
 export const projectUrl = (p: Project) => p.link ?? (p.href && p.href !== "#" ? p.href : undefined);
 export const categories = [["perso", "Projets personnels"], ["universitaire", "Projets universitaires"]] as const;
+export const projectGenres = [
+  ["branding", "Branding & design"],
+  ["developpement", "Développement web"],
+  ["communication", "Communication & marketing"],
+  ["audiovisuel", "Audiovisuel"],
+] as const;
 export const projects: Project[] = [
   // ===== Projets personnels =====
   { icon: "🎨", title: "Montages", pitch: "Création de Reels Instagram et TikTok sur des films et des séries. L’objectif est de développer mon storytelling et ma compréhension des tendances à travers des visuels. Grâce à l’analyse des statistiques et des tendances, mes contenus ont atteint une large audience.", category: "perso", kind: "Projet perso", text: "Création de montages visuels sur After Effects 2020.", stack: ["After Effects", "Instagram", "TikTok"], color: "#024E32", href: "#", link: "https://www.instagram.com/xxmanclouds/?hl=fr", linkLabel: "Voir mon Instagram", link2: "https://www.tiktok.com/@xxmanclouds?_r=1&_t=ZG-9AOBYnJ3lE9", linkLabel2: "Voir mon TikTok", media: [{ type: "image", src: "/projets/perso-edits.png", alt: "Bannière de mes montages persos" }, { type: "video", src: "/projets/Michaelj_Edit.mp4", alt: "Montage sur Michael Jackson" }, { type: "video", src: "/projets/Hunger-Games_Edit.mp4", alt: "Montage sur Hunger Games" }, { type: "video", src: "/projets/Matrix_Edit2.mp4", alt: "Montage sur Matrix" }, { type: "video", src: "/projets/NaomiLapa_Edit.mp4", alt: "Montage Naomi Lapa" }, { type: "video", src: "/projets/Nami-transitions_Edit.mp4", alt: "Montage sur Nami dans One Piece" }, { type: "video", src: "/projets/Matrix_Edit1.mp4", alt: "Deuxième montage sur Matrix" }] },

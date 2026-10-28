@@ -1,14 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
-import {
-  nav,
-  profile,
-  projects,
-  skills,
-  studies,
-  tools,
-} from "./data";
+import { nav, profile, projects, skills, studies, tools } from "./data";
 import type { Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
@@ -530,11 +523,19 @@ export default function App() {
   const [open, setOpen] = useState<number | null>(null);
   const [modalProjects, setModalProjects] = useState<Project[]>([]);
 
-  // Tous les projets sont affichés directement, regroupés par catégorie.
+  // Tous les projets sont regroupés par catégorie.
   const personalProjects = projects.filter((p) => p.category === "perso");
+
   const universityProjects = projects.filter(
     (p) => p.category === "universitaire",
   );
+
+  // Les projets universitaires sont regroupés par genre.
+  const universityProjectsByGenre = projectGenres.map(([genre, label]) => ({
+    genre,
+    label,
+    projects: universityProjects.filter((p) => p.genre === genre),
+  }));
   const groups: [string, string, Project[]][] = [
     [
       "Projets personnels",
@@ -681,8 +682,8 @@ export default function App() {
 
             <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
               Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
-              Clermont Auvergne au Puy-en-Velay. Je mêle créativité
-              et nouvelles technologie pour donner vie à mes idées.
+              Clermont Auvergne au Puy-en-Velay. Je mêle créativité et nouvelles
+              technologie pour donner vie à mes idées.
             </p>
 
             <div className="btns rv" style={delay(0.4)}>
@@ -769,13 +770,16 @@ export default function App() {
             <h2>Un peu plus sur moi.</h2>
 
             <p className="about-p">
-              Hello ! Moi, c’est Manon, étudiante en BUT MMI, parcours Création Numérique. Je m’intéresse particulièrement au design graphique, à l’UI/UX design et à l’audiovisuel.
-              J’aime explorer les univers visuels, imaginer des interfaces et donner vie à mes idées à travers des projets créatifs.
+              Hello ! Moi, c’est Manon, étudiante en BUT MMI, parcours Création
+              Numérique. Je m’intéresse particulièrement au design graphique, à
+              l’UI/UX design et à l’audiovisuel. J’aime explorer les univers
+              visuels, imaginer des interfaces et donner vie à mes idées à
+              travers des projets créatifs.
             </p>
 
             <p className="about-p">
-              En dehors des cours, je réalise des projets personnels en
-              design graphique et montage vidéo pour explorer ma créativité et
+              En dehors des cours, je réalise des projets personnels en design
+              graphique et montage vidéo pour explorer ma créativité et
               continuer à apprendre.
             </p>
 
@@ -911,9 +915,15 @@ export default function App() {
 
         <div className="folder-list">
           {groups.map(([name, description, list], groupIndex) => (
-            <div className={`grp project-group project-group--${groupIndex + 1}`} key={name}>
+            <div
+              className={`grp project-group project-group--${groupIndex + 1}`}
+              key={name}
+            >
               <div className="project-section-heading">
-                <span className="project-section-number mono" aria-hidden="true">
+                <span
+                  className="project-section-number mono"
+                  aria-hidden="true"
+                >
                   {String(groupIndex + 1).padStart(2, "0")}
                 </span>
                 <div className="project-section-copy">
