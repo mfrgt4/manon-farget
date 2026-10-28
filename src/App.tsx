@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
-import { nav, profile, projects, skills, studies, tools } from "./data";
+import { nav, profile, projects, projectGenres, skills, studies, tools } from "./data";
 import type { Project } from "./data";
 import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
