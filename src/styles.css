@@ -1937,3 +1937,40 @@ html[data-theme="dark"] #projets .tabs.sub button.active {
     font-size: 12px;
   }
 }
+
+/* ===== Filtres des projets universitaires : style identique dans les deux thèmes ===== */
+
+#projets .tabs.sub button {
+  background: #ffffff !important;
+  color: #39313a !important;
+  border: 1px solid #e761aa !important;
+  border-radius: 999px !important;
+  opacity: 1 !important;
+  transition: background 0.2s ease, color 0.2s ease !important;
+}
+
+#projets .tabs.sub button:hover {
+  background: #fce8f3 !important;
+  color: #39313a !important;
+  border-color: #e761aa !important;
+}
+
+#projets .tabs.sub button.on,
+#projets .tabs.sub button[aria-selected="true"] {
+  background: #e761aa !important;
+  color: #ffffff !important;
+  border-color: #e761aa !important;
+}
+
+/* Neutralise les différences entre les thèmes */
+html[data-theme="dark"] #projets .tabs.sub button,
+html[data-theme="light"] #projets .tabs.sub button {
+  color: #39313a !important;
+}
+
+html[data-theme="dark"] #projets .tabs.sub button.on,
+html[data-theme="light"] #projets .tabs.sub button.on {
+  background: #e761aa !important;
+  color: #ffffff !important;
+  border-color: #e761aa !important;
+}
