@@ -1749,7 +1749,6 @@ body:has(.welcome-screen) {
   cursor: grabbing;
 }
 
-
 /* ===== Filtres des projets universitaires ===== */
 .genre-filters {
   display: flex;
@@ -1766,91 +1765,47 @@ body:has(.welcome-screen) {
   gap: 7px;
   min-height: 44px;
   padding: 10px 18px;
-  border: 1px solid var(--line);
+
+  background: #ffffff;
+  color: #633247;
+  border: 1px solid #d9a5b8;
   border-radius: 999px;
-  background: transparent;
-  color: var(--mute);
+
   font: inherit;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition:
-    color 0.25s ease,
-    background 0.25s ease,
-    border-color 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+
+  transition: all 0.25s ease;
 }
 
 .genre-filter:hover {
-  border-color: var(--acc);
-  color: var(--fg);
+  background: #fff0f5;
+  color: #a92357;
+  border-color: #c94b7b;
   transform: translateY(-2px);
 }
 
 .genre-filter.active {
-  background: #fbeef3;
-  border-color: #e8a4bd;
-  color: #a92357;
+  background: #c93670;
+  color: #ffffff;
+  border-color: #c93670;
   font-weight: 600;
 }
 
 .genre-filter sup {
   font-size: 10px;
   line-height: 1;
-  opacity: 0.8;
+  color: inherit;
+  opacity: 0.85;
 }
 
 .genre-filter:focus-visible {
-  outline: 2px solid var(--acc);
+  outline: 2px solid #c93670;
   outline-offset: 3px;
 }
 
-/* ===== Mode clair : boutons plus visibles ===== */
-html[data-theme="light"] .genre-filter {
-  background: #ffffff;
-  color: #633247;
-  border-color: #d9a5b8;
-  box-shadow: 0 2px 6px rgba(130, 48, 82, 0.07);
-}
-
-html[data-theme="light"] .genre-filter:hover {
-  background: #fff0f5;
-  color: #a92357;
-  border-color: #c94b7b;
-  box-shadow: 0 3px 10px rgba(169, 35, 87, 0.12);
-}
-
-html[data-theme="light"] .genre-filter.active {
-  background: #c93670;
-  color: #ffffff;
-  border-color: #c93670;
-  box-shadow: 0 3px 10px rgba(201, 54, 112, 0.22);
-}
-
-html[data-theme="light"] .genre-filter.active sup {
-  color: #ffffff;
-  opacity: 1;
-}
-
-html[data-theme="light"] .genre-filter sup {
-  color: #8f3658;
-  opacity: 1;
-}
-
-/* ===== Mode sombre ===== */
-html[data-theme="dark"] .genre-filter.active {
-  background: #f28fb3;
-  border-color: #f28fb3;
-  color: #17181c;
-}
-
-html[data-theme="dark"] .genre-filter.active sup {
-  color: #17181c;
-  opacity: 1;
-}
-
-/* ===== Mobile ===== */
+/* Mobile */
 @media (max-width: 560px) {
   .genre-filters {
     gap: 7px;
