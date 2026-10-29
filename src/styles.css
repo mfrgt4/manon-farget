@@ -1817,3 +1817,123 @@ body:has(.welcome-screen) {
     font-size: 12px;
   }
 }
+
+
+/* ==========================================================
+   CORRECTION FINALE — FILTRES DES PROJETS UNIVERSITAIRES
+   Même apparence en mode clair et en mode sombre.
+   Cible les deux structures possibles : .genre-filter et .tabs.sub.
+========================================================== */
+
+/* Conteneur des filtres */
+#projets .genre-filters,
+#projets .subtabs .tabs.sub {
+  display: flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+/* Boutons de filtre — état normal */
+#projets .genre-filters .genre-filter,
+#projets .tabs.sub button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-height: 42px;
+  padding: 9px 16px;
+
+  background: #ffffff !important;
+  color: #633247 !important;
+  border: 1px solid #d9a5b8 !important;
+  border-radius: 999px !important;
+
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  opacity: 1 !important;
+  cursor: pointer;
+
+  box-shadow: 0 2px 7px rgba(99, 50, 71, 0.08);
+  transform: none;
+  transition: background-color .25s ease, color .25s ease,
+              border-color .25s ease, box-shadow .25s ease,
+              transform .25s ease;
+}
+
+/* Survol */
+#projets .genre-filters .genre-filter:hover,
+#projets .tabs.sub button:hover {
+  background: #fff0f5 !important;
+  color: #a92357 !important;
+  border-color: #c94b7b !important;
+  box-shadow: 0 4px 12px rgba(201, 54, 112, .14);
+  transform: translateY(-2px);
+}
+
+/* Filtre sélectionné */
+#projets .genre-filters .genre-filter.active,
+#projets .tabs.sub button.on,
+#projets .tabs.sub button.active {
+  background: #c93670 !important;
+  color: #ffffff !important;
+  border-color: #c93670 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(201, 54, 112, .24);
+}
+
+/* Compteurs éventuels */
+#projets .genre-filters .genre-filter sup {
+  color: inherit !important;
+  font-size: 10px;
+  line-height: 1;
+  opacity: 1;
+}
+
+/* Focus clavier */
+#projets .genre-filters .genre-filter:focus-visible,
+#projets .tabs.sub button:focus-visible {
+  outline: 2px solid #c93670 !important;
+  outline-offset: 3px;
+}
+
+/* Verrouille volontairement le même rendu dans les deux thèmes */
+html[data-theme="dark"] #projets .genre-filters .genre-filter,
+html[data-theme="dark"] #projets .tabs.sub button {
+  background: #ffffff !important;
+  color: #633247 !important;
+  border-color: #d9a5b8 !important;
+}
+
+html[data-theme="dark"] #projets .genre-filters .genre-filter:hover,
+html[data-theme="dark"] #projets .tabs.sub button:hover {
+  background: #fff0f5 !important;
+  color: #a92357 !important;
+  border-color: #c94b7b !important;
+}
+
+html[data-theme="dark"] #projets .genre-filters .genre-filter.active,
+html[data-theme="dark"] #projets .tabs.sub button.on,
+html[data-theme="dark"] #projets .tabs.sub button.active {
+  background: #c93670 !important;
+  color: #ffffff !important;
+  border-color: #c93670 !important;
+}
+
+/* Adaptation mobile */
+@media (max-width: 560px) {
+  #projets .genre-filters,
+  #projets .subtabs .tabs.sub {
+    gap: 7px;
+  }
+
+  #projets .genre-filters .genre-filter,
+  #projets .tabs.sub button {
+    min-height: 39px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
