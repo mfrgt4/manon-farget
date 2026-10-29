@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 
 type Props = {
@@ -83,10 +82,7 @@ export default function Particles({
       rotation: random(0, Math.PI * 2),
       rotationSpeed: random(-0.7, 0.7),
       opacity: random(0.35, 0.9),
-      symbol:
-        STAR_SYMBOLS[
-          Math.floor(Math.random() * STAR_SYMBOLS.length)
-        ],
+      symbol: STAR_SYMBOLS[Math.floor(Math.random() * STAR_SYMBOLS.length)],
       phase: random(0, Math.PI * 2),
     });
 
@@ -98,8 +94,7 @@ export default function Particles({
       const newHeight = rect.height || window.innerHeight;
 
       // Ne réinitialise pas les étoiles si les dimensions n'ont pas changé.
-      const dimensionsChanged =
-        newWidth !== width || newHeight !== height;
+      const dimensionsChanged = newWidth !== width || newHeight !== height;
 
       if (!dimensionsChanged && initialized) return;
 
@@ -112,8 +107,8 @@ export default function Particles({
 
       if (!initialized) {
         const count = Math.min(
-          42,
-          Math.max(12, Math.floor((width * height) / 30000)),
+          16,
+          Math.max(6, Math.floor((width * height) / 80000)),
         );
 
         for (let i = 0; i < count; i++) {
@@ -140,10 +135,7 @@ export default function Particles({
         size: random(7, 13),
         life: 0,
         maxLife: random(450, 850),
-        symbol:
-          STAR_SYMBOLS[
-            Math.floor(Math.random() * STAR_SYMBOLS.length)
-          ],
+        symbol: STAR_SYMBOLS[Math.floor(Math.random() * STAR_SYMBOLS.length)],
         rotation: random(0, Math.PI),
       });
     };
@@ -195,9 +187,7 @@ export default function Particles({
     };
 
     const draw = (time: number) => {
-      const delta = lastTime
-        ? Math.min((time - lastTime) / 1000, 0.04)
-        : 0;
+      const delta = lastTime ? Math.min((time - lastTime) / 1000, 0.04) : 0;
 
       lastTime = time;
       ctx.clearRect(0, 0, width, height);
@@ -209,16 +199,12 @@ export default function Particles({
       if (!reduceMotion) {
         spawnTime += delta * 1000;
 
-        while (spawnTime >= 300) {
-          spawnTime -= 300;
+        while (spawnTime >= 900) {
+          spawnTime -= 900;
           stars.push(createStar());
         }
 
-        if (
-          mouseX >= 0 &&
-          mouseY >= 0 &&
-          Math.random() < 0.025
-        ) {
+        if (mouseX >= 0 && mouseY >= 0 && Math.random() < 0.025) {
           addSparkle(mouseX, mouseY);
         }
       }
@@ -240,13 +226,10 @@ export default function Particles({
           continue;
         }
 
-        const twinkle = reduceMotion
-          ? 1
-          : 0.82 + Math.sin(star.phase) * 0.18;
+        const twinkle = reduceMotion ? 1 : 0.82 + Math.sin(star.phase) * 0.18;
 
         const colorIndex =
-          Math.abs(Math.floor(star.phase + star.size)) %
-          palette.length;
+          Math.abs(Math.floor(star.phase + star.size)) % palette.length;
 
         drawSymbol(
           star.symbol,
