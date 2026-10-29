@@ -1829,5 +1829,5 @@ body:has(.welcome-screen) {
 }
 
 html[data-theme="dark"] .project-section-copy h3 {
-  color: #f28fb3 !important;
+  color: #fbfaf7 !important;
 }
