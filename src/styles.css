@@ -1828,6 +1828,6 @@ body:has(.welcome-screen) {
   }
 }
 
-html[data-theme="light"] .project-section-copy h3 {
-  color: #d84b7d;
+html[data-theme="dark"] .project-section-copy h3 {
+  color: #c63e70 !important;
 }
