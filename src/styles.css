@@ -1938,39 +1938,112 @@ html[data-theme="dark"] #projets .tabs.sub button.active {
   }
 }
 
-/* ===== Filtres des projets universitaires : style identique dans les deux thèmes ===== */
 
-#projets .tabs.sub button {
-  background: #ffffff !important;
-  color: #39313a !important;
-  border: 1px solid #e761aa !important;
+/* ===== Filtres des projets : apparence identique en mode clair et sombre ===== */
+/* Ciblage global volontaire : ne dépend pas de l'identifiant de la section. */
+.subtabs .tabs.sub button,
+.tabs.sub button,
+.genre-filters .genre-filter {
+  background: #f7f3f2 !important;
+  color: #77717a !important;
+  border: 1px solid #e6d9e0 !important;
   border-radius: 999px !important;
   opacity: 1 !important;
-  transition: background 0.2s ease, color 0.2s ease !important;
+  box-shadow: none !important;
 }
 
-#projets .tabs.sub button:hover {
-  background: #fce8f3 !important;
-  color: #39313a !important;
-  border-color: #e761aa !important;
+.subtabs .tabs.sub button:hover,
+.tabs.sub button:hover,
+.genre-filters .genre-filter:hover {
+  background: #fcecf3 !important;
+  color: #d84b7d !important;
+  border-color: #e7bfd0 !important;
 }
 
+.subtabs .tabs.sub button.on,
+.tabs.sub button.on,
+.tabs.sub button.active,
+.genre-filters .genre-filter.active,
+.tabs.sub button[aria-selected="true"] {
+  background: #fcecf3 !important;
+  color: #d84b7d !important;
+  border-color: #fcecf3 !important;
+  opacity: 1 !important;
+}
+
+/* Neutralise explicit theme-specific overrides */
+html[data-theme="light"] .subtabs .tabs.sub button,
+html[data-theme="dark"] .subtabs .tabs.sub button,
+html[data-theme="light"] .tabs.sub button,
+html[data-theme="dark"] .tabs.sub button,
+html[data-theme="light"] .genre-filters .genre-filter,
+html[data-theme="dark"] .genre-filters .genre-filter {
+  background: #f7f3f2 !important;
+  color: #77717a !important;
+  border-color: #e6d9e0 !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="light"] .subtabs .tabs.sub button.on,
+html[data-theme="dark"] .subtabs .tabs.sub button.on,
+html[data-theme="light"] .tabs.sub button.on,
+html[data-theme="dark"] .tabs.sub button.on,
+html[data-theme="light"] .tabs.sub button.active,
+html[data-theme="dark"] .tabs.sub button.active,
+html[data-theme="light"] .genre-filters .genre-filter.active,
+html[data-theme="dark"] .genre-filters .genre-filter.active {
+  background: #fcecf3 !important;
+  color: #d84b7d !important;
+  border-color: #fcecf3 !important;
+}
+
+
+
+/* ===== Filtres des projets : apparence du mode sombre dans les deux thèmes ===== */
+#projets .subtabs .tabs.sub button,
+#projets .tabs.sub button,
+#projets .genre-filters .genre-filter,
+.subtabs .tabs.sub button,
+.tabs.sub button,
+.genre-filters .genre-filter {
+  background: #17181c !important;
+  color: #f1eee9 !important;
+  border: 1px solid #2b2d32 !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transition: background .2s ease, color .2s ease, border-color .2s ease !important;
+}
+
+#projets .subtabs .tabs.sub button:hover,
+#projets .tabs.sub button:hover,
+#projets .genre-filters .genre-filter:hover,
+.subtabs .tabs.sub button:hover,
+.tabs.sub button:hover,
+.genre-filters .genre-filter:hover {
+  background: #24262b !important;
+  color: #ffffff !important;
+  border-color: #4a4d55 !important;
+}
+
+#projets .subtabs .tabs.sub button.on,
 #projets .tabs.sub button.on,
-#projets .tabs.sub button[aria-selected="true"] {
-  background: #e761aa !important;
+#projets .tabs.sub button.active,
+#projets .genre-filters .genre-filter.active,
+.subtabs .tabs.sub button.on,
+.tabs.sub button.on,
+.tabs.sub button.active,
+.tabs.sub button[aria-selected="true"],
+.genre-filters .genre-filter.active {
+  background: #e5608f !important;
   color: #ffffff !important;
-  border-color: #e761aa !important;
+  border-color: #e5608f !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
 }
 
-/* Neutralise les différences entre les thèmes */
-html[data-theme="dark"] #projets .tabs.sub button,
-html[data-theme="light"] #projets .tabs.sub button {
-  color: #39313a !important;
-}
-
-html[data-theme="dark"] #projets .tabs.sub button.on,
-html[data-theme="light"] #projets .tabs.sub button.on {
-  background: #e761aa !important;
-  color: #ffffff !important;
-  border-color: #e761aa !important;
+#projets .genre-filters .genre-filter sup,
+.genre-filters .genre-filter sup {
+  color: inherit !important;
+  opacity: 1 !important;
 }
