@@ -31,13 +31,21 @@ type Sparkle = {
 };
 
 const STAR_SYMBOLS = ["✦", "✧", "⋆", "✧", "✦"];
+const DEFAULT_COLORS = ["#D13670", "#f296bb", "#e761aa", "#ffffff"];
 
 export default function Particles({
-  colors = ["#D13670", "#f296bb", "#e761aa", "#ffffff"],
+  colors = DEFAULT_COLORS,
   line: _line,
   hero = false,
 }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
+
+  // Garde les dernières options sans redémarrer l'animation.
+  const optionsRef = useRef({ colors, hero });
+
+  useEffect(() => {
+    optionsRef.current = { colors, hero };
+  }, [colors, hero]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -49,10 +57,6 @@ export default function Particles({
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    const palette = colors.length
-      ? colors
-      : ["#D13670", "#f296bb"];
-
     let width = 0;
     let height = 0;
     let animationFrame = 0;
@@ -62,24 +66,27 @@ export default function Particles({
     let mouseY = -1000;
     let previousMouseX = -1000;
     let previousMouseY = -1000;
+    let initialized = false;
 
-    let stars: Star[] = [];
-    let sparkles: Sparkle[] = [];
+    const stars: Star[] = [];
+    const sparkles: Sparkle[] = [];
 
     const random = (min: number, max: number) =>
       min + Math.random() * (max - min);
 
     const createStar = (startAtRandomHeight = false): Star => ({
-      x: random(0, width),
+      x: random(0, Math.max(width, 1)),
       y: startAtRandomHeight ? random(0, height) : random(-50, -10),
-      size: random(8, hero ? 17 : 20),
+      size: random(8, 20),
       speed: random(25, 75),
       drift: random(-12, 12),
       rotation: random(0, Math.PI * 2),
       rotationSpeed: random(-0.7, 0.7),
       opacity: random(0.35, 0.9),
       symbol:
-        STAR_SYMBOLS[Math.floor(Math.random() * STAR_SYMBOLS.length)],
+        STAR_SYMBOLS[
+          Math.floor(Math.random() * STAR_SYMBOLS.length)
+        ],
       phase: random(0, Math.PI * 2),
     });
 
@@ -87,20 +94,41 @@ export default function Particles({
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-      width = rect.width || window.innerWidth;
-      height = rect.height || window.innerHeight;
+      const newWidth = rect.width || window.innerWidth;
+      const newHeight = rect.height || window.innerHeight;
+
+      // Ne réinitialise pas les étoiles si les dimensions n'ont pas changé.
+      const dimensionsChanged =
+        newWidth !== width || newHeight !== height;
+
+      if (!dimensionsChanged && initialized) return;
+
+      width = newWidth;
+      height = newHeight;
 
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
-
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.min(
-        hero ? 24 : 42,
-        Math.max(12, Math.floor((width * height) / 30000)),
-      );
+      if (!initialized) {
+        const count = Math.min(
+          42,
+          Math.max(12, Math.floor((width * height) / 30000)),
+        );
 
-      stars = Array.from({ length: count }, () => createStar(true));
+        for (let i = 0; i < count; i++) {
+          stars.push(createStar(true));
+        }
+
+        initialized = true;
+      } else {
+        // Conserve les étoiles existantes et ajuste seulement celles
+        // qui sortent des limites lors d'un véritable redimensionnement.
+        for (const star of stars) {
+          star.x = Math.min(star.x, width);
+          star.y = Math.min(star.y, height + 35);
+        }
+      }
     };
 
     const addSparkle = (x: number, y: number) => {
@@ -112,9 +140,10 @@ export default function Particles({
         size: random(7, 13),
         life: 0,
         maxLife: random(450, 850),
-        symbol: STAR_SYMBOLS[
-          Math.floor(Math.random() * STAR_SYMBOLS.length)
-        ],
+        symbol:
+          STAR_SYMBOLS[
+            Math.floor(Math.random() * STAR_SYMBOLS.length)
+          ],
         rotation: random(0, Math.PI),
       });
     };
@@ -173,16 +202,18 @@ export default function Particles({
       lastTime = time;
       ctx.clearRect(0, 0, width, height);
 
+      const palette = optionsRef.current.colors.length
+        ? optionsRef.current.colors
+        : DEFAULT_COLORS;
+
       if (!reduceMotion) {
         spawnTime += delta * 1000;
 
-        // Une nouvelle étoile apparaît régulièrement.
-        while (spawnTime >= (hero ? 450 : 300)) {
-          spawnTime -= hero ? 450 : 300;
+        while (spawnTime >= 300) {
+          spawnTime -= 300;
           stars.push(createStar());
         }
 
-        // Quelques étoiles suivent délicatement le curseur.
         if (
           mouseX >= 0 &&
           mouseY >= 0 &&
@@ -192,9 +223,11 @@ export default function Particles({
         }
       }
 
-      stars = stars.filter((star) => star.y < height + 35);
+      // Les étoiles tombent et sont retirées uniquement lorsqu'elles
+      // ont réellement quitté l'écran.
+      for (let i = stars.length - 1; i >= 0; i--) {
+        const star = stars[i];
 
-      for (const star of stars) {
         if (!reduceMotion) {
           star.y += star.speed * delta;
           star.x += star.drift * delta;
@@ -202,33 +235,44 @@ export default function Particles({
           star.phase += delta * 2;
         }
 
+        if (star.y >= height + 35) {
+          stars.splice(i, 1);
+          continue;
+        }
+
         const twinkle = reduceMotion
           ? 1
           : 0.82 + Math.sin(star.phase) * 0.18;
 
-        const color =
-          palette[Math.floor(
-            (star.phase + star.size) % palette.length,
-          )] || "#f296bb";
+        const colorIndex =
+          Math.abs(Math.floor(star.phase + star.size)) %
+          palette.length;
 
         drawSymbol(
           star.symbol,
           star.x,
           star.y,
           star.size,
-          color,
+          palette[colorIndex] || "#f296bb",
           star.opacity * twinkle,
           star.rotation,
         );
       }
 
-      for (const sparkle of sparkles) {
+      for (let i = sparkles.length - 1; i >= 0; i--) {
+        const sparkle = sparkles[i];
+
         if (!reduceMotion) {
           sparkle.life += delta * 1000;
           sparkle.y -= 15 * delta;
         }
 
         const progress = sparkle.life / sparkle.maxLife;
+
+        if (progress >= 1) {
+          sparkles.splice(i, 1);
+          continue;
+        }
 
         drawSymbol(
           sparkle.symbol,
@@ -241,10 +285,6 @@ export default function Particles({
         );
       }
 
-      sparkles = sparkles.filter(
-        (sparkle) => sparkle.life < sparkle.maxLife,
-      );
-
       if (!reduceMotion) {
         animationFrame = requestAnimationFrame(draw);
       }
@@ -255,20 +295,26 @@ export default function Particles({
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
 
+    window.addEventListener("resize", resize);
     window.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerleave", handlePointerLeave);
     window.addEventListener("blur", handlePointerLeave);
 
-    draw(0);
+    if (reduceMotion) {
+      draw(0);
+    } else {
+      animationFrame = requestAnimationFrame(draw);
+    }
 
     return () => {
       cancelAnimationFrame(animationFrame);
       observer.disconnect();
+      window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerleave", handlePointerLeave);
       window.removeEventListener("blur", handlePointerLeave);
     };
-  }, [colors, hero]);
+  }, []);
 
   return (
     <canvas
