@@ -1827,3 +1827,7 @@ body:has(.welcome-screen) {
     font-size: 12px;
   }
 }
+
+html[data-theme="light"] .project-section-copy h3 {
+  color: #d84b7d;
+}
