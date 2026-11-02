@@ -598,7 +598,6 @@ export default function App() {
 
   return (
     <>
-      <Particles />
       <div id="glow" />
 
       <nav>
