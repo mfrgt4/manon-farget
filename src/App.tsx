@@ -3,7 +3,6 @@ import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import { nav, profile, projects, projectGenres, skills, studies, tools } from "./data";
 import type { Genre, Project } from "./data";
-import Particles from "./Particles";
 import ToolBox3D from "./components/ToolBox3D";
 import SkillsPanel from "./components/SkillsPanel";
 
