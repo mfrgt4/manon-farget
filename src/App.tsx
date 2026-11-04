@@ -1,10 +1,19 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
-import { nav, profile, projects, projectGenres, skills, studies, tools } from "./data";
+import {
+  nav,
+  profile,
+  projects,
+  projectGenres,
+  skills,
+  studies,
+  tools,
+} from "./data";
 import type { Genre, Project } from "./data";
 import ToolBox3D from "./components/ToolBox3D";
 import SkillsPanel from "./components/SkillsPanel";
+import PortfolioEntrance from "./components/PortfolioEntrance";
 
 // ================= SONS =================
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
@@ -506,10 +515,17 @@ const getProjectGenre = (p: Project): Genre | undefined => {
   const type = p.type?.toLocaleLowerCase("fr") ?? "";
   const title = p.title.toLocaleLowerCase("fr");
 
-  if (type.includes("développement web") || type.includes("developpement web")) {
+  if (
+    type.includes("développement web") ||
+    type.includes("developpement web")
+  ) {
     return "developpement";
   }
-  if (type.includes("audiovisuel") || type.includes("vidéo") || type.includes("video")) {
+  if (
+    type.includes("audiovisuel") ||
+    type.includes("vidéo") ||
+    type.includes("video")
+  ) {
     return "audiovisuel";
   }
   if (title.includes("d'jam") || title.includes("the pit")) {
@@ -598,6 +614,9 @@ export default function App() {
 
   return (
     <>
+      {/* INTRODUCTION : ENTRÉE DANS MON UNIVERS */}
+      <PortfolioEntrance />
+
       <div id="glow" />
 
       <nav>
@@ -992,51 +1011,79 @@ export default function App() {
                         gap: 7,
                         minHeight: 44,
                         padding: "10px 18px",
-                        border: `1px solid ${selectedGenre === "all" ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : (theme === "dark" ? "#40323b" : "#e8dbe2")}`,
+                        border: `1px solid ${selectedGenre === "all" ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : theme === "dark" ? "#40323b" : "#e8dbe2"}`,
                         borderRadius: 999,
-                        background: selectedGenre === "all" ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : "transparent",
-                        color: selectedGenre === "all" ? (theme === "dark" ? "#17181c" : "#c63e70") : "var(--muted, #706775)",
+                        background:
+                          selectedGenre === "all"
+                            ? theme === "dark"
+                              ? "#f28fb3"
+                              : "#fbeef3"
+                            : "transparent",
+                        color:
+                          selectedGenre === "all"
+                            ? theme === "dark"
+                              ? "#17181c"
+                              : "#c63e70"
+                            : "var(--muted, #706775)",
                         font: "inherit",
                         fontSize: 13,
                         cursor: "pointer",
-                        transition: "color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease",
+                        transition:
+                          "color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease",
                       }}
                     >
-                      Tout <sup style={{ fontSize: 10, opacity: 0.7 }}>{universityProjects.length}</sup>
+                      Tout{" "}
+                      <sup style={{ fontSize: 10, opacity: 0.7 }}>
+                        {universityProjects.length}
+                      </sup>
                     </button>
 
-                    {universityProjectsByGenre.map(({ genre, label, projects: genreProjects }) => {
-                      const isActive = selectedGenre === genre;
-                      return (
-                        <button
-                          key={genre}
-                          type="button"
-                          aria-pressed={isActive}
-                          onClick={() => {
-                            playButtonClick();
-                            setSelectedGenre(genre);
-                          }}
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: 7,
-                            minHeight: 44,
-                            padding: "10px 18px",
-                            border: `1px solid ${isActive ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : (theme === "dark" ? "#40323b" : "#e8dbe2")}`,
-                            borderRadius: 999,
-                            background: isActive ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : "transparent",
-                            color: isActive ? (theme === "dark" ? "#17181c" : "#c63e70") : "var(--muted, #706775)",
-                            font: "inherit",
-                            fontSize: 13,
-                            cursor: "pointer",
-                            transition: "color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease",
-                          }}
-                        >
-                          {label} <sup style={{ fontSize: 10, opacity: 0.7 }}>{genreProjects.length}</sup>
-                        </button>
-                      );
-                    })}
+                    {universityProjectsByGenre.map(
+                      ({ genre, label, projects: genreProjects }) => {
+                        const isActive = selectedGenre === genre;
+                        return (
+                          <button
+                            key={genre}
+                            type="button"
+                            aria-pressed={isActive}
+                            onClick={() => {
+                              playButtonClick();
+                              setSelectedGenre(genre);
+                            }}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: 7,
+                              minHeight: 44,
+                              padding: "10px 18px",
+                              border: `1px solid ${isActive ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : theme === "dark" ? "#40323b" : "#e8dbe2"}`,
+                              borderRadius: 999,
+                              background: isActive
+                                ? theme === "dark"
+                                  ? "#f28fb3"
+                                  : "#fbeef3"
+                                : "transparent",
+                              color: isActive
+                                ? theme === "dark"
+                                  ? "#17181c"
+                                  : "#c63e70"
+                                : "var(--muted, #706775)",
+                              font: "inherit",
+                              fontSize: 13,
+                              cursor: "pointer",
+                              transition:
+                                "color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease",
+                            }}
+                          >
+                            {label}{" "}
+                            <sup style={{ fontSize: 10, opacity: 0.7 }}>
+                              {genreProjects.length}
+                            </sup>
+                          </button>
+                        );
+                      },
+                    )}
                   </div>
                 )}
 
