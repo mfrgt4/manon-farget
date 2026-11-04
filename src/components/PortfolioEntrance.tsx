@@ -1,5 +1,4 @@
-
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useRef, type LegacyRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ModelGlb from "./ModelGlb";
@@ -42,13 +41,10 @@ function LockerDoor({
   doorRef,
 }: {
   side: "left" | "right";
-  doorRef: RefObject<HTMLDivElement | null>;
+  doorRef: LegacyRef<HTMLDivElement>;
 }) {
   return (
-    <div
-      ref={doorRef}
-      className={`ip-door ip-door--${side}`}
-    >
+    <div ref={doorRef} className={`ip-door ip-door--${side}`}>
       <div className="ip-door-locker">
         <LockerDetails />
       </div>
