@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,18 +10,36 @@ gsap.registerPlugin(ScrollTrigger);
 const SKETCHFAB_URL =
   "https://sketchfab.com/3d-models/neeko-star-guardian-8adfbf9088bf416980727b1073b4c673";
 
-// Un casier : grilles d'aération, cadenas suspendu, poignée
 function Casier() {
   return (
     <div className="ip-casier">
-      <div className="ip-vents">
-        <i /><i /><i />
+      <div className="ip-casier__face">
+        <div className="ip-casier__topline" />
+
+        <div className="ip-vents">
+          <i /><i /><i /><i /><i />
+        </div>
+
+        <div className="ip-number">
+          <span>MF</span>
+        </div>
+
+        <div className="ip-lock">
+          <div className="ip-lock__body">
+            <span />
+          </div>
+        </div>
+
+        <div className="ip-handle">
+          <span />
+        </div>
+
+        <div className="ip-hinge ip-hinge--top" />
+        <div className="ip-hinge ip-hinge--middle" />
+        <div className="ip-hinge ip-hinge--bottom" />
+
+        <div className="ip-casier__bottomline" />
       </div>
-      <div className="ip-padlock">
-        <span className="ip-shackle" />
-        <span className="ip-lockbody" />
-      </div>
-      <div className="ip-handle" />
     </div>
   );
 }
@@ -43,11 +62,10 @@ export default function PortfolioEntrance() {
 
       gsap.set([leftDoor, rightDoor], {
         rotateY: 0,
-        transformPerspective: 1600,
+        transformPerspective: 1800,
+        transformStyle: "preserve-3d",
       });
 
-      // L'accueil reste épinglé derrière l'intro pendant tout le scroll :
-      // quand les portes s'ouvrent, on le voit directement.
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: accueil ?? rootRef.current,
@@ -60,45 +78,75 @@ export default function PortfolioEntrance() {
         },
       });
 
-      // 1. Léger zoom vers les casiers
-      tl.to(stageRef.current, { scale: 1.04, duration: 1.2, ease: "none" });
+      // 1. Approche progressive du mur
+      tl.to(stageRef.current, {
+        scale: 1.035,
+        duration: 1.3,
+        ease: "none",
+      });
 
-      // 2. Les cadenas se déverrouillent
+      // 2. Déverrouillage des cadenas
       tl.to(
         ".ip-padlock",
         {
-          rotation: 16,
-          y: 12,
+          rotation: 18,
+          y: 18,
+          scale: 0.8,
           opacity: 0,
           duration: 0.7,
-          stagger: 0.06,
+          stagger: 0.08,
           ease: "power2.in",
         },
         ">"
       );
 
-      // 3. Le texte et Neeko s'effacent
+      // 3. Le titre disparaît
       tl.to(
         titleRef.current,
-        { opacity: 0, x: -50, duration: 0.7, ease: "power2.in" },
+        {
+          opacity: 0,
+          x: -40,
+          duration: 0.8,
+          ease: "power2.in",
+        },
         "<0.2"
       );
+
+      // 4. Neeko disparaît avant l'ouverture
       tl.to(
         neekoRef.current,
-        { opacity: 0, x: 60, duration: 0.7, ease: "power2.in" },
+        {
+          opacity: 0,
+          x: 70,
+          scale: 0.96,
+          duration: 0.8,
+          ease: "power2.in",
+        },
         "<"
       );
 
-      // 4. Les portes s'ouvrent sur l'accueil
-      tl.to(leftDoor, { rotateY: -112, duration: 2.2, ease: "power3.inOut" });
+      // 5. Ouverture des portes
+      tl.to(leftDoor, {
+        rotateY: -112,
+        duration: 2.4,
+        ease: "power3.inOut",
+      });
+
       tl.to(
         rightDoor,
-        { rotateY: 112, duration: 2.2, ease: "power3.inOut" },
+        {
+          rotateY: 112,
+          duration: 2.4,
+          ease: "power3.inOut",
+        },
         "<"
       );
 
-      // 5. L'intro disparaît complètement
-      tl.to(rootRef.current, { autoAlpha: 0, duration: 0.4 });
+      // 6. Disparition de l'introduction
+      tl.to(rootRef.current, {
+        autoAlpha: 0,
+        duration: 0.5,
+      });
     }, rootRef);
 
     return () => ctx.revert();
@@ -106,36 +154,58 @@ export default function PortfolioEntrance() {
 
   return (
     <div className="ip" ref={rootRef}>
+      <div className="ip-atmosphere" />
+
       <div className="ip-stage" ref={stageRef}>
-        <div className="ip-door ip-door--left" ref={leftDoorRef}>
+        <div
+          className="ip-door ip-door--left"
+          ref={leftDoorRef}
+        >
           <Casier />
           <Casier />
           <span className="ip-label">Manon Farget</span>
         </div>
 
-        <div className="ip-door ip-door--right" ref={rightDoorRef}>
+        <div
+          className="ip-door ip-door--right"
+          ref={rightDoorRef}
+        >
           <Casier />
           <Casier />
           <span className="ip-label">Portfolio · BUT MMI</span>
         </div>
       </div>
 
-      {/* Neeko, devant les portes fermées */}
+      {/* Personnage 3D interactif */}
       <div className="ip-neeko" ref={neekoRef}>
         <ModelGlb url="/models/neeko.glb" />
       </div>
 
+      {/* Présentation */}
       <div className="ip-title" ref={titleRef}>
-        <span className="ip-kicker">Portfolio · BUT MMI</span>
+        <span className="ip-kicker">
+          PORTFOLIO · 2026
+        </span>
+
         <h1>
-          Bienvenue dans <em>mon univers</em>
+          Bienvenue dans
+          <br />
+          <em>mon univers.</em>
         </h1>
-        <p>Faites défiler pour ouvrir ↓</p>
+
+        <p>
+          Faites défiler pour découvrir
+          <span> ↓</span>
+        </p>
       </div>
 
       <div className="ip-credit">
-        Manon Farget — Portfolio · Modèle 3D :{" "}
-        <a href={SKETCHFAB_URL} target="_blank" rel="noopener noreferrer">
+        Modèle 3D :{" "}
+        <a
+          href={SKETCHFAB_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Neeko Star Guardian
         </a>
       </div>

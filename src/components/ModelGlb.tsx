@@ -1,119 +1,387 @@
+
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-// Affiche un fichier .glb local avec three.js
-export default function ModelGlb({ url }: { url: string }) {
+type Props = {
+  url: string;
+};
+
+export default function ModelGlb({ url }: Props) {
   const host = useRef<HTMLDivElement>(null);
-  const [ready, setReady] = useState(false);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
   useEffect(() => {
     const el = host.current;
     if (!el) return;
 
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let disposed = false;
+    let raf = 0;
+    let mixer: THREE.AnimationMixer | null = null;
+    let model: THREE.Object3D | null = null;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    const clock = new THREE.Clock();
+
+    // Préférence de mouvement
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    // =========================
+    // RENDERER
+    // =========================
+
+    let renderer: THREE.WebGLRenderer;
+
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      setStatus("error");
+      return;
+    }
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    renderer.setClearColor(0x000000, 0);
+
+    renderer.domElement.style.display = "block";
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
+    renderer.domElement.style.cursor = "grab";
+    renderer.domElement.style.touchAction = "pan-y";
+
     el.appendChild(renderer.domElement);
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-    camera.position.set(0, 0.4, 5);
+    // =========================
+    // SCÈNE
+    // =========================
 
-    // Lumières dans la palette du site : rose (--acc) et menthe (--mint)
-    scene.add(new THREE.HemisphereLight(0xfbfaf7, 0xa9bcae, 1.6));
-    const key = new THREE.DirectionalLight(0xffffff, 2.2);
-    key.position.set(3, 4, 5);
-    scene.add(key);
-    const rim = new THREE.DirectionalLight(0xd84b7d, 2.4);
-    rim.position.set(-4, 2, -3);
-    scene.add(rim);
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+    camera.position.set(0, 0.15, 4.5);
+
+    // Lumière ambiante
+    const ambient = new THREE.AmbientLight(0xffffff, 0.65);
+    scene.add(ambient);
+
+    // Lumière principale
+    const hemisphere = new THREE.HemisphereLight(
+      0xfff5fa,
+      0x594253,
+      1.8
+    );
+    scene.add(hemisphere);
+
+    // Éclairage principal
+    const keyLight = new THREE.DirectionalLight(0xfff4fa, 3.2);
+    keyLight.position.set(-3, 5, 6);
+    keyLight.castShadow = true;
+
+    keyLight.shadow.mapSize.set(2048, 2048);
+    keyLight.shadow.camera.left = -4;
+    keyLight.shadow.camera.right = 4;
+    keyLight.shadow.camera.top = 4;
+    keyLight.shadow.camera.bottom = -4;
+    keyLight.shadow.bias = -0.0001;
+    keyLight.shadow.normalBias = 0.025;
+
+    scene.add(keyLight);
+
+    // Lumière de remplissage froide
+    const fillLight = new THREE.DirectionalLight(0xb9d9ff, 1.25);
+    fillLight.position.set(4, 1, 4);
+    scene.add(fillLight);
+
+    // Contre-jour rose
+    const rimLight = new THREE.DirectionalLight(0xff72ba, 2.4);
+    rimLight.position.set(0, 3, -4);
+    scene.add(rimLight);
+
+    // Lumière douce supplémentaire
+    const softLight = new THREE.PointLight(0xffd6eb, 1.2, 10);
+    softLight.position.set(-2, 0, 3);
+    scene.add(softLight);
+
+    // =========================
+    // GROUPE DU PERSONNAGE
+    // =========================
 
     const pivot = new THREE.Group();
     scene.add(pivot);
 
-    let mixer: THREE.AnimationMixer | null = null;
+    // =========================
+    // CONTRÔLES
+    // =========================
 
-    // Centre et met à l'échelle le modèle
-    const place = (obj: THREE.Object3D) => {
-      const box = new THREE.Box3().setFromObject(obj);
-      const size = box.getSize(new THREE.Vector3());
-      const ctr = box.getCenter(new THREE.Vector3());
-      const k = 2.4 / Math.max(size.x, size.y, size.z);
-      obj.scale.setScalar(k);
-      obj.position.sub(ctr.multiplyScalar(k));
-      pivot.add(obj);
-      setReady(true);
-    };
+    const controls = new OrbitControls(camera, renderer.domElement);
 
-    new GLTFLoader().load(
+    controls.enableDamping = !reduceMotion;
+    controls.dampingFactor = 0.065;
+
+    controls.enableRotate = true;
+    controls.enableZoom = true;
+    controls.enablePan = false;
+
+    controls.rotateSpeed = 0.7;
+    controls.zoomSpeed = 0.8;
+
+    controls.minDistance = 2.4;
+    controls.maxDistance = 8;
+
+    // Limite les angles pour éviter de retourner complètement le personnage
+    controls.minPolarAngle = 0.15;
+    controls.maxPolarAngle = Math.PI - 0.15;
+
+    controls.target.set(0, 0, 0);
+
+    // =========================
+    // CHARGEMENT DU MODÈLE
+    // =========================
+
+    const loader = new GLTFLoader();
+
+    loader.load(
       url,
+
       (gltf) => {
-        if (gltf.animations.length) {
-          mixer = new THREE.AnimationMixer(gltf.scene);
-          mixer.clipAction(gltf.animations[0]).play();
+        if (disposed) return;
+
+        model = gltf.scene;
+
+        // Centrage et mise à l'échelle
+        const bounds = new THREE.Box3().setFromObject(model);
+        const size = bounds.getSize(new THREE.Vector3());
+        const center = bounds.getCenter(new THREE.Vector3());
+
+        const maxDimension = Math.max(size.x, size.y, size.z) || 1;
+        const scale = 2.25 / maxDimension;
+
+        model.scale.setScalar(scale);
+        model.position.set(
+          -center.x * scale,
+          -center.y * scale,
+          -center.z * scale
+        );
+
+        // Optimisation des maillages et activation des ombres
+        model.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+
+            const materials = Array.isArray(child.material)
+              ? child.material
+              : [child.material];
+
+            materials.forEach((material) => {
+              if (
+                material instanceof THREE.MeshStandardMaterial ||
+                material instanceof THREE.MeshPhysicalMaterial
+              ) {
+                material.envMapIntensity = 1.15;
+              }
+            });
+          }
+        });
+
+        pivot.add(model);
+
+        // Sol transparent pour récupérer les ombres
+        const ground = new THREE.Mesh(
+          new THREE.PlaneGeometry(30, 30),
+          new THREE.ShadowMaterial({
+            color: 0x35152b,
+            opacity: 0.16,
+          })
+        );
+
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -(size.y * scale) / 2 - 0.025;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Position initiale de la caméra
+        const distance = Math.max(4.2, maxDimension * scale * 2);
+
+        camera.position.set(0, 0.15, distance);
+        camera.lookAt(0, 0, 0);
+
+        controls.target.set(0, 0, 0);
+        controls.update();
+        controls.saveState();
+
+        // Animations éventuelles du modèle
+        if (gltf.animations.length > 0) {
+          mixer = new THREE.AnimationMixer(model);
+          gltf.animations.forEach((animation) => {
+            mixer?.clipAction(animation).play();
+          });
         }
-        place(gltf.scene);
+
+        setStatus("ready");
       },
+
       undefined,
-      () => console.warn("Modèle introuvable :", url),
+
+      (error) => {
+        if (disposed) return;
+        console.error("Erreur de chargement du modèle 3D :", error);
+        setStatus("error");
+      }
     );
 
-    // Glisser pour faire tourner le modèle
-    let dragging = false;
-    let lastX = 0;
-    const down = (e: PointerEvent) => {
-      dragging = true;
-      lastX = e.clientX;
+    // =========================
+    // INTERACTIONS
+    // =========================
+
+    const canvas = renderer.domElement;
+
+    const onPointerDown = () => {
+      canvas.style.cursor = "grabbing";
     };
-    const up = () => (dragging = false);
-    const move = (e: PointerEvent) => {
-      if (!dragging) return;
-      pivot.rotation.y += (e.clientX - lastX) * 0.01;
-      lastX = e.clientX;
+
+    const onPointerUp = () => {
+      canvas.style.cursor = "grab";
     };
-    el.addEventListener("pointerdown", down);
-    window.addEventListener("pointerup", up);
-    el.addEventListener("pointermove", move);
+
+    const resetModel = () => {
+      controls.reset();
+    };
+
+    canvas.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerup", onPointerUp);
+    canvas.addEventListener("dblclick", resetModel);
+
+    // =========================
+    // RESPONSIVE
+    // =========================
 
     const resize = () => {
-      const w = el.clientWidth;
-      const h = el.clientHeight;
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
+      if (!el.clientWidth || !el.clientHeight) return;
+
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+
+      renderer.setSize(width, height, false);
+
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
     };
-    const ro = new ResizeObserver(resize);
-    ro.observe(el);
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(el);
     resize();
 
-    const clock = new THREE.Clock();
-    let raf = 0;
-    const tick = () => {
-      raf = requestAnimationFrame(tick);
-      const dt = clock.getDelta();
-      if (mixer && !reduce) mixer.update(dt);
-      if (!dragging && !reduce) pivot.rotation.y += 0.25 * dt;
+    // =========================
+    // ANIMATION
+    // =========================
+
+    const animate = () => {
+      if (disposed) return;
+
+      raf = requestAnimationFrame(animate);
+
+      const delta = Math.min(clock.getDelta(), 0.05);
+
+      if (mixer) {
+        mixer.update(delta);
+      }
+
+      // Pas de rotation automatique :
+      // le visiteur garde le contrôle du personnage.
+      controls.update();
+
       renderer.render(scene, camera);
     };
-    tick();
+
+    animate();
+
+    // =========================
+    // NETTOYAGE
+    // =========================
 
     return () => {
+      disposed = true;
+
       cancelAnimationFrame(raf);
-      ro.disconnect();
-      el.removeEventListener("pointerdown", down);
-      window.removeEventListener("pointerup", up);
-      el.removeEventListener("pointermove", move);
+      observer.disconnect();
+
+      controls.dispose();
+
+      canvas.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerup", onPointerUp);
+      canvas.removeEventListener("dblclick", resetModel);
+
+      mixer?.stopAllAction();
+
+      scene.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          object.geometry.dispose();
+
+          const materials = Array.isArray(object.material)
+            ? object.material
+            : [object.material];
+
+          materials.forEach((material) => {
+            Object.values(material).forEach((value) => {
+              if (value instanceof THREE.Texture) {
+                value.dispose();
+              }
+            });
+
+            material.dispose();
+          });
+        }
+      });
+
       renderer.dispose();
       renderer.domElement.remove();
     };
   }, [url]);
 
   return (
-    <div ref={host} style={{ position: "absolute", inset: 0, touchAction: "pan-y" }}>
-      <div className={`pe-loading${ready ? " off" : ""}`}>Chargement du modèle</div>
+    <div
+      ref={host}
+      className="model-glb"
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        touchAction: "pan-y",
+      }}
+    >
+      {status === "loading" && (
+        <div className="pe-loading">
+          Chargement du modèle...
+        </div>
+      )}
+
+      {status === "error" && (
+        <div className="pe-loading">
+          Impossible de charger le modèle 3D
+        </div>
+      )}
+
+      {status === "ready" && (
+        <div className="model-glb__hint">
+          <span>✧</span> GLISSER POUR EXPLORER
+          <span>·</span> MOLETTE POUR ZOOMER
+          <span>·</span> DOUBLE-CLIC POUR RECADRER
+        </div>
+      )}
     </div>
   );
 }
