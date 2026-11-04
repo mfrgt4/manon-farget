@@ -78,27 +78,20 @@ export default function PortfolioEntrance() {
     const character = characterRef.current;
     const title = titleRef.current;
 
-    if (
-      !root ||
-      !stage ||
-      !leftDoor ||
-      !rightDoor ||
-      !character ||
-      !title
-    ) {
+    if (!root || !stage || !leftDoor || !rightDoor || !character || !title) {
       return;
     }
 
     const context = gsap.context(() => {
       gsap.set(leftDoor, {
         rotationY: 0,
-        transformOrigin: "left center",
+        transformOrigin: "right center",
         transformPerspective: 1800,
       });
 
       gsap.set(rightDoor, {
         rotationY: 0,
-        transformOrigin: "right center",
+        transformOrigin: "left center",
         transformPerspective: 1800,
       });
 
