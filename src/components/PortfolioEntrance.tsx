@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ModelGlb from "./ModelGlb";
@@ -37,9 +37,18 @@ function LockerDetails() {
   );
 }
 
-function LockerDoor({ side }: { side: "left" | "right" }) {
+function LockerDoor({
+  side,
+  doorRef,
+}: {
+  side: "left" | "right";
+  doorRef: RefObject<HTMLDivElement | null>;
+}) {
   return (
-    <div className={`ip-door ip-door--${side}`}>
+    <div
+      ref={doorRef}
+      className={`ip-door ip-door--${side}`}
+    >
       <div className="ip-door-locker">
         <LockerDetails />
       </div>
@@ -65,7 +74,6 @@ function LockerDoor({ side }: { side: "left" | "right" }) {
 
 export default function PortfolioEntrance() {
   const rootRef = useRef<HTMLElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
   const leftDoorRef = useRef<HTMLDivElement>(null);
   const rightDoorRef = useRef<HTMLDivElement>(null);
   const characterRef = useRef<HTMLDivElement>(null);
@@ -73,25 +81,16 @@ export default function PortfolioEntrance() {
 
   useEffect(() => {
     const root = rootRef.current;
-    const stage = stageRef.current;
     const leftDoor = leftDoorRef.current;
     const rightDoor = rightDoorRef.current;
     const character = characterRef.current;
     const title = titleRef.current;
 
-    if (
-      !root ||
-      !stage ||
-      !leftDoor ||
-      !rightDoor ||
-      !character ||
-      !title
-    ) {
+    if (!root || !leftDoor || !rightDoor || !character || !title) {
       return;
     }
 
     const context = gsap.context(() => {
-      // État initial des deux portes : fermées au centre.
       gsap.set(leftDoor, {
         rotationY: 0,
         transformOrigin: "100% 50%",
@@ -117,7 +116,6 @@ export default function PortfolioEntrance() {
         scale: 1,
       });
 
-      // Animation liée directement à la progression du scroll.
       const intro = gsap.timeline({
         scrollTrigger: {
           trigger: root,
@@ -131,7 +129,6 @@ export default function PortfolioEntrance() {
         },
       });
 
-      // Le titre disparaît progressivement.
       intro.to(
         title,
         {
@@ -143,7 +140,6 @@ export default function PortfolioEntrance() {
         0,
       );
 
-      // Neeko apparaît derrière les portes.
       intro.to(
         character,
         {
@@ -156,7 +152,6 @@ export default function PortfolioEntrance() {
         0.1,
       );
 
-      // La porte gauche pivote vers la gauche.
       intro.to(
         leftDoor,
         {
@@ -167,7 +162,6 @@ export default function PortfolioEntrance() {
         0.1,
       );
 
-      // La porte droite pivote vers la droite.
       intro.to(
         rightDoor,
         {
@@ -178,7 +172,6 @@ export default function PortfolioEntrance() {
         0.1,
       );
 
-      // L'introduction disparaît à la fin de l'ouverture.
       intro.to(
         root,
         {
@@ -212,9 +205,9 @@ export default function PortfolioEntrance() {
         <ModelGlb url="/models/neeko.glb" />
       </div>
 
-      <div className="ip-stage" ref={stageRef}>
-        <LockerDoor side="left" />
-        <LockerDoor side="right" />
+      <div className="ip-stage">
+        <LockerDoor side="left" doorRef={leftDoorRef} />
+        <LockerDoor side="right" doorRef={rightDoorRef} />
       </div>
 
       <div className="ip-title" ref={titleRef}>
