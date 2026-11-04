@@ -1,96 +1,313 @@
 
 .entrance {
-  height: 100vh;
-  width: 100%;
   position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
   overflow: hidden;
-  background: #100b16;
-  perspective: 1400px;
+  background: #e982b4;
+  z-index: 20;
 }
 
 .entrance-scene {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  transform-style: preserve-3d;
-  background:
-    radial-gradient(
-      ellipse at center,
-      #32152e 0%,
-      #100b16 70%
-    );
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transform-origin: center center;
 }
 
-.entrance-title {
+.locker-wall {
   position: absolute;
-  z-index: 5;
-  top: 12%;
-  text-align: center;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at center, #ffd0e8 0%, transparent 60%),
+    linear-gradient(135deg, #f7a6cb, #dc6da5);
+}
+
+/* Mur de casiers en arrière-plan */
+
+.locker-background {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  opacity: 0.25;
+  font-size: clamp(35px, 7vw, 90px);
   color: white;
 }
 
-.entrance-title h1 {
+.locker-background span:nth-child(even) {
+  transform: translateY(100px);
+}
+
+/* Lumière intérieure */
+
+.locker-light {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    radial-gradient(ellipse, #fff1fa 0%, #ffb9dd 35%, #ec70b0 75%);
+}
+
+.locker-inside {
+  text-align: center;
+  color: #b52c7b;
+}
+
+.locker-inside span {
+  font-size: 12px;
+  letter-spacing: 5px;
+}
+
+.locker-inside h2 {
   font-family: "Instrument Serif", serif;
-  font-size: clamp(42px, 7vw, 90px);
+  font-size: clamp(55px, 10vw, 130px);
   margin: 15px 0;
 }
 
-.entrance-title span {
+.locker-inside p {
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+
+/* Titre */
+
+.locker-title {
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  text-align: center;
+  pointer-events: none;
+  color: white;
+  text-shadow: 0 3px 15px #b83e81;
+}
+
+.locker-eyebrow {
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  letter-spacing: 3px;
-  color: #f5a5d0;
+  letter-spacing: 5px;
 }
 
-.door-frame {
-  position: relative;
+.locker-title h1 {
+  font-family: "Instrument Serif", serif;
+  font-size: clamp(45px, 8vw, 105px);
+  line-height: 1;
+  margin: 20px 0;
+}
+
+.locker-title h1 span {
+  color: #fff0f8;
+}
+
+.locker-title p {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 4px;
+  margin-top: 35px;
+}
+
+/* Les deux portes */
+
+.locker-doors {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
   display: flex;
-  width: min(75vw, 850px);
-  height: min(72vh, 680px);
-  transform-style: preserve-3d;
-  perspective: 1400px;
+  perspective: 1800px;
+  perspective-origin: center;
 }
 
-.door {
+.locker-door {
+  position: relative;
   width: 50%;
   height: 100%;
+  background: linear-gradient(
+    100deg,
+    #e77cae 0%,
+    #f5a5ca 45%,
+    #e77cae 100%
+  );
+  border: 2px solid rgba(151, 49, 102, 0.35);
+  box-shadow:
+    inset 0 0 35px rgba(142, 41, 91, 0.2),
+    0 0 20px rgba(114, 31, 78, 0.2);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.locker-door.left {
+  transform-origin: left center;
+}
+
+.locker-door.right {
+  transform-origin: right center;
+}
+
+.locker-door-inner {
   position: relative;
+  width: 100%;
+  height: 100%;
+  border: 9px solid rgba(255, 222, 239, 0.16);
+  box-shadow: inset 0 0 30px rgba(150, 45, 96, 0.13);
+}
+
+/* Ventilations du casier */
+
+.locker-vents {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  gap: 12px;
+}
+
+.locker-vents i {
+  display: block;
+  width: clamp(55px, 10vw, 130px);
+  height: 5px;
+  border-radius: 10px;
+  background: rgba(146, 49, 99, 0.25);
+  box-shadow: 0 2px 2px rgba(255,255,255,0.35);
+}
+
+/* Décoration */
+
+.locker-brand {
+  position: absolute;
+  top: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "JetBrains Mono", monospace;
+  font-size: clamp(10px, 1.5vw, 16px);
+  letter-spacing: 3px;
+  color: #fff0f8;
+  white-space: nowrap;
+}
+
+.locker-sticker {
+  position: absolute;
   display: grid;
   place-items: center;
-  background:
-    linear-gradient(135deg, #51243e, #1b101d 70%);
-  border: 5px solid #a77c9b;
-  box-shadow:
-    inset 0 0 30px #000,
-    0 0 20px #e761aa55;
-  transform-style: preserve-3d;
+  text-shadow: 2px 3px 0 rgba(157, 49, 103, 0.25);
+  filter: drop-shadow(3px 5px 3px rgba(104, 35, 69, 0.25));
 }
 
-.left-door {
-  transform-origin: left center;
-  border-right: 2px solid #e761aa;
+.sticker-heart {
+  top: 40%;
+  left: 20%;
+  font-size: clamp(50px, 8vw, 100px);
+  color: #fff0f8;
 }
 
-.right-door {
-  transform-origin: right center;
-  border-left: 2px solid #e761aa;
+.sticker-star {
+  bottom: 17%;
+  right: 17%;
+  font-size: clamp(35px, 5vw, 65px);
+  color: #fff1a6;
 }
 
-.door-decoration {
-  font-family: "Instrument Serif", serif;
-  font-size: clamp(50px, 9vw, 120px);
-  color: #e761aa;
-  text-shadow: 0 0 25px #e761aa;
+.sticker-lips {
+  top: 57%;
+  right: 20%;
+  font-size: clamp(35px, 5vw, 65px);
 }
 
-.entrance-light {
+.sticker-smile {
+  top: 43%;
+  right: 18%;
+  font-size: clamp(50px, 8vw, 95px);
+  color: #fff0f8;
+}
+
+.sticker-sparkle {
+  bottom: 18%;
+  left: 17%;
+  font-size: clamp(35px, 5vw, 65px);
+  color: #fff2b2;
+}
+
+.sticker-heart2 {
+  top: 65%;
+  left: 35%;
+  font-size: clamp(35px, 5vw, 65px);
+  color: #fff0f8;
+}
+
+/* Poignées et cadenas */
+
+.locker-handle {
   position: absolute;
-  width: 45%;
-  height: 70%;
-  background: #f296bb;
-  filter: blur(100px);
-  opacity: 0;
-  z-index: 0;
-  pointer-events: none;
+  top: 48%;
+  width: 13px;
+  height: 75px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #b9a1b3, #fff1fb, #aa829f);
+  box-shadow: 2px 3px 7px rgba(80, 34, 65, 0.3);
+}
+
+.left .locker-handle {
+  right: 12px;
+}
+
+.right .locker-handle {
+  left: 12px;
+}
+
+.locker-lock {
+  position: absolute;
+  top: 52%;
+  font-size: 23px;
+  color: #fff0fa;
+  text-shadow: 1px 2px 3px #a64a7a;
+}
+
+.left .locker-lock {
+  right: 35px;
+}
+
+.right .locker-lock {
+  left: 35px;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .locker-title h1 {
+    font-size: 48px;
+  }
+
+  .locker-eyebrow {
+    font-size: 9px;
+    letter-spacing: 3px;
+  }
+
+  .locker-vents {
+    gap: 9px;
+  }
+
+  .locker-vents i {
+    width: 55px;
+    height: 4px;
+  }
+
+  .locker-sticker {
+    transform: scale(0.75);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrance {
+    scroll-behavior: auto;
+  }
 }
