@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -78,21 +79,31 @@ export default function PortfolioEntrance() {
     const character = characterRef.current;
     const title = titleRef.current;
 
-    if (!root || !stage || !leftDoor || !rightDoor || !character || !title) {
+    if (
+      !root ||
+      !stage ||
+      !leftDoor ||
+      !rightDoor ||
+      !character ||
+      !title
+    ) {
       return;
     }
 
     const context = gsap.context(() => {
+      // État initial des deux portes : fermées au centre.
       gsap.set(leftDoor, {
         rotationY: 0,
-        transformOrigin: "right center",
+        transformOrigin: "100% 50%",
         transformPerspective: 1800,
+        force3D: true,
       });
 
       gsap.set(rightDoor, {
         rotationY: 0,
-        transformOrigin: "left center",
+        transformOrigin: "0% 50%",
         transformPerspective: 1800,
+        force3D: true,
       });
 
       gsap.set(character, {
@@ -106,23 +117,21 @@ export default function PortfolioEntrance() {
         scale: 1,
       });
 
+      // Animation liée directement à la progression du scroll.
       const intro = gsap.timeline({
         scrollTrigger: {
           trigger: root,
           start: "top top",
           end: "+=1400",
           scrub: 0.8,
-
-          // Le casier reste devant pendant que l'accueil défile derrière.
-          pin: root,
-          pinSpacing: false,
-
+          pin: true,
+          pinSpacing: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      // Disparition du titre.
+      // Le titre disparaît progressivement.
       intro.to(
         title,
         {
@@ -131,10 +140,10 @@ export default function PortfolioEntrance() {
           duration: 0.35,
           ease: "power2.in",
         },
-        0.05,
+        0,
       );
 
-      // Apparition de Neeko derrière les portes.
+      // Neeko apparaît derrière les portes.
       intro.to(
         character,
         {
@@ -144,37 +153,37 @@ export default function PortfolioEntrance() {
           duration: 0.8,
           ease: "power2.out",
         },
-        0.18,
+        0.1,
       );
 
-      // Ouverture progressive du casier gauche.
+      // La porte gauche pivote vers la gauche.
       intro.to(
         leftDoor,
         {
-          rotationY: -112,
+          rotationY: -115,
           duration: 1.25,
           ease: "power2.inOut",
         },
-        0.12,
+        0.1,
       );
 
-      // Ouverture progressive du casier droit.
+      // La porte droite pivote vers la droite.
       intro.to(
         rightDoor,
         {
-          rotationY: 112,
+          rotationY: 115,
           duration: 1.25,
           ease: "power2.inOut",
         },
-        0.12,
+        0.1,
       );
 
-      // L'introduction disparaît lorsque les portes sont ouvertes.
+      // L'introduction disparaît à la fin de l'ouverture.
       intro.to(
         root,
         {
           autoAlpha: 0,
-          duration: 0.12,
+          duration: 0.1,
           ease: "none",
         },
         1.34,
