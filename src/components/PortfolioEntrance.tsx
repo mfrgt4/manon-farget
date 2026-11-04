@@ -151,7 +151,7 @@ export default function PortfolioEntrance() {
       intro.to(
         leftDoor,
         {
-          rotationY: -115,
+          rotationY: 115,
           duration: 1.25,
           ease: "power2.inOut",
         },
@@ -161,7 +161,7 @@ export default function PortfolioEntrance() {
       intro.to(
         rightDoor,
         {
-          rotationY: 115,
+          rotationY: -115,
           duration: 1.25,
           ease: "power2.inOut",
         },
