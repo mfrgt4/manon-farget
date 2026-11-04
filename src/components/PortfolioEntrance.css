@@ -884,3 +884,13 @@
 .ip-door--right {
   border-left: none !important;
 }
+
+@media (min-width: 901px) {
+  .ip-stage {
+    overflow: visible;
+  }
+
+  .ip-door {
+    will-change: transform;
+  }
+}

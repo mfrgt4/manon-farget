@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, type ReactNode, type Ref } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -35,46 +36,25 @@ function LockerDetails() {
   );
 }
 
-/* Stickers différents selon le côté de la porte */
-
 function LockerStickers({ side }: { side: "left" | "right" }) {
   return (
     <>
       {side === "left" && (
         <>
           <div className="ip-sticker ip-sticker--one">
-            <img
-              src="https://i.pinimg.com/originals/95/4c/54/954c54617d68eba31d77adfa90404ef8.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/95/4c/54/954c54617d68eba31d77adfa90404ef8.gif" alt="Sticker animé" />
           </div>
-
           <div className="ip-sticker ip-sticker--two">
-            <img
-              src="https://i.pinimg.com/originals/dd/56/bb/dd56bbfeaf64ac8e20feaa65ee898bf0.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/dd/56/bb/dd56bbfeaf64ac8e20feaa65ee898bf0.gif" alt="Sticker animé" />
           </div>
-
           <div className="ip-sticker ip-sticker--four">
-            <img
-              src="https://i.pinimg.com/originals/93/2f/2c/932f2cf0bc5b42adae73a65f27e0b558.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/93/2f/2c/932f2cf0bc5b42adae73a65f27e0b558.gif" alt="Sticker animé" />
           </div>
-
           <div className="ip-sticker ip-sticker--five">
-            <img
-              src="https://i.pinimg.com/originals/7b/d9/bd/7bd9bd5836aa0d5bdb1964950108af18.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/7b/d9/bd/7bd9bd5836aa0d5bdb1964950108af18.gif" alt="Sticker animé" />
           </div>
-
           <div className="ip-sticker ip-sticker--eight">
-            <img
-              src="https://i.pinimg.com/originals/7e/78/17/7e78170337ed44d06823302a491a56b3.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/7e/78/17/7e78170337ed44d06823302a491a56b3.gif" alt="Sticker animé" />
           </div>
         </>
       )}
@@ -82,38 +62,19 @@ function LockerStickers({ side }: { side: "left" | "right" }) {
       {side === "right" && (
         <>
           <div className="ip-sticker ip-sticker--three">
-            <img
-              src="https://i.pinimg.com/originals/72/bc/ac/72bcac56b668c5c898f0117783f6f8c6.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/72/bc/ac/72bcac56b668c5c898f0117783f6f8c6.gif" alt="Sticker animé" />
           </div>
-
           <div className="ip-sticker ip-sticker--six">
-            <img
-              src="https://i.pinimg.com/originals/e1/5a/15/e15a1569934cb0898a57210b32c9488f.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/e1/5a/15/e15a1569934cb0898a57210b32c9488f.gif" alt="Sticker animé" />
           </div>
-
           <div className="ip-sticker ip-sticker--seven">
-            <img
-              src="https://i.pinimg.com/originals/3e/d5/00/3ed5009c487c654a0001a97c8d9b381c.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/3e/d5/00/3ed5009c487c654a0001a97c8d9b381c.gif" alt="Sticker animé" />
           </div>
-
           <div className="ip-sticker ip-sticker--nine">
-            <img
-              src="https://i.pinimg.com/originals/ee/3b/5c/ee3b5c19db3c7a9dacc5e04d9a885fa2.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/ee/3b/5c/ee3b5c19db3c7a9dacc5e04d9a885fa2.gif" alt="Sticker animé" />
           </div>
-
           <div className="ip-sticker ip-sticker--ten">
-            <img
-              src="https://i.pinimg.com/originals/0e/f6/51/0ef65153115ac5f17c5b577e2d694db0.gif"
-              alt="Sticker animé"
-            />
+            <img src="https://i.pinimg.com/originals/0e/f6/51/0ef65153115ac5f17c5b577e2d694db0.gif" alt="Sticker animé" />
           </div>
         </>
       )}
@@ -169,21 +130,12 @@ export default function PortfolioEntrance({
 
     if (!root || !leftDoor || !rightDoor || !title) return;
 
-    // L'introduction animée est activée uniquement sur ordinateur.
     const media = gsap.matchMedia();
 
     media.add("(min-width: 901px)", () => {
-      gsap.set(leftDoor, {
+      gsap.set([leftDoor, rightDoor], {
+        x: 0,
         rotationY: 0,
-        transformOrigin: "0% 50%",
-        transformPerspective: 1800,
-        force3D: true,
-      });
-
-      gsap.set(rightDoor, {
-        rotationY: 0,
-        transformOrigin: "100% 50%",
-        transformPerspective: 1800,
         force3D: true,
       });
 
@@ -205,35 +157,38 @@ export default function PortfolioEntrance({
         },
       });
 
+      // Le titre disparaît progressivement
       intro.to(
         title,
         {
           autoAlpha: 0,
           scale: 0.96,
-          duration: 0.8,
+          duration: 0.5,
           ease: "power1.out",
         },
         0,
       );
 
+      // Le panneau gauche coulisse vers la gauche
       intro.to(
         leftDoor,
         {
-          rotationY: 115,
-          duration: 1.2,
+          xPercent: -100,
+          duration: 1,
           ease: "power2.inOut",
         },
-        0,
+        0.15,
       );
 
+      // Le panneau droit coulisse vers la droite
       intro.to(
         rightDoor,
         {
-          rotationY: -115,
-          duration: 1.2,
+          xPercent: 100,
+          duration: 1,
           ease: "power2.inOut",
         },
-        0,
+        0.15,
       );
 
       const refreshId = window.requestAnimationFrame(() => {
@@ -258,10 +213,8 @@ export default function PortfolioEntrance({
     >
       <div className="ip-wall" />
 
-      {/* Le vrai contenu Accueil reste présent sur tous les écrans */}
       <div className="ip-content">{children}</div>
 
-      {/* Introduction avec les casiers, uniquement sur ordinateur */}
       <div className="ip-stage">
         <LockerDoor side="left" doorRef={leftDoorRef} />
         <LockerDoor side="right" doorRef={rightDoorRef} />
