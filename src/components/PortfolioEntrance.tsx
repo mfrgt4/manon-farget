@@ -11,11 +11,12 @@ const SKETCHFAB_URL =
 
 export default function PortfolioEntrance() {
   const sectionRef = useRef<HTMLElement>(null);
+  const wallRef = useRef<HTMLDivElement>(null);
   const lockerRef = useRef<HTMLDivElement>(null);
   const leftDoorRef = useRef<HTMLDivElement>(null);
   const rightDoorRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
-  const lightRef = useRef<HTMLDivElement>(null);
+  const neekoRef = useRef<HTMLDivElement>(null);
   const lockRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,18 +24,13 @@ export default function PortfolioEntrance() {
       const leftDoor = leftDoorRef.current;
       const rightDoor = rightDoorRef.current;
       const locker = lockerRef.current;
+      const accueil = document.querySelector<HTMLElement>("#accueil");
 
       if (!leftDoor || !rightDoor || !locker) return;
 
-      // Position initiale des portes
       gsap.set([leftDoor, rightDoor], {
         rotateY: 0,
         transformPerspective: 1200,
-      });
-
-      gsap.set(lightRef.current, {
-        opacity: 0,
-        scale: 0.5,
       });
 
       // Animation permanente des stickers
@@ -51,20 +47,22 @@ export default function PortfolioEntrance() {
         }
       );
 
-      // Animation liée au défilement
+      // L'accueil reste épinglé derrière l'intro pendant tout le scroll :
+      // quand les portes s'ouvrent, on le voit directement.
       const timeline = gsap.timeline({
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: accueil ?? sectionRef.current,
           start: "top top",
           end: "+=2200",
           scrub: 0.8,
-          pin: true,
+          pin: accueil ? true : false,
+          pinSpacing: true,
           anticipatePin: 1,
         },
       });
 
       // 1. Zoom vers le casier
-      timeline.to(locker, { scale: 1.08, duration: 1.5, ease: "none" });
+      timeline.to(locker, { scale: 1.05, duration: 1.5, ease: "none" });
 
       // 2. Le casier tremble
       timeline.to(locker, {
@@ -95,43 +93,43 @@ export default function PortfolioEntrance() {
         "<"
       );
 
-      // 5. Le titre disparaît
+      // 5. Le titre et Neeko disparaissent
       timeline.to(titleRef.current, {
         opacity: 0,
         scale: 0.8,
         y: -60,
         duration: 0.7,
       });
+      timeline.to(
+        neekoRef.current,
+        { opacity: 0, x: 80, duration: 0.7 },
+        "<"
+      );
 
-      // 6. La lumière intérieure s'allume
-      timeline.to(lightRef.current, {
-        opacity: 1,
-        scale: 1.3,
-        duration: 1,
-        ease: "power2.out",
-      });
-
-      // 7. Les portes s'ouvrent
+      // 6. Les portes s'ouvrent, le mur rose s'efface : l'accueil apparaît
       timeline.to(leftDoor, { rotateY: -115, duration: 2, ease: "power3.inOut" });
       timeline.to(
         rightDoor,
         { rotateY: 115, duration: 2, ease: "power3.inOut" },
         "<"
       );
+      timeline.to(
+        wallRef.current,
+        { opacity: 0, duration: 1.5, ease: "power1.in" },
+        "<0.3"
+      );
 
-      // 8. Les stickers s'envolent
+      // 7. Les stickers s'envolent
       timeline.to(
         ".floating-sticker",
         { scale: 1.8, opacity: 0, y: -100, stagger: 0.08, duration: 1 },
-        "<0.5"
+        "<0.3"
       );
 
-      // 9. Traversée du casier
-      timeline.to(locker, {
-        scale: 1.8,
-        opacity: 0,
-        duration: 1.5,
-        ease: "power2.in",
+      // 8. L'intro disparaît complètement
+      timeline.to(sectionRef.current, {
+        autoAlpha: 0,
+        duration: 0.4,
       });
     }, sectionRef);
 
@@ -141,27 +139,13 @@ export default function PortfolioEntrance() {
   return (
     <section className="entrance" ref={sectionRef}>
       <div className="locker-scene">
-        <div className="locker-wall">
+        <div className="locker-wall" ref={wallRef}>
           <div className="wall-decoration">✦</div>
           <div className="wall-decoration">♡</div>
           <div className="wall-decoration">✧</div>
         </div>
 
         <div className="locker" ref={lockerRef}>
-          <div className="locker-interior">
-            {/* Neeko, visible quand les portes s'ouvrent */}
-            <div style={{ position: "absolute", inset: 0 }}>
-              <ModelGlb url="/models/neeko.glb" />
-            </div>
-
-            <div className="locker-light" ref={lightRef}>
-              <span>WELCOME TO</span>
-              <h2>MY WORLD</h2>
-              <p>MANON FARGET · CREATIVE UNIVERSE</p>
-              <div className="interior-star">✦</div>
-            </div>
-          </div>
-
           <div className="locker-door locker-left" ref={leftDoorRef}>
             <div className="door-content">
               <span className="door-label">MANON F. ✦</span>
@@ -194,6 +178,11 @@ export default function PortfolioEntrance() {
               <div className="locker-handle" />
             </div>
           </div>
+        </div>
+
+        {/* Neeko, devant les portes fermées */}
+        <div className="entrance-neeko" ref={neekoRef}>
+          <ModelGlb url="/models/neeko.glb" />
         </div>
 
         <div className="entrance-title" ref={titleRef}>

@@ -1,13 +1,12 @@
 /* ===== INTRODUCTION PLEIN ÉCRAN ===== */
 
 .entrance {
-  position: relative;
+  position: fixed;
+  inset: 0;
   width: 100%;
-  height: 100vh;
   height: 100svh;
   overflow: hidden;
-  background: #ed8bb9;
-  z-index: 50;
+  z-index: 60; /* au-dessus de la nav (50) et du thème (55) */
 }
 
 .locker-scene {
@@ -75,77 +74,26 @@
   to { transform: translateY(-18px) rotate(12deg); }
 }
 
-/* ===== CASIER ===== */
+/* ===== CASIER (plein écran) ===== */
 
 .locker {
   position: relative;
-  width: min(76vw, 850px);
-  height: min(76vh, 720px);
-  min-height: 420px;
-  transform-style: preserve-3d;
-  perspective: 1800px;
-  filter: drop-shadow(0 25px 35px rgba(106, 32, 75, .3));
-}
-
-.locker-interior {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border: 12px solid #a94c7b;
-  background: linear-gradient(145deg, #7f315f, #3e1739);
-  box-shadow: inset 0 0 40px rgba(0,0,0,.6);
-}
-
-.locker-light {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: #a82c76;
-  background:
-    radial-gradient(ellipse, #fff 0%, #ffe3f2 35%, #f58fc3 100%);
-}
-
-.locker-light span,
-.locker-light p {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 4px;
-}
-
-.locker-light h2 {
-  font-family: "Instrument Serif", serif;
-  font-size: clamp(55px, 10vw, 120px);
-  margin: 15px 0;
-}
-
-.interior-star {
-  position: absolute;
-  font-size: 100px;
-  color: white;
-  opacity: .7;
-  animation: starSpin 8s linear infinite;
-}
-
-@keyframes starSpin {
-  to { transform: rotate(360deg); }
-}
-
-/* ===== NEEKO (modèle 3D dans le casier) ===== */
-
-.locker-model {
-  position: absolute;
-  inset: 0;
-  z-index: 2; /* devant la lumière, derrière les portes (z-index 3) */
-}
-
-.locker-model canvas {
-  display: block;
   width: 100%;
   height: 100%;
+  transform-style: preserve-3d;
+  perspective: 1800px;
+}
+
+/* ===== NEEKO (devant les portes fermées) ===== */
+
+.entrance-neeko {
+  position: absolute;
+  right: 3vw;
+  bottom: 0;
+  width: min(42vw, 480px);
+  height: 70svh;
+  z-index: 5;
+  pointer-events: none; /* ne bloque pas le scroll */
 }
 
 .pe-loading {
@@ -380,9 +328,13 @@
 
 @media (max-width: 700px) {
   .locker {
-    width: 92vw;
-    height: 68vh;
-    min-height: 380px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .entrance-neeko {
+    width: 62vw;
+    height: 46svh;
   }
 
   .entrance-title h1 {
@@ -399,10 +351,6 @@
     height: 4px;
   }
 
-  .locker-light h2 {
-    font-size: 55px;
-  }
-
   .entrance-corner {
     right: 15px;
     bottom: 15px;
@@ -410,8 +358,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wall-decoration,
-  .interior-star {
+  .wall-decoration {
     animation: none;
   }
 }
