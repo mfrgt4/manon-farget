@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, type ReactNode, type Ref } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,10 +10,7 @@ function LockerDetails() {
   return (
     <>
       <div className="ip-vents ip-vents--top">
-        <i />
-        <i />
-        <i />
-        <i />
+        <i /><i /><i /><i />
       </div>
 
       <div className="ip-nameplate" />
@@ -26,20 +24,9 @@ function LockerDetails() {
       </div>
 
       <div className="ip-vents ip-vents--bottom">
-        <i />
-        <i />
-        <i />
-        <i />
+        <i /><i /><i /><i />
       </div>
     </>
-  );
-}
-
-function FixedLocker() {
-  return (
-    <div className="ip-fixed-locker">
-      <LockerDetails />
-    </div>
   );
 }
 
@@ -52,9 +39,12 @@ function LockerDoor({
 }) {
   return (
     <div ref={doorRef} className={`ip-door ip-door--${side}`}>
-      <div className="ip-door-locker">
-        <LockerDetails />
-      </div>
+      {/* Les trois casiers sont solidaires dans ce grand panneau */}
+      {[1, 2, 3].map((locker) => (
+        <div className="ip-door-locker" key={locker}>
+          <LockerDetails />
+        </div>
+      ))}
 
       <div className="ip-door-edge" />
 
@@ -120,19 +110,19 @@ export default function PortfolioEntrance({
         },
       });
 
-      // Le titre disparaît dès le début de l'ouverture.
+      // Le titre disparaît au début de l'ouverture.
       intro.to(
         title,
         {
           autoAlpha: 0,
           scale: 0.96,
-          duration: 0.35,
+          duration: 0.3,
           ease: "power1.out",
         },
-        0.05,
+        0,
       );
 
-      // Ouverture progressive de la porte gauche.
+      // Les trois casiers de gauche pivotent ensemble.
       intro.to(
         leftDoor,
         {
@@ -143,7 +133,7 @@ export default function PortfolioEntrance({
         0,
       );
 
-      // Ouverture progressive de la porte droite.
+      // Les trois casiers de droite pivotent ensemble.
       intro.to(
         rightDoor,
         {
@@ -173,24 +163,15 @@ export default function PortfolioEntrance({
     >
       <div className="ip-wall" />
 
-      {/* Le vrai contenu Accueil est placé derrière les portes */}
+      {/* Le vrai contenu Accueil apparaît derrière les portes */}
       <div className="ip-content">{children}</div>
 
-      {/* Les quatre casiers extérieurs restent fixes */}
-      <div className="ip-fixed-lockers">
-        <FixedLocker />
-        <FixedLocker />
-        <FixedLocker />
-        <FixedLocker />
-      </div>
-
-      {/* Les deux portes centrales s'ouvrent */}
+      {/* Les deux grands panneaux de trois casiers */}
       <div className="ip-stage">
         <LockerDoor side="left" doorRef={leftDoorRef} />
         <LockerDoor side="right" doorRef={rightDoorRef} />
       </div>
 
-      {/* Le titre reste au premier plan */}
       <div className="ip-title" ref={titleRef}>
         <span>Bienvenue dans</span>
         <h1>Mon Portfolio</h1>
