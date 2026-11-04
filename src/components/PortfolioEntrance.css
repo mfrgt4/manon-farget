@@ -861,3 +861,26 @@
     z-index: auto;
   }
 }
+
+/* =========================================
+   CORRECTION — CENTRE DES CASIERS
+   ========================================= */
+
+/* Supprimer les bandes intérieures des portes */
+.ip-door-edge {
+  display: none !important;
+}
+
+/* Supprimer les ombres roses trop marquées au centre */
+.ip-door {
+  box-shadow: none !important;
+}
+
+/* Adoucir les bordures qui se rejoignent au milieu */
+.ip-door--left {
+  border-right: none !important;
+}
+
+.ip-door--right {
+  border-left: none !important;
+}
