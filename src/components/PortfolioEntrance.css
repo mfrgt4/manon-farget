@@ -1,13 +1,8 @@
-/* INTRO — casiers vintage dans l'identité rose du portfolio */
+/* INTRO — casiers vintage dans la palette du portfolio */
 .ip {
   --ip-pink: #d84b7d;
-  --ip-pink-light: #f5f3ef;
   --ip-cream: #f5f3ef;
-  --ip-plum: #b72d60;
-  --ip-plum-deep: #b72d60;
-  --ip-metal: #f5f3ef;
-  --ip-metal-light: #f5f3ef;
-  --ip-metal-shadow: #d84b7d;
+  --ip-dark-pink: #b72d60;
 
   position: fixed;
   inset: 0;
@@ -16,24 +11,72 @@
   overflow: hidden;
   z-index: 60;
   isolation: isolate;
-  background: var(--ip-plum-deep);
+  background: var(--ip-cream);
+  perspective: 1800px;
 }
 
 .ip-wall {
   position: absolute;
+  z-index: 0;
   inset: -2%;
   background:
-    radial-gradient(ellipse at 50% 44%, rgba(216, 75, 125, .24), transparent 55%),
-    radial-gradient(ellipse at 50% 100%, rgba(245, 243, 239, .12), transparent 48%),
-    repeating-linear-gradient(90deg, transparent 0 24.7%, rgba(245, 243, 239, .09) 24.8% 25%, transparent 25.1% 49.7%),
-    linear-gradient(180deg, #d84b7d 0%, #b72d60 100%);
+    radial-gradient(ellipse at 50% 44%, rgba(216, 75, 125, .20), transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(245, 243, 239, .22), transparent 48%),
+    repeating-linear-gradient(90deg, transparent 0 24.7%, rgba(183, 45, 96, .08) 24.8% 25%, transparent 25.1% 49.7%),
+    linear-gradient(180deg, #f5f3ef 0%, #f5f3ef 48%, #d84b7d 100%);
+  will-change: opacity;
+}
+
+.ip-character {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 53%;
+  width: min(54vw, 720px);
+  height: min(88vh, 900px);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: auto;
+  will-change: transform, opacity;
+}
+
+.ip-character .model-glb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.ip-character .model-glb__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 90%;
+  color: #b72d60;
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 1px 8px #f5f3ef;
+}
+
+.ip-character .pe-loading {
+  color: #b72d60;
+  font-size: 12px;
+  text-align: center;
 }
 
 .ip-stage {
   position: absolute;
+  z-index: 3;
   inset: 0;
   perspective: 1800px;
   transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .ip-door {
@@ -42,22 +85,23 @@
   width: 50.15%;
   height: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   transform-style: preserve-3d;
   backface-visibility: visible;
-  background: var(--ip-metal);
-  box-shadow: 0 0 45px rgba(183, 45, 96, .38);
+  background: var(--ip-cream);
+  box-shadow: 0 0 45px rgba(183, 45, 96, .25);
+  will-change: transform;
 }
 
 .ip-door--left {
   left: 0;
-  transform-origin: left center;
+  transform-origin: right center;
   border-right: 2px solid rgba(183, 45, 96, .78);
 }
 
 .ip-door--right {
   right: 0;
-  transform-origin: right center;
+  transform-origin: left center;
   border-left: 2px solid rgba(183, 45, 96, .78);
 }
 
@@ -67,21 +111,21 @@
   height: 100%;
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(183, 45, 96, .2), transparent 3.5%, rgba(255,255,255,.38) 7%, transparent 13%, transparent 88%, rgba(183,45,96,.16) 99%),
+    linear-gradient(90deg, rgba(183, 45, 96, .15), transparent 3.5%, rgba(255,255,255,.48) 7%, transparent 13%, transparent 88%, rgba(183,45,96,.13) 99%),
     linear-gradient(180deg, #f5f3ef 0%, #f5f3ef 48%, #d84b7d 100%);
-  border: 1px solid rgba(183, 45, 96, .7);
+  border: 1px solid rgba(183, 45, 96, .65);
   box-shadow:
-    inset 1px 0 rgba(255,255,255,.7),
-    inset -3px 0 5px rgba(183, 45, 96, .13),
-    inset 0 0 0 5px rgba(245, 243, 239, .24);
+    inset 1px 0 rgba(255,255,255,.75),
+    inset -3px 0 5px rgba(183, 45, 96, .12),
+    inset 0 0 0 5px rgba(245, 243, 239, .22);
 }
 
 .ip-door-locker::before {
   content: "";
   position: absolute;
   inset: 8px 7px;
-  border: 1px solid rgba(183, 45, 96, .25);
-  box-shadow: inset 0 0 14px rgba(183, 45, 96, .08);
+  border: 1px solid rgba(183, 45, 96, .22);
+  box-shadow: inset 0 0 14px rgba(183, 45, 96, .07);
   pointer-events: none;
 }
 
@@ -110,8 +154,8 @@
   display: block;
   height: clamp(5px, .85vh, 9px);
   border-radius: 50%;
-  background: linear-gradient(180deg, rgba(183, 45, 96, .42), rgba(245, 243, 239, .85) 55%, rgba(216, 75, 125, .24));
-  box-shadow: 0 1px 2px rgba(183, 45, 96, .2), 0 0 7px rgba(216, 75, 125, .12);
+  background: linear-gradient(180deg, rgba(183, 45, 96, .36), rgba(245, 243, 239, .9) 55%, rgba(216, 75, 125, .2));
+  box-shadow: 0 1px 2px rgba(183, 45, 96, .16), 0 0 7px rgba(216, 75, 125, .1);
 }
 
 .ip-nameplate {
@@ -123,15 +167,15 @@
   transform: translate(-50%, -50%);
   border: 5px solid #d84b7d;
   background: linear-gradient(135deg, #f5f3ef, #d84b7d 45%, #f5f3ef);
-  box-shadow: 0 3px 8px rgba(183, 45, 96, .28), inset 0 0 0 2px rgba(255,255,255,.6), 0 0 12px rgba(216, 75, 125, .12);
+  box-shadow: 0 3px 8px rgba(183, 45, 96, .22), inset 0 0 0 2px rgba(255,255,255,.6), 0 0 12px rgba(216, 75, 125, .1);
 }
 
 .ip-nameplate::after {
   content: "";
   position: absolute;
   inset: 5px;
-  border: 1px solid rgba(183, 45, 96, .32);
-  background: linear-gradient(135deg, rgba(255,255,255,.42), rgba(183, 45, 96, .08));
+  border: 1px solid rgba(183, 45, 96, .28);
+  background: linear-gradient(135deg, rgba(255,255,255,.42), rgba(183, 45, 96, .07));
 }
 
 .ip-lock-plate {
@@ -144,7 +188,7 @@
   border: 2px solid #b72d60;
   border-radius: 3px;
   background: linear-gradient(90deg, #d84b7d, #f5f3ef 48%, #b72d60);
-  box-shadow: 2px 3px 5px rgba(183, 45, 96, .25);
+  box-shadow: 2px 3px 5px rgba(183, 45, 96, .2);
 }
 
 .ip-lock-hole {
@@ -169,7 +213,7 @@
   border: 1px solid #b72d60;
   border-radius: 5px;
   background: linear-gradient(90deg, #d84b7d, #f5f3ef 42%, #b72d60);
-  box-shadow: 2px 3px 5px rgba(183, 45, 96, .28);
+  box-shadow: 2px 3px 5px rgba(183, 45, 96, .22);
 }
 
 .ip-handle span {
@@ -190,7 +234,7 @@
   width: 8px;
   right: 0;
   background: linear-gradient(90deg, #b72d60, #f5f3ef 45%, #d84b7d);
-  box-shadow: 2px 0 5px rgba(183, 45, 96, .24);
+  box-shadow: 2px 0 5px rgba(183, 45, 96, .2);
 }
 
 .ip-door--right .ip-door-edge { right: auto; left: 0; }
@@ -215,7 +259,7 @@
   border: 1px solid #b72d60;
   border-radius: 3px;
   background: linear-gradient(90deg, #d84b7d, #f5f3ef, #b72d60);
-  box-shadow: 1px 2px 3px rgba(183, 45, 96, .25);
+  box-shadow: 1px 2px 3px rgba(183, 45, 96, .2);
 }
 
 .ip-title {
@@ -228,7 +272,8 @@
   text-align: center;
   pointer-events: none;
   color: var(--ip-pink);
-  text-shadow: 0 2px 0 var(--ip-cream), 0 5px 12px rgba(183, 45, 96, .4), 0 0 26px rgba(216, 75, 125, .18);
+  text-shadow: 0 2px 0 var(--ip-cream), 0 5px 12px rgba(183, 45, 96, .35), 0 0 26px rgba(216, 75, 125, .16);
+  will-change: transform, opacity;
 }
 
 .ip-title span {
@@ -252,20 +297,25 @@
   line-height: .95;
   letter-spacing: -.045em;
   -webkit-text-stroke: 1px #f5f3ef;
-  text-shadow: 2px 3px 0 #f5f3ef, 4px 7px 0 rgba(183, 45, 96, .2), 0 9px 20px rgba(183, 45, 96, .36), 0 0 24px rgba(216, 75, 125, .18);
+  text-shadow: 2px 3px 0 #f5f3ef, 4px 7px 0 rgba(183, 45, 96, .2), 0 9px 20px rgba(183, 45, 96, .3), 0 0 24px rgba(216, 75, 125, .16);
 }
 
-/* Variante claire */
+/* Variante claire du portfolio */
 [data-theme="light"] .ip-wall {
   background:
-    radial-gradient(ellipse at 50% 42%, rgba(216, 75, 125, .2), transparent 58%),
-    repeating-linear-gradient(90deg, transparent 0 24.7%, rgba(183, 45, 96, .1) 24.8% 25%, transparent 25.1% 49.7%),
+    radial-gradient(ellipse at 50% 42%, rgba(216, 75, 125, .18), transparent 58%),
+    repeating-linear-gradient(90deg, transparent 0 24.7%, rgba(183, 45, 96, .08) 24.8% 25%, transparent 25.1% 49.7%),
     linear-gradient(180deg, #f5f3ef 0%, #d84b7d 100%);
 }
 
-@media (max-width: 700px) {
-  .ip-door { width: 50%; }
-  .ip-door-locker { border-width: 1px; }
+@media (max-width: 900px) {
+  .ip-character {
+    width: min(72vw, 620px);
+    height: 78vh;
+    top: 54%;
+  }
+
+  .ip-door-locker::before { inset: 6px 4px; }
   .ip-vents { width: 55%; gap: 8px; }
   .ip-nameplate { width: 34%; height: 9%; border-width: 3px; }
   .ip-lock-plate { right: 9%; }
@@ -274,6 +324,30 @@
   .ip-title span { font-size: 18px; }
   .ip-title h1 { font-size: clamp(48px, 12vw, 76px); }
   .ip-hinges i { height: 34px; }
+}
+
+@media (max-width: 560px) {
+  .ip-character {
+    width: 94vw;
+    height: 70vh;
+    top: 52%;
+  }
+
+  .ip-door {
+    width: 50%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ip-door-locker { border-width: 1px; }
+  .ip-vents { width: 60%; gap: 7px; }
+  .ip-vents i { height: 4px; }
+  .ip-nameplate { width: 40%; height: 7%; border-width: 2px; }
+  .ip-handle { width: 7%; }
+  .ip-title h1 { font-size: clamp(43px, 12vw, 64px); }
+  .ip-character .model-glb__hint {
+    white-space: normal;
+    font-size: 7px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
