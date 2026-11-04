@@ -97,3 +97,4 @@ export default function PortfolioEntrance() {
       </div>
     </section>
   );
+}
