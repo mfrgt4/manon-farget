@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, type ReactNode, type Ref } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,7 +9,10 @@ function LockerDetails() {
   return (
     <>
       <div className="ip-vents ip-vents--top">
-        <i /><i /><i /><i />
+        <i />
+        <i />
+        <i />
+        <i />
       </div>
 
       <div className="ip-nameplate" />
@@ -24,7 +26,10 @@ function LockerDetails() {
       </div>
 
       <div className="ip-vents ip-vents--bottom">
-        <i /><i /><i /><i />
+        <i />
+        <i />
+        <i />
+        <i />
       </div>
     </>
   );
@@ -116,7 +121,7 @@ export default function PortfolioEntrance({
         {
           autoAlpha: 0,
           scale: 0.96,
-          duration: 0.80,
+          duration: 0.8,
           ease: "power1.out",
         },
         0,
@@ -175,6 +180,11 @@ export default function PortfolioEntrance({
       <div className="ip-title" ref={titleRef}>
         <span>Bienvenue dans</span>
         <h1>Mon Portfolio</h1>
+
+        <p className="ip-scroll-hint">
+          <span>Faites défiler pour ouvrir</span>
+          <i>↓</i>
+        </p>
       </div>
     </section>
   );
