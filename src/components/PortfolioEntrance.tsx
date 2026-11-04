@@ -111,7 +111,7 @@ function LockerStickers({ side }: { side: "left" | "right" }) {
 
           <div className="ip-sticker ip-sticker--ten">
             <img
-              src="https://i.pinimg.com/originals/1e/91/73/1e91739223c49806f81f924b1545e452.gif"
+              src="https://i.pinimg.com/originals/4b/e5/f9/4be5f9cfb0ae476d794f80e49c107fca.gif"
               alt="Sticker animé"
             />
           </div>
