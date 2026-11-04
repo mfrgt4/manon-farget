@@ -1,14 +1,5 @@
-
-/* =========================================
-   INTRODUCTION — PINK METAL LOCKER ROOM
-========================================= */
-
+/* INTRO — casiers vintage beige rosé, inspirés de l'image de référence */
 .ip {
-  --metal-light: #f7b4d2;
-  --metal-mid: #e987b8;
-  --metal-dark: #b94f83;
-  --metal-shadow: #71314f;
-
   position: fixed;
   inset: 0;
   width: 100%;
@@ -16,648 +7,257 @@
   overflow: hidden;
   z-index: 60;
   isolation: isolate;
-
-  background:
-    radial-gradient(
-      ellipse at 72% 35%,
-      rgba(255, 208, 232, .5),
-      transparent 38%
-    ),
-    linear-gradient(
-      135deg,
-      #f6b5d2 0%,
-      #df83b0 48%,
-      #a94c7b 100%
-    );
+  background: #c9bcb0;
 }
 
-/* Lumière et profondeur de la pièce */
-
-.ip-atmosphere {
+.ip-wall {
   position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
-
+  inset: -2%;
   background:
-    radial-gradient(
-      ellipse at 50% 45%,
-      transparent 35%,
-      rgba(57, 12, 38, .2) 100%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.16),
-      transparent 24%,
-      transparent 78%,
-      rgba(48,12,32,.22)
-    );
-
-  box-shadow:
-    inset 0 0 100px rgba(65, 15, 45, .16);
+    radial-gradient(ellipse at 50% 42%, rgba(255, 248, 238, .28), transparent 58%),
+    repeating-linear-gradient(90deg, transparent 0 24.7%, rgba(73, 55, 45, .14) 24.8% 25%, transparent 25.1% 49.7%),
+    linear-gradient(180deg, #d7c9bd 0%, #c7b8ac 100%);
 }
-
-/* =========================================
-   MUR DE CASIERS
-========================================= */
 
 .ip-stage {
   position: absolute;
-  inset: -1%;
+  inset: 0;
   perspective: 1800px;
   transform-style: preserve-3d;
 }
 
-/* Les deux grandes portes */
-
 .ip-door {
   position: absolute;
   top: 0;
-  width: 50%;
+  width: 50.15%;
   height: 100%;
-
   display: grid;
   grid-template-columns: 1fr 1fr;
-
   transform-style: preserve-3d;
-  backface-visibility: hidden;
-
-  background: linear-gradient(
-    180deg,
-    #eaa1c3,
-    #c96d9d 65%,
-    #a9507e
-  );
-
-  box-shadow:
-    0 0 45px rgba(58, 13, 39, .28),
-    inset 0 0 0 1px rgba(255,255,255,.32);
+  backface-visibility: visible;
+  background: #cbbdb1;
+  box-shadow: 0 0 45px rgba(47, 31, 23, .2);
 }
 
 .ip-door--left {
   left: 0;
   transform-origin: left center;
-  border-right: 2px solid rgba(93, 35, 63, .55);
+  border-right: 2px solid rgba(63, 46, 36, .7);
 }
 
 .ip-door--right {
   right: 0;
   transform-origin: right center;
-  border-left: 2px solid rgba(255,255,255,.22);
+  border-left: 2px solid rgba(63, 46, 36, .7);
 }
 
-/* =========================================
-   STRUCTURE MÉTALLIQUE
-========================================= */
-
-.ip-casier {
+.ip-door-locker {
   position: relative;
   min-width: 0;
-  padding: 12px;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(255,255,255,.32),
-      transparent 5%,
-      transparent 95%,
-      rgba(66,18,43,.2)
-    ),
-    linear-gradient(
-      180deg,
-      #e9a0c1,
-      #d77da8 50%,
-      #bd638f
-    );
-
-  border-right: 1px solid rgba(100, 36, 69, .45);
-  border-left: 1px solid rgba(255,255,255,.22);
-}
-
-/* Surface de la porte */
-
-.ip-casier__face {
-  position: relative;
-  width: 100%;
   height: 100%;
   overflow: hidden;
-
   background:
-    linear-gradient(
-      110deg,
-      rgba(255,255,255,.2) 0%,
-      transparent 18%,
-      transparent 75%,
-      rgba(77,22,50,.12) 100%
-    ),
-    linear-gradient(
-      180deg,
-      #f3b5d1 0%,
-      #e993bc 32%,
-      #d77ca9 75%,
-      #c76b98 100%
-    );
-
-  border: 1px solid rgba(255,255,255,.5);
-
+    linear-gradient(90deg, rgba(70, 48, 37, .23), transparent 3.5%, rgba(255,255,255,.24) 7%, transparent 13%, transparent 88%, rgba(64,43,34,.18) 99%),
+    linear-gradient(180deg, #d9cbc0 0%, #cbbcb0 48%, #c5b5a9 100%);
+  border: 1px solid rgba(77, 57, 45, .68);
   box-shadow:
-    inset 0 0 0 4px rgba(116, 43, 77, .12),
-    inset 0 2px 5px rgba(255,255,255,.55),
-    inset 0 -15px 28px rgba(95, 25, 58, .15),
-    0 7px 18px rgba(67, 15, 43, .18);
+    inset 1px 0 rgba(255,255,255,.55),
+    inset -3px 0 5px rgba(65,45,35,.14),
+    inset 0 0 0 5px rgba(235,222,210,.18);
 }
 
-/* Reflet vertical du métal */
+.ip-door-locker::before {
+  content: "";
+  position: absolute;
+  inset: 8px 7px;
+  border: 1px solid rgba(87, 65, 52, .25);
+  box-shadow: inset 0 0 14px rgba(75, 53, 41, .08);
+  pointer-events: none;
+}
 
-.ip-casier__face::before {
+.ip-door-locker::after {
   content: "";
   position: absolute;
   inset: 0;
+  opacity: .18;
+  background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.18) 4px, transparent 5px);
   pointer-events: none;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(255,255,255,.28),
-      transparent 12%,
-      transparent 85%,
-      rgba(83,20,50,.12)
-    );
-
-  opacity: .85;
 }
-
-/* Fine texture métallique */
-
-.ip-casier__face::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-
-  background:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      rgba(255,255,255,.025) 1px,
-      transparent 2px,
-      transparent 4px
-    );
-
-  opacity: .4;
-}
-
-/* Bordures supérieures et inférieures */
-
-.ip-casier__topline,
-.ip-casier__bottomline {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  z-index: 2;
-
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,.48),
-    rgba(115,35,72,.18)
-  );
-
-  box-shadow:
-    0 1px 3px rgba(70,15,42,.16);
-}
-
-.ip-casier__topline {
-  top: 0;
-}
-
-.ip-casier__bottomline {
-  bottom: 0;
-}
-
-/* =========================================
-   AÉRATIONS
-========================================= */
 
 .ip-vents {
   position: absolute;
-  top: 8%;
   left: 50%;
-  transform: translateX(-50%);
-
   width: 46%;
+  transform: translateX(-50%);
   display: grid;
-  gap: clamp(5px, .8vh, 10px);
-
-  z-index: 3;
+  gap: clamp(7px, 1.2vh, 13px);
 }
+
+.ip-vents--top { top: 10%; }
+.ip-vents--bottom { bottom: 10%; }
 
 .ip-vents i {
   display: block;
-  height: clamp(3px, .55vh, 7px);
-  border-radius: 10px;
-
-  background: linear-gradient(
-    180deg,
-    #713653,
-    #a6537d
-  );
-
-  box-shadow:
-    inset 0 1px 2px rgba(30, 5, 20, .35),
-    0 1px 0 rgba(255,255,255,.55);
-}
-
-/* =========================================
-   PLAQUE D'IDENTIFICATION
-========================================= */
-
-.ip-number {
-  position: absolute;
-  top: 22%;
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: 46px;
-  height: 25px;
-
-  display: grid;
-  place-items: center;
-
-  border-radius: 3px;
-
-  background: linear-gradient(
-    135deg,
-    #fff2f8,
-    #d9a5bc
-  );
-
-  border: 1px solid rgba(115, 48, 79, .35);
-
-  box-shadow:
-    inset 0 1px 2px white,
-    0 2px 4px rgba(70, 15, 42, .2);
-
-  z-index: 3;
-}
-
-.ip-number span {
-  color: #9a496d;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 8px;
-  letter-spacing: 2px;
-}
-
-/* =========================================
-   SERRURE
-========================================= */
-
-.ip-lock {
-  position: absolute;
-  top: 43%;
-  left: 50%;
-  transform: translateX(-50%);
-
-  z-index: 3;
-
-  filter: drop-shadow(2px 4px 4px rgba(58, 15, 38, .3));
-}
-
-.ip-lock__body {
-  width: 24px;
-  height: 27px;
-  border-radius: 5px;
-
-  background: linear-gradient(
-    135deg,
-    #f9f6f7 0%,
-    #c7c2ca 32%,
-    #85818c 65%,
-    #e8e5e9 100%
-  );
-
-  border: 1px solid rgba(75, 57, 72, .35);
-
-  box-shadow:
-    inset 1px 1px 2px rgba(255,255,255,.9),
-    inset -2px -2px 3px rgba(40,25,40,.22);
-}
-
-.ip-lock__body span {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-
-  width: 6px;
-  height: 6px;
-  transform: translateX(-50%);
-
+  height: clamp(5px, .85vh, 9px);
   border-radius: 50%;
-
-  background: radial-gradient(
-    circle at 35% 30%,
-    #77717d,
-    #29232c
-  );
-
-  box-shadow:
-    0 1px 2px rgba(0,0,0,.35);
+  background: linear-gradient(180deg, rgba(76,57,47,.48), rgba(255,245,233,.58) 55%, rgba(103,78,64,.22));
+  box-shadow: 0 1px 2px rgba(61,43,34,.18);
 }
 
-/* =========================================
-   POIGNÉE MÉTALLIQUE
-========================================= */
+.ip-nameplate {
+  position: absolute;
+  top: 49%;
+  left: 50%;
+  width: 28%;
+  height: 11%;
+  transform: translate(-50%, -50%);
+  border: 5px solid #a99a8d;
+  background: linear-gradient(135deg, #eee4d9, #a99a8e 45%, #e8ddd1);
+  box-shadow: 0 3px 8px rgba(55,38,29,.28), inset 0 0 0 2px rgba(255,255,255,.45);
+}
+
+.ip-nameplate::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(76,57,46,.35);
+  background: linear-gradient(135deg, rgba(255,255,255,.38), rgba(91,67,53,.08));
+}
+
+.ip-lock-plate {
+  position: absolute;
+  top: 50%;
+  right: 13%;
+  width: 8%;
+  height: 15%;
+  transform: translateY(-50%);
+  border: 2px solid #8f8074;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #9e9084, #e1d5c9 48%, #948579);
+  box-shadow: 2px 3px 5px rgba(50,35,28,.25);
+}
+
+.ip-lock-hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #55483f;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.25);
+}
 
 .ip-handle {
   position: absolute;
-  top: 57%;
-  right: 12%;
-
-  width: 10px;
-  height: 76px;
-
+  top: 50%;
+  right: 7%;
+  width: 4%;
+  height: 18%;
+  transform: translateY(-50%);
+  border: 1px solid #88796d;
   border-radius: 5px;
-
-  background: linear-gradient(
-    90deg,
-    #777681 0%,
-    #d4d1d9 18%,
-    #ffffff 42%,
-    #b9b5c0 70%,
-    #77717e 100%
-  );
-
-  border: 1px solid rgba(75, 56, 72, .3);
-
-  box-shadow:
-    2px 4px 6px rgba(51, 15, 37, .25),
-    inset 1px 0 1px rgba(255,255,255,.8);
-
-  z-index: 3;
+  background: linear-gradient(90deg, #83766b, #eee4d9 42%, #9a8b7e);
+  box-shadow: 2px 3px 5px rgba(50,35,28,.28);
 }
 
 .ip-handle span {
   position: absolute;
-  top: 50%;
   left: 50%;
-
-  width: 22px;
-  height: 12px;
+  top: 50%;
+  width: 180%;
+  height: 4px;
   transform: translate(-50%, -50%);
-
   border-radius: 3px;
-
-  background: linear-gradient(
-    180deg,
-    #eeeaf0,
-    #96919d
-  );
-
-  box-shadow:
-    0 2px 4px rgba(50,20,40,.25);
+  background: linear-gradient(180deg, #f3e9de, #8e8075);
 }
 
-/* =========================================
-   CHARNIÈRES
-========================================= */
-
-.ip-hinge {
+.ip-door-edge {
   position: absolute;
-  left: 3px;
+  top: 0;
+  bottom: 0;
   width: 8px;
-  height: 38px;
-
-  border-radius: 4px;
-
-  background: linear-gradient(
-    90deg,
-    #77717c,
-    #e7e2e8,
-    #89838e
-  );
-
-  border: 1px solid rgba(65, 42, 61, .3);
-
-  box-shadow:
-    2px 2px 4px rgba(50, 15, 35, .22);
-
-  z-index: 3;
+  right: 0;
+  background: linear-gradient(90deg, #8e7e72, #e5d9cd 45%, #9a897d);
+  box-shadow: 2px 0 5px rgba(45,31,24,.24);
 }
 
-.ip-hinge--top {
-  top: 18%;
+.ip-door--right .ip-door-edge { right: auto; left: 0; }
+
+.ip-hinges {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  width: 10px;
+  right: 1px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.ip-hinge--middle {
-  top: 48%;
-}
+.ip-door--right .ip-hinges { right: auto; left: 1px; }
 
-.ip-hinge--bottom {
-  bottom: 18%;
+.ip-hinges i {
+  display: block;
+  width: 9px;
+  height: 48px;
+  border: 1px solid #78685d;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #8c7c70, #e6dace, #88786c);
+  box-shadow: 1px 2px 3px rgba(45,31,24,.25);
 }
-
-/* =========================================
-   TEXTE D'INTRODUCTION
-========================================= */
 
 .ip-title {
   position: absolute;
-  z-index: 6;
-
+  z-index: 10;
   top: 50%;
-  left: clamp(28px, 7vw, 110px);
-
-  transform: translateY(-50%);
-
-  max-width: min(53vw, 730px);
-
-  color: #fff;
-
+  left: 50%;
+  width: min(94vw, 1200px);
+  transform: translate(-50%, -50%);
+  text-align: center;
   pointer-events: none;
-
-  text-shadow:
-    0 3px 18px rgba(83, 21, 52, .25),
-    0 1px 3px rgba(65, 14, 42, .3);
+  color: #8d171b;
+  text-shadow: 0 2px 0 #f7e9dc, 0 5px 10px rgba(49,28,22,.32);
 }
 
-.ip-kicker {
-  display: inline-block;
-
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 5px;
-
-  color: rgba(255,255,255,.9);
-
-  padding-bottom: 13px;
-  border-bottom: 1px solid rgba(255,255,255,.65);
+.ip-title span {
+  display: block;
+  margin-bottom: clamp(3px, 1.2vh, 14px);
+  color: #5b3930;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: clamp(18px, 2.1vw, 29px);
+  font-style: italic;
+  letter-spacing: .04em;
+  text-shadow: 0 1px 0 rgba(255,245,234,.8);
 }
 
 .ip-title h1 {
-  margin: 26px 0;
-
-  font-family: "Instrument Serif", serif;
-  font-weight: 400;
-
-  font-size: clamp(52px, 7vw, 104px);
-  line-height: .98;
-  letter-spacing: -.035em;
-}
-
-.ip-title h1 em {
-  color: #ffe5f2;
-  font-style: italic;
-}
-
-.ip-title p {
   margin: 0;
-
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-
-  color: rgba(255,255,255,.9);
+  color: #8e171c;
+  font-family: "Instrument Serif", "Brush Script MT", cursive;
+  font-size: clamp(64px, 10.5vw, 150px);
+  font-weight: 600;
+  font-style: italic;
+  line-height: .95;
+  letter-spacing: -.045em;
+  -webkit-text-stroke: 1px #f5e6d9;
+  text-shadow: 2px 3px 0 #f5e6d9, 4px 7px 0 rgba(82,43,35,.18), 0 9px 18px rgba(48,30,24,.3);
 }
-
-.ip-title p span {
-  display: inline-block;
-  margin-left: 8px;
-  font-size: 16px;
-}
-
-/* =========================================
-   NEEKO — MODÈLE 3D
-========================================= */
-
-.ip-neeko {
-  position: absolute;
-
-  right: 3vw;
-  bottom: 0;
-
-  width: min(42vw, 490px);
-  height: 76svh;
-
-  z-index: 7;
-
-  pointer-events: auto;
-
-  filter:
-    drop-shadow(0 18px 25px rgba(65, 14, 43, .18));
-}
-
-/* Chargement du modèle */
-
-.pe-loading {
-  position: absolute;
-  inset: 0;
-
-  display: grid;
-  place-content: center;
-
-  color: white;
-
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-
-  pointer-events: none;
-}
-
-/* =========================================
-   CRÉDIT
-========================================= */
-
-.ip-credit {
-  position: absolute;
-  z-index: 8;
-
-  bottom: 22px;
-  right: 30px;
-
-  color: rgba(255,255,255,.85);
-
-  font-family: "JetBrains Mono", monospace;
-  font-size: 9px;
-  letter-spacing: 1.5px;
-
-  text-shadow: 0 2px 8px rgba(50,10,35,.3);
-}
-
-.ip-credit a {
-  color: #fff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* =========================================
-   RESPONSIVE
-========================================= */
 
 @media (max-width: 700px) {
-  .ip-door {
-    grid-template-columns: 1fr;
-  }
-
-  .ip-casier:nth-child(2) {
-    display: none;
-  }
-
-  .ip-casier {
-    padding: 7px;
-  }
-
-  .ip-title {
-    top: 28%;
-    left: 24px;
-    right: 24px;
-    max-width: none;
-  }
-
-  .ip-title h1 {
-    font-size: clamp(42px, 10vw, 60px);
-    margin: 18px 0;
-  }
-
-  .ip-kicker {
-    font-size: 9px;
-    letter-spacing: 3px;
-  }
-
-  .ip-title p {
-    font-size: 8px;
-    letter-spacing: 2px;
-  }
-
-  .ip-neeko {
-    width: 65vw;
-    height: 45svh;
-    right: -2vw;
-  }
-
-  .ip-number {
-    width: 34px;
-    height: 20px;
-  }
-
-  .ip-handle {
-    height: 52px;
-  }
-
-  .ip-label {
-    display: none;
-  }
-
-  .ip-credit {
-    right: 14px;
-    bottom: 12px;
-    font-size: 7px;
-  }
+  .ip-door { width: 50%; }
+  .ip-door-locker { border-width: 1px; }
+  .ip-vents { width: 55%; gap: 8px; }
+  .ip-nameplate { width: 34%; height: 9%; border-width: 3px; }
+  .ip-lock-plate { right: 9%; }
+  .ip-handle { right: 4%; width: 5%; }
+  .ip-title { width: 96vw; }
+  .ip-title span { font-size: 18px; }
+  .ip-title h1 { font-size: clamp(48px, 12vw, 76px); }
+  .ip-hinges i { height: 34px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ip {
-    scroll-behavior: auto;
-  }
+  .ip { scroll-behavior: auto; }
 }
