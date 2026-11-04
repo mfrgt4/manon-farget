@@ -130,14 +130,12 @@ function LockerDoor({
 }) {
   return (
     <div ref={doorRef} className={`ip-door ip-door--${side}`}>
-      {/* Les trois casiers sont solidaires dans ce grand panneau */}
       {[1, 2, 3].map((locker) => (
         <div className="ip-door-locker" key={locker}>
           <LockerDetails />
         </div>
       ))}
 
-      {/* Badges décoratifs collés sur les casiers */}
       <LockerStickers side={side} />
 
       <div className="ip-door-edge" />
@@ -171,7 +169,10 @@ export default function PortfolioEntrance({
 
     if (!root || !leftDoor || !rightDoor || !title) return;
 
-    const context = gsap.context(() => {
+    // L'introduction animée est activée uniquement sur ordinateur.
+    const media = gsap.matchMedia();
+
+    media.add("(min-width: 901px)", () => {
       gsap.set(leftDoor, {
         rotationY: 0,
         transformOrigin: "0% 50%",
@@ -204,7 +205,6 @@ export default function PortfolioEntrance({
         },
       });
 
-      // Le titre disparaît au début de l'ouverture.
       intro.to(
         title,
         {
@@ -216,7 +216,6 @@ export default function PortfolioEntrance({
         0,
       );
 
-      // Les trois casiers de gauche pivotent ensemble.
       intro.to(
         leftDoor,
         {
@@ -227,7 +226,6 @@ export default function PortfolioEntrance({
         0,
       );
 
-      // Les trois casiers de droite pivotent ensemble.
       intro.to(
         rightDoor,
         {
@@ -237,15 +235,18 @@ export default function PortfolioEntrance({
         },
         0,
       );
-    }, root);
 
-    const refreshId = window.requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
+      const refreshId = window.requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+
+      return () => {
+        window.cancelAnimationFrame(refreshId);
+      };
     });
 
     return () => {
-      window.cancelAnimationFrame(refreshId);
-      context.revert();
+      media.revert();
     };
   }, []);
 
@@ -257,10 +258,10 @@ export default function PortfolioEntrance({
     >
       <div className="ip-wall" />
 
-      {/* Le vrai contenu Accueil apparaît derrière les portes */}
+      {/* Le vrai contenu Accueil reste présent sur tous les écrans */}
       <div className="ip-content">{children}</div>
 
-      {/* Les deux grands panneaux de trois casiers */}
+      {/* Introduction avec les casiers, uniquement sur ordinateur */}
       <div className="ip-stage">
         <LockerDoor side="left" doorRef={leftDoorRef} />
         <LockerDoor side="right" doorRef={rightDoorRef} />

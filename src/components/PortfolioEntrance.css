@@ -824,12 +824,40 @@
   }
 }
 
+
 /* =========================================
-   MASQUER L'INTRO SUR TABLETTE ET MOBILE
+   TABLETTE ET MOBILE — SANS INTRODUCTION
+   Le contenu Accueil reste visible normalement
    ========================================= */
 
 @media (max-width: 900px) {
   .ip {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 0;
+    margin-left: 0;
+    padding: 0;
+    overflow: visible;
+    perspective: none;
+    isolation: auto;
+    z-index: auto;
+  }
+
+  .ip-wall,
+  .ip-stage,
+  .ip-title {
     display: none !important;
+  }
+
+  .ip-content {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+    z-index: auto;
   }
 }
