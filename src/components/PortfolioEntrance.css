@@ -389,10 +389,33 @@
 }
 
 /* =========================================
-   POSITIONNEMENT DES 10 STICKERS
-   Répartition irrégulière sur les portes
+   STICKERS GIF — TAILLE ET PROPORTIONS
    ========================================= */
 
+.ip-sticker {
+  position: absolute;
+  z-index: 5;
+  width: clamp(90px, 10vw, 145px);
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.ip-sticker img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0;
+  filter: drop-shadow(2px 4px 5px rgba(70, 20, 40, 0.2));
+}
+
+/* Positions et inclinaisons */
 /* Porte gauche */
 .ip-sticker--one {
   top: 12%;
