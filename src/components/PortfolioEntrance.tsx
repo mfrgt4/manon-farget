@@ -44,26 +44,56 @@ function LockerStickers({ side }: { side: "left" | "right" }) {
           <div className="ip-sticker ip-sticker--one">
             <img
               src="https://i.pinimg.com/originals/95/4c/54/954c54617d68eba31d77adfa90404ef8.gif"
-              alt="Badge décoratif animé"
+              alt="Sticker animé"
             />
           </div>
 
           <div className="ip-sticker ip-sticker--two">
             <img
               src="https://i.pinimg.com/originals/dd/56/bb/dd56bbfeaf64ac8e20feaa65ee898bf0.gif"
-              alt="Badge décoratif animé"
+              alt="Sticker animé"
+            />
+          </div>
+
+          <div className="ip-sticker ip-sticker--four">
+            <img
+              src="https://i.pinimg.com/originals/93/2f/2c/932f2cf0bc5b42adae73a65f27e0b558.gif"
+              alt="Sticker animé"
+            />
+          </div>
+
+          <div className="ip-sticker ip-sticker--five">
+            <img
+              src="https://i.pinimg.com/originals/7b/d9/bd/7bd9bd5836aa0d5bdb1964950108af18.gif"
+              alt="Sticker animé"
             />
           </div>
         </>
       )}
 
       {side === "right" && (
-        <div className="ip-sticker ip-sticker--three">
-          <img
-            src="https://i.pinimg.com/originals/72/bc/ac/72bcac56b668c5c898f0117783f6f8c6.gif"
-            alt="Badge décoratif animé"
-          />
-        </div>
+        <>
+          <div className="ip-sticker ip-sticker--three">
+            <img
+              src="https://i.pinimg.com/originals/72/bc/ac/72bcac56b668c5c898f0117783f6f8c6.gif"
+              alt="Sticker animé"
+            />
+          </div>
+
+          <div className="ip-sticker ip-sticker--six">
+            <img
+              src="https://i.pinimg.com/originals/e1/5a/15/e15a1569934cb0898a57210b32c9488f.gif"
+              alt="Sticker animé"
+            />
+          </div>
+
+          <div className="ip-sticker ip-sticker--seven">
+            <img
+              src="https://i.pinimg.com/originals/3e/d5/00/3ed5009c487c654a0001a97c8d9b381c.gif"
+              alt="Sticker animé"
+            />
+          </div>
+        </>
       )}
     </>
   );
