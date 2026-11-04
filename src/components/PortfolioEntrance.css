@@ -225,26 +225,25 @@
   height: 11%;
   transform: translate(-50%, -50%);
 
-  border: 5px solid #d84b7d;
+  border: 3px solid rgba(183, 45, 96, 0.45);
 
   background: linear-gradient(
     135deg,
-    #f5f3ef,
-    #d84b7d 45%,
-    #f5f3ef
+    #fffdfb,
+    #f5e5e9 50%,
+    #fffaf8
   );
 
   box-shadow:
-    0 3px 8px rgba(183, 45, 96, 0.2),
-    inset 0 0 0 2px rgba(255, 255, 255, 0.6),
-    0 0 12px rgba(216, 75, 125, 0.1);
+    0 3px 8px rgba(183, 45, 96, 0.10),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.8);
 }
 
 .ip-nameplate::after {
   content: "";
   position: absolute;
   inset: 5px;
-  border: 1px solid rgba(183, 45, 96, 0.25);
+  border: 1px solid rgba(183, 45, 96, 0.12);
 }
 
 /* =========================================
@@ -259,17 +258,17 @@
   height: 15%;
   transform: translateY(-50%);
 
-  border: 2px solid #b72d60;
+  border: 1px solid rgba(183, 45, 96, 0.4);
   border-radius: 3px;
 
   background: linear-gradient(
     90deg,
-    #d84b7d,
-    #f5f3ef 48%,
-    #b72d60
+    #f3dce3,
+    #fffdfb 48%,
+    #edcbd6
   );
 
-  box-shadow: 2px 3px 5px rgba(183, 45, 96, 0.2);
+  box-shadow: 1px 2px 4px rgba(183, 45, 96, 0.12);
 }
 
 /* Serrures orientées vers l'extérieur */
@@ -301,17 +300,19 @@
   height: 18%;
   transform: translateY(-50%);
 
-  border: 1px solid #b72d60;
+  border: 1px solid rgba(183, 45, 96, 0.4);
   border-radius: 5px;
 
   background: linear-gradient(
     90deg,
-    #d84b7d,
-    #f5f3ef 42%,
-    #b72d60
+    #edcbd6,
+    #fffdfb 45%,
+    #e8c2ce
   );
 
-  box-shadow: 2px 3px 5px rgba(183, 45, 96, 0.2);
+  box-shadow:
+    1px 3px 5px rgba(183, 45, 96, 0.12),
+    inset 0 0 3px rgba(255, 255, 255, 0.9);
 }
 
 /* Poignées orientées vers l'extérieur */
@@ -331,8 +332,8 @@
 
   background: linear-gradient(
     180deg,
-    #f5f3ef,
-    #b72d60
+    #fffdfb,
+    #d9a9b9
   );
 }
 
