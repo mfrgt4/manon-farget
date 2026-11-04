@@ -1,4 +1,5 @@
 
+/* INTRO — six casiers pleine largeur, palette du portfolio */
 .ip {
   --ip-pink: #d84b7d;
   --ip-cream: #f5f3ef;
@@ -30,8 +31,16 @@
   z-index: 0;
   inset: 0;
   background:
-    radial-gradient(ellipse at 50% 42%, rgba(216, 75, 125, 0.18), transparent 58%),
-    radial-gradient(ellipse at 50% 100%, rgba(216, 75, 125, 0.12), transparent 48%),
+    radial-gradient(
+      ellipse at 50% 42%,
+      rgba(216, 75, 125, 0.18),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse at 50% 100%,
+      rgba(216, 75, 125, 0.12),
+      transparent 48%
+    ),
     repeating-linear-gradient(
       90deg,
       transparent 0 24.7%,
@@ -41,10 +50,10 @@
     linear-gradient(180deg, #f5f3ef 0%, #f5f3ef 47%, #d84b7d 100%);
 }
 
-/* Neeko : derrière les portes et le titre */
+/* Neeko derrière les portes */
 .ip-character {
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   left: 50%;
   top: 52%;
   width: min(58vw, 760px);
@@ -52,7 +61,7 @@
   transform: translate(-50%, -50%);
   opacity: 0;
   visibility: hidden;
-  pointer-events: none;
+  pointer-events: auto;
   will-change: transform, opacity;
 }
 
@@ -61,7 +70,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .ip-character canvas {
@@ -85,7 +94,7 @@
   text-shadow: 0 1px 8px #f5f3ef;
 }
 
-/* Les deux portes */
+/* Structure des portes */
 .ip-stage {
   position: absolute;
   z-index: 3;
@@ -94,15 +103,17 @@
   height: 100%;
   perspective: 1800px;
   transform-style: preserve-3d;
+  transform-origin: center;
 }
 
-/* Une porte par moitié */
+/* Deux grandes portes */
 .ip-door {
   position: absolute;
   top: 0;
   width: 50%;
   height: 100%;
-  display: block;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   transform-style: preserve-3d;
   backface-visibility: visible;
   background: var(--ip-cream);
@@ -110,7 +121,7 @@
   will-change: transform;
 }
 
-/* Les portes pivotent au centre */
+/* Charnière au centre : ouverture vers l'extérieur */
 .ip-door--left {
   left: 0;
   transform-origin: right center;
@@ -123,10 +134,10 @@
   border-left: 2px solid rgba(183, 45, 96, 0.78);
 }
 
-/* Une seule façade sur chaque porte */
+/* Façades des casiers */
 .ip-door-locker {
   position: relative;
-  width: 100%;
+  min-width: 0;
   height: 100%;
   overflow: hidden;
   background:
@@ -203,7 +214,7 @@
     0 0 7px rgba(216, 75, 125, 0.1);
 }
 
-/* Plaque décorative */
+/* Plaque */
 .ip-nameplate {
   position: absolute;
   top: 49%;
@@ -226,7 +237,7 @@
   border: 1px solid rgba(183, 45, 96, 0.25);
 }
 
-/* Serrure : côté intérieur de chaque porte */
+/* Serrure */
 .ip-lock-plate {
   position: absolute;
   top: 50%;
@@ -240,11 +251,6 @@
   box-shadow: 2px 3px 5px rgba(183, 45, 96, 0.2);
 }
 
-.ip-door--right .ip-lock-plate {
-  right: auto;
-  left: 13%;
-}
-
 .ip-lock-hole {
   position: absolute;
   top: 50%;
@@ -256,7 +262,7 @@
   background: #b72d60;
 }
 
-/* Poignées */
+/* Poignée */
 .ip-handle {
   position: absolute;
   top: 50%;
@@ -270,11 +276,6 @@
   box-shadow: 2px 3px 5px rgba(183, 45, 96, 0.2);
 }
 
-.ip-door--right .ip-handle {
-  right: auto;
-  left: 7%;
-}
-
 .ip-handle span {
   position: absolute;
   left: 50%;
@@ -286,7 +287,7 @@
   background: linear-gradient(180deg, #f5f3ef, #b72d60);
 }
 
-/* Bord intérieur des portes */
+/* Bordures */
 .ip-door-edge {
   position: absolute;
   top: 0;
@@ -302,21 +303,21 @@
   left: 0;
 }
 
-/* Charnières sur les bords extérieurs */
+/* Charnières */
 .ip-hinges {
   position: absolute;
   top: 8%;
   bottom: 8%;
   width: 10px;
-  left: 1px;
+  right: 1px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .ip-door--right .ip-hinges {
-  left: auto;
-  right: 1px;
+  right: auto;
+  left: 1px;
 }
 
 .ip-hinges i {
@@ -329,7 +330,7 @@
   box-shadow: 1px 2px 3px rgba(183, 45, 96, 0.2);
 }
 
-/* Texte : toujours devant Neeko et les portes */
+/* Titre d'introduction */
 .ip-title {
   position: absolute;
   z-index: 10;
@@ -344,6 +345,7 @@
     0 2px 0 #f5f3ef,
     0 5px 12px rgba(183, 45, 96, 0.32),
     0 0 26px rgba(216, 75, 125, 0.15);
+  will-change: transform, opacity;
 }
 
 .ip-title span {
@@ -399,19 +401,9 @@
     right: 9%;
   }
 
-  .ip-door--right .ip-lock-plate {
-    right: auto;
-    left: 9%;
-  }
-
   .ip-handle {
     right: 4%;
     width: 5%;
-  }
-
-  .ip-door--right .ip-handle {
-    right: auto;
-    left: 4%;
   }
 
   .ip-title {
@@ -437,6 +429,15 @@
     width: 94vw;
     height: 70vh;
     top: 52%;
+  }
+
+  .ip-door {
+    width: 50%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ip-door-locker {
+    border-width: 1px;
   }
 
   .ip-vents {

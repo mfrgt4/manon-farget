@@ -1,5 +1,4 @@
-
-import { useEffect, useRef, type Ref } from "react";
+import { useEffect, useRef, type LegacyRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ModelGlb from "./ModelGlb";
@@ -42,10 +41,18 @@ function LockerDoor({
   doorRef,
 }: {
   side: "left" | "right";
-  doorRef: Ref<HTMLDivElement>;
+  doorRef: LegacyRef<HTMLDivElement>;
 }) {
   return (
     <div ref={doorRef} className={`ip-door ip-door--${side}`}>
+      <div className="ip-door-locker">
+        <LockerDetails />
+      </div>
+
+      <div className="ip-door-locker">
+        <LockerDetails />
+      </div>
+
       <div className="ip-door-locker">
         <LockerDetails />
       </div>
@@ -66,14 +73,18 @@ export default function PortfolioEntrance() {
   const leftDoorRef = useRef<HTMLDivElement>(null);
   const rightDoorRef = useRef<HTMLDivElement>(null);
   const characterRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const root = rootRef.current;
     const leftDoor = leftDoorRef.current;
     const rightDoor = rightDoorRef.current;
     const character = characterRef.current;
+    const title = titleRef.current;
 
-    if (!root || !leftDoor || !rightDoor || !character) return;
+    if (!root || !leftDoor || !rightDoor || !character || !title) {
+      return;
+    }
 
     const context = gsap.context(() => {
       gsap.set(leftDoor, {
@@ -96,6 +107,11 @@ export default function PortfolioEntrance() {
         y: 35,
       });
 
+      gsap.set(title, {
+        autoAlpha: 1,
+        scale: 1,
+      });
+
       const intro = gsap.timeline({
         scrollTrigger: {
           trigger: root,
@@ -109,7 +125,17 @@ export default function PortfolioEntrance() {
         },
       });
 
-      // Neeko apparaît derrière le texte.
+      intro.to(
+        title,
+        {
+          autoAlpha: 0,
+          scale: 0.94,
+          duration: 0.35,
+          ease: "power2.in",
+        },
+        0,
+      );
+
       intro.to(
         character,
         {
@@ -119,15 +145,14 @@ export default function PortfolioEntrance() {
           duration: 0.8,
           ease: "power2.out",
         },
-        0,
+        0.1,
       );
 
-      // Les deux portes s'ouvrent depuis le milieu.
       intro.to(
         leftDoor,
         {
           rotationY: -115,
-          duration: 1.2,
+          duration: 1.25,
           ease: "power2.inOut",
         },
         0.1,
@@ -137,10 +162,20 @@ export default function PortfolioEntrance() {
         rightDoor,
         {
           rotationY: 115,
-          duration: 1.2,
+          duration: 1.25,
           ease: "power2.inOut",
         },
         0.1,
+      );
+
+      intro.to(
+        root,
+        {
+          autoAlpha: 0,
+          duration: 0.1,
+          ease: "none",
+        },
+        1.34,
       );
     }, root);
 
@@ -162,7 +197,6 @@ export default function PortfolioEntrance() {
     >
       <div className="ip-wall" />
 
-      {/* Neeko est derrière les portes et le texte */}
       <div className="ip-character" ref={characterRef}>
         <ModelGlb url="/models/neeko.glb" />
       </div>
@@ -172,9 +206,8 @@ export default function PortfolioEntrance() {
         <LockerDoor side="right" doorRef={rightDoorRef} />
       </div>
 
-      {/* Le texte reste toujours au premier plan */}
-      <div className="ip-title">
-        <span>Bienvenue sur</span>
+      <div className="ip-title" ref={titleRef}>
+        <span>Bienvenue dans</span>
         <h1>Mon Portfolio</h1>
       </div>
     </section>
