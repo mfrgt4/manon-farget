@@ -1,7 +1,7 @@
-import { useEffect, useRef, type LegacyRef } from "react";
+
+import { useEffect, useRef, type ReactNode, type Ref } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import ModelGlb from "./ModelGlb";
 import "./PortfolioEntrance.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -10,10 +10,7 @@ function LockerDetails() {
   return (
     <>
       <div className="ip-vents ip-vents--top">
-        <i />
-        <i />
-        <i />
-        <i />
+        <i /><i /><i /><i />
       </div>
 
       <div className="ip-nameplate" />
@@ -27,12 +24,17 @@ function LockerDetails() {
       </div>
 
       <div className="ip-vents ip-vents--bottom">
-        <i />
-        <i />
-        <i />
-        <i />
+        <i /><i /><i /><i />
       </div>
     </>
+  );
+}
+
+function FixedLocker() {
+  return (
+    <div className="ip-fixed-locker">
+      <LockerDetails />
+    </div>
   );
 }
 
@@ -41,18 +43,10 @@ function LockerDoor({
   doorRef,
 }: {
   side: "left" | "right";
-  doorRef: LegacyRef<HTMLDivElement>;
+  doorRef: Ref<HTMLDivElement>;
 }) {
   return (
     <div ref={doorRef} className={`ip-door ip-door--${side}`}>
-      <div className="ip-door-locker">
-        <LockerDetails />
-      </div>
-
-      <div className="ip-door-locker">
-        <LockerDetails />
-      </div>
-
       <div className="ip-door-locker">
         <LockerDetails />
       </div>
@@ -68,23 +62,25 @@ function LockerDoor({
   );
 }
 
-export default function PortfolioEntrance() {
+type PortfolioEntranceProps = {
+  children: ReactNode;
+};
+
+export default function PortfolioEntrance({
+  children,
+}: PortfolioEntranceProps) {
   const rootRef = useRef<HTMLElement>(null);
   const leftDoorRef = useRef<HTMLDivElement>(null);
   const rightDoorRef = useRef<HTMLDivElement>(null);
-  const characterRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const root = rootRef.current;
     const leftDoor = leftDoorRef.current;
     const rightDoor = rightDoorRef.current;
-    const character = characterRef.current;
     const title = titleRef.current;
 
-    if (!root || !leftDoor || !rightDoor || !character || !title) {
-      return;
-    }
+    if (!root || !leftDoor || !rightDoor || !title) return;
 
     const context = gsap.context(() => {
       gsap.set(leftDoor, {
@@ -99,12 +95,6 @@ export default function PortfolioEntrance() {
         transformOrigin: "100% 50%",
         transformPerspective: 1800,
         force3D: true,
-      });
-
-      gsap.set(character, {
-        autoAlpha: 0,
-        scale: 0.86,
-        y: 35,
       });
 
       gsap.set(title, {
@@ -125,58 +115,33 @@ export default function PortfolioEntrance() {
         },
       });
 
-      intro.to(
-        title,
-        {
-          autoAlpha: 0,
-          scale: 0.94,
-          duration: 0.35,
-          ease: "power2.in",
-        },
-        0,
-      );
+      // Les deux portes s'ouvrent depuis le milieu vers l'arrière.
+      intro.to(leftDoor, {
+        rotationY: 115,
+        duration: 1.25,
+        ease: "power2.inOut",
+      }, 0.1);
 
-      intro.to(
-        character,
-        {
-          autoAlpha: 1,
-          scale: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out",
-        },
-        0.1,
-      );
+      intro.to(rightDoor, {
+        rotationY: -115,
+        duration: 1.25,
+        ease: "power2.inOut",
+      }, 0.1);
 
-      intro.to(
-        leftDoor,
-        {
-          rotationY: 115,
-          duration: 1.25,
-          ease: "power2.inOut",
-        },
-        0.1,
-      );
+      // Le titre reste visible pendant l'ouverture.
+      intro.to(title, {
+        autoAlpha: 0,
+        scale: 0.94,
+        duration: 0.3,
+        ease: "power2.in",
+      }, 1.15);
 
-      intro.to(
-        rightDoor,
-        {
-          rotationY: -115,
-          duration: 1.25,
-          ease: "power2.inOut",
-        },
-        0.1,
-      );
-
-      intro.to(
-        root,
-        {
-          autoAlpha: 0,
-          duration: 0.1,
-          ease: "none",
-        },
-        1.34,
-      );
+      // L'introduction disparaît une fois les portes ouvertes.
+      intro.to(root, {
+        autoAlpha: 0,
+        duration: 0.12,
+        ease: "none",
+      }, 1.48);
     }, root);
 
     const refreshId = window.requestAnimationFrame(() => {
@@ -197,15 +162,26 @@ export default function PortfolioEntrance() {
     >
       <div className="ip-wall" />
 
-      <div className="ip-character" ref={characterRef}>
-        <ModelGlb url="/models/neeko.glb" />
+      {/* Le vrai contenu Accueil est placé derrière les portes */}
+      <div className="ip-content">
+        {children}
       </div>
 
+      {/* Les quatre casiers extérieurs restent fixes */}
+      <div className="ip-fixed-lockers">
+        <FixedLocker />
+        <FixedLocker />
+        <FixedLocker />
+        <FixedLocker />
+      </div>
+
+      {/* Les deux portes centrales s'ouvrent */}
       <div className="ip-stage">
         <LockerDoor side="left" doorRef={leftDoorRef} />
         <LockerDoor side="right" doorRef={rightDoorRef} />
       </div>
 
+      {/* Le titre reste au premier plan */}
       <div className="ip-title" ref={titleRef}>
         <span>Bienvenue dans</span>
         <h1>Mon Portfolio</h1>

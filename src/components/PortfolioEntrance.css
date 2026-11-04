@@ -1,5 +1,8 @@
 
-/* INTRO — six casiers pleine largeur, palette du portfolio */
+/* =========================================
+   INTRO — CASIERS ROSES
+   ========================================= */
+
 .ip {
   --ip-pink: #d84b7d;
   --ip-cream: #f5f3ef;
@@ -26,6 +29,10 @@
   box-sizing: border-box;
 }
 
+/* =========================================
+   MUR DU FOND
+   ========================================= */
+
 .ip-wall {
   position: absolute;
   z-index: 0;
@@ -41,60 +48,121 @@
       rgba(216, 75, 125, 0.12),
       transparent 48%
     ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 24.7%,
-      rgba(183, 45, 96, 0.07) 24.8% 25%,
-      transparent 25.1% 49.7%
-    ),
-    linear-gradient(180deg, #f5f3ef 0%, #f5f3ef 47%, #d84b7d 100%);
+    linear-gradient(
+      180deg,
+      #f5f3ef 0%,
+      #f5f3ef 47%,
+      #d84b7d 100%
+    );
 }
 
-/* Neeko derrière les portes */
-.ip-character {
+/* =========================================
+   VRAI CONTENU ACCUEIL
+   Derrière les portes
+   ========================================= */
+
+.ip-content {
   position: absolute;
   z-index: 1;
-  left: 50%;
-  top: 52%;
-  width: min(58vw, 760px);
-  height: min(90vh, 900px);
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: auto;
-  will-change: transform, opacity;
-}
-
-.ip-character .model-glb {
-  position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  pointer-events: auto;
+  overflow: hidden;
 }
 
-.ip-character canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
+.ip-content > * {
+  min-height: 100%;
 }
 
-.ip-character .model-glb__hint {
+/* =========================================
+   LES 4 CASIERS EXTÉRIEURS FIXES
+   ========================================= */
+
+.ip-fixed-lockers {
   position: absolute;
-  left: 50%;
-  bottom: 2%;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: 90%;
-  color: #b72d60;
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-align: center;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   pointer-events: none;
-  text-shadow: 0 1px 8px #f5f3ef;
 }
 
-/* Structure des portes */
+/* Placement des quatre casiers */
+.ip-fixed-locker:nth-child(1) {
+  grid-column: 1;
+}
+
+.ip-fixed-locker:nth-child(2) {
+  grid-column: 2;
+}
+
+.ip-fixed-locker:nth-child(3) {
+  grid-column: 5;
+}
+
+.ip-fixed-locker:nth-child(4) {
+  grid-column: 6;
+}
+
+/* Apparence des casiers fixes */
+.ip-fixed-locker {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(183, 45, 96, 0.13),
+      transparent 4%,
+      rgba(255, 255, 255, 0.48) 8%,
+      transparent 14%,
+      transparent 88%,
+      rgba(183, 45, 96, 0.12) 99%
+    ),
+    linear-gradient(
+      180deg,
+      #f5f3ef 0%,
+      #f5f3ef 48%,
+      #d84b7d 100%
+    );
+
+  border: 1px solid rgba(183, 45, 96, 0.58);
+
+  box-shadow:
+    inset 1px 0 rgba(255, 255, 255, 0.8),
+    inset -3px 0 5px rgba(183, 45, 96, 0.1),
+    inset 0 0 0 5px rgba(245, 243, 239, 0.2);
+}
+
+.ip-fixed-locker::before {
+  content: "";
+  position: absolute;
+  inset: 8px 7px;
+  border: 1px solid rgba(183, 45, 96, 0.2);
+  box-shadow: inset 0 0 14px rgba(183, 45, 96, 0.06);
+  pointer-events: none;
+}
+
+.ip-fixed-locker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 3px,
+    rgba(255, 255, 255, 0.25) 4px,
+    transparent 5px
+  );
+  pointer-events: none;
+}
+
+/* =========================================
+   STRUCTURE DES DEUX PORTES CENTRALES
+   ========================================= */
+
 .ip-stage {
   position: absolute;
   z-index: 3;
@@ -106,40 +174,48 @@
   transform-origin: center;
 }
 
-/* Deux grandes portes */
 .ip-door {
   position: absolute;
   top: 0;
-  width: 50%;
+  width: 16.666667%;
   height: 100%;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+
   transform-style: preserve-3d;
   backface-visibility: visible;
+
   background: var(--ip-cream);
+
   box-shadow: 0 0 45px rgba(183, 45, 96, 0.25);
+
   will-change: transform;
 }
 
-/* Charnière au centre : ouverture vers l'extérieur */
+/* Porte gauche */
 .ip-door--left {
-  left: 0;
-  transform-origin: right center;
-  border-right: 2px solid rgba(183, 45, 96, 0.78);
-}
-
-.ip-door--right {
-  right: 0;
+  left: 33.333333%;
   transform-origin: left center;
   border-left: 2px solid rgba(183, 45, 96, 0.78);
 }
 
-/* Façades des casiers */
+/* Porte droite */
+.ip-door--right {
+  left: 50%;
+  right: auto;
+  transform-origin: right center;
+  border-right: 2px solid rgba(183, 45, 96, 0.78);
+}
+
+/* =========================================
+   FAÇADES DES PORTES
+   ========================================= */
+
 .ip-door-locker {
   position: relative;
-  min-width: 0;
+  width: 100%;
   height: 100%;
+  min-width: 0;
   overflow: hidden;
+
   background:
     linear-gradient(
       90deg,
@@ -150,8 +226,15 @@
       transparent 88%,
       rgba(183, 45, 96, 0.12) 99%
     ),
-    linear-gradient(180deg, #f5f3ef 0%, #f5f3ef 48%, #d84b7d 100%);
+    linear-gradient(
+      180deg,
+      #f5f3ef 0%,
+      #f5f3ef 48%,
+      #d84b7d 100%
+    );
+
   border: 1px solid rgba(183, 45, 96, 0.58);
+
   box-shadow:
     inset 1px 0 rgba(255, 255, 255, 0.8),
     inset -3px 0 5px rgba(183, 45, 96, 0.1),
@@ -181,7 +264,10 @@
   pointer-events: none;
 }
 
-/* Aérations */
+/* =========================================
+   AÉRATIONS
+   ========================================= */
+
 .ip-vents {
   position: absolute;
   left: 50%;
@@ -203,18 +289,23 @@
   display: block;
   height: clamp(5px, 0.85vh, 9px);
   border-radius: 50%;
+
   background: linear-gradient(
     180deg,
     rgba(183, 45, 96, 0.34),
     rgba(245, 243, 239, 0.92) 55%,
     rgba(216, 75, 125, 0.2)
   );
+
   box-shadow:
     0 1px 2px rgba(183, 45, 96, 0.15),
     0 0 7px rgba(216, 75, 125, 0.1);
 }
 
-/* Plaque */
+/* =========================================
+   PLAQUE
+   ========================================= */
+
 .ip-nameplate {
   position: absolute;
   top: 49%;
@@ -222,8 +313,16 @@
   width: 28%;
   height: 11%;
   transform: translate(-50%, -50%);
+
   border: 5px solid #d84b7d;
-  background: linear-gradient(135deg, #f5f3ef, #d84b7d 45%, #f5f3ef);
+
+  background: linear-gradient(
+    135deg,
+    #f5f3ef,
+    #d84b7d 45%,
+    #f5f3ef
+  );
+
   box-shadow:
     0 3px 8px rgba(183, 45, 96, 0.2),
     inset 0 0 0 2px rgba(255, 255, 255, 0.6),
@@ -237,7 +336,10 @@
   border: 1px solid rgba(183, 45, 96, 0.25);
 }
 
-/* Serrure */
+/* =========================================
+   SERRURE
+   ========================================= */
+
 .ip-lock-plate {
   position: absolute;
   top: 50%;
@@ -245,10 +347,24 @@
   width: 8%;
   height: 15%;
   transform: translateY(-50%);
+
   border: 2px solid #b72d60;
   border-radius: 3px;
-  background: linear-gradient(90deg, #d84b7d, #f5f3ef 48%, #b72d60);
+
+  background: linear-gradient(
+    90deg,
+    #d84b7d,
+    #f5f3ef 48%,
+    #b72d60
+  );
+
   box-shadow: 2px 3px 5px rgba(183, 45, 96, 0.2);
+}
+
+/* Serrure miroir sur la porte droite */
+.ip-door--right .ip-lock-plate {
+  right: auto;
+  left: 13%;
 }
 
 .ip-lock-hole {
@@ -262,7 +378,10 @@
   background: #b72d60;
 }
 
-/* Poignée */
+/* =========================================
+   POIGNÉES
+   ========================================= */
+
 .ip-handle {
   position: absolute;
   top: 50%;
@@ -270,10 +389,24 @@
   width: 4%;
   height: 18%;
   transform: translateY(-50%);
+
   border: 1px solid #b72d60;
   border-radius: 5px;
-  background: linear-gradient(90deg, #d84b7d, #f5f3ef 42%, #b72d60);
+
+  background: linear-gradient(
+    90deg,
+    #d84b7d,
+    #f5f3ef 42%,
+    #b72d60
+  );
+
   box-shadow: 2px 3px 5px rgba(183, 45, 96, 0.2);
+}
+
+/* Poignée miroir sur la porte droite */
+.ip-door--right .ip-handle {
+  right: auto;
+  left: 7%;
 }
 
 .ip-handle span {
@@ -284,17 +417,32 @@
   height: 4px;
   transform: translate(-50%, -50%);
   border-radius: 3px;
-  background: linear-gradient(180deg, #f5f3ef, #b72d60);
+
+  background: linear-gradient(
+    180deg,
+    #f5f3ef,
+    #b72d60
+  );
 }
 
-/* Bordures */
+/* =========================================
+   BORDS INTÉRIEURS DES PORTES
+   ========================================= */
+
 .ip-door-edge {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 8px;
   right: 0;
-  background: linear-gradient(90deg, #b72d60, #f5f3ef 45%, #d84b7d);
+
+  background: linear-gradient(
+    90deg,
+    #b72d60,
+    #f5f3ef 45%,
+    #d84b7d
+  );
+
   box-shadow: 2px 0 5px rgba(183, 45, 96, 0.2);
 }
 
@@ -303,55 +451,77 @@
   left: 0;
 }
 
-/* Charnières */
+/* =========================================
+   CHARNIÈRES EXTÉRIEURES
+   ========================================= */
+
 .ip-hinges {
   position: absolute;
   top: 8%;
   bottom: 8%;
   width: 10px;
-  right: 1px;
+  left: 1px;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
+/* Charnières à droite de la porte droite */
 .ip-door--right .ip-hinges {
-  right: auto;
-  left: 1px;
+  left: auto;
+  right: 1px;
 }
 
 .ip-hinges i {
   display: block;
   width: 9px;
   height: 48px;
+
   border: 1px solid #b72d60;
   border-radius: 3px;
-  background: linear-gradient(90deg, #d84b7d, #f5f3ef, #b72d60);
+
+  background: linear-gradient(
+    90deg,
+    #d84b7d,
+    #f5f3ef,
+    #b72d60
+  );
+
   box-shadow: 1px 2px 3px rgba(183, 45, 96, 0.2);
 }
 
-/* Titre d'introduction */
+/* =========================================
+   TITRE D'INTRODUCTION
+   ========================================= */
+
 .ip-title {
   position: absolute;
   z-index: 10;
   top: 50%;
   left: 50%;
   width: min(94vw, 1200px);
+
   transform: translate(-50%, -50%);
+
   text-align: center;
   pointer-events: none;
   color: #b72d60;
+
   text-shadow:
     0 2px 0 #f5f3ef,
     0 5px 12px rgba(183, 45, 96, 0.32),
     0 0 26px rgba(216, 75, 125, 0.15);
+
   will-change: transform, opacity;
 }
 
 .ip-title span {
   display: block;
   margin-bottom: clamp(3px, 1.2vh, 14px);
+
   color: #b72d60;
+
   font-family: "Instrument Serif", Georgia, serif;
   font-size: clamp(18px, 2.1vw, 29px);
   font-style: italic;
@@ -361,27 +531,27 @@
 .ip-title h1 {
   margin: 0;
   color: #b72d60;
+
   font-family: "Instrument Serif", "Brush Script MT", cursive;
   font-size: clamp(64px, 10.5vw, 150px);
   font-weight: 600;
   font-style: italic;
   line-height: 0.95;
   letter-spacing: -0.045em;
+
   -webkit-text-stroke: 1px #f5f3ef;
+
   text-shadow:
     2px 3px 0 #f5f3ef,
     4px 7px 0 rgba(183, 45, 96, 0.18),
     0 9px 20px rgba(183, 45, 96, 0.28);
 }
 
-/* Tablettes */
-@media (max-width: 900px) {
-  .ip-character {
-    width: min(72vw, 620px);
-    height: 78vh;
-    top: 54%;
-  }
+/* =========================================
+   TABLETTES
+   ========================================= */
 
+@media (max-width: 900px) {
   .ip-door-locker::before {
     inset: 6px 4px;
   }
@@ -401,9 +571,19 @@
     right: 9%;
   }
 
+  .ip-door--right .ip-lock-plate {
+    right: auto;
+    left: 9%;
+  }
+
   .ip-handle {
     right: 4%;
     width: 5%;
+  }
+
+  .ip-door--right .ip-handle {
+    right: auto;
+    left: 4%;
   }
 
   .ip-title {
@@ -423,21 +603,25 @@
   }
 }
 
-/* Mobiles */
+/* =========================================
+   MOBILES
+   ========================================= */
+
 @media (max-width: 560px) {
-  .ip-character {
-    width: 94vw;
-    height: 70vh;
-    top: 52%;
+  .ip-fixed-lockers {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .ip-door {
-    width: 50%;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 16.666667%;
   }
 
   .ip-door-locker {
     border-width: 1px;
+  }
+
+  .ip-door-locker::before {
+    inset: 4px 2px;
   }
 
   .ip-vents {
@@ -455,21 +639,46 @@
     border-width: 2px;
   }
 
+  .ip-lock-plate {
+    width: 12%;
+    height: 12%;
+  }
+
   .ip-handle {
-    width: 7%;
+    width: 8%;
+    height: 15%;
+  }
+
+  .ip-handle span {
+    height: 3px;
+  }
+
+  .ip-hinges {
+    width: 6px;
+  }
+
+  .ip-hinges i {
+    width: 6px;
+    height: 25px;
+  }
+
+  .ip-title {
+    width: 96vw;
+  }
+
+  .ip-title span {
+    font-size: 17px;
   }
 
   .ip-title h1 {
     font-size: clamp(43px, 12vw, 64px);
   }
-
-  .ip-character .model-glb__hint {
-    white-space: normal;
-    font-size: 7px;
-  }
 }
 
-/* Accessibilité */
+/* =========================================
+   ACCESSIBILITÉ
+   ========================================= */
+
 @media (prefers-reduced-motion: reduce) {
   .ip {
     scroll-behavior: auto;

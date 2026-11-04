@@ -702,108 +702,112 @@ export default function App() {
         </button>
       </div>
 
-      <PortfolioEntrance />
-
-      <section id="accueil">
-        <div id="hero">
-          <div className="h-word" aria-hidden="true">
-            PORTFOLIO
-          </div>
-
-          <div className="h-text">
-            <span className="badge mono rv">
-              <span className="dot" />
-              Disponible · stage avril 2027
-            </span>
-
-            <h1 className="rv" style={delay(0.1)}>
-              Salut, moi c'est
-              <br />
-              <span className="grad instrument">{profile.name}.</span>
-            </h1>
-
-            <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
-              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
-              Clermont Auvergne au Puy-en-Velay. Je mêle créativité et nouvelles
-              technologie pour donner vie à mes idées.
-            </p>
-
-            <div className="btns rv" style={delay(0.4)}>
-              <a className="btn p" href="#projets">
-                Voir mes projets →
-              </a>
-              <a className="btn" href="#contact">
-                Me contacter
-              </a>
-            </div>
-          </div>
-
-          <div className="h-visual rv" style={delay(0.2)}>
-            <div className="arch">
-              <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+      <PortfolioEntrance>
+        <section id="accueil">
+          <div id="hero">
+            <div className="h-word" aria-hidden="true">
+              PORTFOLIO
             </div>
 
-            <div className="h-badge" aria-hidden="true">
-              <svg viewBox="0 0 120 120">
-                <circle cx="60" cy="60" r="60" fill="#d84b7d" />
-                <defs>
-                  <path
-                    id="hb"
-                    d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0"
-                  />
-                </defs>
-                <text
-                  fontSize="10.5"
-                  fontWeight="700"
-                  fill="#fff"
-                  letterSpacing="1"
-                >
-                  <textPath href="#hb" textLength="252" lengthAdjust="spacing">
-                    GRAPHISME • UI/UX • MOTION •
-                  </textPath>
-                </text>
-                <text
-                  x="60"
-                  y="68"
-                  textAnchor="middle"
-                  fontSize="22"
-                  fill="#fff"
-                >
-                  ✦
-                </text>
-              </svg>
-            </div>
-
-            <span className="h-chip c1">
-              <i />
-              Créative
-            </span>
-            <span className="h-chip c2 sage">
-              <i />
-              Autonome
-            </span>
-            <span className="h-chip c3">
-              <i />
-              Rigoureuse
-            </span>
-            <span className="h-chip c4 sage">
-              <i />
-              Polyvalente
-            </span>
-          </div>
-        </div>
-
-        <div className="h-band" aria-hidden="true">
-          <div className="h-band-t">
-            {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => (
-              <span key={i}>
-                {t}
-                <b>✦</b>
+            <div className="h-text">
+              <span className="badge mono rv">
+                <span className="dot" />
+                Disponible · stage avril 2027
               </span>
-            ))}
+
+              <h1 className="rv" style={delay(0.1)}>
+                Salut, moi c'est
+                <br />
+                <span className="grad instrument">{profile.name}.</span>
+              </h1>
+
+              <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
+                Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
+                Clermont Auvergne au Puy-en-Velay. Je mêle créativité et
+                nouvelles technologie pour donner vie à mes idées.
+              </p>
+
+              <div className="btns rv" style={delay(0.4)}>
+                <a className="btn p" href="#projets">
+                  Voir mes projets →
+                </a>
+                <a className="btn" href="#contact">
+                  Me contacter
+                </a>
+              </div>
+            </div>
+
+            <div className="h-visual rv" style={delay(0.2)}>
+              <div className="arch">
+                <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+              </div>
+
+              <div className="h-badge" aria-hidden="true">
+                <svg viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="60" fill="#d84b7d" />
+                  <defs>
+                    <path
+                      id="hb"
+                      d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0"
+                    />
+                  </defs>
+                  <text
+                    fontSize="10.5"
+                    fontWeight="700"
+                    fill="#fff"
+                    letterSpacing="1"
+                  >
+                    <textPath
+                      href="#hb"
+                      textLength="252"
+                      lengthAdjust="spacing"
+                    >
+                      GRAPHISME • UI/UX • MOTION •
+                    </textPath>
+                  </text>
+                  <text
+                    x="60"
+                    y="68"
+                    textAnchor="middle"
+                    fontSize="22"
+                    fill="#fff"
+                  >
+                    ✦
+                  </text>
+                </svg>
+              </div>
+
+              <span className="h-chip c1">
+                <i />
+                Créative
+              </span>
+              <span className="h-chip c2 sage">
+                <i />
+                Autonome
+              </span>
+              <span className="h-chip c3">
+                <i />
+                Rigoureuse
+              </span>
+              <span className="h-chip c4 sage">
+                <i />
+                Polyvalente
+              </span>
+            </div>
           </div>
-        </div>
-      </section>
+
+          <div className="h-band" aria-hidden="true">
+            <div className="h-band-t">
+              {[...BAND, ...BAND, ...BAND, ...BAND].map((t, i) => (
+                <span key={i}>
+                  {t}
+                  <b>✦</b>
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      </PortfolioEntrance>
 
       <section id="a-propos">
         <div className="about">
