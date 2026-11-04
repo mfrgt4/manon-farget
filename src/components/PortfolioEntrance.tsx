@@ -116,7 +116,7 @@ export default function PortfolioEntrance({
         {
           autoAlpha: 0,
           scale: 0.96,
-          duration: 2,
+          duration: 1.1,
           ease: "power1.out",
         },
         0,
