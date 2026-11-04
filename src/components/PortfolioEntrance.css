@@ -419,3 +419,18 @@
     scroll-behavior: auto;
   }
 }
+
+/* ACCUEIL VISIBLE DERRIÈRE LE CASIER PENDANT LE SCROLL */
+
+/* Le casier recouvre la section Accueil. */
+.ip {
+  margin-bottom: -100vh;
+  margin-bottom: -100svh;
+  z-index: 60;
+}
+
+/* La vraie section Accueil défile derrière l'introduction. */
+#accueil {
+  position: relative;
+  z-index: 0;
+}

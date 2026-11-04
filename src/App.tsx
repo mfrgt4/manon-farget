@@ -614,8 +614,6 @@ export default function App() {
 
   return (
     <>
-      <PortfolioEntrance />
-
       <div id="glow" />
 
       <nav>
@@ -703,6 +701,8 @@ export default function App() {
           <span>Sombre</span>
         </button>
       </div>
+
+      <PortfolioEntrance />
 
       <section id="accueil">
         <div id="hero">

@@ -15,13 +15,17 @@ function LockerDetails() {
         <i />
         <i />
       </div>
+
       <div className="ip-nameplate" />
+
       <div className="ip-lock-plate">
         <span className="ip-lock-hole" />
       </div>
+
       <div className="ip-handle">
         <span />
       </div>
+
       <div className="ip-vents ip-vents--bottom">
         <i />
         <i />
@@ -35,17 +39,20 @@ function LockerDetails() {
 function LockerDoor({ side }: { side: "left" | "right" }) {
   return (
     <div className={`ip-door ip-door--${side}`}>
-      {/* Trois façades de chaque côté : six casiers au total. */}
       <div className="ip-door-locker">
         <LockerDetails />
       </div>
+
       <div className="ip-door-locker">
         <LockerDetails />
       </div>
+
       <div className="ip-door-locker">
         <LockerDetails />
       </div>
+
       <div className="ip-door-edge" />
+
       <div className="ip-hinges">
         <i />
         <i />
@@ -70,8 +77,17 @@ export default function PortfolioEntrance() {
     const rightDoor = rightDoorRef.current;
     const character = characterRef.current;
     const title = titleRef.current;
-    if (!root || !stage || !leftDoor || !rightDoor || !character || !title)
+
+    if (
+      !root ||
+      !stage ||
+      !leftDoor ||
+      !rightDoor ||
+      !character ||
+      !title
+    ) {
       return;
+    }
 
     const context = gsap.context(() => {
       gsap.set(leftDoor, {
@@ -79,13 +95,23 @@ export default function PortfolioEntrance() {
         transformOrigin: "left center",
         transformPerspective: 1800,
       });
+
       gsap.set(rightDoor, {
         rotationY: 0,
         transformOrigin: "right center",
         transformPerspective: 1800,
       });
-      gsap.set(character, { autoAlpha: 0, scale: 0.86, y: 35 });
-      gsap.set(title, { autoAlpha: 1, scale: 1 });
+
+      gsap.set(character, {
+        autoAlpha: 0,
+        scale: 0.86,
+        y: 35,
+      });
+
+      gsap.set(title, {
+        autoAlpha: 1,
+        scale: 1,
+      });
 
       const intro = gsap.timeline({
         scrollTrigger: {
@@ -93,39 +119,79 @@ export default function PortfolioEntrance() {
           start: "top top",
           end: "+=1400",
           scrub: 0.8,
+
+          // Le casier reste devant pendant que l'accueil défile derrière.
           pin: root,
-          pinSpacing: true,
+          pinSpacing: false,
+
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
+      // Disparition du titre.
       intro.to(
         title,
-        { autoAlpha: 0, scale: 0.94, duration: 0.35, ease: "power2.in" },
+        {
+          autoAlpha: 0,
+          scale: 0.94,
+          duration: 0.35,
+          ease: "power2.in",
+        },
         0.05,
       );
+
+      // Apparition de Neeko derrière les portes.
       intro.to(
         character,
-        { autoAlpha: 1, scale: 1, y: 0, duration: 0.8, ease: "power2.out" },
+        {
+          autoAlpha: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+        },
         0.18,
       );
+
+      // Ouverture progressive du casier gauche.
       intro.to(
         leftDoor,
-        { rotationY: -112, duration: 1.25, ease: "power2.inOut" },
+        {
+          rotationY: -112,
+          duration: 1.25,
+          ease: "power2.inOut",
+        },
         0.12,
       );
+
+      // Ouverture progressive du casier droit.
       intro.to(
         rightDoor,
-        { rotationY: 112, duration: 1.25, ease: "power2.inOut" },
+        {
+          rotationY: 112,
+          duration: 1.25,
+          ease: "power2.inOut",
+        },
         0.12,
       );
-      intro.to(root, { autoAlpha: 0, duration: 0.12, ease: "none" }, 1.34);
+
+      // L'introduction disparaît lorsque les portes sont ouvertes.
+      intro.to(
+        root,
+        {
+          autoAlpha: 0,
+          duration: 0.12,
+          ease: "none",
+        },
+        1.34,
+      );
     }, root);
 
-    const refreshId = window.requestAnimationFrame(() =>
-      ScrollTrigger.refresh(),
-    );
+    const refreshId = window.requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
+
     return () => {
       window.cancelAnimationFrame(refreshId);
       context.revert();
