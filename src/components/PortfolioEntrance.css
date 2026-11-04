@@ -42,7 +42,6 @@
 
 /* =========================================
    VRAI CONTENU ACCUEIL
-   Derrière les portes
    ========================================= */
 
 .ip-content {
@@ -59,8 +58,7 @@
 }
 
 /* =========================================
-   STRUCTURE DES DEUX GRANDS PANNEAUX
-   Chaque panneau contient 3 casiers
+   STRUCTURE DES DEUX PANNEAUX
    ========================================= */
 
 .ip-stage {
@@ -75,35 +73,27 @@
   pointer-events: none;
 }
 
-/* Les deux panneaux occupent chacun la moitié de l'écran */
 .ip-door {
   position: absolute;
   top: 0;
   width: 50%;
   height: 100%;
-
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-
   transform-style: preserve-3d;
   backface-visibility: visible;
-
   background: var(--ip-cream);
-
   box-shadow: 0 0 45px rgba(183, 45, 96, 0.25);
-
   will-change: transform;
   pointer-events: auto;
 }
 
-/* Panneau gauche : 3 casiers qui pivotent ensemble */
 .ip-door--left {
   left: 0;
   transform-origin: 0% 50%;
   border-left: 2px solid rgba(183, 45, 96, 0.78);
 }
 
-/* Panneau droit : 3 casiers qui pivotent ensemble */
 .ip-door--right {
   left: 50%;
   right: auto;
@@ -112,7 +102,7 @@
 }
 
 /* =========================================
-   FAÇADES DES 6 CASIERS
+   FAÇADES DES CASIERS
    ========================================= */
 
 .ip-door-locker {
@@ -151,7 +141,6 @@
   content: "";
   position: absolute;
   inset: 8px 7px;
-
   border: 1px solid rgba(183, 45, 96, 0.10);
 
   box-shadow:
@@ -271,7 +260,6 @@
   box-shadow: 1px 2px 4px rgba(183, 45, 96, 0.12);
 }
 
-/* Serrures orientées vers l'extérieur */
 .ip-door--right .ip-lock-plate {
   right: auto;
   left: 13%;
@@ -315,7 +303,6 @@
     inset 0 0 3px rgba(255, 255, 255, 0.9);
 }
 
-/* Poignées orientées vers l'extérieur */
 .ip-door--right .ip-handle {
   right: auto;
   left: 7%;
@@ -338,7 +325,7 @@
 }
 
 /* =========================================
-   BORDS INTÉRIEURS DES PANNEAUX
+   BORDS INTÉRIEURS
    ========================================= */
 
 .ip-door-edge {
@@ -364,7 +351,7 @@
 }
 
 /* =========================================
-   CHARNIÈRES EXTÉRIEURES
+   CHARNIÈRES
    ========================================= */
 
 .ip-hinges {
@@ -379,7 +366,6 @@
   justify-content: space-between;
 }
 
-/* Charnières sur le bord extérieur droit du panneau droit */
 .ip-door--right .ip-hinges {
   left: auto;
   right: 1px;
@@ -404,7 +390,7 @@
 }
 
 /* =========================================
-   TITRE D'INTRODUCTION — PLUS VISIBLE
+   TITRE D'INTRODUCTION
    ========================================= */
 
 .ip-title {
@@ -422,22 +408,19 @@
 
   text-align: center;
   pointer-events: none;
-
   will-change: transform, opacity;
 
-  /* Fond discret pour renforcer le contraste */
   padding: clamp(20px, 4vw, 45px);
 }
 
-/* Petite introduction */
-.ip-title span {
+/* BIENVENUE DANS : taille indépendante */
+.ip-title > span:first-child {
   display: block;
   margin-bottom: clamp(10px, 1.5vh, 18px);
 
   color: #8f1748;
-
   font-family: "DM Sans", sans-serif;
-  font-size: clamp(18px, 1.8vw, 26px);
+  font-size: clamp(22px, 2.2vw, 30px);
   font-weight: 700;
   font-style: normal;
   letter-spacing: 0.24em;
@@ -446,13 +429,12 @@
   text-shadow: 0 1px 3px rgba(245, 243, 239, 0.95);
 }
 
-/* Grand titre */
+/* MON PORTFOLIO : grand titre */
 .ip-title h1 {
   position: relative;
   margin: 0;
 
   color: #9f194f;
-
   font-family: "Instrument Serif", Georgia, serif;
   font-size: clamp(90px, 13vw, 180px);
   font-weight: 400;
@@ -469,24 +451,49 @@
     0 0 35px rgba(245, 243, 239, 0.8);
 }
 
-@media (max-width: 900px) {
-  .ip-title span {
-    font-size: 14px;
-  }
+/* =========================================
+   INDICATION DE DÉFILEMENT
+   ========================================= */
 
-  .ip-title h1 {
-    font-size: clamp(58px, 12vw, 90px);
-  }
+.ip-title .ip-scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+
+  margin: clamp(20px, 3vh, 32px) 0 0;
+
+  color: #8f1748;
+  font-family: "DM Sans", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  text-shadow: 0 1px 3px rgba(245, 243, 239, 0.9);
 }
 
-@media (max-width: 560px) {
-  .ip-title span {
-    font-size: 11px;
-    letter-spacing: 0.16em;
+.ip-title .ip-scroll-hint span {
+  font-size: inherit;
+}
+
+.ip-scroll-hint i {
+  display: block;
+  font-family: sans-serif;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 400;
+
+  animation: ip-arrow-bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes ip-arrow-bounce {
+  0%, 100% {
+    transform: translateY(0);
   }
 
-  .ip-title h1 {
-    font-size: clamp(48px, 13vw, 70px);
+  50% {
+    transform: translateY(7px);
   }
 }
 
@@ -533,12 +540,16 @@
     width: 96vw;
   }
 
-  .ip-title span {
-    font-size: 18px;
+  .ip-title > span:first-child {
+    font-size: 22px;
   }
 
   .ip-title h1 {
-    font-size: clamp(48px, 12vw, 76px);
+    font-size: clamp(58px, 12vw, 90px);
+  }
+
+  .ip-title .ip-scroll-hint {
+    font-size: 18px;
   }
 
   .ip-hinges i {
@@ -606,12 +617,23 @@
     width: 96vw;
   }
 
-  .ip-title span {
+  .ip-title > span:first-child {
     font-size: 17px;
+    letter-spacing: 0.16em;
   }
 
   .ip-title h1 {
-    font-size: clamp(43px, 12vw, 64px);
+    font-size: clamp(48px, 13vw, 70px);
+  }
+
+  .ip-title .ip-scroll-hint {
+    font-size: 15px;
+    letter-spacing: 0.10em;
+    margin-top: 22px;
+  }
+
+  .ip-scroll-hint i {
+    font-size: 22px;
   }
 }
 
@@ -623,59 +645,8 @@
   .ip {
     scroll-behavior: auto;
   }
-}
-
-/* =========================================
-   INDICATION DE DÉFILEMENT
-   ========================================= */
-
-.ip-scroll-hint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 9px;
-
-  margin: clamp(20px, 3vh, 32px) 0 0;
-
-  color: #8f1748;
-  font-family: "DM Sans", sans-serif;
-  font-size: 15px !important;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-
-  text-shadow: 0 1px 3px rgba(245, 243, 239, 0.9);
-}
-
-.ip-scroll-hint i {
-  display: block;
-
-  font-family: sans-serif;
-  font-size: 25px;
-  font-style: normal;
-  font-weight: 400;
-
-  animation: ip-arrow-bounce 1.5s ease-in-out infinite;
-}
-
-@keyframes ip-arrow-bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(7px);
-  }
-}
-
-@media (max-width: 560px) {
-  .ip-scroll-hint {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    margin-top: 22px;
-  }
 
   .ip-scroll-hint i {
-    font-size: 22px;
+    animation: none;
   }
 }
