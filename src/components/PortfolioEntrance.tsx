@@ -1,142 +1,83 @@
-
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
+import { profile } from "../data";
+import ModelGlb from "./ModelGlb";
 import "./PortfolioEntrance.css";
 
-gsap.registerPlugin(ScrollTrigger);
+const SKETCHFAB_URL =
+  "https://sketchfab.com/3d-models/neeko-star-guardian-8adfbf9088bf416980727b1073b4c673";
 
 export default function PortfolioEntrance() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const sceneRef = useRef<HTMLDivElement>(null);
-  const leftDoorRef = useRef<HTMLDivElement>(null);
-  const rightDoorRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const lightRef = useRef<HTMLDivElement>(null);
+  const [phase, setPhase] = useState<"in" | "leaving" | "gone">("in");
+  const btn = useRef<HTMLButtonElement>(null);
 
+  const enter = () => {
+    if (phase !== "in") return;
+    setPhase("leaving");
+    window.setTimeout(() => setPhase("gone"), 700);
+  };
+
+  // Bloque le scroll du site tant que l'intro est affichée
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set(lightRef.current, { opacity: 0, scale: 0.7 });
-      gsap.set([leftDoorRef.current, rightDoorRef.current], {
-        rotateY: 0,
-      });
+    if (phase === "gone") return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [phase]);
 
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=2200",
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-        },
-      });
-
-      // Approche du casier
-      timeline.to(sceneRef.current, {
-        scale: 1.08,
-        duration: 2,
-        ease: "none",
-      });
-
-      // Disparition du titre
-      timeline.to(titleRef.current, {
-        opacity: 0,
-        y: -50,
-        duration: 1,
-      }, "<");
-
-      // Lumière à l'intérieur du casier
-      timeline.to(lightRef.current, {
-        opacity: 1,
-        scale: 1.3,
-        duration: 1.5,
-      });
-
-      // Ouverture des battants
-      timeline.to(leftDoorRef.current, {
-        rotateY: -115,
-        duration: 2,
-        ease: "power2.inOut",
-      });
-
-      timeline.to(rightDoorRef.current, {
-        rotateY: 115,
-        duration: 2,
-        ease: "power2.inOut",
-      }, "<");
-
-      // Passage à travers le casier
-      timeline.to(sceneRef.current, {
-        scale: 1.5,
-        opacity: 0,
-        duration: 2,
-        ease: "power2.in",
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
+  // Focus sur le bouton + Échap pour passer
+  useEffect(() => {
+    btn.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") enter();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (phase === "gone") return null;
+
   return (
-    <section className="entrance" ref={sectionRef}>
-      <div className="entrance-scene" ref={sceneRef}>
+    <div
+      className={`pe${phase === "leaving" ? " pe--leave" : ""}`}
+      role="dialog"
+      aria-label="Introduction du portfolio"
+    >
+      <div className="pe-grid">
+        <div className="pe-text">
+          <span className="badge">
+            <i className="dot" /> Portfolio 2026
+          </span>
 
-        <div className="locker-wall">
-          <div className="locker-background">
-            <span>✦</span>
-            <span>♡</span>
-            <span>✧</span>
-            <span>♡</span>
-          </div>
+          <h1 className="pe-title">
+            <small>Bonjour, moi c'est</small>
+            {profile.name}
+          </h1>
 
-          <div className="locker-light" ref={lightRef}>
-            <div className="locker-inside">
-              <span>WELCOME TO</span>
-              <h2>MY WORLD</h2>
-              <p>MANON FARGET · CREATIVE UNIVERSE</p>
-            </div>
-          </div>
+          <p className="lead">
+            Étudiant·e en MMI, je crée des univers visuels, interactifs et 3D.
+          </p>
 
-          <div className="locker-title" ref={titleRef}>
-            <span className="locker-eyebrow">YOUR NEXT DESTINATION</span>
-            <h1>Open my world<span> ♡</span></h1>
-            <p>SCROLL TO OPEN ↓</p>
-          </div>
-
-          <div className="locker-doors">
-
-            <div className="locker-door left" ref={leftDoorRef}>
-              <div className="locker-door-inner">
-                <div className="locker-brand">MF ✦</div>
-                <div className="locker-vents">
-                  <i /><i /><i /><i /><i /><i />
-                </div>
-                <div className="locker-sticker sticker-heart">♡</div>
-                <div className="locker-sticker sticker-star">✦</div>
-                <div className="locker-sticker sticker-lips">💋</div>
-                <div className="locker-handle" />
-                <div className="locker-lock">✧</div>
-              </div>
-            </div>
-
-            <div className="locker-door right" ref={rightDoorRef}>
-              <div className="locker-door-inner">
-                <div className="locker-brand">DREAM BIG</div>
-                <div className="locker-vents">
-                  <i /><i /><i /><i /><i /><i />
-                </div>
-                <div className="locker-sticker sticker-smile">☻</div>
-                <div className="locker-sticker sticker-sparkle">✧</div>
-                <div className="locker-sticker sticker-heart2">♡</div>
-                <div className="locker-handle" />
-                <div className="locker-lock">✧</div>
-              </div>
-            </div>
-
+          <div className="btns">
+            <button ref={btn} type="button" className="btn p" onClick={enter}>
+              Entrer dans le portfolio
+            </button>
           </div>
         </div>
+
+        <div className="pe-stage">
+          <ModelGlb url="/models/neeko.glb" />
+          <p className="pe-credit">
+            Modèle :{" "}
+            <a href={SKETCHFAB_URL} target="_blank" rel="noopener noreferrer">
+              Neeko Star Guardian
+            </a>{" "}
+            sur Sketchfab
+          </p>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
