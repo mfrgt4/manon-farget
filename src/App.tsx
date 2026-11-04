@@ -13,6 +13,7 @@ import {
 import type { Genre, Project } from "./data";
 import ToolBox3D from "./components/ToolBox3D";
 import SkillsPanel from "./components/SkillsPanel";
+import PortfolioEntrance from "./components/PortfolioEntrance";
 
 // ================= SONS =================
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
@@ -613,6 +614,8 @@ export default function App() {
 
   return (
     <>
+      <PortfolioEntrance />
+
       <div id="glow" />
 
       <nav>
