@@ -458,6 +458,24 @@
   transform: rotate(7deg);
 }
 
+.ip-sticker--eight {
+  top: 12%;
+  left: 52%;
+  transform: rotate(-9deg);
+}
+
+.ip-sticker--nine {
+  top: 12%;
+  left: 25%;
+  transform: rotate(10deg);
+}
+
+.ip-sticker--ten {
+  top: 78%;
+  left: 65%;
+  transform: rotate(-7deg);
+}
+
 
 /* Tablette */
 @media (max-width: 900px) {

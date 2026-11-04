@@ -36,6 +36,7 @@ function LockerDetails() {
 }
 
 /* Stickers différents selon le côté de la porte */
+
 function LockerStickers({ side }: { side: "left" | "right" }) {
   return (
     <>
@@ -68,6 +69,13 @@ function LockerStickers({ side }: { side: "left" | "right" }) {
               alt="Sticker animé"
             />
           </div>
+
+          <div className="ip-sticker ip-sticker--eight">
+            <img
+              src="https://i.pinimg.com/originals/7e/78/17/7e78170337ed44d06823302a491a56b3.gif"
+              alt="Sticker animé"
+            />
+          </div>
         </>
       )}
 
@@ -90,6 +98,20 @@ function LockerStickers({ side }: { side: "left" | "right" }) {
           <div className="ip-sticker ip-sticker--seven">
             <img
               src="https://i.pinimg.com/originals/3e/d5/00/3ed5009c487c654a0001a97c8d9b381c.gif"
+              alt="Sticker animé"
+            />
+          </div>
+
+          <div className="ip-sticker ip-sticker--nine">
+            <img
+              src="https://i.pinimg.com/originals/ee/3b/5c/ee3b5c19db3c7a9dacc5e04d9a885fa2.gif"
+              alt="Sticker animé"
+            />
+          </div>
+
+          <div className="ip-sticker ip-sticker--ten">
+            <img
+              src="https://i.pinimg.com/originals/1e/91/73/1e91739223c49806f81f924b1545e452.gif"
               alt="Sticker animé"
             />
           </div>
