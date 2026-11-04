@@ -89,14 +89,14 @@ export default function PortfolioEntrance() {
     const context = gsap.context(() => {
       gsap.set(leftDoor, {
         rotationY: 0,
-        transformOrigin: "100% 50%",
+        transformOrigin: "0% 50%",
         transformPerspective: 1800,
         force3D: true,
       });
 
       gsap.set(rightDoor, {
         rotationY: 0,
-        transformOrigin: "0% 50%",
+        transformOrigin: "100% 50%",
         transformPerspective: 1800,
         force3D: true,
       });
@@ -151,7 +151,7 @@ export default function PortfolioEntrance() {
       intro.to(
         leftDoor,
         {
-          rotationY: -115,
+          rotationY: 115,
           duration: 1.25,
           ease: "power2.inOut",
         },
@@ -161,7 +161,7 @@ export default function PortfolioEntrance() {
       intro.to(
         rightDoor,
         {
-          rotationY: 115,
+          rotationY: -115,
           duration: 1.25,
           ease: "power2.inOut",
         },
