@@ -625,61 +625,39 @@
   }
 }
 
-/* =========================================
-   INDICATION DE DÉFILEMENT
-   ========================================= */
+/* INDICATION DE DÉFILEMENT */
 
-.ip-scroll-hint {
+.ip-title .ip-scroll-hint {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
 
-  margin: clamp(20px, 3vh, 32px) 0 0;
+  margin: 28px 0 0;
 
   color: #8f1748;
   font-family: "DM Sans", sans-serif;
-  font-size: clamp(15px, 1.4vw, 20px);
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-size: 22px !important;
+  font-weight: 700;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
 
   text-shadow: 0 1px 3px rgba(245, 243, 239, 0.9);
 }
 
-.ip-scroll-hint i {
+.ip-title .ip-scroll-hint i {
   display: block;
-
-  font-family: sans-serif;
-  font-size: 28px;
+  font-size: 32px !important;
   font-style: normal;
-  font-weight: 400;
-
   animation: ip-arrow-bounce 1.5s ease-in-out infinite;
 }
 
-@keyframes ip-arrow-bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(7px);
-  }
-}
-
-/* =========================================
-   MOBILES
-   ========================================= */
-
 @media (max-width: 560px) {
-  .ip-scroll-hint {
-    font-size: 14px;
-    letter-spacing: 0.10em;
-    margin-top: 22px;
+  .ip-title .ip-scroll-hint {
+    font-size: 17px !important;
   }
 
-  .ip-scroll-hint i {
-    font-size: 25px;
+  .ip-title .ip-scroll-hint i {
+    font-size: 27px !important;
   }
 }
