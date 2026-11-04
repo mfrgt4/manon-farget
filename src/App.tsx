@@ -1,3 +1,4 @@
+
 import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
@@ -11,8 +12,6 @@ import {
   tools,
 } from "./data";
 import type { Genre, Project } from "./data";
-import ToolBox3D from "./components/ToolBox3D";
-import SkillsPanel from "./components/SkillsPanel";
 import PortfolioEntrance from "./components/PortfolioEntrance";
 
 // ================= SONS =================
@@ -463,52 +462,12 @@ function useAnchorCenter() {
   }, []);
 }
 
-// ================= THÈME =================
-
-type Theme = "light" | "dark";
-
-function useTheme() {
-  const [theme, setTheme] = useState<Theme>(() =>
-    document.documentElement.dataset.theme === "dark" ? "dark" : "light",
-  );
-
-  const choose = (next: Theme) => {
-    if (next === theme) return;
-
-    const apply = () => {
-      document.documentElement.dataset.theme = next;
-      setTheme(next);
-      try {
-        localStorage.setItem("theme", next);
-      } catch {
-        /* stockage indisponible */
-      }
-    };
-
-    const d = document as Document & {
-      startViewTransition?: (cb: () => void) => unknown;
-    };
-
-    if (
-      d.startViewTransition &&
-      !matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      d.startViewTransition(apply);
-    } else {
-      apply();
-    }
-  };
-
-  return [theme, choose] as const;
-}
-
 // ================= PROJETS =================
 
 const cover = (p: Project) =>
   p.thumbnail ?? p.media?.find((m) => m.type === "image")?.src;
 
-// Utilise le genre explicite du projet, avec un fallback sur son type
-// pour éviter qu'un filtre vide les projets si genre n'est pas renseigné.
+// Utilise le genre explicite du projet, avec un fallback sur son type.
 const getProjectGenre = (p: Project): Genre | undefined => {
   if (p.genre) return p.genre;
 
@@ -554,7 +513,16 @@ const delay = (d: number) => ({ "--d": d + "s" }) as React.CSSProperties;
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Force le thème clair et évite de récupérer un ancien thème sombre.
   useEffect(() => {
+    document.documentElement.dataset.theme = "light";
+
+    try {
+      localStorage.setItem("theme", "light");
+    } catch {
+      // Le site reste en mode clair même si le stockage est indisponible.
+    }
+
     playIntroSound();
   }, []);
 
@@ -563,19 +531,18 @@ export default function App() {
   const [modalProjects, setModalProjects] = useState<Project[]>([]);
   const [selectedGenre, setSelectedGenre] = useState<Genre | "all">("all");
 
-  // Tous les projets sont regroupés par catégorie.
   const personalProjects = projects.filter((p) => p.category === "perso");
 
   const universityProjects = projects.filter(
     (p) => p.category === "universitaire",
   );
 
-  // Les projets universitaires sont regroupés par genre.
   const universityProjectsByGenre = projectGenres.map(([genre, label]) => ({
     genre,
     label,
     projects: universityProjects.filter((p) => getProjectGenre(p) === genre),
   }));
+
   const groups: [string, string, Project[]][] = [
     [
       "Projets personnels",
@@ -593,11 +560,9 @@ export default function App() {
   useHeroParallax();
   useTimeline();
   useTilt();
-  // Relance les animations d’apparition lorsque le filtre change.
   useAes(`projects-${selectedGenre}`);
   useAnchorCenter();
 
-  const [theme, chooseTheme] = useTheme();
   const [sel, setSel] = useState(0);
 
   const send = (e: FormEvent<HTMLFormElement>) => {
@@ -644,63 +609,6 @@ export default function App() {
           </button>
         </div>
       </nav>
-
-      <div
-        className="theme-toggle"
-        role="group"
-        aria-label="Thème du site"
-        style={{ "--i": theme === "dark" ? 1 : 0 } as React.CSSProperties}
-      >
-        <span className="tt-thumb" aria-hidden="true" />
-
-        <button
-          className="tt-btn"
-          aria-pressed={theme === "light"}
-          onClick={() => {
-            playButtonClick();
-            chooseTheme("light");
-          }}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-          </svg>
-          <span>Clair</span>
-        </button>
-
-        <button
-          className="tt-btn"
-          aria-pressed={theme === "dark"}
-          onClick={() => {
-            playButtonClick();
-            chooseTheme("dark");
-          }}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-          </svg>
-          <span>Sombre</span>
-        </button>
-      </div>
 
       <PortfolioEntrance>
         <section id="accueil">
@@ -1014,19 +922,13 @@ export default function App() {
                         gap: 7,
                         minHeight: 44,
                         padding: "10px 18px",
-                        border: `1px solid ${selectedGenre === "all" ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : theme === "dark" ? "#40323b" : "#e8dbe2"}`,
+                        border: `1px solid ${selectedGenre === "all" ? "#fbeef3" : "#e8dbe2"}`,
                         borderRadius: 999,
                         background:
-                          selectedGenre === "all"
-                            ? theme === "dark"
-                              ? "#f28fb3"
-                              : "#fbeef3"
-                            : "transparent",
+                          selectedGenre === "all" ? "#fbeef3" : "transparent",
                         color:
                           selectedGenre === "all"
-                            ? theme === "dark"
-                              ? "#17181c"
-                              : "#c63e70"
+                            ? "#c63e70"
                             : "var(--muted, #706775)",
                         font: "inherit",
                         fontSize: 13,
@@ -1060,17 +962,11 @@ export default function App() {
                               gap: 7,
                               minHeight: 44,
                               padding: "10px 18px",
-                              border: `1px solid ${isActive ? (theme === "dark" ? "#f28fb3" : "#fbeef3") : theme === "dark" ? "#40323b" : "#e8dbe2"}`,
+                              border: `1px solid ${isActive ? "#fbeef3" : "#e8dbe2"}`,
                               borderRadius: 999,
-                              background: isActive
-                                ? theme === "dark"
-                                  ? "#f28fb3"
-                                  : "#fbeef3"
-                                : "transparent",
+                              background: isActive ? "#fbeef3" : "transparent",
                               color: isActive
-                                ? theme === "dark"
-                                  ? "#17181c"
-                                  : "#c63e70"
+                                ? "#c63e70"
                                 : "var(--muted, #706775)",
                               font: "inherit",
                               fontSize: 13,
