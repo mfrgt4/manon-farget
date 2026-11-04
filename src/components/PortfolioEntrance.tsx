@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, type ReactNode, type Ref } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,7 +9,10 @@ function LockerDetails() {
   return (
     <>
       <div className="ip-vents ip-vents--top">
-        <i /><i /><i /><i />
+        <i />
+        <i />
+        <i />
+        <i />
       </div>
 
       <div className="ip-nameplate" />
@@ -24,7 +26,10 @@ function LockerDetails() {
       </div>
 
       <div className="ip-vents ip-vents--bottom">
-        <i /><i /><i /><i />
+        <i />
+        <i />
+        <i />
+        <i />
       </div>
     </>
   );
@@ -106,8 +111,8 @@ export default function PortfolioEntrance({
         scrollTrigger: {
           trigger: root,
           start: "top top",
-          end: "+=1400",
-          scrub: 0.8,
+          end: "+=1200",
+          scrub: 0.4,
           pin: true,
           pinSpacing: true,
           anticipatePin: 1,
@@ -115,33 +120,39 @@ export default function PortfolioEntrance({
         },
       });
 
-      // Les deux portes s'ouvrent depuis le milieu vers l'arrière.
-      intro.to(leftDoor, {
-        rotationY: 115,
-        duration: 1.25,
-        ease: "power2.inOut",
-      }, 0.1);
+      // Le titre disparaît dès le début de l'ouverture.
+      intro.to(
+        title,
+        {
+          autoAlpha: 0,
+          scale: 0.96,
+          duration: 0.35,
+          ease: "power1.out",
+        },
+        0.05,
+      );
 
-      intro.to(rightDoor, {
-        rotationY: -115,
-        duration: 1.25,
-        ease: "power2.inOut",
-      }, 0.1);
+      // Ouverture progressive de la porte gauche.
+      intro.to(
+        leftDoor,
+        {
+          rotationY: 115,
+          duration: 1.2,
+          ease: "power2.inOut",
+        },
+        0,
+      );
 
-      // Le titre reste visible pendant l'ouverture.
-      intro.to(title, {
-        autoAlpha: 0,
-        scale: 0.94,
-        duration: 0.3,
-        ease: "power2.in",
-      }, 1.15);
-
-      // L'introduction disparaît une fois les portes ouvertes.
-      intro.to(root, {
-        autoAlpha: 0,
-        duration: 0.12,
-        ease: "none",
-      }, 1.48);
+      // Ouverture progressive de la porte droite.
+      intro.to(
+        rightDoor,
+        {
+          rotationY: -115,
+          duration: 1.2,
+          ease: "power2.inOut",
+        },
+        0,
+      );
     }, root);
 
     const refreshId = window.requestAnimationFrame(() => {
@@ -163,9 +174,7 @@ export default function PortfolioEntrance({
       <div className="ip-wall" />
 
       {/* Le vrai contenu Accueil est placé derrière les portes */}
-      <div className="ip-content">
-        {children}
-      </div>
+      <div className="ip-content">{children}</div>
 
       {/* Les quatre casiers extérieurs restent fixes */}
       <div className="ip-fixed-lockers">
