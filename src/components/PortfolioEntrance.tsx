@@ -9,13 +9,25 @@ gsap.registerPlugin(ScrollTrigger);
 function LockerDetails() {
   return (
     <>
-      <div className="ip-vents ip-vents--top"><i /><i /><i /><i /></div>
+      <div className="ip-vents ip-vents--top">
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
       <div className="ip-nameplate" />
       <div className="ip-lock-plate">
         <span className="ip-lock-hole" />
       </div>
-      <div className="ip-handle"><span /></div>
-      <div className="ip-vents ip-vents--bottom"><i /><i /><i /><i /></div>
+      <div className="ip-handle">
+        <span />
+      </div>
+      <div className="ip-vents ip-vents--bottom">
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
     </>
   );
 }
@@ -23,19 +35,28 @@ function LockerDetails() {
 function LockerDoor({ side }: { side: "left" | "right" }) {
   return (
     <div className={`ip-door ip-door--${side}`}>
-      {/* Trois façades par porte : six casiers visibles au total */}
-      <div className="ip-door-locker"><LockerDetails /></div>
-      <div className="ip-door-locker"><LockerDetails /></div>
-      <div className="ip-door-locker"><LockerDetails /></div>
+      {/* Trois façades de chaque côté : six casiers au total. */}
+      <div className="ip-door-locker">
+        <LockerDetails />
+      </div>
+      <div className="ip-door-locker">
+        <LockerDetails />
+      </div>
+      <div className="ip-door-locker">
+        <LockerDetails />
+      </div>
       <div className="ip-door-edge" />
-      <div className="ip-hinges"><i /><i /><i /></div>
+      <div className="ip-hinges">
+        <i />
+        <i />
+        <i />
+      </div>
     </div>
   );
 }
 
 export default function PortfolioEntrance() {
   const rootRef = useRef<HTMLElement>(null);
-  const wallRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const leftDoorRef = useRef<HTMLDivElement>(null);
   const rightDoorRef = useRef<HTMLDivElement>(null);
@@ -44,86 +65,71 @@ export default function PortfolioEntrance() {
 
   useEffect(() => {
     const root = rootRef.current;
-    const wall = wallRef.current;
     const stage = stageRef.current;
     const leftDoor = leftDoorRef.current;
     const rightDoor = rightDoorRef.current;
     const character = characterRef.current;
     const title = titleRef.current;
-
-    if (!root || !wall || !stage || !leftDoor || !rightDoor || !character || !title) {
+    if (!root || !stage || !leftDoor || !rightDoor || !character || !title)
       return;
-    }
 
-    const ctx = gsap.context(() => {
-      gsap.set([leftDoor, rightDoor], {
-        rotateY: 0,
+    const context = gsap.context(() => {
+      gsap.set(leftDoor, {
+        rotationY: 0,
+        transformOrigin: "left center",
         transformPerspective: 1800,
       });
-      gsap.set(character, { autoAlpha: 0, scale: 0.88, y: 35 });
-      gsap.set(wall, { autoAlpha: 1 });
+      gsap.set(rightDoor, {
+        rotationY: 0,
+        transformOrigin: "right center",
+        transformPerspective: 1800,
+      });
+      gsap.set(character, { autoAlpha: 0, scale: 0.86, y: 35 });
+      gsap.set(title, { autoAlpha: 1, scale: 1 });
 
-      const timeline = gsap.timeline({
+      const intro = gsap.timeline({
         scrollTrigger: {
-          trigger: document.querySelector<HTMLElement>("#accueil") ?? root,
+          trigger: root,
           start: "top top",
-          end: "+=1800",
+          end: "+=1400",
           scrub: 0.8,
-          pin: true,
+          pin: root,
           pinSpacing: true,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
         },
       });
 
-      // Léger rapprochement de la rangée de casiers.
-      timeline.to(stage, { scale: 1.025, duration: 0.7, ease: "none" }, 0);
-
-      // Le titre disparaît pendant que les portes commencent à s'ouvrir.
-      timeline.to(title, {
-        autoAlpha: 0,
-        scale: 0.92,
-        duration: 0.45,
-        ease: "power2.in",
-      }, 0.35);
-
-      // Le fond se dissipe pour laisser apparaître la vraie section Accueil.
-      timeline.to(wall, {
-        autoAlpha: 0,
-        duration: 1.05,
-        ease: "none",
-      }, 0.7);
-
-      // Neeko apparaît derrière les portes, au centre.
-      timeline.to(character, {
-        autoAlpha: 1,
-        scale: 1,
-        y: 0,
-        duration: 1.15,
-        ease: "power2.out",
-      }, 0.72);
-
-      // Les deux grandes portes pivotent depuis leur bord central.
-      timeline.to(leftDoor, {
-        rotateY: -108,
-        duration: 1.5,
-        ease: "power2.inOut",
-      }, 0.65);
-
-      timeline.to(rightDoor, {
-        rotateY: 108,
-        duration: 1.5,
-        ease: "power2.inOut",
-      }, 0.65);
-
-      // À la fin, l'introduction ne masque plus le portfolio.
-      timeline.to(root, {
-        autoAlpha: 0,
-        duration: 0.2,
-        ease: "none",
-      }, 2.05);
+      intro.to(
+        title,
+        { autoAlpha: 0, scale: 0.94, duration: 0.35, ease: "power2.in" },
+        0.05,
+      );
+      intro.to(
+        character,
+        { autoAlpha: 1, scale: 1, y: 0, duration: 0.8, ease: "power2.out" },
+        0.18,
+      );
+      intro.to(
+        leftDoor,
+        { rotationY: -112, duration: 1.25, ease: "power2.inOut" },
+        0.12,
+      );
+      intro.to(
+        rightDoor,
+        { rotationY: 112, duration: 1.25, ease: "power2.inOut" },
+        0.12,
+      );
+      intro.to(root, { autoAlpha: 0, duration: 0.12, ease: "none" }, 1.34);
     }, root);
 
-    return () => ctx.revert();
+    const refreshId = window.requestAnimationFrame(() =>
+      ScrollTrigger.refresh(),
+    );
+    return () => {
+      window.cancelAnimationFrame(refreshId);
+      context.revert();
+    };
   }, []);
 
   return (
@@ -132,7 +138,7 @@ export default function PortfolioEntrance() {
       ref={rootRef}
       aria-label="Introduction du portfolio"
     >
-      <div className="ip-wall" ref={wallRef} />
+      <div className="ip-wall" />
 
       <div className="ip-character" ref={characterRef}>
         <ModelGlb url="/models/neeko.glb" />
