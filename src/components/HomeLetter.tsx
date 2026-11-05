@@ -101,6 +101,10 @@ export default function HomeLetter() {
   const openEnvelope = () => {
     if (state !== "closed") return;
 
+    // Bruit d'ouverture de l'enveloppe
+    const sound = new Audio(`${import.meta.env.BASE_URL}sounds/Open-Envelope.mp3`);
+    sound.play().catch((err) => console.warn("Son de l’enveloppe :", err));
+
     const section = sectionRef.current;
     const stage = stageRef.current;
 
