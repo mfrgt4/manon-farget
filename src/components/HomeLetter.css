@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Instrument+Serif:ital@0;1&display=swap');
 
 /* =========================================================
@@ -570,6 +571,10 @@ section#accueil.hl[data-state="closed"] {
   --id-pink: #d84b7d;
   --id-pink-dark: #b72d60;
 
+  /* Valeurs pilotées par la position de la souris */
+  --card-rotate-x: 0deg;
+  --card-rotate-y: 0deg;
+
   position: relative;
   width: min(760px, 100%);
   min-height: 0;
@@ -587,17 +592,26 @@ section#accueil.hl[data-state="closed"] {
     0 5px 15px rgba(23, 23, 23, 0.06);
 
   transform-origin: center;
+  transform-style: preserve-3d;
+
+  transform:
+    perspective(1100px)
+    rotateX(var(--card-rotate-x))
+    rotateY(var(--card-rotate-y));
+
   transition:
-    transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 0.45s ease,
+    transform 0.18s ease-out,
+    box-shadow 0.35s ease,
     border-color 0.35s ease;
+
+  will-change: transform;
 }
 
-/* Survol de la carte */
+/* Survol : la souris pilote l'inclinaison */
 
 .hl-card.hl-idcard:hover {
-  transform: translateY(-7px) scale(1.012);
   border-color: rgba(183, 45, 96, 0.35);
+
   box-shadow:
     0 32px 65px rgba(23, 23, 23, 0.17),
     0 10px 25px rgba(183, 45, 96, 0.09);
@@ -1031,6 +1045,15 @@ section#accueil.hl[data-state="closed"] {
     width: min(100%, 420px);
     padding: 20px 20px 0;
     border-radius: 13px;
+
+    /* Pas d'inclinaison sur les écrans tactiles */
+    transform: none !important;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    will-change: auto;
+  }
+
+  .hl-card.hl-idcard:hover {
+    transform: none !important;
   }
 
   .hl-idcard-header {
@@ -1085,10 +1108,6 @@ section#accueil.hl[data-state="closed"] {
 
   .hl-idcard-actions {
     gap: 12px;
-  }
-
-  .hl-card.hl-idcard:hover {
-    transform: translateY(-3px);
   }
 }
 
@@ -1155,6 +1174,7 @@ section#accueil.hl[data-state="closed"] {
     transition: none !important;
   }
 
+  .hl-card.hl-idcard,
   .hl-card.hl-idcard:hover,
   .hl-idcard-info h1:hover,
   .hl-idcard-field:hover,

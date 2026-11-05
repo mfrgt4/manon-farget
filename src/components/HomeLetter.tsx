@@ -1,5 +1,10 @@
-
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+} from "react";
 import { profile } from "../data";
 import "./HomeLetter.css";
 
@@ -21,8 +26,7 @@ const SPARKS = [
   { x: -5, y: 58, s: 11, dl: -1.0, t: 3.7, bx: -120, by: 20 },
 ];
 
-const d = (seconds: number) =>
-  ({ "--hl-d": `${seconds}s` }) as CSSProperties;
+const d = (seconds: number) => ({ "--hl-d": `${seconds}s` }) as CSSProperties;
 
 function EnvelopeFallback() {
   return (
@@ -89,9 +93,7 @@ export default function HomeLetter() {
   const stageRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<number | undefined>(undefined);
 
-  const [state, setState] = useState<"closed" | "opening" | "open">(
-    "closed"
-  );
+  const [state, setState] = useState<"closed" | "opening" | "open">("closed");
 
   const [imgFailed, setImgFailed] = useState(false);
 
@@ -113,37 +115,53 @@ export default function HomeLetter() {
       const pb = parseFloat(cs.paddingBottom) || 0;
       const h = stage.offsetHeight;
 
-      const finalHeight = Math.max(
-        window.innerHeight,
-        h + pt + pb
-      );
+      const finalHeight = Math.max(window.innerHeight, h + pt + pb);
 
       const finalTop = pt + (finalHeight - pt - pb - h) / 2;
 
-      const fy =
-        window.innerHeight / 2 - (finalTop + h / 2);
+      const fy = window.innerHeight / 2 - (finalTop + h / 2);
 
-      section.style.setProperty(
-        "--hl-fy",
-        `${fy.toFixed(1)}px`
-      );
+      section.style.setProperty("--hl-fy", `${fy.toFixed(1)}px`);
     }
 
     setState("opening");
 
     const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     timerRef.current = window.setTimeout(
       () => setState("open"),
-      reduce ? 0 : 3800
+      reduce ? 0 : 3800,
     );
   };
 
   useEffect(() => {
     return () => window.clearTimeout(timerRef.current);
   }, []);
+
+  const handleCardMouseMove = (event: MouseEvent<HTMLElement>) => {
+    const card = event.currentTarget;
+    const rect = card.getBoundingClientRect();
+
+    if (!rect.width || !rect.height) return;
+
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+
+    const rotateX = (0.5 - y) * 16;
+    const rotateY = (x - 0.5) * 20;
+
+    card.style.setProperty("--card-rotate-x", `${rotateX}deg`);
+    card.style.setProperty("--card-rotate-y", `${rotateY}deg`);
+  };
+
+  const handleCardMouseLeave = (event: MouseEvent<HTMLElement>) => {
+    const card = event.currentTarget;
+
+    card.style.setProperty("--card-rotate-x", "0deg");
+    card.style.setProperty("--card-rotate-y", "0deg");
+  };
 
   return (
     <section
@@ -224,6 +242,8 @@ export default function HomeLetter() {
         <article
           className="hl-card hl-idcard"
           aria-labelledby="hl-title"
+          onMouseMove={handleCardMouseMove}
+          onMouseLeave={handleCardMouseLeave}
         >
           {/* Décoration des coins */}
           <span className="hl-idcard-corner hl-idcard-corner--tl" />
@@ -232,10 +252,7 @@ export default function HomeLetter() {
           <span className="hl-idcard-corner hl-idcard-corner--br" />
 
           {/* En-tête */}
-          <header
-            className="hl-idcard-header"
-            style={d(0.1)}
-          >
+          <header className="hl-idcard-header" style={d(0.1)}>
             <div className="hl-idcard-school">
               <span>DOSSIER PERSONNEL</span>
               <strong>Identity Card</strong>
@@ -250,10 +267,7 @@ export default function HomeLetter() {
           {/* Informations principales */}
           <div className="hl-idcard-content">
             {/* Portrait */}
-            <div
-              className="hl-idcard-photo-column"
-              style={d(0.25)}
-            >
+            <div className="hl-idcard-photo-column" style={d(0.25)}>
               <div className="hl-idcard-photo-frame">
                 {profile.photo ? (
                   <img
@@ -261,23 +275,16 @@ export default function HomeLetter() {
                     alt={`Portrait de ${profile.name}`}
                   />
                 ) : (
-                  <div className="hl-idcard-placeholder">
-                    {initials}
-                  </div>
+                  <div className="hl-idcard-placeholder">{initials}</div>
                 )}
               </div>
 
-              <span className="hl-idcard-photo-caption">
-                PORTRAIT
-              </span>
+              <span className="hl-idcard-photo-caption">PORTRAIT</span>
             </div>
 
             {/* Identité et présentation */}
             <div className="hl-idcard-info">
-              <span
-                className="hl-idcard-label"
-                style={d(0.3)}
-              >
+              <span className="hl-idcard-label" style={d(0.3)}>
                 IDENTITÉ
               </span>
 
@@ -285,50 +292,32 @@ export default function HomeLetter() {
                 {profile.name}
               </h1>
 
-              <div
-                className="hl-idcard-field"
-                style={d(0.5)}
-              >
+              <div className="hl-idcard-field" style={d(0.5)}>
                 <span>FORMATION</span>
                 <strong>BUT MMI · 2e année</strong>
               </div>
 
-              <div
-                className="hl-idcard-field"
-                style={d(0.6)}
-              >
+              <div className="hl-idcard-field" style={d(0.6)}>
                 <span>PARCOURS</span>
                 <strong>Création Numérique</strong>
               </div>
 
-              <div
-                className="hl-idcard-field"
-                style={d(0.7)}
-              >
+              <div className="hl-idcard-field" style={d(0.7)}>
                 <span>DOMAINES</span>
-                <strong>
-                  Design graphique · UI/UX · Audiovisuel
-                </strong>
+                <strong>Design graphique · UI/UX · Audiovisuel</strong>
               </div>
 
-              <p
-                className="hl-idcard-description"
-                style={d(0.8)}
-              >
-                J'aime explorer les univers visuels, imaginer
-                des interfaces et donner vie à mes idées.
-                Je réalise également des projets personnels
-                en design graphique et montage vidéo pour
-                développer ma créativité.
+              <p className="hl-idcard-description" style={d(0.8)}>
+                J'aime explorer les univers visuels, imaginer des interfaces et
+                donner vie à mes idées. Je réalise également des projets
+                personnels en design graphique et montage vidéo pour développer
+                ma créativité.
               </p>
             </div>
           </div>
 
           {/* Pied de carte */}
-          <footer
-            className="hl-idcard-footer"
-            style={d(0.95)}
-          >
+          <footer className="hl-idcard-footer" style={d(0.95)}>
             <div className="hl-idcard-availability">
               <span className="hl-idcard-status" />
               <span>LYON</span>
@@ -339,13 +328,9 @@ export default function HomeLetter() {
             </div>
 
             <div className="hl-idcard-actions">
-              <a href="#projets">
-                Mes projets ↗
-              </a>
+              <a href="#projets">Mes projets ↗</a>
 
-              <a href="#contact">
-                Contact ↗
-              </a>
+              <a href="#contact">Contact ↗</a>
             </div>
           </footer>
         </article>
