@@ -29,8 +29,21 @@ a{color:inherit;text-decoration:none}
 #glow{position:fixed;width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:0;left:0;top:0;background:radial-gradient(circle,rgba(216,75,125,.09),transparent 68%);transform:translate(-50%,-50%);transition:opacity .4s}
 
 nav{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:50;display:flex;justify-content:center;padding:18px}
-nav .in{display:flex;gap:4px;align-items:center;padding:6px;border:1px solid rgba(23,23,23,.12);border-radius:14px;background:rgba(251,250,247,.88);box-shadow:0 10px 35px rgba(23,23,23,.07);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);max-width:100%;overflow-x:auto;scrollbar-width:none}
-nav a{padding:8px 17px;border-radius:9px;font-size:13px;color:var(--mute);white-space:nowrap;transition:.3s}
+nav .in {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 6px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
 nav a:hover{color:var(--fg);background:#eeebe6}
 nav a.on{color:#fff;background:var(--fg)}
 
@@ -393,25 +406,6 @@ h2::after{content:"";display:block;height:2px;width:0;margin-top:12px;background
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.55s}
 @media(max-width:940px){:root{--w:38px}.tt-btn span{display:none}}
 @media(max-width:700px){nav{justify-content:flex-start;padding-right:112px}}
-
-/* ================= THÈME SOMBRE ================= */
-html[data-theme="dark"]{color-scheme:dark;--bg:#0e0f11;--card:#17181c;--fg:#f1eee9;--mute:#a29e98;--line:#2b2d32;--acc:#e5608f;--acc-t:#f28fb3;--mint:#2a3d31;--mint-t:#a9c3b0;--sph-a:#ed8eb0;--sph-b:#f1eee9}
-html[data-theme="dark"] body::before{background:radial-gradient(circle at 8% 12%,rgba(229,96,143,.12),transparent 28%),radial-gradient(circle at 92% 78%,rgba(110,165,130,.1),transparent 30%)}
-html[data-theme="dark"] nav .in,html[data-theme="dark"] .theme-toggle{border-color:rgba(255,255,255,.1);background:rgba(23,24,28,.8);box-shadow:0 10px 35px rgba(0,0,0,.45)}
-html[data-theme="dark"] nav a:hover{background:#24262b}
-html[data-theme="dark"] nav a.on{color:var(--bg)}
-html[data-theme="dark"] .btn.p,html[data-theme="dark"] .tabs button.on{color:var(--bg)}
-html[data-theme="dark"] .btn.p:hover,html[data-theme="dark"] .btn:hover{color:#fff}
-html[data-theme="dark"] .cell{box-shadow:0 8px 25px rgba(0,0,0,.3)}
-html[data-theme="dark"] .cell:hover{border-color:#4a4d55;box-shadow:0 20px 45px rgba(0,0,0,.5)}
-html[data-theme="dark"] #cloudbox,html[data-theme="dark"] .pm-view{box-shadow:0 18px 55px rgba(0,0,0,.45)}
-html[data-theme="dark"] .links a:hover{box-shadow:0 8px 25px rgba(0,0,0,.4)}
-html[data-theme="dark"] .about-p,html[data-theme="dark"] .pm-pitch{color:#c9c5bf}
-html[data-theme="dark"] .pm-bar{background:rgba(23,24,28,.94);box-shadow:0 10px 35px rgba(0,0,0,.5)}
-html[data-theme="dark"] .h-band{color:var(--bg)}
-html[data-theme="dark"] .p-frame{border-color:rgba(255,255,255,.1)}
-html[data-theme="dark"] .h-chip{box-shadow:0 14px 35px -12px rgba(0,0,0,.6)}
-html[data-theme="dark"] #hero::before{background:radial-gradient(circle at 78% 28%,rgba(229,96,143,.24),transparent 32%),radial-gradient(circle at 8% 88%,rgba(90,140,110,.26),transparent 34%)}
 
 /* ================= PROJETS : 2 catégories + types ================= */
 .tabs.cats button{font-size:14px;font-weight:500;padding:10px 20px}
