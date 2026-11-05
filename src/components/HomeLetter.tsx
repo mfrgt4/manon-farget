@@ -254,8 +254,6 @@ export default function HomeLetter() {
           {/* En-tête */}
           <header className="hl-idcard-header" style={d(0.1)}>
             <div className="hl-idcard-school">
-              <span>DOSSIER PERSONNEL</span>
-              <strong>Identity Card</strong>
             </div>
 
             <div className="hl-idcard-number">
