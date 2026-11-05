@@ -1887,9 +1887,19 @@ nav.nav-visible {
   transform: translateY(0);
 }
 
-/* À PROPOS : le menu flotte au-dessus, sans espace supplémentaire */
-#a-propos {
-  padding-top: 0 !important;
+/* À PROPOS : contenu sans espace réservé au menu */
+section#a-propos {
+  padding: 0 24px 50px !important;
+  margin-top: 0 !important;
+}
+
+/* Menu superposé à toutes les sections */
+body > #root > nav.nav {
+  position: fixed !important;
+  inset: 0 0 auto 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  z-index: 99999 !important;
 }
 
 /* Menu toujours superposé au contenu */
