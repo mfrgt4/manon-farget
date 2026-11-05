@@ -477,6 +477,7 @@ section#accueil.hl[data-state="closed"] {
   position: relative;
   z-index: 1;
   width: min(760px, 100%);
+  perspective: 1400px;
 }
 
 .hl-card {
@@ -490,9 +491,49 @@ section#accueil.hl[data-state="closed"] {
   border: 1px solid var(--hl-line);
   border-radius: 24px;
   box-shadow:
-    0 44px 80px -38px rgba(23, 23, 23, 0.3),
+    calc(var(--ry, 0) * -2.4px) calc(44px + var(--rx, 0) * -2.4px) 80px -38px
+      rgba(23, 23, 23, 0.3),
     0 14px 26px -14px rgba(23, 23, 23, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+  /* Inclinaison pilotée par la souris (voir HomeLetter.tsx) */
+  transform: rotateX(calc(var(--rx, 0) * 1deg)) rotateY(calc(var(--ry, 0) * 1deg));
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+/* Reflet de lumière qui suit le curseur */
+.hl-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--go, 0);
+  transition: opacity 0.4s ease;
+  background:
+    /* tache de lumière sous le curseur */
+    radial-gradient(
+      circle 360px at var(--gx, 50%) var(--gy, 0%),
+      rgba(255, 255, 255, 0.55),
+      rgba(255, 255, 255, 0.14) 45%,
+      transparent 70%
+    ),
+    /* léger voile rose dans la lumière */
+    radial-gradient(
+      circle 420px at var(--gx, 50%) var(--gy, 0%),
+      rgba(216, 75, 125, 0.09),
+      transparent 65%
+    ),
+    /* ombre douce à l'opposé : donne du relief */
+    radial-gradient(
+      circle 520px at calc(100% - var(--gx, 50%)) calc(100% - var(--gy, 0%)),
+      rgba(23, 23, 23, 0.07),
+      transparent 70%
+    );
 }
 
 /* Filet d'accent en haut de la carte */
@@ -635,7 +676,76 @@ html[data-theme="dark"] .hl-p {
   font-weight: 600;
 }
 
+/* ----- Portrait ----- */
+
+.hl-photo {
+  position: relative;
+  float: right;
+  width: clamp(150px, 27%, 205px);
+  margin: 6px 4px 18px clamp(20px, 3.4vw, 34px);
+  rotate: 2deg;
+  transition: rotate 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.hl-photo:hover {
+  rotate: -0.5deg;
+}
+
+/* Cadre décalé derrière la photo */
+.hl-photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--hl-acc);
+  border-radius: 20px;
+  opacity: 0.55;
+  translate: 10px 10px;
+  transition: translate 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.hl-photo:hover::before {
+  translate: 14px 14px;
+}
+
+.hl-photo-frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid var(--hl-line);
+  border-radius: 20px;
+  background: linear-gradient(
+    160deg,
+    rgba(216, 75, 125, 0.2),
+    rgba(216, 75, 125, 0.05)
+  );
+  box-shadow: 0 22px 34px -18px rgba(23, 23, 23, 0.4);
+}
+
+.hl-photo-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.hl-photo-tag {
+  position: absolute;
+  left: -12px;
+  bottom: 16px;
+  padding: 5px 14px 7px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--hl-acc), var(--hl-acc-t));
+  border-radius: 999px;
+  box-shadow: 0 8px 16px -6px rgba(183, 45, 96, 0.55);
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 19px;
+  font-style: italic;
+  line-height: 1.1;
+}
+
 .hl-actions {
+  clear: both;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -758,6 +868,12 @@ html[data-theme="dark"] .hl-p {
     border-radius: 20px;
   }
 
+  .hl-photo {
+    float: none;
+    width: 150px;
+    margin: 4px auto 28px;
+  }
+
   .hl-head {
     flex-direction: column;
     align-items: flex-start;
@@ -779,6 +895,10 @@ html[data-theme="dark"] .hl-p {
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+  .hl-card {
+    transform: none;
+  }
+
   .hl-env-sparks {
     display: none;
   }

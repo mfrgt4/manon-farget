@@ -10,6 +10,7 @@ import "./HomeLetter.css";
 
 // Image de l'enveloppe (dossier public/images/). BASE_URL gère les sous-dossiers de déploiement.
 const ENVELOPE_SRC = `${import.meta.env.BASE_URL}images/enveloppe.png`;
+const PORTRAIT_SRC = `${import.meta.env.BASE_URL}images/portrait.png`;
 
 // Étincelles autour de l'enveloppe : position, taille, rythme, et direction de l'explosion à l'ouverture
 const SPARKS = [
@@ -89,10 +90,12 @@ export default function HomeLetter() {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const envRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLElement>(null);
   const timerRef = useRef<number | undefined>(undefined);
 
   const [state, setState] = useState<"closed" | "opening" | "open">("closed");
   const [imgFailed, setImgFailed] = useState(false);
+  const [photoFailed, setPhotoFailed] = useState(false);
 
   // Clic sur l'enveloppe : la lettre en sort, l'enveloppe s'éclipse
   const openEnvelope = () => {
@@ -130,6 +133,58 @@ export default function HomeLetter() {
 
   useEffect(() => {
     return () => window.clearTimeout(timerRef.current);
+  }, []);
+
+  // Inclinaison 3D et reflet sur la carte qui suivent la souris
+  useEffect(() => {
+    const card = cardRef.current;
+    const stage = stageRef.current;
+    if (!card || !stage) return;
+    if (!window.matchMedia("(hover: hover)").matches) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let raf = 0;
+    let x = 0;
+    let y = 0;
+
+    const apply = () => {
+      raf = 0;
+
+      // On mesure le conteneur (non incliné) pour éviter les tremblements
+      const r = stage.getBoundingClientRect();
+      const px = Math.min(1, Math.max(0, (x - r.left) / r.width));
+      const py = Math.min(1, Math.max(0, (y - r.top) / r.height));
+
+      if (!reduce) {
+        card.style.setProperty("--rx", ((0.5 - py) * 9).toFixed(2));
+        card.style.setProperty("--ry", ((px - 0.5) * 11).toFixed(2));
+      }
+      card.style.setProperty("--gx", `${(px * 100).toFixed(1)}%`);
+      card.style.setProperty("--gy", `${(py * 100).toFixed(1)}%`);
+      card.style.setProperty("--go", "1");
+    };
+
+    const onMove = (e: PointerEvent) => {
+      x = e.clientX;
+      y = e.clientY;
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+
+    const onLeave = () => {
+      card.style.setProperty("--rx", "0");
+      card.style.setProperty("--ry", "0");
+      card.style.setProperty("--go", "0");
+    };
+
+    card.addEventListener("pointermove", onMove);
+    card.addEventListener("pointerleave", onLeave);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      card.removeEventListener("pointermove", onMove);
+      card.removeEventListener("pointerleave", onLeave);
+    };
   }, []);
 
   // Si un espace vide décale la section vers le bas, on la remonte au bord de la page :
@@ -217,7 +272,7 @@ export default function HomeLetter() {
 
       {/* La lettre */}
       <div className="hl-stage" ref={stageRef}>
-        <article className="hl-card" aria-labelledby="hl-title">
+        <article className="hl-card" ref={cardRef} aria-labelledby="hl-title">
           <header className="hl-head hl-ink" style={d(0.1)}>
             <div className="hl-id">
               <span className="hl-mono" aria-hidden="true">
@@ -240,6 +295,21 @@ export default function HomeLetter() {
           </h1>
 
           <div className="hl-body">
+            {!photoFailed && (
+              <figure className="hl-photo hl-ink" style={d(0.5)}>
+                <div className="hl-photo-frame">
+                  <img
+                    src={PORTRAIT_SRC}
+                    alt={`Portrait de ${profile.name}`}
+                    onError={() => setPhotoFailed(true)}
+                  />
+                </div>
+                <figcaption className="hl-photo-tag" aria-hidden="true">
+                  hello !
+                </figcaption>
+              </figure>
+            )}
+
             <p className="hl-salutation hl-ink" style={d(0.6)}>
               Chère visiteuse, cher visiteur,
             </p>
