@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Instrument+Serif:ital@0;1&display=swap');
 
 /* =========================================================
    ACCUEIL — L'ENVELOPPE, PUIS LA CARTE D'IDENTITÉ
@@ -17,7 +18,6 @@ section#accueil.hl {
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 100%;
   max-width: none;
   min-height: 100vh;
@@ -111,12 +111,10 @@ section#accueil.hl[data-state="closed"] {
   top: 50svh;
   left: 50%;
   z-index: 5;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: clamp(24px, 4vh, 38px);
-
   width: min(86vw, 520px);
   translate: -50% -50%;
 }
@@ -166,7 +164,6 @@ section#accueil.hl[data-state="closed"] {
   cursor: pointer;
   outline: none;
   -webkit-tap-highlight-color: transparent;
-
   animation: hl-env-float 6.5s ease-in-out infinite;
   transition: scale 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -205,11 +202,9 @@ section#accueil.hl[data-state="closed"] {
   display: block;
   width: 100%;
   height: auto;
-
   filter:
     drop-shadow(0 30px 28px rgba(23, 23, 23, 0.24))
     drop-shadow(0 8px 10px rgba(23, 23, 23, 0.16));
-
   user-select: none;
   -webkit-user-drag: none;
   transition: filter 0.5s ease;
@@ -229,14 +224,12 @@ section#accueil.hl[data-state="closed"] {
   inset: -18% -14%;
   z-index: 0;
   border-radius: 50%;
-
   background: radial-gradient(
     ellipse at center,
     rgba(216, 75, 125, 0.3),
     rgba(216, 75, 125, 0.1) 46%,
     transparent 70%
   );
-
   filter: blur(12px);
   pointer-events: none;
   animation: hl-env-pulse 3.6s ease-in-out infinite;
@@ -261,14 +254,12 @@ section#accueil.hl[data-state="closed"] {
   position: absolute;
   inset: 0;
   z-index: 2;
-
   background: linear-gradient(
     115deg,
     transparent 38%,
     rgba(255, 255, 255, 0.85) 48%,
     transparent 58%
   );
-
   background-size: 260% 100%;
   background-position: 140% 0;
   mix-blend-mode: soft-light;
@@ -304,13 +295,11 @@ section#accueil.hl[data-state="closed"] {
   left: var(--x);
   width: var(--s);
   height: var(--s);
-
   background: linear-gradient(
     135deg,
     var(--hl-acc),
     var(--hl-acc-t)
   );
-
   clip-path: polygon(
     50% 0,
     61% 39%,
@@ -321,7 +310,6 @@ section#accueil.hl[data-state="closed"] {
     0 50%,
     39% 39%
   );
-
   opacity: 0;
   animation: hl-twinkle var(--t) ease-in-out var(--dl) infinite;
 }
@@ -559,7 +547,7 @@ section#accueil.hl[data-state="closed"] {
 }
 
 /* =========================================================
-   CARTE D'IDENTITÉ — FORMAT COMPACT
+   CARTE D'IDENTITÉ
    ========================================================= */
 
 .hl-stage {
@@ -572,6 +560,8 @@ section#accueil.hl[data-state="closed"] {
   margin-inline: auto;
 }
 
+/* Carte principale */
+
 .hl-card.hl-idcard {
   --id-bg: #fbfaf7;
   --id-fg: #171717;
@@ -581,22 +571,36 @@ section#accueil.hl[data-state="closed"] {
   --id-pink-dark: #b72d60;
 
   position: relative;
-  width: min(680px, 100%);
+  width: min(760px, 100%);
   min-height: 0;
   margin-inline: auto;
-  padding: 24px 28px 0;
+  padding: 27px 32px 0;
   overflow: hidden;
 
   color: var(--id-fg);
   background: var(--id-bg);
   border: 1px solid var(--id-line);
-  border-radius: 16px;
+  border-radius: 17px;
 
   box-shadow:
     0 25px 55px rgba(23, 23, 23, 0.16),
     0 5px 15px rgba(23, 23, 23, 0.06);
 
   transform-origin: center;
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.45s ease,
+    border-color 0.35s ease;
+}
+
+/* Survol de la carte */
+
+.hl-card.hl-idcard:hover {
+  transform: translateY(-7px) scale(1.012);
+  border-color: rgba(183, 45, 96, 0.35);
+  box-shadow:
+    0 32px 65px rgba(23, 23, 23, 0.17),
+    0 10px 25px rgba(183, 45, 96, 0.09);
 }
 
 /* Texture très légère */
@@ -608,12 +612,10 @@ section#accueil.hl[data-state="closed"] {
   z-index: 0;
   opacity: 0.2;
   pointer-events: none;
-
   background-image: radial-gradient(
     #dcd9d4 0.6px,
     transparent 0.6px
   );
-
   background-size: 7px 7px;
 }
 
@@ -634,13 +636,11 @@ section#accueil.hl[data-state="closed"] {
 .hl-idcard-header {
   position: relative;
   z-index: 1;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-
-  padding-bottom: 13px;
+  padding-bottom: 15px;
   border-bottom: 1px solid var(--id-line);
 }
 
@@ -663,11 +663,23 @@ section#accueil.hl[data-state="closed"] {
   text-transform: uppercase;
 }
 
+/* Titre Identity Card */
+
 .hl-idcard-school strong {
-  color: var(--id-fg);
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 21px;
-  font-weight: 600;
+  color: #b72d60;
+  font-family: "Instrument Serif", serif;
+  font-size: 26px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1;
+  transition:
+    letter-spacing 0.3s ease,
+    color 0.3s ease;
+}
+
+.hl-idcard-school strong:hover {
+  color: #d84b7d;
+  letter-spacing: 0.035em;
 }
 
 .hl-idcard-number {
@@ -698,13 +710,11 @@ section#accueil.hl[data-state="closed"] {
 .hl-idcard-content {
   position: relative;
   z-index: 1;
-
   display: grid;
-  grid-template-columns: 145px minmax(0, 1fr);
+  grid-template-columns: 155px minmax(0, 1fr);
   align-items: center;
-  gap: 25px;
-
-  padding: 20px 0 22px;
+  gap: 29px;
+  padding: 24px 0 25px;
 }
 
 /* Portrait */
@@ -713,19 +723,22 @@ section#accueil.hl[data-state="closed"] {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
 }
 
 .hl-idcard-photo-frame {
   position: relative;
-  width: 145px;
-  height: 170px;
+  width: 155px;
+  height: 185px;
   padding: 5px;
-
+  overflow: hidden;
   background: #fff;
   border: 1px solid var(--id-line);
-
   box-shadow: 0 4px 12px rgba(23, 23, 23, 0.08);
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease,
+    border-color 0.35s ease;
 }
 
 .hl-idcard-photo-frame::before {
@@ -744,6 +757,19 @@ section#accueil.hl[data-state="closed"] {
   object-fit: cover;
   object-position: center 22%;
   filter: saturate(0.88) contrast(1.02);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Animation de la photo au survol */
+
+.hl-idcard-photo-frame:hover {
+  transform: rotate(-2deg) scale(1.035);
+  border-color: rgba(183, 45, 96, 0.4);
+  box-shadow: 0 12px 28px rgba(183, 45, 96, 0.18);
+}
+
+.hl-idcard-photo-frame:hover img {
+  transform: scale(1.07);
 }
 
 .hl-idcard-placeholder {
@@ -751,12 +777,11 @@ section#accueil.hl[data-state="closed"] {
   width: 100%;
   height: 100%;
   place-items: center;
-
   color: var(--id-pink-dark);
   background: #f5f3ef;
-
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 42px;
+  font-family: "Instrument Serif", serif;
+  font-size: 48px;
+  font-style: italic;
 }
 
 .hl-idcard-photo-caption {
@@ -776,7 +801,6 @@ section#accueil.hl[data-state="closed"] {
 .hl-idcard-label {
   display: inline-block;
   margin-bottom: 5px;
-
   color: var(--id-pink-dark);
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
@@ -784,16 +808,26 @@ section#accueil.hl[data-state="closed"] {
   letter-spacing: 0.16em;
 }
 
+/* Nom — Instrument Serif */
+
 .hl-idcard-info h1 {
-  margin: 0 0 10px;
-
-  color: var(--id-fg);
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(30px, 4vw, 43px);
-  font-weight: 600;
-  line-height: 1;
-
+  margin: 0 0 12px;
+  color: #b72d60;
+  font-family: "Instrument Serif", serif;
+  font-size: clamp(38px, 4.5vw, 52px);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
   overflow-wrap: anywhere;
+  transition:
+    transform 0.35s ease,
+    color 0.35s ease;
+}
+
+.hl-idcard-info h1:hover {
+  color: #d84b7d;
+  transform: translateX(5px);
 }
 
 .hl-idcard-divider {
@@ -806,17 +840,22 @@ section#accueil.hl[data-state="closed"] {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-
-  margin: 8px 0;
-  padding-bottom: 5px;
-
+  gap: 3px;
+  margin: 9px 0;
+  padding-bottom: 6px;
   color: var(--id-fg);
   border-bottom: 1px solid var(--id-line);
-
   font-family: "DM Sans", sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.hl-idcard-field:hover {
+  transform: translateX(5px);
+  border-color: rgba(183, 45, 96, 0.4);
 }
 
 .hl-idcard-field span {
@@ -829,19 +868,23 @@ section#accueil.hl[data-state="closed"] {
 .hl-idcard-field strong {
   color: var(--id-fg);
   font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.hl-idcard-field:hover strong {
+  color: var(--id-pink-dark);
 }
 
 /* Présentation */
 
 .hl-idcard-description {
-  max-width: 440px;
-  margin: 12px 0 0;
-
+  max-width: 460px;
+  margin: 14px 0 0;
   color: var(--id-muted);
   font-family: "DM Sans", sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   font-style: normal;
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 /* =========================================================
@@ -851,18 +894,14 @@ section#accueil.hl[data-state="closed"] {
 .hl-idcard-footer {
   position: relative;
   z-index: 1;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px;
-
-  margin: 0 -28px;
-  padding: 13px 28px;
-
+  gap: 12px;
+  margin: 0 -32px;
+  padding: 15px 32px;
   color: #fff;
-
   background: linear-gradient(
     105deg,
     #d84b7d 0%,
@@ -876,7 +915,6 @@ section#accueil.hl[data-state="closed"] {
   align-items: center;
   flex-wrap: wrap;
   gap: 7px;
-
   color: #fff;
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
@@ -904,20 +942,23 @@ section#accueil.hl[data-state="closed"] {
 .hl-idcard-actions {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 17px;
 }
 
 .hl-idcard-actions a {
   color: #fff;
   font-family: "DM Sans", sans-serif;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
   text-decoration: none;
-  transition: opacity 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .hl-idcard-actions a:hover {
-  opacity: 0.7;
+  opacity: 0.8;
+  transform: translateY(-3px);
 }
 
 /* =========================================================
@@ -955,17 +996,21 @@ section#accueil.hl[data-state="closed"] {
   }
 
   .hl-idcard-content {
-    grid-template-columns: 125px minmax(0, 1fr);
-    gap: 20px;
+    grid-template-columns: 135px minmax(0, 1fr);
+    gap: 22px;
   }
 
   .hl-idcard-photo-frame {
-    width: 125px;
-    height: 155px;
+    width: 135px;
+    height: 165px;
   }
 
   .hl-idcard-info h1 {
-    font-size: 34px;
+    font-size: 40px;
+  }
+
+  .hl-idcard-school strong {
+    font-size: 23px;
   }
 }
 
@@ -993,7 +1038,7 @@ section#accueil.hl[data-state="closed"] {
   }
 
   .hl-idcard-school strong {
-    font-size: 19px;
+    font-size: 21px;
   }
 
   .hl-idcard-number {
@@ -1018,7 +1063,7 @@ section#accueil.hl[data-state="closed"] {
   }
 
   .hl-idcard-info h1 {
-    font-size: 29px;
+    font-size: 32px;
   }
 
   .hl-idcard-field {
@@ -1041,9 +1086,15 @@ section#accueil.hl[data-state="closed"] {
   .hl-idcard-actions {
     gap: 12px;
   }
+
+  .hl-card.hl-idcard:hover {
+    transform: translateY(-3px);
+  }
 }
 
-/* Très petits écrans */
+/* =========================================================
+   TRÈS PETITS ÉCRANS
+   ========================================================= */
 
 @media (max-width: 360px) {
   .hl-card.hl-idcard {
@@ -1061,7 +1112,11 @@ section#accueil.hl[data-state="closed"] {
   }
 
   .hl-idcard-info h1 {
-    font-size: 25px;
+    font-size: 27px;
+  }
+
+  .hl-idcard-school strong {
+    font-size: 19px;
   }
 
   .hl-idcard-field {
@@ -1092,8 +1147,19 @@ section#accueil.hl[data-state="closed"] {
   }
 
   .hl-idcard,
-  .hl-idcard * {
+  .hl-idcard *,
+  .hl-envelope,
+  .hl-envelope *,
+  .hl-orb {
     animation: none !important;
     transition: none !important;
+  }
+
+  .hl-card.hl-idcard:hover,
+  .hl-idcard-info h1:hover,
+  .hl-idcard-field:hover,
+  .hl-idcard-photo-frame:hover,
+  .hl-idcard-actions a:hover {
+    transform: none !important;
   }
 }
