@@ -321,9 +321,9 @@ export default function HomeLetter() {
 
             <p className="hl-p hl-ink" style={d(0.8)}>
               J’ai le plaisir de vous inviter à découvrir mon univers créatif !
-              Je suis <strong className="hl-name">{profile.name}</strong>,
-              étudiante en deuxième année de BUT MMI à l’Université Clermont
-              Auvergne, au Puy-en-Velay.
+              Je suis {profile.name},
+              étudiante en deuxième année de BUT des Métiers du Multimédia et de l’Internet
+              à l’Université Clermont Auvergne, au Puy-en-Velay.
             </p>
 
             <p className="hl-p hl-ink" style={d(1.0)}>
