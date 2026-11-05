@@ -1039,14 +1039,11 @@
 .ip.is-open {
   position: relative;
   inset: auto;
-
   width: 100%;
   height: auto;
-  min-height: 100svh;
-
+  min-height: 0;
   margin: 0;
   overflow: visible;
-
   z-index: auto;
   cursor: auto;
 }
@@ -1058,11 +1055,9 @@
 .ip.is-open .ip-content {
   position: relative;
   inset: auto;
-
   width: 100%;
   height: auto;
-  min-height: 100svh;
-
+  min-height: 0;
   overflow: visible;
 }
 
