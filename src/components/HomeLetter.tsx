@@ -42,6 +42,7 @@ function EnvelopeFallback() {
         stroke="#dcd9d4"
         strokeWidth="2"
       />
+
       <path
         d="M10 14 L260 196 L510 14"
         fill="none"
@@ -49,13 +50,16 @@ function EnvelopeFallback() {
         strokeWidth="2.5"
         strokeLinejoin="round"
       />
+
       <path
         d="M10 330 L200 172 M510 330 L320 172"
         fill="none"
         stroke="#e8e5e0"
         strokeWidth="2"
       />
-      <circle cx="260" cy="196" r="34" fill="#792633" />
+
+      <circle cx="260" cy="196" r="34" fill="#b72d60" />
+
       <circle
         cx="260"
         cy="196"
@@ -64,6 +68,7 @@ function EnvelopeFallback() {
         stroke="rgba(255,255,255,.55)"
         strokeWidth="1.5"
       />
+
       <text
         x="260"
         y="210"
@@ -84,7 +89,10 @@ export default function HomeLetter() {
   const stageRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<number | undefined>(undefined);
 
-  const [state, setState] = useState<"closed" | "opening" | "open">("closed");
+  const [state, setState] = useState<"closed" | "opening" | "open">(
+    "closed"
+  );
+
   const [imgFailed, setImgFailed] = useState(false);
 
   const initials = profile.name
@@ -100,14 +108,25 @@ export default function HomeLetter() {
 
     if (section && stage) {
       const cs = getComputedStyle(section);
+
       const pt = parseFloat(cs.paddingTop) || 0;
       const pb = parseFloat(cs.paddingBottom) || 0;
       const h = stage.offsetHeight;
-      const finalHeight = Math.max(window.innerHeight, h + pt + pb);
-      const finalTop = pt + (finalHeight - pt - pb - h) / 2;
-      const fy = window.innerHeight / 2 - (finalTop + h / 2);
 
-      section.style.setProperty("--hl-fy", `${fy.toFixed(1)}px`);
+      const finalHeight = Math.max(
+        window.innerHeight,
+        h + pt + pb
+      );
+
+      const finalTop = pt + (finalHeight - pt - pb - h) / 2;
+
+      const fy =
+        window.innerHeight / 2 - (finalTop + h / 2);
+
+      section.style.setProperty(
+        "--hl-fy",
+        `${fy.toFixed(1)}px`
+      );
     }
 
     setState("opening");
@@ -132,20 +151,22 @@ export default function HomeLetter() {
       className="hl"
       data-state={state}
       ref={sectionRef}
-      aria-label="Carte d'identité"
+      aria-label="Présentation de Manon"
     >
+      {/* Décor d'arrière-plan */}
       <div className="hl-backdrop" aria-hidden="true">
         <div className="hl-orb hl-orb--a" />
         <div className="hl-orb hl-orb--b" />
       </div>
 
+      {/* Enveloppe */}
       {state !== "open" && (
         <div className="hl-envelope-wrap">
           <button
             type="button"
             className="hl-envelope"
             onClick={openEnvelope}
-            aria-label="Ouvrir l'enveloppe pour découvrir ma carte"
+            aria-label="Ouvrir l'enveloppe pour découvrir ma carte d'identité"
           >
             <span className="hl-env-glow" aria-hidden="true" />
 
@@ -163,6 +184,7 @@ export default function HomeLetter() {
 
             <span className="hl-env-shine" aria-hidden="true" />
 
+            {/* Étincelles */}
             <span className="hl-env-sparks" aria-hidden="true">
               {SPARKS.map((p, i) => (
                 <i
@@ -185,27 +207,38 @@ export default function HomeLetter() {
           </button>
 
           <p className="hl-env-hint">
-            <span className="hl-env-arrow" aria-hidden="true">↑</span>
+            <span className="hl-env-arrow" aria-hidden="true">
+              ↑
+            </span>
             Une carte vous attend…
             <strong>Appuyez sur l'enveloppe</strong>
           </p>
         </div>
       )}
 
-      {/* Carte d'identité qui sort de l'enveloppe */}
+      {/* =================================================
+          CARTE D'IDENTITÉ
+      ================================================= */}
+
       <div className="hl-stage" ref={stageRef}>
-        <article className="hl-card hl-idcard" aria-labelledby="hl-title">
+        <article
+          className="hl-card hl-idcard"
+          aria-labelledby="hl-title"
+        >
+          {/* Décoration des coins */}
           <span className="hl-idcard-corner hl-idcard-corner--tl" />
           <span className="hl-idcard-corner hl-idcard-corner--tr" />
           <span className="hl-idcard-corner hl-idcard-corner--bl" />
           <span className="hl-idcard-corner hl-idcard-corner--br" />
 
-          <header className="hl-idcard-header" style={d(0.1)}>
-            <div className="hl-idcard-crest" aria-hidden="true">✦</div>
-
+          {/* En-tête */}
+          <header
+            className="hl-idcard-header"
+            style={d(0.1)}
+          >
             <div className="hl-idcard-school">
-              <span>REGISTRE DES ÉLÈVES</span>
-              <strong>Fiche d'identité</strong>
+              <span>DOSSIER PERSONNEL</span>
+              <strong>Identity Card</strong>
             </div>
 
             <div className="hl-idcard-number">
@@ -214,8 +247,13 @@ export default function HomeLetter() {
             </div>
           </header>
 
+          {/* Informations principales */}
           <div className="hl-idcard-content">
-            <div className="hl-idcard-photo-column" style={d(0.25)}>
+            {/* Portrait */}
+            <div
+              className="hl-idcard-photo-column"
+              style={d(0.25)}
+            >
               <div className="hl-idcard-photo-frame">
                 {profile.photo ? (
                   <img
@@ -230,12 +268,16 @@ export default function HomeLetter() {
               </div>
 
               <span className="hl-idcard-photo-caption">
-                PORTRAIT DE L'ÉLÈVE
+                PORTRAIT
               </span>
             </div>
 
+            {/* Identité et présentation */}
             <div className="hl-idcard-info">
-              <span className="hl-idcard-label" style={d(0.3)}>
+              <span
+                className="hl-idcard-label"
+                style={d(0.3)}
+              >
                 IDENTITÉ
               </span>
 
@@ -243,45 +285,67 @@ export default function HomeLetter() {
                 {profile.name}
               </h1>
 
-              <div className="hl-idcard-divider" aria-hidden="true">
-                <span />
-                ✦
-                <span />
-              </div>
-
-              <div className="hl-idcard-field" style={d(0.5)}>
+              <div
+                className="hl-idcard-field"
+                style={d(0.5)}
+              >
                 <span>FORMATION</span>
-                <strong>BUT Métiers du Multimédia et de l'Internet</strong>
+                <strong>BUT MMI · 2e année</strong>
               </div>
 
-              <div className="hl-idcard-field" style={d(0.65)}>
+              <div
+                className="hl-idcard-field"
+                style={d(0.6)}
+              >
                 <span>PARCOURS</span>
-                <strong>Création Numérique · 2e année</strong>
+                <strong>Création Numérique</strong>
               </div>
 
-              <div className="hl-idcard-field" style={d(0.8)}>
-                <span>ÉTABLISSEMENT</span>
-                <strong>Université Clermont Auvergne</strong>
+              <div
+                className="hl-idcard-field"
+                style={d(0.7)}
+              >
+                <span>DOMAINES</span>
+                <strong>
+                  Design graphique · UI/UX · Audiovisuel
+                </strong>
               </div>
 
-              <p className="hl-idcard-description" style={d(0.95)}>
-                Entre design graphique, UI/UX et audiovisuel, j'aime
-                imaginer des univers visuels et donner vie à des idées
-                créatives.
+              <p
+                className="hl-idcard-description"
+                style={d(0.8)}
+              >
+                J'aime explorer les univers visuels, imaginer
+                des interfaces et donner vie à mes idées.
+                Je réalise également des projets personnels
+                en design graphique et montage vidéo pour
+                développer ma créativité.
               </p>
             </div>
           </div>
 
-          <footer className="hl-idcard-footer" style={d(1.1)}>
+          {/* Pied de carte */}
+          <footer
+            className="hl-idcard-footer"
+            style={d(0.95)}
+          >
             <div className="hl-idcard-availability">
               <span className="hl-idcard-status" />
-              <span>RECHERCHE DE STAGE</span>
-              <strong>AVRIL 2027</strong>
+              <span>LYON</span>
+              <span className="hl-idcard-separator">·</span>
+              <span>BUT MMI</span>
+              <span className="hl-idcard-separator">·</span>
+              <strong>STAGE AVRIL 2027</strong>
             </div>
 
             <div className="hl-idcard-actions">
-              <a href="#projets">Découvrir mes projets ↗</a>
-              <a href="#contact">Me contacter ↗</a>
+              <a href="#projets">
+                Mes projets ↗
+              </a>
+
+              <a href="#contact">
+                Contact ↗
+              </a>
             </div>
           </footer>
         </article>
