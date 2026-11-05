@@ -210,7 +210,7 @@ export default function HomeLetter() {
             <span className="hl-env-arrow" aria-hidden="true">
               ↑
             </span>
-            Une carte vous attend…
+            Découvrer ma carte…
             <strong>Appuyez sur l'enveloppe</strong>
           </p>
         </div>
