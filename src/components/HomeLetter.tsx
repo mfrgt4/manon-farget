@@ -1,15 +1,17 @@
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
-  type MouseEvent,
 } from "react";
 import { profile } from "../data";
 import "./HomeLetter.css";
 
+// Image de l'enveloppe (dossier public/images/). BASE_URL gère les sous-dossiers de déploiement.
 const ENVELOPE_SRC = `${import.meta.env.BASE_URL}images/enveloppe.png`;
 
+// Étincelles autour de l'enveloppe : position, taille, rythme, et direction de l'explosion à l'ouverture
 const SPARKS = [
   { x: -3, y: 14, s: 12, dl: 0.0, t: 3.4, bx: -90, by: -70 },
   { x: 8, y: -7, s: 8, dl: -1.1, t: 4.0, bx: -50, by: -110 },
@@ -26,8 +28,12 @@ const SPARKS = [
   { x: -5, y: 58, s: 11, dl: -1.0, t: 3.7, bx: -120, by: 20 },
 ];
 
-const d = (seconds: number) => ({ "--hl-d": `${seconds}s` }) as CSSProperties;
+const d = (seconds: number) =>
+  ({ "--hl-d": `${seconds}s` }) as CSSProperties;
 
+// ---------------------------------------------------------------------------
+// Enveloppe de secours (affichée seulement si l'image est introuvable)
+// ---------------------------------------------------------------------------
 function EnvelopeFallback() {
   return (
     <svg
@@ -46,7 +52,6 @@ function EnvelopeFallback() {
         stroke="#dcd9d4"
         strokeWidth="2"
       />
-
       <path
         d="M10 14 L260 196 L510 14"
         fill="none"
@@ -54,25 +59,14 @@ function EnvelopeFallback() {
         strokeWidth="2.5"
         strokeLinejoin="round"
       />
-
       <path
         d="M10 330 L200 172 M510 330 L320 172"
         fill="none"
         stroke="#e8e5e0"
         strokeWidth="2"
       />
-
-      <circle cx="260" cy="196" r="34" fill="#b72d60" />
-
-      <circle
-        cx="260"
-        cy="196"
-        r="27"
-        fill="none"
-        stroke="rgba(255,255,255,.55)"
-        strokeWidth="1.5"
-      />
-
+      <circle cx="260" cy="196" r="34" fill="#d84b7d" />
+      <circle cx="260" cy="196" r="27" fill="none" stroke="rgba(255,255,255,.55)" strokeWidth="1.5" />
       <text
         x="260"
         y="210"
@@ -80,7 +74,7 @@ function EnvelopeFallback() {
         fontSize="38"
         fill="#fff"
         fontStyle="italic"
-        fontFamily="'Cormorant Garamond',Georgia,serif"
+        fontFamily="'Instrument Serif',Georgia,serif"
       >
         {profile.name.charAt(0)}
       </text>
@@ -88,48 +82,46 @@ function EnvelopeFallback() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Section d'accueil : l'enveloppe, puis la lettre
+// ---------------------------------------------------------------------------
 export default function HomeLetter() {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const envRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<number | undefined>(undefined);
 
   const [state, setState] = useState<"closed" | "opening" | "open">("closed");
-
   const [imgFailed, setImgFailed] = useState(false);
 
-  const initials = profile.name
-    .split(" ")
-    .map((word) => word[0])
-    .join("");
-
+  // Clic sur l'enveloppe : la lettre en sort, l'enveloppe s'éclipse
   const openEnvelope = () => {
     if (state !== "closed") return;
 
     const section = sectionRef.current;
     const stage = stageRef.current;
 
-    if (section && stage) {
+    // Calcule d'où la lettre doit partir : le centre réel de l'enveloppe
+    const env = envRef.current;
+    if (section && stage && env) {
       const cs = getComputedStyle(section);
-
       const pt = parseFloat(cs.paddingTop) || 0;
       const pb = parseFloat(cs.paddingBottom) || 0;
+      const minH = parseFloat(cs.minHeight) || window.innerHeight;
       const h = stage.offsetHeight;
-
-      const finalHeight = Math.max(window.innerHeight, h + pt + pb);
-
+      const finalHeight = Math.max(minH, h + pt + pb);
       const finalTop = pt + (finalHeight - pt - pb - h) / 2;
 
-      const fy = window.innerHeight / 2 - (finalTop + h / 2);
+      const envRect = env.getBoundingClientRect();
+      const envCenter = envRect.top + envRect.height / 2;
+      const letterCenter = section.getBoundingClientRect().top + finalTop + h / 2;
 
-      section.style.setProperty("--hl-fy", `${fy.toFixed(1)}px`);
+      section.style.setProperty("--hl-fy", `${(envCenter - letterCenter).toFixed(1)}px`);
     }
 
     setState("opening");
 
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     timerRef.current = window.setTimeout(
       () => setState("open"),
       reduce ? 0 : 3800,
@@ -140,28 +132,22 @@ export default function HomeLetter() {
     return () => window.clearTimeout(timerRef.current);
   }, []);
 
-  const handleCardMouseMove = (event: MouseEvent<HTMLElement>) => {
-    const card = event.currentTarget;
-    const rect = card.getBoundingClientRect();
+  // Si un espace vide décale la section vers le bas, on la remonte au bord de la page :
+  // plus de bande derrière le menu.
+  useLayoutEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
 
-    if (!rect.width || !rect.height) return;
+    const flush = () => {
+      el.style.marginTop = "0px";
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      if (top > 0 && top < 240) el.style.marginTop = `${-top}px`;
+    };
 
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-
-    const rotateX = (0.5 - y) * 16;
-    const rotateY = (x - 0.5) * 20;
-
-    card.style.setProperty("--card-rotate-x", `${rotateX}deg`);
-    card.style.setProperty("--card-rotate-y", `${rotateY}deg`);
-  };
-
-  const handleCardMouseLeave = (event: MouseEvent<HTMLElement>) => {
-    const card = event.currentTarget;
-
-    card.style.setProperty("--card-rotate-x", "0deg");
-    card.style.setProperty("--card-rotate-y", "0deg");
-  };
+    flush();
+    window.addEventListener("resize", flush);
+    return () => window.removeEventListener("resize", flush);
+  }, []);
 
   return (
     <section
@@ -169,22 +155,17 @@ export default function HomeLetter() {
       className="hl"
       data-state={state}
       ref={sectionRef}
-      aria-label="Présentation de Manon"
+      aria-label="Message d’accueil"
     >
-      {/* Décor d'arrière-plan */}
-      <div className="hl-backdrop" aria-hidden="true">
-        <div className="hl-orb hl-orb--a" />
-        <div className="hl-orb hl-orb--b" />
-      </div>
-
-      {/* Enveloppe */}
+      {/* L'enveloppe : seule visible tant qu'elle n'est pas ouverte */}
       {state !== "open" && (
         <div className="hl-envelope-wrap">
+          <div className="hl-envelope-inner" ref={envRef}>
           <button
             type="button"
             className="hl-envelope"
             onClick={openEnvelope}
-            aria-label="Ouvrir l'enveloppe pour découvrir ma carte d'identité"
+            aria-label="Ouvrir l’enveloppe pour découvrir le message"
           >
             <span className="hl-env-glow" aria-hidden="true" />
 
@@ -202,7 +183,6 @@ export default function HomeLetter() {
 
             <span className="hl-env-shine" aria-hidden="true" />
 
-            {/* Étincelles */}
             <span className="hl-env-sparks" aria-hidden="true">
               {SPARKS.map((p, i) => (
                 <i
@@ -228,109 +208,97 @@ export default function HomeLetter() {
             <span className="hl-env-arrow" aria-hidden="true">
               ↑
             </span>
-            Découvrer ma carte…
-            <strong>Appuyez sur l'enveloppe</strong>
+            Un message vous attend, il doit être ouvert…
+            <strong>Appuyez sur l’enveloppe</strong>
           </p>
+          </div>
         </div>
       )}
 
-      {/* =================================================
-          CARTE D'IDENTITÉ
-      ================================================= */}
-
+      {/* La lettre */}
       <div className="hl-stage" ref={stageRef}>
-        <article
-          className="hl-card hl-idcard"
-          aria-labelledby="hl-title"
-          onMouseMove={handleCardMouseMove}
-          onMouseLeave={handleCardMouseLeave}
-        >
-          {/* Décoration des coins */}
-          <span className="hl-idcard-corner hl-idcard-corner--tl" />
-          <span className="hl-idcard-corner hl-idcard-corner--tr" />
-          <span className="hl-idcard-corner hl-idcard-corner--bl" />
-          <span className="hl-idcard-corner hl-idcard-corner--br" />
-
-          {/* En-tête */}
-          <header className="hl-idcard-header" style={d(0.1)}>
-            <div className="hl-idcard-school">
+        <article className="hl-card" aria-labelledby="hl-title">
+          <header className="hl-head hl-ink" style={d(0.1)}>
+            <div className="hl-id">
+              <span className="hl-mono" aria-hidden="true">
+                {profile.name.charAt(0)}
+              </span>
+              <span className="hl-id-text">
+                <strong>{profile.name}</strong>
+                <small>Étudiante en BUT MMI</small>
+              </span>
             </div>
 
-            <div className="hl-idcard-number">
-              <span>IDENTIFIANT</span>
-              <strong>MF · 2026</strong>
-            </div>
+            <span className="hl-pill">
+              <i aria-hidden="true" />
+              Disponible · stage avril 2027
+            </span>
           </header>
 
-          {/* Informations principales */}
-          <div className="hl-idcard-content">
-            {/* Portrait */}
-            <div className="hl-idcard-photo-column" style={d(0.25)}>
-              <div className="hl-idcard-photo-frame">
-                {profile.photo ? (
-                  <img
-                    src={profile.photo}
-                    alt={`Portrait de ${profile.name}`}
-                  />
-                ) : (
-                  <div className="hl-idcard-placeholder">{initials}</div>
-                )}
-              </div>
+          <h1 id="hl-title" className="hl-title hl-ink" style={d(0.35)}>
+            Une invitation à découvrir <em>mon portfolio…</em>
+          </h1>
 
-              <span className="hl-idcard-photo-caption">PORTRAIT</span>
-            </div>
+          <div className="hl-body">
+            <p className="hl-salutation hl-ink" style={d(0.6)}>
+              Chère visiteuse, cher visiteur,
+            </p>
 
-            {/* Identité et présentation */}
-            <div className="hl-idcard-info">
-              <span className="hl-idcard-label" style={d(0.3)}>
-                IDENTITÉ
-              </span>
+            <p className="hl-p hl-ink" style={d(0.8)}>
+              J’ai le plaisir de vous inviter à découvrir mon univers créatif !
+              Je suis <strong className="hl-name">{profile.name}</strong>,
+              étudiante en deuxième année de BUT MMI à l’Université Clermont
+              Auvergne, au Puy-en-Velay.
+            </p>
 
-              <h1 id="hl-title" style={d(0.4)}>
-                {profile.name}
-              </h1>
+            <p className="hl-p hl-ink" style={d(1.0)}>
+              Entre design graphique, communication visuelle, UI/UX design et
+              création numérique, j’aime imaginer et donner vie à des projets
+              qui racontent une histoire.
+            </p>
 
-              <div className="hl-idcard-field" style={d(0.5)}>
-                <span>FORMATION</span>
-                <strong>BUT MMI · 2e année</strong>
-              </div>
+            <p className="hl-p hl-ink" style={d(1.2)}>
+              Je vous invite à parcourir mes créations et à découvrir les
+              différentes facettes de mon univers.
+            </p>
 
-              <div className="hl-idcard-field" style={d(0.6)}>
-                <span>PARCOURS</span>
-                <strong>Création Numérique</strong>
-              </div>
-
-              <div className="hl-idcard-field" style={d(0.7)}>
-                <span>DOMAINES</span>
-                <strong>Design graphique · UI/UX · Audiovisuel</strong>
-              </div>
-
-              <p className="hl-idcard-description" style={d(0.8)}>
-                J'aime explorer les univers visuels, imaginer des interfaces et
-                donner vie à mes idées. Je réalise également des projets
-                personnels en design graphique et montage vidéo pour développer
-                ma créativité.
-              </p>
+            <div className="hl-actions hl-ink" style={d(1.45)}>
+              <a className="btn p" href="#projets">
+                Découvrir mes projets →
+              </a>
+              <a className="btn" href="#contact">
+                Me contacter
+              </a>
             </div>
           </div>
 
-          {/* Pied de carte */}
-          <footer className="hl-idcard-footer" style={d(0.95)}>
-            <div className="hl-idcard-availability">
-              <span className="hl-idcard-status" />
-              <span>LYON</span>
-              <span className="hl-idcard-separator">·</span>
-              <span>BUT MMI</span>
-              <span className="hl-idcard-separator">·</span>
-              <strong>STAGE AVRIL 2027</strong>
-            </div>
+          <div className="hl-sign">
+            <p className="hl-closing hl-ink" style={d(1.7)}>
+              Au plaisir de vous accueillir,
+            </p>
 
-            <div className="hl-idcard-actions">
-              <a href="#projets">Mes projets ↗</a>
+            <p className="hl-signature hl-ink" style={d(1.9)}>
+              {profile.name}
+            </p>
 
-              <a href="#contact">Contact ↗</a>
-            </div>
-          </footer>
+            <svg
+              className="hl-flourish"
+              viewBox="0 0 260 24"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                pathLength="1"
+                d="M4 16 C 38 2, 82 26, 132 11 S 214 18, 256 6"
+              />
+            </svg>
+          </div>
+
+          <div className="hl-foot hl-ink" style={d(2.2)} aria-hidden="true">
+            <span />
+            PORTFOLIO · 2026
+            <span />
+          </div>
         </article>
       </div>
     </section>
