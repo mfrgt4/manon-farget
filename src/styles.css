@@ -33,6 +33,30 @@ nav .in{display:flex;gap:4px;align-items:center;padding:6px;border:1px solid rgb
 nav a{padding:8px 17px;border-radius:9px;font-size:13px;color:var(--mute);white-space:nowrap;transition:.3s}
 nav a:hover{color:var(--fg);background:#eeebe6}
 nav a.on{color:#fff;background:var(--fg)}
+/* =========================================
+   APPARITION DU MENU À PARTIR DE À PROPOS
+   ========================================= */
+
+nav.nav {
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s ease,
+    transform 0.5s ease;
+}
+
+nav.nav-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-12px);
+}
+
+nav.nav-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
 
 section{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:120px 24px 50px}
 .tag{font-size:12px;color:var(--acc-t);letter-spacing:.14em;text-transform:uppercase;font-weight:600}

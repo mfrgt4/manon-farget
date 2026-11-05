@@ -1,4 +1,3 @@
-
 import { FormEvent, useEffect, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
@@ -582,7 +581,10 @@ export default function App() {
     <>
       <div id="glow" />
 
-      <nav>
+      <nav
+        className={active ? "nav nav-visible" : "nav nav-hidden"}
+        aria-hidden={!active}
+      >
         <div className="nav-inner">
           <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
             {nav.map(([id, label]) => (
@@ -591,6 +593,7 @@ export default function App() {
                 href={`#${id}`}
                 className={active === id ? "on" : ""}
                 onClick={() => setMenuOpen(false)}
+                tabIndex={active ? 0 : -1}
               >
                 {label}
               </a>
@@ -603,6 +606,7 @@ export default function App() {
             aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}
+            tabIndex={active ? 0 : -1}
           >
             <span />
             <span />
@@ -617,7 +621,7 @@ export default function App() {
         </section>
       </PortfolioEntrance>
 
-      <section id="competences">
+      <section id="a-propos">
         <div className="sk">
           <div className="sk-side">
             <p className="tag mono rv">// ce que je sais faire</p>
