@@ -1886,3 +1886,19 @@ nav.nav-visible {
   pointer-events: auto;
   transform: translateY(0);
 }
+
+/* À PROPOS : le menu flotte au-dessus, sans espace supplémentaire */
+#a-propos {
+  padding-top: 0 !important;
+}
+
+/* Menu toujours superposé au contenu */
+nav.nav {
+  position: fixed !important;
+  top: env(safe-area-inset-top, 0px) !important;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 9999;
+  margin: 0;
+}
