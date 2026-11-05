@@ -133,28 +133,42 @@ function useActive(ids: string[]) {
   const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
-    const so = new IntersectionObserver(
-      (es) =>
-        es.forEach(
-          (e) =>
-            e.isIntersecting &&
-            setActive(
-              e.target.id === "accueil"
-                ? null
-                : e.target.id === "competences"
-                  ? "a-propos"
-                  : e.target.id,
-            ),
-        ),
-      { rootMargin: "-45% 0px -50% 0px" },
-    );
+    const updateActive = () => {
+      // Tout en haut du site : aucun menu
+      if (window.scrollY <= 20) {
+        setActive(null);
+        return;
+      }
 
-    ["accueil", ...ids, "competences"].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) so.observe(el);
-    });
+      const referenceY = window.innerHeight * 0.48;
 
-    return () => so.disconnect();
+      const sections = [...ids, "competences"]
+        .map((id) => document.getElementById(id))
+        .filter((el): el is HTMLElement => el !== null);
+
+      const currentSection = sections.find((section) => {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= referenceY && rect.bottom > referenceY;
+      });
+
+      if (currentSection) {
+        setActive(
+          currentSection.id === "competences"
+            ? "a-propos"
+            : currentSection.id,
+        );
+      }
+    };
+
+    updateActive();
+
+    window.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive);
+
+    return () => {
+      window.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
+    };
   }, [ids]);
 
   return active;
