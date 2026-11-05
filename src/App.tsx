@@ -17,11 +17,9 @@ import HomeLetter from "./components/HomeLetter";
 // ================= SONS =================
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
 const projectSound = new Audio("/sounds/Click-projets.mp3");
-const introSound = new Audio("/sounds/Intro-site.mp3");
 
 buttonSound.volume = 0.08;
 projectSound.volume = 0.12;
-introSound.volume = 0.15;
 
 function playButtonClick() {
   buttonSound.currentTime = 0;
@@ -31,20 +29,6 @@ function playButtonClick() {
 function playProjectClick() {
   projectSound.currentTime = 0;
   projectSound.play().catch(() => {});
-}
-
-// Son d'intro, sans bouton
-function playIntroSound() {
-  introSound.play().catch(() => {
-    const startIntro = () => {
-      introSound.play().catch(() => {});
-      window.removeEventListener("pointerdown", startIntro);
-      window.removeEventListener("keydown", startIntro);
-    };
-
-    window.addEventListener("pointerdown", startIntro, { once: true });
-    window.addEventListener("keydown", startIntro, { once: true });
-  });
 }
 
 // ================= TEXTE ANIMÉ =================
@@ -536,8 +520,6 @@ export default function App() {
     } catch {
       // Le site reste en mode clair même si le stockage est indisponible.
     }
-
-    playIntroSound();
   }, []);
 
   const active = useActive(ids);
