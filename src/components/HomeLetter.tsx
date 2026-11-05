@@ -103,7 +103,7 @@ export default function HomeLetter() {
 
     // Bruit d'ouverture de l'enveloppe
     const sound = new Audio(`${import.meta.env.BASE_URL}sounds/Open-Envelope.mp3`);
-    sound.volume = 0.12;
+    sound.volume = 0.20;
     sound.play().catch((err) => console.warn("Son de l’enveloppe :", err));
 
     const section = sectionRef.current;
