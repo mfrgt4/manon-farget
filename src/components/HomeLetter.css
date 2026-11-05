@@ -1,10 +1,9 @@
+
 /* =========================================================
-   ACCUEIL — L'ENVELOPPE, PUIS LA LETTRE
-   Utilise la palette du site (--bg, --card, --fg, --mute,
-   --line, --acc, --acc-t) : rien n'est redéfini globalement.
+   ACCUEIL — L'ENVELOPPE, PUIS LA CARTE D'IDENTITÉ
    ========================================================= */
 
-/* section#accueil.hl l'emporte sur les règles globales "#accueil" et "section" */
+/* Variables de la section */
 section#accueil.hl {
   --hl-card: var(--card, #fbfaf7);
   --hl-fg: var(--fg, #171717);
@@ -73,21 +72,19 @@ section#accueil.hl {
 }
 
 @keyframes hl-drift {
-  0%,
-  100% {
+  0%, 100% {
     translate: 0 0;
   }
+
   50% {
     translate: 30px -24px;
   }
 }
 
 /* =========================================================
-   L'ENVELOPPE (état fermé)
-   Seule l'image est visible ; la lettre est cachée derrière.
+   L'ENVELOPPE — ÉTAT FERMÉ
    ========================================================= */
 
-/* Tant que l'enveloppe est fermée, la section tient dans l'écran */
 section#accueil.hl[data-state="closed"] {
   height: 100vh;
   height: 100svh;
@@ -113,8 +110,7 @@ section#accueil.hl[data-state="closed"] {
   translate: -50% -50%;
 }
 
-/* Si le site a une intro (PortfolioEntrance), l'enveloppe attend l'ouverture des portes.
-   Sans intro, elle apparaît directement. */
+/* Apparition après l'introduction */
 .ip-page[data-intro="true"] {
   --hl-base: 1.9s;
 }
@@ -134,6 +130,7 @@ section#accueil.hl[data-state="closed"] {
     transform: translateY(40px) scale(0.92);
     filter: blur(6px);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -173,20 +170,19 @@ section#accueil.hl[data-state="closed"] {
   outline-offset: 10px;
 }
 
-/* Lévitation douce */
 @keyframes hl-env-float {
-  0%,
-  100% {
+  0%, 100% {
     translate: 0 0;
     rotate: -0.8deg;
   }
+
   50% {
     translate: 0 -14px;
     rotate: 1deg;
   }
 }
 
-/* L'ombre suit la forme réelle de l'enveloppe (PNG transparent) */
+/* Image de l'enveloppe */
 .hl-env-img {
   position: relative;
   z-index: 1;
@@ -205,7 +201,7 @@ section#accueil.hl[data-state="closed"] {
     drop-shadow(0 10px 12px rgba(23, 23, 23, 0.18)) brightness(1.03);
 }
 
-/* Halo rose qui pulse derrière l'enveloppe */
+/* Halo derrière l'enveloppe */
 .hl-env-glow {
   position: absolute;
   inset: -18% -14%;
@@ -223,18 +219,18 @@ section#accueil.hl[data-state="closed"] {
 }
 
 @keyframes hl-env-pulse {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 0.55;
     scale: 1;
   }
+
   50% {
     opacity: 1;
     scale: 1.07;
   }
 }
 
-/* Reflet qui balaie l'enveloppe */
+/* Reflet */
 .hl-env-shine {
   position: absolute;
   inset: 0;
@@ -253,12 +249,11 @@ section#accueil.hl[data-state="closed"] {
 }
 
 @keyframes hl-env-shine {
-  0%,
-  45% {
+  0%, 45% {
     background-position: 140% 0;
   }
-  80%,
-  100% {
+
+  80%, 100% {
     background-position: -40% 0;
   }
 }
@@ -294,17 +289,18 @@ section#accueil.hl[data-state="closed"] {
 }
 
 @keyframes hl-twinkle {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 0;
     scale: 0.4;
     translate: 0 0;
   }
+
   40% {
     opacity: 1;
     scale: 1;
     translate: 0 -6px;
   }
+
   70% {
     opacity: 0.5;
     scale: 0.7;
@@ -312,7 +308,7 @@ section#accueil.hl[data-state="closed"] {
   }
 }
 
-/* Message sous l'enveloppe */
+/* Texte sous l'enveloppe */
 .hl-env-hint {
   margin: 0;
   color: var(--hl-mute);
@@ -331,11 +327,11 @@ section#accueil.hl[data-state="closed"] {
 }
 
 @keyframes hl-arrow {
-  0%,
-  100% {
+  0%, 100% {
     translate: 0 0;
     opacity: 0.55;
   }
+
   50% {
     translate: 0 -7px;
     opacity: 1;
@@ -355,10 +351,10 @@ section#accueil.hl[data-state="closed"] {
 }
 
 @keyframes hl-hint {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 0.75;
   }
+
   50% {
     opacity: 1;
     color: var(--hl-acc-t);
@@ -366,11 +362,9 @@ section#accueil.hl[data-state="closed"] {
 }
 
 /* =========================================================
-   OUVERTURE : la lettre sort, l'enveloppe s'éclipse
-   (états "opening" puis "open" : mêmes animations, pas de redémarrage)
+   OUVERTURE DE L'ENVELOPPE
    ========================================================= */
 
-/* L'enveloppe tremble, se soulève, puis glisse hors de l'écran */
 .hl[data-state="opening"] .hl-envelope,
 .hl[data-state="open"] .hl-envelope {
   pointer-events: none;
@@ -384,38 +378,47 @@ section#accueil.hl[data-state="closed"] {
     scale: 1;
     opacity: 1;
   }
+
   5% {
     rotate: -3.5deg;
     scale: 1.03;
   }
+
   10% {
     rotate: 3.5deg;
   }
+
   15% {
     rotate: -2.6deg;
   }
+
   20% {
     rotate: 2deg;
   }
+
   25% {
     rotate: -1deg;
   }
+
   30% {
     translate: 0 0;
     rotate: 0deg;
     scale: 1.05;
   }
+
   40% {
     translate: 0 -16px;
     rotate: -2deg;
     scale: 1.06;
   }
+
   62% {
     translate: 0 -10px;
     rotate: -1.5deg;
     scale: 1.05;
     opacity: 1;
   }
+
   100% {
     translate: 0 80vh;
     rotate: 10deg;
@@ -424,7 +427,7 @@ section#accueil.hl[data-state="closed"] {
   }
 }
 
-/* Éclat de lumière */
+/* Éclat lumineux */
 .hl[data-state="opening"] .hl-env-glow,
 .hl[data-state="open"] .hl-env-glow {
   animation: hl-env-flash 2.2s ease-out both;
@@ -435,17 +438,19 @@ section#accueil.hl[data-state="closed"] {
     opacity: 0.6;
     scale: 1;
   }
+
   30% {
     opacity: 1;
     scale: 1.45;
   }
+
   100% {
     opacity: 0;
     scale: 2.1;
   }
 }
 
-/* Les étincelles explosent vers l'extérieur */
+/* Explosion des étincelles */
 .hl[data-state="opening"] .hl-env-sparks i,
 .hl[data-state="open"] .hl-env-sparks i {
   animation: hl-burst 1.5s cubic-bezier(0.2, 0.7, 0.3, 1) var(--bd, 0s) both;
@@ -457,9 +462,11 @@ section#accueil.hl[data-state="closed"] {
     scale: 0.3;
     translate: 0 0;
   }
+
   15% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
     scale: 1.6;
@@ -479,7 +486,7 @@ section#accueil.hl[data-state="closed"] {
   }
 }
 
-/* La lettre sort de derrière l'enveloppe, puis prend sa place */
+/* La carte sort de l'enveloppe */
 .hl[data-state="opening"] .hl-stage,
 .hl[data-state="open"] .hl-stage {
   animation: hl-pull 2.7s cubic-bezier(0.3, 0.7, 0.2, 1) 0.7s both;
@@ -491,9 +498,11 @@ section#accueil.hl[data-state="closed"] {
     translate: 0 var(--hl-fy, 0px);
     scale: 0.42;
   }
+
   14% {
     opacity: 1;
   }
+
   100% {
     opacity: 1;
     translate: 0 0;
@@ -502,283 +511,367 @@ section#accueil.hl[data-state="closed"] {
 }
 
 /* =========================================================
-   LA LETTRE
+   CARTE D'IDENTITÉ — BASE
    ========================================================= */
 
 .hl-stage {
   position: relative;
   z-index: 1;
-  width: min(760px, 100%);
+  width: min(1100px, 100%);
+  max-width: none;
+  margin-inline: auto;
 }
 
-.hl-card {
+.hl-card.hl-idcard {
   position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin-inline: auto;
+  padding: clamp(22px, 4vw, 46px);
   overflow: hidden;
-  padding: clamp(32px, 5vw, 54px) clamp(26px, 5.6vw, 68px)
-    clamp(28px, 4vw, 42px);
 
-  color: var(--hl-fg);
-  background: var(--hl-card);
-  border: 1px solid var(--hl-line);
-  border-radius: 24px;
+  color: #e9dfc9;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(180, 141, 76, 0.13), transparent 55%),
+    linear-gradient(145deg, #29231c, #17140f 65%, #211a13);
+
+  border: 1px solid rgba(202, 165, 99, 0.75);
+  border-radius: 3px;
+
   box-shadow:
-    0 44px 80px -38px rgba(23, 23, 23, 0.3),
-    0 14px 26px -14px rgba(23, 23, 23, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    0 25px 70px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 5px rgba(202, 165, 99, 0.07),
+    inset 0 0 0 8px rgba(202, 165, 99, 0.2);
 }
 
-/* Filet d'accent en haut de la carte */
-.hl-card::before {
+/* Double bordure intérieure */
+.hl-card.hl-idcard::before {
   content: "";
   position: absolute;
-  inset: 0 0 auto;
-  height: 4px;
-  background: linear-gradient(90deg, var(--hl-acc), var(--hl-acc-t));
+  inset: 13px;
+  border: 1px solid rgba(202, 165, 99, 0.28);
+  pointer-events: none;
 }
 
-/* ----- En-tête ----- */
-
-.hl-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px 20px;
-  padding-bottom: clamp(18px, 2.6vw, 26px);
-  border-bottom: 1px solid var(--hl-line);
+/* Motif décoratif */
+.hl-card.hl-idcard::after {
+  content: "✦";
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  color: rgba(202, 165, 99, 0.07);
+  font-size: clamp(100px, 18vw, 220px);
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
-.hl-id {
-  display: flex;
-  align-items: center;
-  gap: 13px;
+/* Coins décoratifs */
+.hl-idcard-corner {
+  position: absolute;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border-color: #c9a76b;
+  border-style: solid;
+  pointer-events: none;
 }
 
-.hl-mono {
-  display: grid;
-  flex: none;
-  width: 46px;
-  height: 46px;
-  place-items: center;
-  border-radius: 50%;
-  color: #fff;
-  background: linear-gradient(135deg, var(--hl-acc), var(--hl-acc-t));
-  box-shadow: 0 0 0 4px rgba(216, 75, 125, 0.14);
-  font-family: "Instrument Serif", Georgia, serif;
-  font-size: 26px;
-  font-style: italic;
-  line-height: 1;
-  padding-bottom: 3px;
+.hl-idcard-corner--tl {
+  top: 9px;
+  left: 9px;
+  border-width: 2px 0 0 2px;
 }
 
-.hl-id-text {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  line-height: 1.25;
+.hl-idcard-corner--tr {
+  top: 9px;
+  right: 9px;
+  border-width: 2px 2px 0 0;
 }
 
-.hl-id-text strong {
-  font-size: 15px;
-  font-weight: 600;
+.hl-idcard-corner--bl {
+  bottom: 9px;
+  left: 9px;
+  border-width: 0 0 2px 2px;
 }
 
-.hl-id-text small {
-  color: var(--hl-mute);
-  font-size: 13px;
-}
-
-.hl-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 7px 14px;
-  color: var(--hl-fg);
-  background: var(--hl-card);
-  border: 1px solid var(--hl-line);
-  border-radius: 999px;
-  font-size: 13px;
-  line-height: 1.2;
-}
-
-.hl-pill i {
-  width: 8px;
-  height: 8px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--hl-acc);
-  animation: hl-ping 2.2s ease-out infinite;
-}
-
-@keyframes hl-ping {
-  0% {
-    box-shadow: 0 0 0 0 rgba(216, 75, 125, 0.5);
-  }
-  80%,
-  100% {
-    box-shadow: 0 0 0 9px rgba(216, 75, 125, 0);
-  }
-}
-
-/* ----- Titre ----- */
-
-.hl-title {
-  margin: clamp(24px, 3.6vw, 38px) 0 0;
-  color: var(--hl-fg);
-  font-family: "Instrument Serif", Georgia, serif;
-  font-size: clamp(36px, 6vw, 64px);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.03;
-  text-wrap: balance;
-}
-
-.hl-title em {
-  color: var(--hl-acc-t);
-  font-style: italic;
-}
-
-/* ----- Corps ----- */
-
-.hl-body {
-  margin-top: clamp(20px, 3vw, 30px);
-}
-
-.hl-salutation {
-  margin: 0 0 0.9em;
-  font-size: 1.04rem;
-  font-weight: 600;
-}
-
-.hl-p {
-  margin: 0 0 1em;
-  color: rgba(23, 23, 23, 0.74);
-  font-size: clamp(15.5px, 1.6vw, 17.5px);
-  line-height: 1.72;
-  text-wrap: pretty;
-}
-
-html[data-theme="dark"] .hl-p {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.hl-name {
-  color: var(--hl-fg);
-  font-weight: 600;
-}
-
-.hl-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  margin-top: clamp(22px, 3vw, 30px);
-}
-
-/* ----- Signature ----- */
-
-.hl-sign {
-  margin-top: clamp(28px, 4vw, 40px);
-}
-
-.hl-closing {
-  margin: 0;
-  color: var(--hl-mute);
-  font-size: 0.98rem;
-}
-
-.hl-signature {
-  margin: 2px 0 0;
-  color: var(--hl-acc-t);
-  font-family: "Instrument Serif", Georgia, serif;
-  font-size: clamp(2.6rem, 6.4vw, 3.8rem);
-  font-style: italic;
-  letter-spacing: -0.01em;
-  line-height: 1.05;
-}
-
-.hl-flourish {
-  display: block;
-  width: min(240px, 60vw);
-  height: auto;
-  margin: -2px 0 0 2px;
-  overflow: visible;
-}
-
-.hl-flourish path {
-  fill: none;
-  stroke: var(--hl-acc);
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-}
-
-/* ----- Pied ----- */
-
-.hl-foot {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: clamp(26px, 3.6vw, 36px);
-  color: var(--hl-mute);
-  font-size: 11px;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-}
-
-.hl-foot span {
-  flex: 1;
-  height: 1px;
-  background: var(--hl-line);
+.hl-idcard-corner--br {
+  right: 9px;
+  bottom: 9px;
+  border-width: 0 2px 2px 0;
 }
 
 /* =========================================================
-   LA LETTRE SE REMPLIT (démarre à l'ouverture)
+   EN-TÊTE DE LA CARTE
    ========================================================= */
 
-.hl[data-state="opening"],
-.hl[data-state="open"] {
-  --hl-base: 1.8s;
+.hl-idcard-header {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(202, 165, 99, 0.4);
 }
 
-.hl[data-state="opening"] .hl-ink,
-.hl[data-state="open"] .hl-ink {
-  animation: hl-ink 0.9s cubic-bezier(0.2, 0.7, 0.2, 1)
-    calc(var(--hl-base) + var(--hl-d, 0s)) both;
+.hl-idcard-crest {
+  display: grid;
+  width: 54px;
+  aspect-ratio: 1;
+  place-items: center;
+  color: #d9bb7d;
+  font-size: 27px;
+  border: 1px solid rgba(202, 165, 99, 0.65);
+  border-radius: 50%;
+  box-shadow: inset 0 0 15px rgba(202, 165, 99, 0.12);
 }
 
-@keyframes hl-ink {
+.hl-idcard-school,
+.hl-idcard-number {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hl-idcard-school span,
+.hl-idcard-number span {
+  color: #b89b69;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+}
+
+.hl-idcard-school strong {
+  color: #eee1c8;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(20px, 3vw, 27px);
+  font-weight: 500;
+}
+
+.hl-idcard-number {
+  text-align: right;
+}
+
+.hl-idcard-number strong {
+  color: #d8c49f;
+  font-family: "IM Fell English", serif;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+
+/* =========================================================
+   CONTENU DE LA CARTE
+   ========================================================= */
+
+.hl-idcard-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(170px, 240px) 1fr;
+  align-items: center;
+  gap: clamp(25px, 5vw, 55px);
+  padding: 35px 0;
+}
+
+/* Portrait */
+.hl-idcard-photo-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.hl-idcard-photo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  padding: 7px;
+
+  background: linear-gradient(
+    135deg,
+    #f3dc9d 0%,
+    #b48d4c 22%,
+    #6f4f22 45%,
+    #d6b673 62%,
+    #8a6a33 82%,
+    #e8cd8b 100%
+  );
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 1px rgba(255, 244, 210, 0.5);
+}
+
+.hl-idcard-photo-frame::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 12px;
+  border: 1px solid rgba(255, 235, 190, 0.55);
+  pointer-events: none;
+}
+
+.hl-idcard-photo-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  filter: sepia(0.12) contrast(1.04);
+}
+
+.hl-idcard-placeholder {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: #e3cfaa;
+  background: #33291d;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 55px;
+}
+
+.hl-idcard-photo-caption {
+  color: #b89b69;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-align: center;
+}
+
+/* Informations */
+.hl-idcard-info {
+  min-width: 0;
+}
+
+.hl-idcard-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #b89b69;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+}
+
+.hl-idcard-info h1 {
+  margin: 0;
+  color: #f0e4ce;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(36px, 5vw, 62px);
+  font-weight: 500;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.hl-idcard-divider {
+  margin: 20px 0;
+  color: #c5a66d;
+  font-size: 15px;
+  letter-spacing: 0.5em;
+}
+
+.hl-idcard-field {
+  margin: 12px 0;
+  color: #d5c9b3;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.hl-idcard-description {
+  max-width: 520px;
+  margin: 22px 0 0;
+  color: #b9ad98;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   PIED DE LA CARTE
+   ========================================================= */
+
+.hl-idcard-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(202, 165, 99, 0.4);
+}
+
+.hl-idcard-availability {
+  color: #d3b77e;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.hl-idcard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.hl-idcard-actions a {
+  color: #e5d4b5;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.hl-idcard-actions a:hover {
+  color: #d9b56f;
+}
+
+/* =========================================================
+   ANIMATIONS DE LA CARTE
+   ========================================================= */
+
+.hl-idcard [style*="--hl-d"] {
+  animation: hl-idcard-reveal 0.8s both;
+  animation-delay: var(--hl-d, 0s);
+}
+
+@keyframes hl-idcard-reveal {
   from {
     opacity: 0;
-    transform: translateY(14px);
-    filter: blur(4px);
+    transform: translateY(15px);
   }
+
   to {
     opacity: 1;
-    transform: none;
-    filter: blur(0);
-  }
-}
-
-/* La signature se trace */
-.hl[data-state="opening"] .hl-flourish path,
-.hl[data-state="open"] .hl-flourish path {
-  animation: hl-draw 1.4s cubic-bezier(0.4, 0.1, 0.3, 1)
-    calc(var(--hl-base) + 2.3s) both;
-}
-
-@keyframes hl-draw {
-  from {
-    stroke-dashoffset: 1;
-  }
-  to {
-    stroke-dashoffset: 0;
+    transform: translateY(0);
   }
 }
 
 /* =========================================================
-   MOBILE
+   RESPONSIVE — TABLETTE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .hl-idcard-content {
+    grid-template-columns: 160px 1fr;
+    gap: 25px;
+  }
+
+  .hl-idcard-info h1 {
+    font-size: 38px;
+  }
+
+  .hl-idcard-field {
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE
    ========================================================= */
 
 @media (max-width: 560px) {
@@ -786,23 +879,67 @@ html[data-theme="dark"] .hl-p {
     width: min(88vw, 400px);
   }
 
-  .hl-card {
-    border-radius: 20px;
+  .hl-card.hl-idcard {
+    padding: 28px 22px;
   }
 
-  .hl-head {
-    flex-direction: column;
-    align-items: flex-start;
+  .hl-idcard-header {
+    grid-template-columns: auto 1fr;
+    gap: 12px;
   }
 
-  .hl-actions {
-    flex-direction: column;
-    align-items: stretch;
+  .hl-idcard-number {
+    display: none;
   }
 
-  .hl-actions .btn {
-    justify-content: center;
+  .hl-idcard-content {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 25px 0;
+  }
+
+  .hl-idcard-photo-frame {
+    width: min(190px, 65%);
+  }
+
+  .hl-idcard-info {
     text-align: center;
+  }
+
+  .hl-idcard-info h1 {
+    font-size: clamp(34px, 10vw, 44px);
+  }
+
+  .hl-idcard-divider {
+    margin: 15px 0;
+  }
+
+  .hl-idcard-description {
+    margin-inline: auto;
+  }
+
+  .hl-idcard-footer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hl-idcard-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .hl-card.hl-idcard {
+    padding: 24px 17px;
+  }
+
+  .hl-idcard-school strong {
+    font-size: 19px;
+  }
+
+  .hl-idcard-actions {
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
@@ -813,5 +950,11 @@ html[data-theme="dark"] .hl-p {
 @media (prefers-reduced-motion: reduce) {
   .hl-env-sparks {
     display: none;
+  }
+
+  .hl-idcard,
+  .hl-idcard * {
+    animation: none !important;
+    transition: none !important;
   }
 }
