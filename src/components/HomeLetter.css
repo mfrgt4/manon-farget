@@ -576,10 +576,10 @@ section#accueil.hl[data-state="closed"] {
   --card-rotate-y: 0deg;
 
   position: relative;
-  width: min(800px, 100%);
-  min-height: 680px;
+  width: min(760px, 100%);
+  min-height: 0;
   margin-inline: auto;
-  padding: 32px 38px 0;
+  padding: 27px 32px 0;
   overflow: hidden;
 
   color: var(--id-fg);
