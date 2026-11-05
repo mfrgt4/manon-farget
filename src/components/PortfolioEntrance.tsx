@@ -1,6 +1,6 @@
-
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -131,11 +131,23 @@ export default function PortfolioEntrance({
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const openingRef = useRef(false);
 
-  const [phase, setPhase] = useState<Phase>(() =>
-    typeof window !== "undefined" && window.matchMedia(DESKTOP).matches
-      ? "closed"
-      : "open",
+  const [hasIntro] = useState(
+    () =>
+      typeof window !== "undefined" && window.matchMedia(DESKTOP).matches,
   );
+  const [phase, setPhase] = useState<Phase>(hasIntro ? "closed" : "open");
+
+  // Le menu reste caché tant que les casiers sont fermés, puis apparaît en douceur
+  useLayoutEffect(() => {
+    document.documentElement.dataset.intro =
+      phase === "closed" ? "closed" : "open";
+  }, [phase]);
+
+  useEffect(() => {
+    return () => {
+      delete document.documentElement.dataset.intro;
+    };
+  }, []);
 
   // ---------- Petit son de percussion : toc toc ----------
 
@@ -325,7 +337,11 @@ export default function PortfolioEntrance({
       <div className="ip-wall" />
 
       {/* Contenu du portfolio derrière les casiers */}
-      <div className="ip-content">
+      <div
+        className="ip-content ip-page"
+        data-intro={hasIntro}
+        data-play={phase !== "closed"}
+      >
         {children}
       </div>
 
