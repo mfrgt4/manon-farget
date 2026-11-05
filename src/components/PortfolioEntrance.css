@@ -52,10 +52,6 @@
   overflow: hidden;
 }
 
-.ip-content > * {
-  min-height: 100%;
-}
-
 /* =========================================
    STRUCTURE DES DEUX PANNEAUX
    ========================================= */
@@ -1110,4 +1106,10 @@
   .ip {
     scroll-behavior: auto;
   }
+}
+
+/* Après l'ouverture : le contenu reprend sa hauteur naturelle */
+.ip.is-open .ip-content > * {
+  min-height: 0 !important;
+  height: auto;
 }
