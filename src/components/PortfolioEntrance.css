@@ -894,3 +894,225 @@
     will-change: transform;
   }
 }
+
+
+/* =========================================
+   NOUVELLE INTRO — OUVERTURE AU CLIC
+   ========================================= */
+
+/* Calque de l'introduction */
+.ip {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+  background: var(--ip-cream);
+
+  isolation: isolate;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Pendant l'ouverture */
+.ip.is-opening {
+  cursor: default;
+}
+
+/* Fond */
+.ip-wall {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Portfolio situé derrière les casiers */
+.ip-content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+/* Scène des deux battants */
+.ip-stage {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  perspective: 1800px;
+  transform-style: preserve-3d;
+  transform-origin: center;
+
+  pointer-events: none;
+}
+
+/* Battants */
+.ip-door {
+  position: absolute;
+  top: 0;
+
+  width: 50%;
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  transform-style: preserve-3d;
+  will-change: transform;
+
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Battant gauche */
+.ip-door--left {
+  left: 0;
+  transform-origin: left center;
+}
+
+/* Battant droit */
+.ip-door--right {
+  left: 50%;
+  right: auto;
+  transform-origin: right center;
+}
+
+/* Titre */
+.ip-title {
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Le bouton transparent permet de cliquer sur les casiers */
+.ip-click-area {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ip-click-area:focus-visible {
+  outline: 2px solid var(--ip-pink);
+  outline-offset: -8px;
+}
+
+.ip.is-opening .ip-click-area {
+  cursor: default;
+}
+
+/* Les casiers restent visibles pendant leur animation */
+.ip.is-opening .ip-door {
+  pointer-events: none;
+}
+
+/* =========================================
+   APRÈS L'OUVERTURE
+   Le portfolio reprend sa place normale
+   ========================================= */
+
+.ip.is-open {
+  position: relative;
+  inset: auto;
+
+  width: 100%;
+  height: auto;
+  min-height: 100svh;
+
+  margin: 0;
+  overflow: visible;
+
+  z-index: auto;
+  cursor: auto;
+}
+
+.ip.is-open .ip-wall {
+  display: none;
+}
+
+.ip.is-open .ip-content {
+  position: relative;
+  inset: auto;
+
+  width: 100%;
+  height: auto;
+  min-height: 100svh;
+
+  overflow: visible;
+}
+
+/* =========================================
+   TABLETTE ET MOBILE
+   Pas d'introduction sur les petits écrans
+   ========================================= */
+
+@media (max-width: 900px) {
+  .ip {
+    position: relative;
+    inset: auto;
+
+    width: 100%;
+    height: auto;
+    min-height: 0;
+
+    margin: 0;
+    overflow: visible;
+
+    z-index: auto;
+    perspective: none;
+  }
+
+  .ip-wall,
+  .ip-stage,
+  .ip-title,
+  .ip-click-area {
+    display: none !important;
+  }
+
+  .ip-content,
+  .ip.is-open .ip-content {
+    position: relative;
+    inset: auto;
+
+    width: 100%;
+    height: auto;
+    min-height: 100svh;
+
+    overflow: visible;
+  }
+}
+
+/* =========================================
+   ACCESSIBILITÉ
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .ip {
+    scroll-behavior: auto;
+  }
+}

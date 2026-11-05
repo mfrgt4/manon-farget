@@ -1,10 +1,16 @@
 
-import { useEffect, useRef, type ReactNode, type Ref } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
+  type Ref,
+} from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./PortfolioEntrance.css";
 
-gsap.registerPlugin(ScrollTrigger);
+const DESKTOP = "(min-width: 901px)";
 
 function LockerDetails() {
   return (
@@ -114,121 +120,249 @@ type PortfolioEntranceProps = {
   children: ReactNode;
 };
 
+type Phase = "closed" | "opening" | "open";
+
 export default function PortfolioEntrance({
   children,
 }: PortfolioEntranceProps) {
-  const rootRef = useRef<HTMLElement>(null);
   const leftDoorRef = useRef<HTMLDivElement>(null);
   const rightDoorRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const openingRef = useRef(false);
 
-  useEffect(() => {
-    const root = rootRef.current;
+  const [phase, setPhase] = useState<Phase>(() =>
+    typeof window !== "undefined" && window.matchMedia(DESKTOP).matches
+      ? "closed"
+      : "open",
+  );
+
+  // ---------- Petit son de percussion : toc toc ----------
+
+  const playKnock = () => {
+    try {
+      const AudioContextClass = window.AudioContext;
+
+      if (!AudioContextClass) return;
+
+      const audio = new AudioContextClass();
+
+      [0, 0.2].forEach((delay) => {
+        const oscillator = audio.createOscillator();
+        const gain = audio.createGain();
+
+        const start = audio.currentTime + delay;
+
+        oscillator.type = "triangle";
+        oscillator.frequency.setValueAtTime(105, start);
+        oscillator.frequency.exponentialRampToValueAtTime(
+          58,
+          start + 0.12,
+        );
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.16, start + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.15);
+
+        oscillator.connect(gain);
+        gain.connect(audio.destination);
+
+        oscillator.start(start);
+        oscillator.stop(start + 0.16);
+      });
+
+      window.setTimeout(() => {
+        void audio.close();
+      }, 900);
+    } catch {
+      // L'animation fonctionne même si le navigateur bloque le son.
+    }
+  };
+
+  // ---------- Ouverture des casiers au clic ----------
+
+  const openDoors = () => {
     const leftDoor = leftDoorRef.current;
     const rightDoor = rightDoorRef.current;
     const title = titleRef.current;
 
-    if (!root || !leftDoor || !rightDoor || !title) return;
+    if (openingRef.current || phase !== "closed") return;
+    if (!leftDoor || !rightDoor || !title) return;
 
-    const media = gsap.matchMedia();
+    openingRef.current = true;
+    setPhase("opening");
 
-    media.add("(min-width: 901px)", () => {
-      gsap.set([leftDoor, rightDoor], {
-        x: 0,
-        rotationY: 0,
-        force3D: true,
-      });
+    // Le fameux toc toc
+    playKnock();
 
-      gsap.set(title, {
-        autoAlpha: 1,
-        scale: 1,
-      });
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
-      const intro = gsap.timeline({
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: "+=1200",
-          scrub: 0.4,
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setPhase("open");
+      },
+    });
 
-      // Le titre disparaît progressivement
-      intro.to(
-        title,
-        {
-          autoAlpha: 0,
-          scale: 0.96,
-          duration: 0.5,
-          ease: "power1.out",
-        },
+    timelineRef.current = tl;
+
+    // 1. Le titre disparaît doucement
+    tl.to(
+      title,
+      {
+        autoAlpha: 0,
+        scale: 0.94,
+        duration: reducedMotion ? 0.2 : 0.65,
+        ease: "power2.in",
+      },
+      0,
+    );
+
+    if (reducedMotion) {
+      // Version simplifiée si l'utilisateur préfère limiter les animations
+      tl.to(
+        leftDoor,
+        { xPercent: -100, duration: 0.4, ease: "power1.out" },
         0,
       );
 
-      // Le panneau gauche coulisse vers la gauche
-      intro.to(
-        leftDoor,
-        {
-          xPercent: -100,
-          duration: 1,
-          ease: "power2.inOut",
-        },
-        0.15,
-      );
-
-      // Le panneau droit coulisse vers la droite
-      intro.to(
+      tl.to(
         rightDoor,
-        {
-          xPercent: 100,
-          duration: 1,
-          ease: "power2.inOut",
-        },
-        0.15,
+        { xPercent: 100, duration: 0.4, ease: "power1.out" },
+        0,
       );
 
-      const refreshId = window.requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
+      return;
+    }
 
-      return () => {
-        window.cancelAnimationFrame(refreshId);
-      };
-    });
+    // 2. Premier mouvement : les portes réagissent au toc toc
+    tl.to(
+      leftDoor,
+      {
+        x: 5,
+        duration: 0.09,
+        yoyo: true,
+        repeat: 3,
+        ease: "power1.inOut",
+      },
+      0.05,
+    );
+
+    tl.to(
+      rightDoor,
+      {
+        x: -5,
+        duration: 0.09,
+        yoyo: true,
+        repeat: 3,
+        ease: "power1.inOut",
+      },
+      0.05,
+    );
+
+    // 3. Petite pause avant l'ouverture
+    tl.to({}, { duration: 0.18 });
+
+    // 4. Les deux battants coulissent dans des directions opposées
+    tl.to(
+      leftDoor,
+      {
+        xPercent: -100,
+        duration: 1.9,
+        ease: "power3.inOut",
+      },
+      ">",
+    );
+
+    tl.to(
+      rightDoor,
+      {
+        xPercent: 100,
+        duration: 1.9,
+        ease: "power3.inOut",
+      },
+      "<",
+    );
+  };
+
+  // ---------- Accessibilité clavier ----------
+
+  const onKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openDoors();
+    }
+  };
+
+  // ---------- Gestion du responsive ----------
+
+  useEffect(() => {
+    const media = window.matchMedia(DESKTOP);
+
+    const handleResize = () => {
+      if (!media.matches) {
+        timelineRef.current?.kill();
+        openingRef.current = false;
+        setPhase("open");
+      }
+    };
+
+    media.addEventListener("change", handleResize);
 
     return () => {
-      media.revert();
+      media.removeEventListener("change", handleResize);
+      timelineRef.current?.kill();
     };
   }, []);
 
   return (
     <section
-      className="ip"
-      ref={rootRef}
+      className={`ip${phase === "opening" ? " is-opening" : ""}${phase === "open" ? " is-open" : ""}`}
       aria-label="Introduction du portfolio"
     >
+      {/* Fond */}
       <div className="ip-wall" />
 
-      <div className="ip-content">{children}</div>
-
-      <div className="ip-stage">
-        <LockerDoor side="left" doorRef={leftDoorRef} />
-        <LockerDoor side="right" doorRef={rightDoorRef} />
+      {/* Contenu du portfolio derrière les casiers */}
+      <div className="ip-content">
+        {children}
       </div>
 
-      <div className="ip-title" ref={titleRef}>
-        <span>Bienvenue dans</span>
-        <h1>Mon Portfolio</h1>
+      {/* Les casiers restent affichés pendant l'ouverture */}
+      {phase !== "open" && (
+        <>
+          <div className="ip-stage">
+            <LockerDoor side="left" doorRef={leftDoorRef} />
+            <LockerDoor side="right" doorRef={rightDoorRef} />
+          </div>
 
-        <p className="ip-scroll-hint">
-          <span>Faites défiler pour ouvrir</span>
-          <i>↓</i>
-        </p>
-      </div>
+          <div className="ip-title" ref={titleRef}>
+            <span>Bienvenue dans</span>
+
+            <h1>Mon Portfolio</h1>
+
+            <p className="ip-scroll-hint">
+              <span>
+                {phase === "opening"
+                  ? "Ouverture en cours..."
+                  : "Cliquez sur les casiers pour les ouvrir"}
+              </span>
+              <i>↓</i>
+            </p>
+          </div>
+
+          {/* Surface accessible pour déclencher l'ouverture */}
+          <button
+            type="button"
+            className="ip-click-area"
+            onClick={openDoors}
+            onKeyDown={onKeyDown}
+            disabled={phase !== "closed"}
+            aria-label="Frapper aux casiers et ouvrir les portes"
+          />
+        </>
+      )}
     </section>
   );
 }
