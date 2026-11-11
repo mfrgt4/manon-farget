@@ -11,8 +11,6 @@ import {
   tools,
 } from "./data";
 import type { Genre, Project } from "./data";
-import PortfolioEntrance from "./components/PortfolioEntrance";
-import HomeLetter from "./components/HomeLetter";
 
 // ================= SONS =================
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
@@ -611,13 +609,70 @@ export default function App() {
         </div>
       </nav>
 
-      <PortfolioEntrance>
-        <section id="accueil">
-          <HomeLetter />
-        </section>
-      </PortfolioEntrance>
+            <section id="a-propos">
+        <div className="about">
+          <div className="rv rv-l" style={delay(0.15)}>
+            <p className="tag mono">// qui suis-je ?</p>
+            <h2>Un peu plus sur moi.</h2>
 
-      <section id="a-propos">
+            <p className="about-p">
+              Hello ! Moi, c’est Manon, étudiante en BUT MMI, parcours Création
+              Numérique. Je m’intéresse particulièrement au design graphique, à
+              l’UI/UX design et à l’audiovisuel. J’aime explorer les univers
+              visuels, imaginer des interfaces et donner vie à mes idées à
+              travers des projets créatifs.
+            </p>
+
+            <p className="about-p">
+              En dehors des cours, je réalise des projets personnels en design
+              graphique et montage vidéo pour explorer ma créativité et
+              continuer à apprendre.
+            </p>
+
+            <p className="about-p">
+              Je cherche un stage à partir d'avril 2027 pour progresser au sein
+              d'une équipe, et y apporter ma curiosité et mon sens du détail.
+            </p>
+
+            <div className="chips about-facts">
+              <i className="mono">📍 Lyon</i>
+              <i className="mono">🎓 BUT MMI · 2e année</i>
+              <i className="mono">🗓️ Stage avril 2027</i>
+            </div>
+          </div>
+
+          <div className="photo rv rv-r">
+            <div className="p-tilt" data-tilt="11" data-persp="none">
+              <span className="p-outline" aria-hidden="true" />
+              <div className="p-frame">
+                {profile.photo ? (
+                  <img
+                    src={profile.photo}
+                    alt={`Portrait de ${profile.name}`}
+                  />
+                ) : (
+                  <div className="photo-ph mono">
+                    <span>
+                      {profile.name
+                        .split(" ")
+                        .map((w) => w[0])
+                        .join("")}
+                    </span>
+                    <small>ta photo ici</small>
+                  </div>
+                )}
+                <span className="p-sheen" aria-hidden="true" />
+                <span className="p-glare" aria-hidden="true" />
+              </div>
+              <span className="p-tag" aria-hidden="true">
+                hello !
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="competences">
         <div className="sk">
           <div className="sk-side">
             <p className="tag mono rv">// ce que je sais faire</p>
