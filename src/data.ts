@@ -9,7 +9,7 @@ export const profile = {
   roles: ["Développeuse web", "UI/UX designer", "Motion lover", "Étudiante MMI"],
 };
 export const nav = [
-  ["a-propos", "Compétences"], ["boite-a-outils", "Ma boîte à outils"],
+  ["a-propos", "À propos"], ["competences", "Compétences"], ["boite-a-outils", "Ma boîte à outils"],
   ["projets", "Projets"], ["parcours", "Parcours"], ["contact", "Contact"],
 ] as const;
 export type Skill = { icon: string; title: string; text: string; span?: string };

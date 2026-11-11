@@ -124,7 +124,7 @@ function useActive(ids: string[]) {
 
       const referenceY = window.innerHeight * 0.48;
 
-      const sections = [...ids, "competences"]
+      const sections = ids
         .map((id) => document.getElementById(id))
         .filter((el): el is HTMLElement => el !== null);
 
@@ -134,9 +134,7 @@ function useActive(ids: string[]) {
       });
 
       if (currentSection) {
-        setActive(
-          currentSection.id === "competences" ? "a-propos" : currentSection.id,
-        );
+        setActive(currentSection.id);
       }
     };
 
