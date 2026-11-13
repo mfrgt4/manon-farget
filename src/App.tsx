@@ -16,7 +16,7 @@ import type { Genre, Project } from "./data";
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
 const projectSound = new Audio("/sounds/Click-projets.mp3");
 const introSound = new Audio("/sounds/Intro-welcome.mp3");
-const menuSound = new Audio("/sounds/Click-menu.mp3");s
+const menuSound = new Audio("/sounds/Click-menu.mp3");
 
 buttonSound.volume = 0.08;
 projectSound.volume = 0.12;
