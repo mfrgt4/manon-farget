@@ -20,8 +20,8 @@ const menuSound = new Audio("/sounds/Click-menu.mp3");
 
 buttonSound.volume = 0.08;
 projectSound.volume = 0.12;
-introSound.volume = 0.12;
-menuSound.volume = 0.08;
+introSound.volume = 0.08;
+menuSound.volume = 0.12;
 
 function playButtonClick() {
   buttonSound.currentTime = 0;
