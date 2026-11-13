@@ -16,11 +16,12 @@ import type { Genre, Project } from "./data";
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
 const projectSound = new Audio("/sounds/Click-projets.mp3");
 const introSound = new Audio("/sounds/Intro-welcome.mp3");
-
+const menuSound = new Audio("/sounds/Click-menu.mp3");s
 
 buttonSound.volume = 0.08;
 projectSound.volume = 0.12;
 introSound.volume = 0.12;
+menuSound.volume = 0.08;
 
 function playButtonClick() {
   buttonSound.currentTime = 0;
@@ -30,6 +31,11 @@ function playButtonClick() {
 function playProjectClick() {
   projectSound.currentTime = 0;
   projectSound.play().catch(() => {});
+}
+
+function playMenuClick() {
+  menuSound.currentTime = 0;
+  menuSound.play().catch(() => {});
 }
 
 // ================= MUSIQUE D'INTRO =================
@@ -619,7 +625,10 @@ export default function App() {
                 key={id}
                 href={`#${id}`}
                 className={active === id ? "on" : ""}
-                onClick={() => setMenuOpen(false)}
+                onClick={() => {
+                  playMenuClick(); // 👈
+                  setMenuOpen(false);
+                }}
                 tabIndex={active ? 0 : -1}
               >
                 {label}
