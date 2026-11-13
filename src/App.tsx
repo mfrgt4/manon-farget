@@ -15,9 +15,12 @@ import type { Genre, Project } from "./data";
 // ================= SONS =================
 const buttonSound = new Audio("/sounds/Click-buttons.mp3");
 const projectSound = new Audio("/sounds/Click-projets.mp3");
+const introSound = new Audio("/sounds/Intro-welcome.mp3");
+
 
 buttonSound.volume = 0.08;
 projectSound.volume = 0.12;
+introSound.volume = 0.12;
 
 function playButtonClick() {
   buttonSound.currentTime = 0;
@@ -27,6 +30,39 @@ function playButtonClick() {
 function playProjectClick() {
   projectSound.currentTime = 0;
   projectSound.play().catch(() => {});
+}
+
+// ================= MUSIQUE D'INTRO =================
+
+function useIntroSound() {
+  useEffect(() => {
+    const events = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"];
+
+    const removeListeners = () =>
+      events.forEach((e) => window.removeEventListener(e, startOnInteraction));
+
+    // Fallback : le navigateur a bloqué l'autoplay, on attend le 1er geste
+    function startOnInteraction() {
+      introSound
+        .play()
+        .then(removeListeners)
+        .catch(() => {});
+    }
+
+    // 1) Tentative d'autoplay direct au chargement
+    introSound.play().catch(() => {
+      // 2) Bloqué -> démarrage à la première interaction
+      events.forEach((e) =>
+        window.addEventListener(e, startOnInteraction, { passive: true }),
+      );
+    });
+
+    return () => {
+      removeListeners();
+      introSound.pause();
+      introSound.currentTime = 0;
+    };
+  }, []);
 }
 
 // ================= TEXTE ANIMÉ =================
@@ -552,6 +588,7 @@ export default function App() {
   useTilt();
   useAes(`projects-${selectedGenre}`);
   useAnchorCenter();
+  useIntroSound();
 
   const [sel, setSel] = useState(0);
 
