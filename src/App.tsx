@@ -646,6 +646,36 @@ export default function App() {
   const [activeCluster, setActiveCluster] = useState<string>("all");
   const [focusedTool, setFocusedTool] = useState<string | null>(null);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    const sectionResults = nav
+      .filter(([, label]) => label.toLowerCase().includes(q))
+      .map(([id, label]) => ({ type: "section" as const, id, label }));
+    const projectResults = projects
+      .filter((p) => p.title.toLowerCase().includes(q))
+      .slice(0, 5)
+      .map((p) => ({ type: "project" as const, id: p.title, label: p.title, project: p }));
+    return [...sectionResults, ...projectResults];
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+        searchInputRef.current?.focus();
+      }
+      if (e.key === "Escape") setSearchOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const personalProjects = useMemo(
     () => projects.filter((p) => p.category === "perso"),
     [],
@@ -731,13 +761,13 @@ export default function App() {
           >
             <img
               src="/images/mf_favicon.png"
-              alt="Manon Farget"
+              alt=""
               className="nav-brand-img"
             />
           </a>
 
           <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
-            {nav.map(([id, label]) => (
+            {nav.map(([id, label], idx) => (
               <a
                 key={id}
                 href={`#${id}`}
@@ -747,9 +777,79 @@ export default function App() {
                   setMenuOpen(false);
                 }}
               >
+                <span className="nav-num mono">
+                  {String(idx + 1).padStart(2, "0")}
+                </span>
                 {label}
               </a>
             ))}
+          </div>
+
+          <div className="nav-search-wrap">
+            <div className="nav-search">
+              <span aria-hidden="true">⌕</span>
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                placeholder="Rechercher..."
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setSearchOpen(true);
+                }}
+                onFocus={() => setSearchOpen(true)}
+                onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchResults[0]) {
+                    const first = searchResults[0];
+                    if (first.type === "section") {
+                      document.getElementById(first.id)?.scrollIntoView({ behavior: "smooth" });
+                    } else {
+                      const idx = projects.findIndex((p) => p.title === first.id);
+                      if (idx >= 0) {
+                        setModalProjects(projects);
+                        setOpen(idx);
+                      }
+                    }
+                    setSearchOpen(false);
+                  }
+                }}
+              />
+              <kbd>Ctrl K</kbd>
+            </div>
+
+            {searchOpen && searchQuery.trim() && (
+              <div className="nav-search-results">
+                {searchResults.length === 0 && (
+                  <span className="nav-search-empty">Aucun résultat</span>
+                )}
+                {searchResults.map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      if (r.type === "section") {
+                        document.getElementById(r.id)?.scrollIntoView({ behavior: "smooth" });
+                      } else {
+                        const idx = projects.findIndex((p) => p.title === r.id);
+                        if (idx >= 0) {
+                          setModalProjects(projects);
+                          setOpen(idx);
+                        }
+                      }
+                      setSearchQuery("");
+                      setSearchOpen(false);
+                    }}
+                  >
+                    <span className="mono nav-search-type">
+                      {r.type === "section" ? "Section" : "Projet"}
+                    </span>
+                    {r.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <button
