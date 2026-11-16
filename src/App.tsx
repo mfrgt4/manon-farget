@@ -723,6 +723,15 @@ export default function App() {
       {/* ================= NAVIGATION ================= */}
       <nav aria-label="Navigation principale">
         <div className="nav-shell">
+          <a
+            href="#accueil"
+            className="nav-brand"
+            onClick={() => setMenuOpen(false)}
+          >
+            <span className="nav-brand-dot" aria-hidden="true" />
+            <span>{profile.name}</span>
+          </a>
+
           <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
             {nav.map(([id, label]) => (
               <a
