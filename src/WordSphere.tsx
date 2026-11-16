@@ -4,18 +4,30 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const R = 2.4;
 const PINK = new THREE.Color("#EB8FAB");
-const MINT = new THREE.Color("#f3f4f6");
-const FG = new THREE.Color("#f3f4f6");
+const MINT = new THREE.Color("#f6f1f4"); // blanc rosé, très doux
+const FG = new THREE.Color("#ffffff");
 
 function makeLabel(text: string, color: THREE.Color): THREE.Sprite {
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d")!;
-  const font = "600 56px Inter, system-ui, sans-serif";
+  // Typo plus fine, lettres espacées : rendu plus élégant, moins "tag"
+  const font = "500 52px Inter, system-ui, sans-serif";
+  const letterSpacing = 3;
   ctx.font = font;
-  c.width = Math.ceil(ctx.measureText(text).width) + 24;
+  // @ts-expect-error letterSpacing canvas (navigateurs récents)
+  ctx.letterSpacing = `${letterSpacing}px`;
+  c.width = Math.ceil(ctx.measureText(text).width) + 56;
   c.height = 96;
-  ctx.font = font; ctx.fillStyle = "#fff"; ctx.textBaseline = "middle"; ctx.textAlign = "center";
-  ctx.fillText(text, c.width / 2, c.height / 2);
+  ctx.font = font;
+  // @ts-expect-error letterSpacing canvas (navigateurs récents)
+  ctx.letterSpacing = `${letterSpacing}px`;
+  ctx.textBaseline = "middle"; ctx.textAlign = "center";
+  // Halo doux autour du mot (glow discret, pas de contour dur)
+  ctx.shadowColor = "rgba(235, 143, 171, 0.45)";
+  ctx.shadowBlur = 18;
+  ctx.fillStyle = "#fff";
+  ctx.fillText(text, c.width / 2, c.height / 2 + 1);
+  ctx.fillText(text, c.width / 2, c.height / 2 + 1);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, color: color.clone() }));
@@ -51,7 +63,7 @@ export default function WordSphere({
     const readPalette = () => {
       const cs = getComputedStyle(document.documentElement);
       const g = (n: string, f: string) => cs.getPropertyValue(n).trim() || f;
-      PINK.set(g("--sph-a", "#d84b7d")); MINT.set(g("--sph-b", "#171717")); FG.set(g("--fg", "#171717"));
+      PINK.set(g("--sph-a", "#EB8FAB")); MINT.set(g("--sph-b", "#f6f1f4")); FG.set(g("--fg", "#ffffff"));
     };
     readPalette();
     const mo = new MutationObserver(readPalette);
@@ -64,12 +76,12 @@ export default function WordSphere({
     el.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true;
+    controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true; controls.dampingFactor = 0.06;
     controls.autoRotate = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-    controls.autoRotateSpeed = 1.2;
+    controls.autoRotateSpeed = 0.8; // rotation plus lente, plus calme
 
     const sprites = words.map((w, i) => {
-      const s = makeLabel(w, i % 3 === 0 ? MINT : PINK); // 1 mot sur 3 en blanc, les autres en rose
+      const s = makeLabel(w, i % 4 === 0 ? PINK : MINT); // 1 mot sur 4 en rose, le reste en blanc rosé : accent, pas saturation
       const y = 1 - (2 * (i + 0.5)) / words.length, r = Math.sqrt(1 - y * y), a = i * 2.399963;
       s.userData.word = w;
       s.position.set(Math.cos(a) * r * R, y * R, Math.sin(a) * r * R);
@@ -111,20 +123,21 @@ export default function WordSphere({
         const dimmed = highlighted.length > 0 && !isHighlighted && !isFocused;
 
         // Priorité : hover / focus > highlight > dimmed > profondeur
+        const depth = Math.pow(Math.min(Math.max(t, 0), 1), 1.6);
         const targetOpacity = on || isFocused
           ? 1
           : dimmed
-            ? 0.12
-            : 0.2 + 0.8 * Math.min(Math.max(t, 0), 1);
+            ? 0.1
+            : 0.12 + 0.88 * depth; // mots derrière presque effacés : effet de profondeur
         m.opacity = targetOpacity;
         m.color.lerp(on || isFocused ? FG : (s.userData.color as THREE.Color), 0.2);
         const targetScale = on || isFocused
-          ? s.userData.base.clone().multiplyScalar(1.5)
+          ? s.userData.base.clone().multiplyScalar(1.45)
           : isHighlighted
-            ? s.userData.base.clone().multiplyScalar(1.2)
+            ? s.userData.base.clone().multiplyScalar(1.15)
             : dimmed
-              ? s.userData.base.clone().multiplyScalar(0.85)
-              : s.userData.base;
+              ? s.userData.base.clone().multiplyScalar(0.8)
+              : s.userData.base.clone().multiplyScalar(0.72 + 0.42 * depth); // devant plus grand, derrière plus petit
         s.scale.lerp(targetScale, 0.2);
       }
       renderer.render(scene, camera);
