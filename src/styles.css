@@ -2576,9 +2576,15 @@ body:has(.palette-overlay) #cursor-ring {
   display: none !important;
 }
 
-/* Flèches de la modale : fondu selon le survol de l'encadré */
+/* Flèches changer de projet (.pm-arrow) : toujours visibles */
+.pm-arrow {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Flèches à l'intérieur de l'image (.pm-sarrow) : fondu selon le survol de l'image */
 @media (hover: hover) and (pointer: fine) {
-  .pm-arrow,
   .pm-sarrow {
     opacity: 0;
     visibility: hidden;
@@ -2590,16 +2596,14 @@ body:has(.palette-overlay) #cursor-ring {
       transform 0.25s ease;
   }
 
-  /* Dès qu'on revient sur l'encadré (.pm-wrap), les flèches réapparaissent en fondu */
-  .pm:has(.pm-wrap:hover) .pm-arrow,
-  .pm:has(.pm-wrap:hover) .pm-sarrow {
+  /* Dès qu'on revient sur l'image (.pm-view), les 2 flèches dedans réapparaissent en fondu */
+  .pm-view:hover .pm-sarrow {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
   }
 
   /* Clavier : la flèche reste visible quand elle a le focus */
-  .pm-arrow:focus-visible,
   .pm-sarrow:focus-visible {
     opacity: 1;
     visibility: visible;
