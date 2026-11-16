@@ -19,10 +19,6 @@
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-* {
-  cursor: url('https://cdn.cursors-4u.net/previews/pink-hand-cursor-77896b40-32.webp') 37 32, auto !important;
-}
-
 *,
 *::before,
 *::after {
