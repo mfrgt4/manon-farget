@@ -1258,19 +1258,10 @@ export default function App() {
 
                 <div className="projects-editorial-grid">
                   {displayedList.map((p, i) => {
-                    // Rythme éditorial asymétrique
-                    const mod = i % 5;
-                    const layoutClass =
-                      mod === 0
-                        ? "proj-wide"
-                        : mod === 3
-                          ? "proj-tall"
-                          : "proj-std";
-
                     return (
                       <article
                         key={p.title}
-                        className={`cell proj aes ${layoutClass}`}
+                        className="cell proj aes"
                         data-tilt="6"
                         style={delay((i % 3) * 0.08)}
                         role="button"
