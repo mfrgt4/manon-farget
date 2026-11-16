@@ -806,7 +806,7 @@ export default function App() {
           </div>
 
           <div className="h-visual rv" style={delay(0.2)}>
-            <div className="arch-frame" data-tilt="6">
+            <div className="arch-frame">
               <div className="arch">
                 <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
                 <div className="arch-vignette" aria-hidden="true" />
@@ -1221,7 +1221,6 @@ export default function App() {
                       <article
                         key={p.title}
                         className="cell proj aes"
-                        data-tilt="6"
                         style={delay((i % 3) * 0.08)}
                         role="button"
                         tabIndex={0}

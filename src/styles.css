@@ -1368,6 +1368,7 @@ h2 .instrument {
   height: 100%;
   /* Inclinaison permanente, comme la carte CV Vidéo */
   transform: rotate(-1.5deg);
+  transition: transform 0.45s ease, border-color 0.35s ease, box-shadow 0.4s ease;
 }
 
 .projects-editorial-grid .thumb {
@@ -1398,6 +1399,11 @@ h2 .instrument {
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Au survol : MÊME inclinaison fixe pour toutes les cartes */
+.cell.proj:hover {
+  transform: perspective(950px) rotateX(-4deg) rotateY(7deg) rotateZ(-1.5deg) translateY(-5px);
 }
 
 .cell.proj:hover .thumb img {
