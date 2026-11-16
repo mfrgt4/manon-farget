@@ -600,18 +600,14 @@ const TOOL_CLUSTERS = [
     label: "Audiovisuel",
     code: "03",
     description: "Montage vidéo et motion design.",
-    items: tools.filter((t) =>
-      ["After Effects", "Premiere Pro"].includes(t),
-    ),
+    items: tools.filter((t) => ["After Effects", "Premiere Pro"].includes(t)),
   },
   {
     id: "workflow",
     label: "Workflow",
     code: "04",
     description: "Versioning et gestion de projet.",
-    items: tools.filter((t) =>
-      ["Git", "GitHub", "Notion"].includes(t),
-    ),
+    items: tools.filter((t) => ["Git", "GitHub", "Notion"].includes(t)),
   },
 ] as const;
 
@@ -727,15 +723,6 @@ export default function App() {
       {/* ================= NAVIGATION ================= */}
       <nav aria-label="Navigation principale">
         <div className="nav-shell">
-          <a
-            href="#accueil"
-            className="nav-brand"
-            onClick={() => setMenuOpen(false)}
-          >
-            <span className="nav-brand-dot" aria-hidden="true" />
-            <span>{profile.name}</span>
-          </a>
-
           <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
             {nav.map(([id, label]) => (
               <a
@@ -799,8 +786,8 @@ export default function App() {
 
             <p className="lead rv" style={delay(0.26)}>
               Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
-              Clermont Auvergne. Je mêle créativité et nouvelles
-              technologies pour donner vie à des expériences visuelles soignées.
+              Clermont Auvergne. Je mêle créativité et nouvelles technologies
+              pour donner vie à des expériences visuelles soignées.
             </p>
 
             <div className="btns rv" style={delay(0.34)}>
@@ -1143,7 +1130,6 @@ export default function App() {
               Mes <span className="instrument">projets.</span>
             </h2>
           </div>
-
         </div>
 
         <div className="folder-list">
