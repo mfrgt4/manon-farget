@@ -21,13 +21,7 @@ function View({ s, p }: { s: Slide; p: Project }) {
   const [broken, setBroken] = useState(false);
 
   if (s.type === "image" && !broken) {
-    return (
-      <img
-        src={s.src}
-        alt={s.alt}
-        onError={() => setBroken(true)}
-      />
-    );
+    return <img src={s.src} alt={s.alt} onError={() => setBroken(true)} />;
   }
 
   if (s.type === "video" && s.src.includes("youtube.com/embed/")) {
@@ -62,10 +56,7 @@ function View({ s, p }: { s: Slide; p: Project }) {
       : `${s.alt} · à remplacer`;
 
   return (
-    <div
-      className="ph"
-      style={{ "--c": p.color } as CSSProperties}
-    >
+    <div className="ph" style={{ "--c": p.color } as CSSProperties}>
       <span>{p.icon}</span>
       <small className="mono">{label}</small>
     </div>
@@ -79,12 +70,7 @@ type Props = {
   onClose: () => void;
 };
 
-export default function ProjectModal({
-  list,
-  index,
-  onIndex,
-  onClose,
-}: Props) {
+export default function ProjectModal({ list, index, onIndex, onClose }: Props) {
   const p = list[index];
   const n = list.length;
 
@@ -245,8 +231,7 @@ export default function ProjectModal({
               slideTouchX.current = e.touches[0].clientX;
             }}
             onTouchEnd={(e) => {
-              const dx =
-                e.changedTouches[0].clientX - slideTouchX.current;
+              const dx = e.changedTouches[0].clientX - slideTouchX.current;
 
               if (Math.abs(dx) > 50) {
                 goSlide(dx < 0 ? 1 : -1);
@@ -386,51 +371,31 @@ export default function ProjectModal({
         </div>
       </div>
 
-      {/* Navigation entre les projets */}
-      <div className="pm-bar">
-        <button
-          type="button"
-          className="pm-btn"
-          onClick={() => go(-1)}
-          aria-label="Projet précédent"
-        >
-          ←
-        </button>
+      {/* Compteur en haut */}
+      <span className="mono pm-count-top">
+        {String(index + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+      </span>
 
-        <div className="pm-dots" role="tablist" aria-label="Choisir un projet">
-          {list.map((q, i) => (
-            <button
-              type="button"
-              key={q.title}
-              className={i === index ? "on" : ""}
-              aria-label={q.title}
-              aria-selected={i === index}
-              role="tab"
-              onClick={() => {
-                if (i !== index) {
-                  playProjectClick();
-                  setDir(i > index ? 1 : -1);
-                  setM(0);
-                  onIndex(i);
-                }
-              }}
-            />
-          ))}
-        </div>
-
-        <span className="mono pm-count">
-          {String(index + 1).padStart(2, "0")} /{" "}
-          {String(n).padStart(2, "0")}
-        </span>
-
-        <button
-          type="button"
-          className="pm-btn"
-          onClick={() => go(1)}
-          aria-label="Projet suivant"
-        >
-          →
-        </button>
+      {/* Petits points en bas, sans cadre ni flèches */}
+      <div className="pm-dots" role="tablist" aria-label="Choisir un projet">
+        {list.map((q, i) => (
+          <button
+            type="button"
+            key={q.title}
+            className={i === index ? "on" : ""}
+            aria-label={q.title}
+            aria-selected={i === index}
+            role="tab"
+            onClick={() => {
+              if (i !== index) {
+                playProjectClick();
+                setDir(i > index ? 1 : -1);
+                setM(0);
+                onIndex(i);
+              }
+            }}
+          />
+        ))}
       </div>
     </div>
   );

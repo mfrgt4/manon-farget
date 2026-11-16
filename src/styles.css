@@ -2090,27 +2090,24 @@ footer a:hover {
   right: 20px;
 }
 
-.pm-bar {
+.pm-count-top {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  font-size: 12px;
+  color: var(--mute);
+}
+
+.pm-dots {
   position: fixed;
   left: 50%;
   bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
-  z-index: 4;
+  z-index: 5;
   display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--line-strong);
-  background: rgba(24, 20, 27, 0.92);
-  backdrop-filter: blur(14px);
-}
-
-.pm-bar .pm-btn {
-  width: 34px;
-  height: 34px;
-  border: 0;
-  background: transparent;
+  gap: 7px;
 }
 
 .pm-dots {
@@ -2300,10 +2297,6 @@ footer a:hover {
 
   .form-row {
     grid-template-columns: 1fr;
-  }
-
-  .pm-bar {
-    display: none;
   }
 
   .pm-swipe-hint {
