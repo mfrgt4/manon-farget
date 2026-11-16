@@ -175,7 +175,6 @@ function useEffects() {
 
     return () => {
       rv.disconnect();
-      cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("scroll", onScroll);
