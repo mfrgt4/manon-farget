@@ -1082,7 +1082,7 @@ export default function App() {
               })}
             </div>
 
-            <div className="cell toolbox-card" data-tilt="4">
+            <div className="cell toolbox-card">
               <div className="toolbox-card-head">
                 <span className="mono toolbox-code">
                   DOMAINE // {currentCluster.code}
