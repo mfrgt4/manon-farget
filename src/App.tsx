@@ -1396,12 +1396,6 @@ export default function App() {
                 <span className="dot" />
                 Disponibilité · Avril 2027
               </span>
-              <h3>Recherche de stage</h3>
-              <p>
-                À la recherche d'un stage à partir d'<strong>avril 2027</strong>{" "}
-                en UI/UX design, design graphique, développement web créatif ou
-                audiovisuel.
-              </p>
             </div>
 
             <div className="links">
