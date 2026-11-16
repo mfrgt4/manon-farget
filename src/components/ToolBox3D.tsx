@@ -1,223 +1,140 @@
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import { useState } from "react";
-import type { CSSProperties, MouseEvent } from "react";
-import "./ToolBox3D.css";
+const R = 2.4;
+const PINK = new THREE.Color("#DF729B");
+const MINT = new THREE.Color("#f3f4f6");
+const FG = new THREE.Color("#f3f4f6");
 
-type Domain = {
-  id: string;
-  title: string;
-  subtitle: string;
-  color: string;
-  tools: string[];
-  number: string;
-  icon: string;
-  months: string[];
-};
+function makeLabel(text: string, color: THREE.Color): THREE.Sprite {
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d")!;
+  const font = "600 56px Inter, system-ui, sans-serif";
+  ctx.font = font;
+  c.width = Math.ceil(ctx.measureText(text).width) + 24;
+  c.height = 96;
+  ctx.font = font; ctx.fillStyle = "#fff"; ctx.textBaseline = "middle"; ctx.textAlign = "center";
+  ctx.fillText(text, c.width / 2, c.height / 2);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, color: color.clone() }));
+  const h = 0.34;
+  s.scale.set((c.width / c.height) * h, h, 1);
+  s.userData.base = s.scale.clone();
+  s.userData.color = color;
+  return s;
+}
 
+export default function WordSphere({ words }: { words: string[] }) {
+  const box = useRef<HTMLDivElement>(null);
 
-const DOMAINS: Domain[] = [
-  {
-    id: "design",
-    title: "Design graphique",
-    subtitle: "Créer un univers visuel",
-    color: "#e761aa",
-    number: "01",
-    icon: "/icons/palette_pink.png",
-    months: [],
-    tools: ["Photoshop", "Illustrator", "InDesign", "Affinity"],
-  },
-  {
-    id: "uiux",
-    title: "UI/UX design",
-    subtitle: "Imaginer des interfaces",
-    color: "#9ab88b",
-    number: "02",
-    icon: "/icons/mobile_pink.png",
-    months: [],
-    tools: [
-      "Figma",
-      "UX Design",
-      "Maquettes",
-      "Ergonomie",
-      "Responsive",
-      "Accessibilité",
-      "Gestion de projet",
-      "Notion",
-    ],
-  },
-  {
-    id: "web",
-    title: "Développement web",
-    subtitle: "Donner vie aux idées",
-    color: "#829cf4",
-    number: "03",
-    icon: "/icons/code_pink.png",
-    months: [],
-    tools: [
-      "WordPress",
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "TypeScript",
-      "React",
-      "three.js",
-      "Vite",
-      "Vercel",
-      "Node.js",
-      "PHP",
-      "SQL",
-      "Git",
-      "GitHub",
-      "SEO",
-    ],
-  },
-  {
-    id: "video",
-    title: "Audiovisuel",
-    subtitle: "Raconter en images",
-    color: "#efaa82",
-    number: "04",
-    icon: "/icons/clap_pink.png",
-    months: [],
-    tools: ["Premiere Pro", "After Effects"],
-  },
-];
+  useEffect(() => {
+    const el = box.current!;
+    // Couleurs des mots : suivent le thème jour / sombre (variables --sph-a, --sph-b, --fg)
+    const readPalette = () => {
+      const cs = getComputedStyle(document.documentElement);
+      const g = (n: string, f: string) => cs.getPropertyValue(n).trim() || f;
+      PINK.set(g("--sph-a", "#d84b7d")); MINT.set(g("--sph-b", "#171717")); FG.set(g("--fg", "#171717"));
+    };
+    readPalette();
+    const mo = new MutationObserver(readPalette);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 50);
+    camera.position.set(0, 0, 7);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    el.appendChild(renderer.domElement);
 
-export default function ToolBox3D() {
-  const [activeId, setActiveId] = useState("design");
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true;
+    controls.autoRotate = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    controls.autoRotateSpeed = 1.2;
 
-  const active =
-    DOMAINS.find((domain) => domain.id === activeId) ?? DOMAINS[0];
+    const sprites = words.map((w, i) => {
+      const s = makeLabel(w, i % 3 === 0 ? MINT : PINK); // 1 mot sur 3 en blanc, les autres en rose
+      const y = 1 - (2 * (i + 0.5)) / words.length, r = Math.sqrt(1 - y * y), a = i * 2.399963;
+      s.position.set(Math.cos(a) * r * R, y * R, Math.sin(a) * r * R);
+      scene.add(s);
+      return s;
+    });
 
-  const handlePanelMouseMove = (event: MouseEvent<HTMLElement>) => {
-    const panel = event.currentTarget;
-    const rect = panel.getBoundingClientRect();
+    const ray = new THREE.Raycaster(), mouse = new THREE.Vector2(9, 9);
+    let hover: THREE.Sprite | null = null;
+    const onMove = (e: PointerEvent) => {
+      const b = renderer.domElement.getBoundingClientRect();
+      mouse.set(((e.clientX - b.left) / b.width) * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1);
+    };
+    const onLeave = () => mouse.set(9, 9);
+    let focus: THREE.Vector3 | null = null, resume = 0, down = { x: 0, y: 0 };
+    const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const onDown = (e: PointerEvent) => { onMove(e); down = { x: e.clientX, y: e.clientY }; };
+    const onUp = (e: PointerEvent) => {
+      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6 || !hover) return; // glissement = rotation normale
+      focus = hover.position.clone().normalize();
+      controls.autoRotate = false;
+      clearTimeout(resume);
+      if (!calm) resume = window.setTimeout(() => { controls.autoRotate = true; }, 3500);
+    };
+    el.addEventListener("pointerdown", onDown);
+    el.addEventListener("pointerup", onUp);
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerleave", onLeave);
 
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
+    const resize = () => {
+      const { clientWidth: w, clientHeight: h } = el;
+      renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
+    };
+    const ro = new ResizeObserver(resize); ro.observe(el); resize();
 
-    const rotateY = (x - 0.5) * 10;
-    const rotateX = (0.5 - y) * 8;
+    const v = new THREE.Vector3(), tgt = new THREE.Vector3();
+    let raf = 0;
+    let visible = true;
+    const io = new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible && !raf) loop();
+    });
+    io.observe(el);
+    const onVis = () => { if (!document.hidden && visible && !raf) loop(); };
+    document.addEventListener("visibilitychange", onVis);
+    const loop = () => {
+      if (!visible || document.hidden) { raf = 0; return; } // pas de rendu hors écran
+      if (focus) {
+        camera.position.lerp(focus.clone().multiplyScalar(camera.position.length()), 0.08);
+        if (camera.position.distanceTo(focus.clone().multiplyScalar(camera.position.length())) < 0.02) focus = null;
+      }
+      controls.update();
+      ray.setFromCamera(mouse, camera);
+      hover = (ray.intersectObjects(sprites)[0]?.object as THREE.Sprite) ?? null;
+      el.style.setProperty("cursor", hover ? "pointer" : "grab", "important");
+      controls.autoRotateSpeed += ((hover ? 0.25 : 1.2) - controls.autoRotateSpeed) * 0.08; // facile à viser
+      const d0 = camera.position.length();
+      for (const s of sprites) {
+        const t = 1 - (s.getWorldPosition(v).distanceTo(camera.position) - (d0 - R)) / (2 * R); // 1 = devant
+        const m = s.material as THREE.SpriteMaterial;
+        const on = s === hover;
+        const tc = Math.min(Math.max(t, 0), 1);
+        m.opacity = on ? 1 : 0.38 + 0.62 * tc;
+        m.color.lerp(on ? FG : (s.userData.color as THREE.Color), 0.2);
+        s.scale.lerp(tgt.copy(s.userData.base).multiplyScalar((0.88 + 0.24 * tc) * (on ? 1.35 : 1)), 0.2);
+      }
+      renderer.render(scene, camera);
+      raf = requestAnimationFrame(loop);
+    };
+    loop();
 
-    panel.style.setProperty("--rotate-x", `${rotateX}deg`);
-    panel.style.setProperty("--rotate-y", `${rotateY}deg`);
-  };
-
-  const handlePanelMouseLeave = (event: MouseEvent<HTMLElement>) => {
-    const panel = event.currentTarget;
-
-    panel.style.setProperty("--rotate-x", "0deg");
-    panel.style.setProperty("--rotate-y", "0deg");
-  };
+    return () => {
+      cancelAnimationFrame(raf); io.disconnect(); document.removeEventListener("visibilitychange", onVis); ro.disconnect(); mo.disconnect(); controls.dispose();
+      clearTimeout(resume); el.removeEventListener("pointerdown", onDown); el.removeEventListener("pointerup", onUp); el.removeEventListener("pointermove", onMove); el.removeEventListener("pointerleave", onLeave);
+      sprites.forEach((s) => { (s.material as THREE.SpriteMaterial).map?.dispose(); s.material.dispose(); });
+      renderer.dispose(); renderer.domElement.remove();
+    };
+  }, [words]);
 
   return (
-    <div className="toolbox3d-layout">
-      {/* À GAUCHE : Les 4 icônes et leur nom */}
-      <div className="toolbox3d-stage">
-        <div className="toolbox3d-grain" />
-        <div className="toolbox3d-glow toolbox3d-glow--pink" />
-        <div className="toolbox3d-glow toolbox3d-glow--blue" />
-
-        <div className="toolbox3d-pockets-grid">
-          {DOMAINS.map((domain) => (
-            <button
-              key={domain.id}
-              type="button"
-              className={`toolbox3d-icon ${
-                activeId === domain.id ? "is-active" : ""
-              }`}
-              style={
-                { "--tool-color": domain.color } as CSSProperties
-              }
-              aria-label={`Explorer ${domain.title}`}
-              aria-pressed={activeId === domain.id}
-              onMouseEnter={() => setActiveId(domain.id)}
-              onFocus={() => setActiveId(domain.id)}
-              onClick={() => setActiveId(domain.id)}
-            >
-              <span className="toolbox3d-icon-number">
-                {domain.number}
-              </span>
-
-              <span className="toolbox3d-icon-drawing">
-                <img src={domain.icon} alt="" aria-hidden="true" />
-              </span>
-
-              <span className="toolbox3d-icon-title">
-                {domain.title}
-              </span>
-
-              <span className="toolbox3d-icon-sparkle">✳</span>
-            </button>
-          ))}
-        </div>
-
-        <span className="toolbox3d-hint">
-          <span className="toolbox3d-hint-dot" />
-          SURVOLE UNE ICÔNE POUR EXPLORER
-        </span>
-      </div>
-
-      {/* À DROITE : Le panneau interactif en 3D */}
-      <aside
-        className="toolbox3d-panel"
-        style={
-          {
-            "--active-color": active.color,
-            "--rotate-x": "0deg",
-            "--rotate-y": "0deg",
-          } as CSSProperties
-        }
-        onMouseMove={handlePanelMouseMove}
-        onMouseLeave={handlePanelMouseLeave}
-        aria-live="polite"
-      >
-        <div className="toolbox3d-panel-top">
-          <span className="toolbox3d-number">
-            DOMAINE / {active.number}
-          </span>
-
-          <span className="toolbox3d-panel-symbol">
-            <img src={active.icon} alt="" aria-hidden="true" />
-          </span>
-        </div>
-
-        <span className="toolbox3d-panel-overline">
-          MON SAVOIR-FAIRE
-        </span>
-
-        <h3>{active.title}</h3>
-
-        <p className="toolbox3d-panel-subtitle">
-          {active.subtitle}
-        </p>
-
-        <div className="toolbox3d-panel-divider" />
-
-        <span className="toolbox3d-tools-label">
-          OUTILS &amp; COMPÉTENCES
-        </span>
-
-        <div className="toolbox3d-tags" key={active.id}>
-          {active.tools.map((tool, index) => (
-            <span
-              key={tool}
-              style={{ animationDelay: `${index * 45}ms` }}
-            >
-              {tool}
-            </span>
-          ))}
-        </div>
-
-        <div className="toolbox3d-panel-footer">
-          <span className="toolbox3d-footer-dot" />
-          <span>TOUJOURS EN EXPLORATION</span>
-
-          <span className="toolbox3d-footer-number">
-            {active.number} / 04
-          </span>
-        </div>
-      </aside>
+    <div id="cloudbox" ref={box} role="img" aria-label={"Compétences : " + words.join(", ")}>
+      <div className="hint mono">↻ glisse pour tourner · clique un mot pour l’amener devant</div>
     </div>
   );
 }
