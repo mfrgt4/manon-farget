@@ -250,10 +250,17 @@ nav.is-scrolled {
 
 nav.is-scrolled .in {
   background: transparent;
-  border-color: transparent;
+  border-color: var(--line);
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+/* Au scroll : les numéros 01 / 02 / ... restent lisibles en blanc,
+   même sur le lien actif (fond rose) */
+nav.is-scrolled .nav-num,
+nav.is-scrolled a.on .nav-num {
+  color: #fff;
 }
 
 .nav-shell {
