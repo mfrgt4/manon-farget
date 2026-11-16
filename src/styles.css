@@ -1346,23 +1346,18 @@ h2 .instrument {
   font-size: 10px;
 }
 
-/* Grille éditoriale asymétrique 12 colonnes */
+/* Grille uniforme : 3 projets par ligne, tous de la même taille */
 .projects-editorial-grid {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 par ligne */
   gap: 20px;
+  align-items: stretch;
 }
 
-.proj-wide {
-  grid-column: span 7;
-}
-
-.proj-tall {
-  grid-column: span 5;
-}
-
+.proj-wide,
+.proj-tall,
 .proj-std {
-  grid-column: span 4;
+  grid-column: span 1;
 }
 
 .cell.proj {
@@ -1370,6 +1365,11 @@ h2 .instrument {
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  height: 100%;
+}
+
+.projects-editorial-grid .thumb {
+  aspect-ratio: 4 / 3;
 }
 
 .thumb {
