@@ -867,7 +867,7 @@ h2 .instrument {
 .sk-count b {
   font-size: clamp(44px, 5vw, 64px);
   line-height: 0.95;
-  color: var(--acc);
+  color: #fff;
   font-weight: 700;
   animation: skpop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
