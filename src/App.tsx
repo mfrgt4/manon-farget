@@ -791,8 +791,9 @@ export default function App() {
 
             <p className="lead rv" style={delay(0.26)}>
               Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
-              Clermont Auvergne. Je mêle créativité et nouvelles
-              technologies pour donner vie à des expériences visuelles soignées.
+              Clermont Auvergne. Je mêle créativité
+              et nouvelles technologies pour donner vie à des expériences
+              visuelles soignées.
             </p>
 
             <div className="btns rv" style={delay(0.34)}>
@@ -806,7 +807,7 @@ export default function App() {
           </div>
 
           <div className="h-visual rv" style={delay(0.2)}>
-            <div className="arch-frame">
+            <div className="arch-frame" data-tilt="6">
               <div className="arch">
                 <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
                 <div className="arch-vignette" aria-hidden="true" />
@@ -814,13 +815,13 @@ export default function App() {
 
               <div className="h-badge" aria-hidden="true">
                 <svg viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="60" fill="#EB8FAB" />
+                  <circle cx="60" cy="60" r="60" fill="#B72D60" />
                   <circle
                     cx="60"
                     cy="60"
                     r="56"
                     fill="none"
-                    stroke="rgba(235, 143, 171, 0.35)"
+                    stroke="rgba(233,165,187,0.35)"
                     strokeWidth="1"
                   />
                   <defs>
@@ -848,7 +849,7 @@ export default function App() {
                     y="67"
                     textAnchor="middle"
                     fontSize="20"
-                    fill="#EB8FAB"
+                    fill="#E9A5BB"
                   >
                     ✦
                   </text>
@@ -920,6 +921,7 @@ export default function App() {
                   {fact}
                 </span>
               ))}
+              <span className="fact-pill mono">📍 Lyon</span>
             </div>
           </div>
 
@@ -999,19 +1001,11 @@ export default function App() {
                     <span className="sk-n mono">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="sk-t">{s.title}</span>
                     <span className="sk-plus" aria-hidden="true">
                       +
                     </span>
                   </button>
-                  <div className="sk-body">
-                    <div>
-                      <p>{s.text}</p>
-                      <span className="sk-ico" aria-hidden="true">
-                        {s.icon}
-                      </span>
-                    </div>
-                  </div>
+
                 </li>
               );
             })}
@@ -1217,10 +1211,12 @@ export default function App() {
 
                 <div className="projects-editorial-grid">
                   {displayedList.map((p, i) => {
+
                     return (
                       <article
                         key={p.title}
                         className="cell proj aes"
+                        data-tilt="6"
                         style={delay((i % 3) * 0.08)}
                         role="button"
                         tabIndex={0}
@@ -1352,6 +1348,12 @@ export default function App() {
                 <span className="dot" />
                 Disponibilité · Avril 2027
               </span>
+              <h3>Recherche de stage</h3>
+              <p>
+                À la recherche d'un stage à partir d'<strong>avril 2027</strong>{" "}
+                en UI/UX design, design graphique, développement web créatif ou
+                audiovisuel.
+              </p>
             </div>
 
             <div className="links">
