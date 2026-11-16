@@ -86,4 +86,4 @@ export const about = [
   "J'aime autant coder une interface que la dessiner ou lui donner vie avec du mouvement : développement web, UI/UX design et motion design sont mes terrains de jeu.",
   "Je cherche un stage à partir d'avril 2027 pour progresser au sein d'une équipe, et y apporter ma curiosité et mon sens du détail.",
 ];
-export const facts = ["🎓 BUT MMI · 2e année", "🗓️ Stage avril 2027"];
+export const facts = ["📍 Lyon", "🎓 BUT MMI · 2e année", "🗓️ Stage avril 2027"];
