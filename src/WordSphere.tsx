@@ -4,25 +4,20 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const R = 2.4;
 const PINK = new THREE.Color("#EB8FAB");
-const MINT = new THREE.Color("#f6f1f4"); // blanc rosé, très doux
+const MINT = new THREE.Color("#f6f1f4");
 const FG = new THREE.Color("#ffffff");
 
 function makeLabel(text: string, color: THREE.Color): THREE.Sprite {
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d")!;
-  // Typo plus fine, lettres espacées : rendu plus élégant, moins "tag"
   const font = "500 52px Inter, system-ui, sans-serif";
-  const letterSpacing = 3;
   ctx.font = font;
-  // @ts-expect-error letterSpacing canvas (navigateurs récents)
-  ctx.letterSpacing = `${letterSpacing}px`;
+  ctx.letterSpacing = "3px";
   c.width = Math.ceil(ctx.measureText(text).width) + 56;
   c.height = 96;
   ctx.font = font;
-  // @ts-expect-error letterSpacing canvas (navigateurs récents)
-  ctx.letterSpacing = `${letterSpacing}px`;
+  ctx.letterSpacing = "3px";
   ctx.textBaseline = "middle"; ctx.textAlign = "center";
-  // Halo doux autour du mot (glow discret, pas de contour dur)
   ctx.shadowColor = "rgba(235, 143, 171, 0.45)";
   ctx.shadowBlur = 18;
   ctx.fillStyle = "#fff";
@@ -60,10 +55,16 @@ export default function WordSphere({
   useEffect(() => {
     const el = box.current!;
     // Couleurs des mots : suivent le thème jour / sombre (variables --sph-a, --sph-b, --fg)
+    // Mots toujours clairs sur fond sombre : jamais de noir (#171717).
     const readPalette = () => {
       const cs = getComputedStyle(document.documentElement);
       const g = (n: string, f: string) => cs.getPropertyValue(n).trim() || f;
-      PINK.set(g("--sph-a", "#EB8FAB")); MINT.set(g("--sph-b", "#f6f1f4")); FG.set(g("--fg", "#ffffff"));
+      PINK.set(g("--sph-a", "#EB8FAB"));
+      MINT.set("#f6f1f4");
+      FG.set("#ffffff");
+      const tmp = new THREE.Color(g("--sph-a", "#EB8FAB"));
+      const lum = 0.2126 * tmp.r + 0.7152 * tmp.g + 0.0722 * tmp.b;
+      if (lum < 0.25) PINK.set("#EB8FAB");
     };
     readPalette();
     const mo = new MutationObserver(readPalette);
@@ -78,10 +79,10 @@ export default function WordSphere({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true; controls.dampingFactor = 0.06;
     controls.autoRotate = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-    controls.autoRotateSpeed = 0.8; // rotation plus lente, plus calme
+    controls.autoRotateSpeed = 0.8;
 
     const sprites = words.map((w, i) => {
-      const s = makeLabel(w, i % 4 === 0 ? PINK : MINT); // 1 mot sur 4 en rose, le reste en blanc rosé : accent, pas saturation
+      const s = makeLabel(w, i % 4 === 0 ? PINK : MINT); // 1 mot sur 4 en rose
       const y = 1 - (2 * (i + 0.5)) / words.length, r = Math.sqrt(1 - y * y), a = i * 2.399963;
       s.userData.word = w;
       s.position.set(Math.cos(a) * r * R, y * R, Math.sin(a) * r * R);
@@ -128,7 +129,7 @@ export default function WordSphere({
           ? 1
           : dimmed
             ? 0.1
-            : 0.12 + 0.88 * depth; // mots derrière presque effacés : effet de profondeur
+            : 0.12 + 0.88 * depth;
         m.opacity = targetOpacity;
         m.color.lerp(on || isFocused ? FG : (s.userData.color as THREE.Color), 0.2);
         const targetScale = on || isFocused
@@ -137,7 +138,7 @@ export default function WordSphere({
             ? s.userData.base.clone().multiplyScalar(1.15)
             : dimmed
               ? s.userData.base.clone().multiplyScalar(0.8)
-              : s.userData.base.clone().multiplyScalar(0.72 + 0.42 * depth); // devant plus grand, derrière plus petit
+              : s.userData.base.clone().multiplyScalar(0.72 + 0.42 * depth);
         s.scale.lerp(targetScale, 0.2);
       }
       renderer.render(scene, camera);
