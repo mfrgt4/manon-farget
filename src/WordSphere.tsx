@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const R = 2.4;
-const PINK = new THREE.Color("#DF729B");
+const PINK = new THREE.Color("#EB8FAB");
 const MINT = new THREE.Color("#f3f4f6");
 const FG = new THREE.Color("#f3f4f6");
 
