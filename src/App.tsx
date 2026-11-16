@@ -363,7 +363,7 @@ function useTilt() {
           return;
         }
 
-        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-5 * s.p).toFixed(3)}px)`;
+        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-5 * s.p).toFixed(3)}px) scale(${(1 + 0.012 * s.p).toFixed(4)})`;
         el.style.setProperty("--p", s.p.toFixed(4));
         busy = true;
       });
@@ -819,13 +819,13 @@ export default function App() {
 
               <div className="h-badge" aria-hidden="true">
                 <svg viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="60" fill="#B72D60" />
+                  <circle cx="60" cy="60" r="60" fill="#EB8FAB" />
                   <circle
                     cx="60"
                     cy="60"
                     r="56"
                     fill="none"
-                    stroke="rgba(233,165,187,0.35)"
+                    stroke="rgba(235, 143, 171, 0.35)"
                     strokeWidth="1"
                   />
                   <defs>
@@ -853,7 +853,7 @@ export default function App() {
                     y="67"
                     textAnchor="middle"
                     fontSize="20"
-                    fill="#E9A5BB"
+                    fill="#EB8FAB"
                   >
                     ✦
                   </text>
