@@ -85,7 +85,7 @@ export default function WordSphere({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true; controls.dampingFactor = 0.04;
     controls.autoRotate = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-    controls.autoRotateSpeed = 2.4; // sphère plus rapide
+    controls.autoRotateSpeed = 1.8; // sphère plus rapide
 
     const sprites = words.map((w, i) => {
       const s = makeLabel(w, MINT); // tous les mots en blanc au repos
