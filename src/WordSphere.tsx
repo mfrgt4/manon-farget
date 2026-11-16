@@ -3,33 +3,31 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const R = 2.4;
-const PINK = new THREE.Color("#F2A7BE"); // rose pastel
-const MINT = new THREE.Color("#FDF3F6"); // blanc laiteux rosé
+const PINK = new THREE.Color("#EB8FAB"); // rose du site : sert UNIQUEMENT au mot survolé depuis les pastilles
+const MINT = new THREE.Color("#ffffff"); // tous les mots en blanc
 const FG = new THREE.Color("#FFF5F8");
 
 function makeLabel(text: string, color: THREE.Color): THREE.Sprite {
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d")!;
-  const font = "400 48px Inter, system-ui, sans-serif";
+  const font = "400 48px Inter, system-ui, sans-serif"; // plus fin, plus doux
   ctx.font = font;
   ctx.letterSpacing = "4px";
-  c.width = Math.ceil(ctx.measureText(text).width) + 96; // marge pour le contour
+  c.width = Math.ceil(ctx.measureText(text).width) + 120; // marge pour le contour épais
   c.height = 96;
   ctx.font = font;
   ctx.letterSpacing = "4px";
   ctx.textBaseline = "middle"; ctx.textAlign = "center";
-  // CONTOUR VISIBLE autour du mot : rose foncé, épais, sans flou,
-  // dessiné AVANT le remplissage pour qu'il dépasse tout autour des lettres.
-  // (Un contour blanc sur remplissage blanc est invisible.)
-  ctx.shadowBlur = 0;
-  ctx.lineJoin = "round";
-  ctx.lineWidth = 7;
-  ctx.strokeStyle = "rgba(90, 20, 50, 0.65)";
-  ctx.strokeText(text, c.width / 2, c.height / 2 + 1);
-  // Remplissage + glow par-dessus
+  // Glow très diffus
   ctx.shadowColor = "rgba(242, 167, 190, 0.28)";
   ctx.shadowBlur = 26;
   ctx.fillStyle = "#fff";
+  // CONTOUR doux autour du mot
+  ctx.shadowBlur = 0; // contour net, pas flouté
+  ctx.lineJoin = "round";
+  ctx.lineWidth = 9; // contour épais style sticker
+  ctx.strokeStyle = "rgba(5, 5, 8, 0.92)"; // contour noir épais, comme sur ton image Supabase
+  ctx.strokeText(text, c.width / 2, c.height / 2 + 1);
   ctx.fillText(text, c.width / 2, c.height / 2 + 1);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -67,12 +65,12 @@ export default function WordSphere({
     const readPalette = () => {
       const cs = getComputedStyle(document.documentElement);
       const g = (n: string, f: string) => cs.getPropertyValue(n).trim() || f;
-      PINK.set(g("--sph-a", "#F2A7BE"));
-      MINT.set("#FDF3F6");
+      PINK.set(g("--sph-a", "#EB8FAB"));
+      MINT.set("#ffffff");
       FG.set("#FFF5F8");
       const tmp = new THREE.Color(g("--sph-a", "#F2A7BE"));
       const lum = 0.2126 * tmp.r + 0.7152 * tmp.g + 0.0722 * tmp.b;
-      if (lum < 0.25) PINK.set("#F2A7BE");
+      if (lum < 0.25) PINK.set("#EB8FAB");
     };
     readPalette();
     const mo = new MutationObserver(readPalette);
@@ -87,10 +85,10 @@ export default function WordSphere({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true; controls.dampingFactor = 0.04;
     controls.autoRotate = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-    controls.autoRotateSpeed = 0.6;
+    controls.autoRotateSpeed = 2.4; // sphère plus rapide
 
     const sprites = words.map((w, i) => {
-      const s = makeLabel(w, i % 5 === 0 ? PINK : MINT); // 1 mot sur 5 en rose pastel
+      const s = makeLabel(w, MINT); // tous les mots en blanc au repos
       const y = 1 - (2 * (i + 0.5)) / words.length, r = Math.sqrt(1 - y * y), a = i * 2.399963;
       s.userData.word = w;
       s.position.set(Math.cos(a) * r * R, y * R, Math.sin(a) * r * R);
@@ -132,14 +130,17 @@ export default function WordSphere({
         const dimmed = highlighted.length > 0 && !isHighlighted && !isFocused;
 
         // Priorité : hover / focus > highlight > dimmed > profondeur
-        const depth = Math.pow(Math.min(Math.max(t, 0), 1), 1.2);
+        const depth = Math.pow(Math.min(Math.max(t, 0), 1), 1.2); // courbe douce
         const targetOpacity = on || isFocused
           ? 0.95
           : dimmed
             ? 0.18
             : 0.3 + 0.65 * depth;
         m.opacity = targetOpacity;
-        m.color.lerp(on || isFocused ? FG : (s.userData.color as THREE.Color), 0.2);
+        m.color.lerp(
+          isFocused ? PINK : on ? FG : (s.userData.color as THREE.Color),
+          0.2,
+        ); // pastille survolée -> mot en ROSE, sinon blanc
         const targetScale = on || isFocused
           ? s.userData.base.clone().multiplyScalar(1.3) // hover un peu plus gros
           : isHighlighted
@@ -147,7 +148,7 @@ export default function WordSphere({
             : dimmed
               ? s.userData.base.clone().multiplyScalar(0.9)
               : s.userData.base.clone().multiplyScalar(0.88 + 0.22 * depth);
-        s.scale.lerp(targetScale, 0.12);
+        s.scale.lerp(targetScale, 0.12); // transition plus douce
       }
       renderer.render(scene, camera);
       raf = requestAnimationFrame(loop);

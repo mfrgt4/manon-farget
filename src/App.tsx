@@ -1049,8 +1049,7 @@ export default function App() {
               rel="noopener noreferrer"
             >
               Heaven Ghobrial
-            </a>{" "}
-            · {tools.length} outils &amp; technologies
+            </a>
           </p>
         </div>
 
