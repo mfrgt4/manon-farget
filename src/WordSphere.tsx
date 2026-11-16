@@ -26,8 +26,24 @@ function makeLabel(text: string, color: THREE.Color): THREE.Sprite {
   return s;
 }
 
-export default function WordSphere({ words }: { words: string[] }) {
+type WordSphereProps = {
+  words: string[];
+  highlightedWords?: string[];
+  focusedWord?: string | null;
+};
+
+export default function WordSphere({
+  words,
+  highlightedWords = [],
+  focusedWord = null,
+}: WordSphereProps) {
   const box = useRef<HTMLDivElement>(null);
+  // Refs miroirs : le useEffect THREE ne dépend que de `words`,
+  // la boucle de rendu lit les valeurs à jour sans recréer la scène.
+  const highlightedRef = useRef<string[]>(highlightedWords);
+  const focusedRef = useRef<string | null>(focusedWord);
+  highlightedRef.current = highlightedWords;
+  focusedRef.current = focusedWord;
 
   useEffect(() => {
     const el = box.current!;
@@ -55,6 +71,7 @@ export default function WordSphere({ words }: { words: string[] }) {
     const sprites = words.map((w, i) => {
       const s = makeLabel(w, i % 3 === 0 ? MINT : PINK); // 1 mot sur 3 en blanc, les autres en rose
       const y = 1 - (2 * (i + 0.5)) / words.length, r = Math.sqrt(1 - y * y), a = i * 2.399963;
+      s.userData.word = w;
       s.position.set(Math.cos(a) * r * R, y * R, Math.sin(a) * r * R);
       scene.add(s);
       return s;
@@ -88,9 +105,27 @@ export default function WordSphere({ words }: { words: string[] }) {
         const t = 1 - (s.getWorldPosition(v).distanceTo(camera.position) - (d0 - R)) / (2 * R); // 1 = devant
         const m = s.material as THREE.SpriteMaterial;
         const on = s === hover;
-        m.opacity = on ? 1 : 0.2 + 0.8 * Math.min(Math.max(t, 0), 1);
-        m.color.lerp(on ? FG : (s.userData.color as THREE.Color), 0.2);
-        s.scale.lerp(on ? s.userData.base.clone().multiplyScalar(1.35) : s.userData.base, 0.2);
+        const isFocused = focusedRef.current !== null && s.userData.word === focusedRef.current;
+        const highlighted = highlightedRef.current;
+        const isHighlighted = highlighted.length > 0 && highlighted.includes(s.userData.word as string);
+        const dimmed = highlighted.length > 0 && !isHighlighted && !isFocused;
+
+        // Priorité : hover / focus > highlight > dimmed > profondeur
+        const targetOpacity = on || isFocused
+          ? 1
+          : dimmed
+            ? 0.12
+            : 0.2 + 0.8 * Math.min(Math.max(t, 0), 1);
+        m.opacity = targetOpacity;
+        m.color.lerp(on || isFocused ? FG : (s.userData.color as THREE.Color), 0.2);
+        const targetScale = on || isFocused
+          ? s.userData.base.clone().multiplyScalar(1.5)
+          : isHighlighted
+            ? s.userData.base.clone().multiplyScalar(1.2)
+            : dimmed
+              ? s.userData.base.clone().multiplyScalar(0.85)
+              : s.userData.base;
+        s.scale.lerp(targetScale, 0.2);
       }
       renderer.render(scene, camera);
       raf = requestAnimationFrame(loop);
