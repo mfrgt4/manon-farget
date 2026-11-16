@@ -259,8 +259,23 @@ nav {
   -webkit-backdrop-filter: none;
 }
 
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.nav-brand:hover {
+  background: transparent;
+  transform: none;
+}
+
 .nav-brand-img {
-  height: 32px;
+  height: 48px;
   width: auto;
   display: block;
 }
