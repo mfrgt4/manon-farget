@@ -258,7 +258,6 @@ nav.is-scrolled .in {
 
 /* Au scroll : les numéros 01 / 02 / ... restent lisibles en blanc,
    même sur le lien actif (fond rose) */
-nav.is-scrolled .nav-num,
 nav.is-scrolled a.on .nav-num {
   color: var(--acc);
 }
