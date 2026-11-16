@@ -176,6 +176,8 @@ textarea:focus-visible,
     transparent 68%
   );
   transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
 }
 
 /* ================= BARRE DE PROGRESSION & ORBES ================= */
@@ -1921,7 +1923,7 @@ footer a:hover {
   border-radius: 18px;
   overflow: hidden;
   background: var(--card);
-  border: 1px solid var(--line-strong);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow: 0 28px 70px rgba(0, 0, 0, 0.65);
 }
 
@@ -2051,7 +2053,7 @@ footer a:hover {
   font-size: 16px;
   color: var(--fg);
   background: var(--card);
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   opacity: 0.52;
   transition:
     opacity 0.25s ease,
@@ -2067,7 +2069,7 @@ footer a:hover {
 .pm-thumbs button.on,
 .pm-thumbs button:hover {
   opacity: 1;
-  border-color: var(--acc);
+  border-color: #fff;
 }
 
 .pm-cat {
@@ -2572,4 +2574,35 @@ body:has(.palette-overlay) #cursor-dot,
 body:has(.palette-overlay) #cursor-ring {
   opacity: 0 !important;
   display: none !important;
+}
+
+/* Flèches de la modale : fondu selon le survol de l'encadré */
+@media (hover: hover) and (pointer: fine) {
+  .pm-arrow,
+  .pm-sarrow {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.4s ease,
+      visibility 0.4s ease,
+      background 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  /* Dès qu'on revient sur l'encadré (.pm-wrap), les flèches réapparaissent en fondu */
+  .pm:has(.pm-wrap:hover) .pm-arrow,
+  .pm:has(.pm-wrap:hover) .pm-sarrow {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Clavier : la flèche reste visible quand elle a le focus */
+  .pm-arrow:focus-visible,
+  .pm-sarrow:focus-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
 }

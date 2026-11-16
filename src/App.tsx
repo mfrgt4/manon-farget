@@ -160,6 +160,12 @@ function useEffects() {
       if (glow) {
         glow.style.left = mx + "px";
         glow.style.top = my + "px";
+        // Ombre rose ronde : uniquement au hover des cartes et encadrés,
+        // pas sur l'arrière-plan du site
+        const onCard = (e.target as HTMLElement).closest(
+          ".cell, .sk-preview-card, .arch-frame, .p-frame, .toolbox-layout, .toolbox-explorer, .toolbox-sphere-wrap, .palette, .pm-modal",
+        );
+        glow.style.opacity = onCard ? "1" : "0";
       }
 
       const inPalette = (e.target as HTMLElement).closest(".palette-overlay");
@@ -187,6 +193,7 @@ function useEffects() {
     };
 
     const onLeave = () => {
+      if (glow) glow.style.opacity = "0";
       if (cursorDot) cursorDot.style.opacity = "0";
       if (cursorRing) cursorRing.style.opacity = "0";
     };
@@ -677,50 +684,87 @@ export default function App() {
   const paletteGroups = useMemo(() => {
     const q = paletteQuery.trim().toLowerCase();
     const match = (label: string) => !q || label.toLowerCase().includes(q);
-    const groups: { title: string; items: { key: string; label: string; code?: string; run: () => void }[] }[] = [
+    const groups: {
+      title: string;
+      items: { key: string; label: string; code?: string; run: () => void }[];
+    }[] = [
       {
         title: "Aller à",
-        items: paletteSections.filter((s) => match(s.label)).map((s) => ({
-          key: `section-${s.id}`,
-          label: s.label,
-          code: s.code,
-          run: () => document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth" }),
-        })),
+        items: paletteSections
+          .filter((s) => match(s.label))
+          .map((s) => ({
+            key: `section-${s.id}`,
+            label: s.label,
+            code: s.code,
+            run: () =>
+              document
+                .getElementById(s.id)
+                ?.scrollIntoView({ behavior: "smooth" }),
+          })),
       },
       {
         title: "Projets",
-        items: projects.filter((p) => match(p.title)).map((p) => ({
-          key: `project-${p.title}`,
-          label: p.title,
-          run: () => {
-            const idx = projects.findIndex((x) => x.title === p.title);
-            if (idx >= 0) {
-              setModalProjects(projects);
-              setOpen(idx);
-            }
-          },
-        })),
+        items: projects
+          .filter((p) => match(p.title))
+          .map((p) => ({
+            key: `project-${p.title}`,
+            label: p.title,
+            run: () => {
+              const idx = projects.findIndex((x) => x.title === p.title);
+              if (idx >= 0) {
+                setModalProjects(projects);
+                setOpen(idx);
+              }
+            },
+          })),
       },
       {
         title: "Actions",
         items: [
-          { key: "action-email", label: "Copier mon email", run: () => { navigator.clipboard?.writeText(profile.email).catch(() => {}); } },
-          { key: "action-cv", label: "Télécharger mon CV", run: () => window.open(profile.cv, "_blank") },
+          {
+            key: "action-email",
+            label: "Copier mon email",
+            run: () => {
+              navigator.clipboard?.writeText(profile.email).catch(() => {});
+            },
+          },
+          {
+            key: "action-cv",
+            label: "Télécharger mon CV",
+            run: () => window.open(profile.cv, "_blank"),
+          },
         ].filter((a) => match(a.label)),
       },
       {
         title: "Réseaux",
         items: [
-          { key: "net-linkedin", label: "LinkedIn", run: () => window.open(profile.linkedin, "_blank") },
-          { key: "net-github", label: "GitHub", run: () => window.open(profile.github, "_blank") },
-          { key: "net-email", label: "Email", run: () => { location.href = `mailto:${profile.email}`; } },
+          {
+            key: "net-linkedin",
+            label: "LinkedIn",
+            run: () => window.open(profile.linkedin, "_blank"),
+          },
+          {
+            key: "net-github",
+            label: "GitHub",
+            run: () => window.open(profile.github, "_blank"),
+          },
+          {
+            key: "net-email",
+            label: "Email",
+            run: () => {
+              location.href = `mailto:${profile.email}`;
+            },
+          },
         ].filter((a) => match(a.label)),
       },
     ];
     return groups.filter((g) => g.items.length > 0);
   }, [paletteQuery, paletteSections]);
 
-  const paletteFlat = useMemo(() => paletteGroups.flatMap((g) => g.items), [paletteGroups]);
+  const paletteFlat = useMemo(
+    () => paletteGroups.flatMap((g) => g.items),
+    [paletteGroups],
+  );
 
   const runPaletteItem = (item: (typeof paletteFlat)[number]) => {
     playButtonClick();
@@ -829,7 +873,10 @@ export default function App() {
       <div className="orb o2" aria-hidden="true" />
 
       {/* ================= NAVIGATION ================= */}
-      <nav aria-label="Navigation principale" className={navScrolled ? "is-scrolled" : ""}>
+      <nav
+        aria-label="Navigation principale"
+        className={navScrolled ? "is-scrolled" : ""}
+      >
         <div className="nav-shell">
           <a
             href="#accueil"
@@ -874,12 +921,28 @@ export default function App() {
               setPaletteIndex(0);
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
-              <path d="m16.5 16.5 4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                cx="11"
+                cy="11"
+                r="7"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              />
+              <path
+                d="m16.5 16.5 4 4"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
-
 
           <button
             type="button"
@@ -910,7 +973,9 @@ export default function App() {
         >
           <div className="palette">
             <div className="palette-head">
-              <span aria-hidden="true" className="palette-arrow">›</span>
+              <span aria-hidden="true" className="palette-arrow">
+                ›
+              </span>
               <input
                 ref={paletteInputRef}
                 type="text"
@@ -924,7 +989,9 @@ export default function App() {
                   if (e.key === "Escape") setPaletteOpen(false);
                   else if (e.key === "ArrowDown") {
                     e.preventDefault();
-                    setPaletteIndex((i) => Math.min(i + 1, paletteFlat.length - 1));
+                    setPaletteIndex((i) =>
+                      Math.min(i + 1, paletteFlat.length - 1),
+                    );
                   } else if (e.key === "ArrowUp") {
                     e.preventDefault();
                     setPaletteIndex((i) => Math.max(i - 1, 0));
@@ -941,9 +1008,13 @@ export default function App() {
               )}
               {paletteGroups.map((group) => (
                 <div key={group.title} className="palette-group">
-                  <span className="mono palette-group-title">{group.title}</span>
+                  <span className="mono palette-group-title">
+                    {group.title}
+                  </span>
                   {group.items.map((item) => {
-                    const flatIdx = paletteFlat.findIndex((x) => x.key === item.key);
+                    const flatIdx = paletteFlat.findIndex(
+                      (x) => x.key === item.key,
+                    );
                     return (
                       <button
                         key={item.key}
