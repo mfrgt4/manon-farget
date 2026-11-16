@@ -1366,6 +1366,8 @@ h2 .instrument {
   flex-direction: column;
   cursor: pointer;
   height: 100%;
+  /* Inclinaison permanente, comme la carte CV Vidéo */
+  transform: rotate(-1.5deg);
 }
 
 .projects-editorial-grid .thumb {
