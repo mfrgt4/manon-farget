@@ -10,23 +10,26 @@ const FG = new THREE.Color("#FFF5F8");
 function makeLabel(text: string, color: THREE.Color): THREE.Sprite {
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d")!;
-  const font = "400 48px Inter, system-ui, sans-serif"; // plus fin, plus doux
+  const font = "400 48px Inter, system-ui, sans-serif";
   ctx.font = font;
   ctx.letterSpacing = "4px";
-  c.width = Math.ceil(ctx.measureText(text).width) + 72;
+  c.width = Math.ceil(ctx.measureText(text).width) + 96; // marge pour le contour
   c.height = 96;
   ctx.font = font;
   ctx.letterSpacing = "4px";
   ctx.textBaseline = "middle"; ctx.textAlign = "center";
-  // Glow très diffus
+  // CONTOUR VISIBLE autour du mot : rose foncé, épais, sans flou,
+  // dessiné AVANT le remplissage pour qu'il dépasse tout autour des lettres.
+  // (Un contour blanc sur remplissage blanc est invisible.)
+  ctx.shadowBlur = 0;
+  ctx.lineJoin = "round";
+  ctx.lineWidth = 7;
+  ctx.strokeStyle = "rgba(90, 20, 50, 0.65)";
+  ctx.strokeText(text, c.width / 2, c.height / 2 + 1);
+  // Remplissage + glow par-dessus
   ctx.shadowColor = "rgba(242, 167, 190, 0.28)";
   ctx.shadowBlur = 26;
   ctx.fillStyle = "#fff";
-  // CONTOUR doux autour du mot
-  ctx.lineJoin = "round";
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
-  ctx.strokeText(text, c.width / 2, c.height / 2 + 1);
   ctx.fillText(text, c.width / 2, c.height / 2 + 1);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -84,7 +87,7 @@ export default function WordSphere({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true; controls.dampingFactor = 0.04;
     controls.autoRotate = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-    controls.autoRotateSpeed = 0.6; // très lent, effet flottant
+    controls.autoRotateSpeed = 0.6;
 
     const sprites = words.map((w, i) => {
       const s = makeLabel(w, i % 5 === 0 ? PINK : MINT); // 1 mot sur 5 en rose pastel
@@ -129,7 +132,7 @@ export default function WordSphere({
         const dimmed = highlighted.length > 0 && !isHighlighted && !isFocused;
 
         // Priorité : hover / focus > highlight > dimmed > profondeur
-        const depth = Math.pow(Math.min(Math.max(t, 0), 1), 1.2); // courbe douce
+        const depth = Math.pow(Math.min(Math.max(t, 0), 1), 1.2);
         const targetOpacity = on || isFocused
           ? 0.95
           : dimmed
@@ -144,7 +147,7 @@ export default function WordSphere({
             : dimmed
               ? s.userData.base.clone().multiplyScalar(0.9)
               : s.userData.base.clone().multiplyScalar(0.88 + 0.22 * depth);
-        s.scale.lerp(targetScale, 0.12); // transition plus douce
+        s.scale.lerp(targetScale, 0.12);
       }
       renderer.render(scene, camera);
       raf = requestAnimationFrame(loop);
