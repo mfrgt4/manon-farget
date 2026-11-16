@@ -1075,7 +1075,7 @@ export default function App() {
                       textLength="252"
                       lengthAdjust="spacing"
                     >
-                      UI/UX DESIGN • CRÉATION • MOTION • WEB •
+                      COMMUNICATION • CRÉATION • MOTION • WEB •
                     </textPath>
                   </text>
                   <text
