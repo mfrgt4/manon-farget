@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import type { Media, Project } from "./data";
 
 type Slide = Media | { type: "placeholder"; src: ""; alt: string };
@@ -30,33 +30,31 @@ function View({ s, p }: { s: Slide; p: Project }) {
     );
   }
 
+  if (s.type === "video" && s.src.includes("youtube.com/embed/")) {
+    return (
+      <iframe
+        src={s.src}
+        title={s.alt}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+      />
+    );
+  }
 
-if (s.type === "video" && s.src.includes("youtube.com/embed/")) {
-  return (
-    <iframe
-      src={s.src}
-      title={s.alt}
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowFullScreen
-    />
-  );
-}
-
-if (s.type === "video") {
-  return (
-    <video
-      src={s.src}
-      poster={s.poster}
-      controls
-      autoPlay
-      playsInline
-      ref={(video) => {
-        if (video) video.volume = 0.15;
-      }}
-    />
-  );
-}
-
+  if (s.type === "video") {
+    return (
+      <video
+        src={s.src}
+        poster={s.poster}
+        controls
+        autoPlay
+        playsInline
+        ref={(video) => {
+          if (video) video.volume = 0.15;
+        }}
+      />
+    );
+  }
 
   const label =
     s.type === "image"
@@ -98,14 +96,17 @@ export default function ProjectModal({
   const slideTouchX = useRef(0);
 
   // Changement de projet
-  const go = (d: number) => {
-    if (n <= 1) return;
+  const go = useCallback(
+    (d: number) => {
+      if (n <= 1) return;
 
-    playProjectClick();
-    setDir(d);
-    setM(0);
-    onIndex((index + d + n) % n);
-  };
+      playProjectClick();
+      setDir(d);
+      setM(0);
+      onIndex((index + d + n) % n);
+    },
+    [n, index, onIndex],
+  );
 
   // Bloque le scroll lorsque la fenêtre est ouverte
   useEffect(() => {
@@ -143,10 +144,10 @@ export default function ProjectModal({
     window.addEventListener("keydown", key);
 
     return () => window.removeEventListener("keydown", key);
-  });
+  }, [go, onClose]);
 
-  // Visuels du projet
-  const slides: Slide[] = p.media?.length
+  // Visuels du projet — sécurisé si p est undefined
+  const slides: Slide[] = p?.media?.length
     ? p.media
     : [1, 2, 3].map((i) => ({
         type: "placeholder" as const,
@@ -157,13 +158,16 @@ export default function ProjectModal({
   const cur = slides[Math.min(m, slides.length - 1)];
 
   // Changement d'image ou de vidéo
-  const goSlide = (d: number) => {
-    if (slides.length <= 1) return;
+  const goSlide = useCallback(
+    (d: number) => {
+      if (slides.length <= 1) return;
 
-    playProjectClick();
-    setDir(d);
-    setM((current) => (current + d + slides.length) % slides.length);
-  };
+      playProjectClick();
+      setDir(d);
+      setM((current) => (current + d + slides.length) % slides.length);
+    },
+    [slides.length],
+  );
 
   // Remet le diaporama au début lors d'un changement de projet
   useEffect(() => {
@@ -227,7 +231,6 @@ export default function ProjectModal({
         className="pm-wrap"
         style={{ "--dx": `${dir * 40}px` } as CSSProperties}
       >
-        
         <p className="pm-swipe-hint">
           <span aria-hidden="true">←</span>
           &nbsp; &nbsp; swipe pour changer de projet &nbsp; &nbsp;
@@ -319,17 +322,16 @@ export default function ProjectModal({
 
         {/* Informations du projet */}
         <div className="pm-info pm-slide" key={p.title + "-info"}>
+          <div className="pm-cat">
+            <span className="mono pm-k">{LABEL[p.category]}</span>
 
-        <div className="pm-cat">
-        <span className="mono pm-k">{LABEL[p.category]}</span>
-
-          {p.collaboration && (
-            <>
-              <span className="pm-separator">•</span>
-              <span className="mono pm-k">{p.collaboration}</span>
-            </>
-          )}
-        </div>
+            {p.collaboration && (
+              <>
+                <span className="pm-separator">•</span>
+                <span className="mono pm-k">{p.collaboration}</span>
+              </>
+            )}
+          </div>
 
           <h2 id="pm-title">{p.title}</h2>
 
@@ -381,7 +383,6 @@ export default function ProjectModal({
               )}
             </div>
           )}
-
         </div>
       </div>
 

@@ -1,18 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..600&family=Instrument+Serif:ital@0;1&family=Ms+Madi&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..600&family=Instrument+Serif:ital@0;1&family=Ms+Madi&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap");
 
 :root {
-  --bg: #0B090C;
+  --bg: #0b090c;
   --bg-rose: #131015;
-  --card: #18141B;
-  --card-elevated: #201A24;
-  --fg: #F5F3EF;
-  --mute: #B5A8B0;
+  --card: #18141b;
+  --card-elevated: #201a24;
+  --fg: #f5f3ef;
+  --mute: #b5a8b0;
   --mute-soft: #857881;
   --line: rgba(235, 143, 171, 0.14);
   --line-strong: rgba(235, 143, 171, 0.42);
-  --acc: #EB8FAB;
-  --acc-dark: #EB8FAB;
-  --acc-soft: #EB8FAB;
+  --acc: #eb8fab;
+  --acc-dark: #eb8fab;
+  --acc-soft: #eb8fab;
   --r: 18px;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
@@ -36,7 +36,11 @@ html {
 body {
   background: var(--bg);
   color: var(--fg);
-  font: 16px/1.65 'DM Sans', system-ui, -apple-system, sans-serif;
+  font:
+    16px/1.65 "DM Sans",
+    system-ui,
+    -apple-system,
+    sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -49,9 +53,21 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 12% 14%, rgba(235, 143, 171, 0.09), transparent 34%),
-    radial-gradient(circle at 86% 72%, rgba(235, 143, 171, 0.08), transparent 38%),
-    radial-gradient(circle at 50% 100%, rgba(235, 143, 171, 0.04), transparent 45%);
+    radial-gradient(
+      circle at 12% 14%,
+      rgba(235, 143, 171, 0.09),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 86% 72%,
+      rgba(235, 143, 171, 0.08),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(235, 143, 171, 0.04),
+      transparent 45%
+    );
 }
 
 ::selection {
@@ -60,18 +76,18 @@ body::before {
 }
 
 .mono {
-  font-family: 'Space Mono', ui-monospace, SFMono-Regular, monospace;
+  font-family: "Space Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 .instrument {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: "Instrument Serif", Georgia, serif;
   font-style: italic;
   font-weight: 400;
   color: var(--acc-soft);
 }
 
 .madi {
-  font-family: 'Ms Madi', cursive;
+  font-family: "Ms Madi", cursive;
   font-weight: 400;
 }
 
@@ -154,7 +170,11 @@ textarea:focus-visible,
   z-index: 0;
   left: 0;
   top: 0;
-  background: radial-gradient(circle, rgba(235, 143, 171, 0.07), transparent 68%);
+  background: radial-gradient(
+    circle,
+    rgba(235, 143, 171, 0.07),
+    transparent 68%
+  );
   transform: translate(-50%, -50%);
 }
 
@@ -168,7 +188,12 @@ textarea:focus-visible,
   z-index: 90;
   transform-origin: left;
   transform: scaleX(0);
-  background: linear-gradient(90deg, var(--acc-dark), var(--acc), var(--acc-soft));
+  background: linear-gradient(
+    90deg,
+    var(--acc-dark),
+    var(--acc),
+    var(--acc-soft)
+  );
 }
 
 .orb {
@@ -271,7 +296,9 @@ nav a {
   font-size: 13px;
   color: var(--mute);
   white-space: nowrap;
-  transition: color 0.25s ease, background 0.25s ease;
+  transition:
+    color 0.25s ease,
+    background 0.25s ease;
 }
 
 nav a:hover {
@@ -820,7 +847,7 @@ h2 .instrument {
   border-radius: 999px;
   background: var(--acc);
   color: #fff;
-  font-family: 'Ms Madi', cursive;
+  font-family: "Ms Madi", cursive;
   font-size: 32px;
   line-height: 1;
   pointer-events: none;
@@ -942,14 +969,18 @@ h2 .instrument {
   letter-spacing: -0.03em;
   line-height: 1.15;
   color: var(--fg);
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.3s ease;
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 0.3s ease;
 }
 
 .sk-plus {
   font-size: 24px;
   text-align: center;
   color: var(--mute-soft);
-  transition: transform 0.4s ease, color 0.3s ease;
+  transition:
+    transform 0.4s ease,
+    color 0.3s ease;
 }
 
 .sk-row[data-open="true"] .sk-t {
@@ -1173,7 +1204,11 @@ h2 .instrument {
   min-height: 440px;
   border: 1px solid var(--line);
   border-radius: var(--r);
-  background: radial-gradient(circle at 50% 50%, #1d1520 0%, var(--bg-rose) 75%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    #1d1520 0%,
+    var(--bg-rose) 75%
+  );
   overflow: hidden;
   touch-action: pan-y;
 }
@@ -1188,7 +1223,11 @@ h2 .instrument {
   position: absolute;
   inset: 18%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(235, 143, 171, 0.14), transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(235, 143, 171, 0.14),
+    transparent 70%
+  );
   pointer-events: none;
 }
 
@@ -1429,7 +1468,9 @@ h2 .instrument {
   color: var(--fg);
   font-size: 14px;
   backdrop-filter: blur(8px);
-  transition: transform 0.3s ease, background 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
 }
 
 .cell.proj:hover .arrow {
@@ -1632,7 +1673,9 @@ textarea {
   color: var(--fg);
   font: inherit;
   font-size: 15px;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 input::placeholder,
@@ -1745,7 +1788,8 @@ footer a:hover {
   position: fixed;
   inset: 0;
   z-index: 120;
-  overflow-y: auto;
+  overflow: hidden;
+  overscroll-behavior: none;
   background: rgba(11, 9, 12, 0.94);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
@@ -1760,7 +1804,7 @@ footer a:hover {
 
 .pm-wrap {
   max-width: 1220px;
-  min-height: 100%;
+  height: 100dvh;
   margin: 0 auto;
   padding: 88px 6vw 116px;
   display: grid;
@@ -1771,6 +1815,25 @@ footer a:hover {
 
 .pm-slide {
   animation: pmSl 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+.pm-info {
+  align-self: center;
+  max-height: calc(100dvh - 88px - 116px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.pm-info::-webkit-scrollbar {
+  width: 4px;
+}
+
+.pm-info::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 999px;
 }
 
 @keyframes pmSl {
@@ -1807,10 +1870,24 @@ footer a:hover {
 .pm-view.contain {
   background-color: #141117;
   background-image:
-    linear-gradient(45deg, #1d1822 25%, transparent 25%, transparent 75%, #1d1822 75%),
-    linear-gradient(45deg, #1d1822 25%, transparent 25%, transparent 75%, #1d1822 75%);
+    linear-gradient(
+      45deg,
+      #1d1822 25%,
+      transparent 25%,
+      transparent 75%,
+      #1d1822 75%
+    ),
+    linear-gradient(
+      45deg,
+      #1d1822 25%,
+      transparent 25%,
+      transparent 75%,
+      #1d1822 75%
+    );
   background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
+  background-position:
+    0 0,
+    16px 16px;
 }
 
 .pm-view.contain img,
@@ -1852,7 +1929,9 @@ footer a:hover {
   font-size: 24px;
   line-height: 1;
   backdrop-filter: blur(8px);
-  transition: background 0.25s ease, transform 0.25s ease;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
 .pm-sarrow.l {
@@ -1902,7 +1981,9 @@ footer a:hover {
   background: var(--card);
   border: 1px solid var(--line);
   opacity: 0.52;
-  transition: opacity 0.25s ease, border-color 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .pm-thumbs button img {
@@ -1973,7 +2054,10 @@ footer a:hover {
   color: var(--fg);
   background: var(--card);
   border: 1px solid var(--line-strong);
-  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
 .pm-btn:hover {
@@ -2041,7 +2125,9 @@ footer a:hover {
   border-radius: 999px;
   border: 0;
   background: rgba(235, 143, 171, 0.25);
-  transition: width 0.25s ease, background 0.25s ease;
+  transition:
+    width 0.25s ease,
+    background 0.25s ease;
 }
 
 .pm-dots button.on {
@@ -2133,6 +2219,16 @@ footer a:hover {
   .pm-wrap {
     grid-template-columns: 1fr;
     padding-top: 76px;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    align-content: start;
+  }
+
+  .pm-info {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
   }
 }
 
@@ -2154,7 +2250,9 @@ footer a:hover {
     width: 17px;
     height: 1.5px;
     background: var(--fg);
-    transition: transform 0.25s ease, opacity 0.25s ease;
+    transition:
+      transform 0.25s ease,
+      opacity 0.25s ease;
   }
 
   .mobile-menu-btn[aria-expanded="true"] span:nth-child(1) {
