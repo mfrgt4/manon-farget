@@ -1,7 +1,9 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { CSSProperties, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import {
+  about,
+  facts,
   nav,
   profile,
   projects,
@@ -32,7 +34,6 @@ function playProjectClick() {
 }
 
 // ================= MUSIQUE D'INTRO =================
-
 function useIntroSound() {
   useEffect(() => {
     const events = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"];
@@ -40,7 +41,6 @@ function useIntroSound() {
     const removeListeners = () =>
       events.forEach((e) => window.removeEventListener(e, startOnInteraction));
 
-    // Fallback : le navigateur a bloqué l'autoplay, on attend le 1er geste
     function startOnInteraction() {
       introSound
         .play()
@@ -48,9 +48,7 @@ function useIntroSound() {
         .catch(() => {});
     }
 
-    // 1) Tentative d'autoplay direct au chargement
     introSound.play().catch(() => {
-      // 2) Bloqué -> démarrage à la première interaction
       events.forEach((e) =>
         window.addEventListener(e, startOnInteraction, { passive: true }),
       );
@@ -65,28 +63,33 @@ function useIntroSound() {
 }
 
 // ================= TEXTE ANIMÉ =================
-
 function useTyped(words: string[]) {
-  const [txt, setTxt] = useState("");
+  const [txt, setTxt] = useState(words[0] ?? "");
 
   useEffect(() => {
-    let wi = 0,
-      ci = 0,
-      del = false,
-      id = 0;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setTxt(words[0] ?? "");
+      return;
+    }
+
+    let wi = 0;
+    let ci = words[0]?.length ?? 0;
+    let del = true;
+    let id = window.setTimeout(() => tick(), 1800);
 
     const tick = () => {
       const w = words[wi];
       setTxt(w.slice(0, ci));
 
-      let wait = del ? 40 : 90;
+      let wait = del ? 38 : 78;
 
       if (!del && ci === w.length) {
         del = true;
-        wait = 1400;
+        wait = 1600;
       } else if (del && ci === 0) {
         del = false;
         wi = (wi + 1) % words.length;
+        wait = 240;
       } else {
         ci += del ? -1 : 1;
       }
@@ -94,15 +97,13 @@ function useTyped(words: string[]) {
       id = window.setTimeout(tick, wait);
     };
 
-    tick();
     return () => clearTimeout(id);
   }, [words]);
 
   return txt;
 }
 
-// ================= EFFETS =================
-
+// ================= EFFETS GLOBAUX & CURSEUR DISCRET =================
 function useEffects() {
   useEffect(() => {
     const rv = new IntersectionObserver(
@@ -119,46 +120,102 @@ function useEffects() {
     document.querySelectorAll(".rv").forEach((el) => rv.observe(el));
 
     const glow = document.getElementById("glow");
+    const cursorDot = document.getElementById("cursor-dot");
+    const cursorRing = document.getElementById("cursor-ring");
+    const progress = document.getElementById("progress");
+
+    const finePointer = matchMedia("(pointer: fine)").matches;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let mx = -100;
+    let my = -100;
+    let rx = -100;
+    let ry = -100;
+    let raf = 0;
+
+    const renderCursor = () => {
+      rx += (mx - rx) * 0.18;
+      ry += (my - ry) * 0.18;
+      if (cursorRing) {
+        cursorRing.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
+      }
+      raf = requestAnimationFrame(renderCursor);
+    };
+
+    if (finePointer && !reduced) {
+      raf = requestAnimationFrame(renderCursor);
+    }
 
     const onMove = (e: PointerEvent) => {
+      mx = e.clientX;
+      my = e.clientY;
+
       if (glow) {
-        glow.style.left = e.clientX + "px";
-        glow.style.top = e.clientY + "px";
+        glow.style.left = mx + "px";
+        glow.style.top = my + "px";
+      }
+
+      if (cursorDot && finePointer && !reduced) {
+        cursorDot.style.opacity = "1";
+        cursorDot.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
+      }
+
+      if (cursorRing && finePointer && !reduced) {
+        cursorRing.style.opacity = "1";
+        const interactive = (e.target as HTMLElement).closest(
+          "a, button, input, textarea, [role='button'], #cloudbox",
+        );
+        cursorRing.classList.toggle("is-hover", Boolean(interactive));
       }
 
       const target = e.target as HTMLElement;
       const c = target.closest<HTMLElement>(".cell");
-
       if (!c) return;
 
       const r = c.getBoundingClientRect();
-
       c.style.setProperty("--mx", e.clientX - r.left + "px");
       c.style.setProperty("--my", e.clientY - r.top + "px");
     };
 
-    window.addEventListener("pointermove", onMove);
+    const onLeave = () => {
+      if (cursorDot) cursorDot.style.opacity = "0";
+      if (cursorRing) cursorRing.style.opacity = "0";
+    };
+
+    const onScroll = () => {
+      if (!progress) return;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      progress.style.transform = `scaleX(${ratio})`;
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("pointerleave", onLeave);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
 
     return () => {
       rv.disconnect();
+      cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 }
 
+// ================= NAVIGATION ACTIVE =================
 function useActive(ids: string[]) {
   const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
     const updateActive = () => {
-      // Tout en haut du site : aucun menu
-      if (window.scrollY <= 20) {
+      if (window.scrollY <= 40) {
         setActive(null);
         return;
       }
 
-      const referenceY = window.innerHeight * 0.48;
-
+      const referenceY = window.innerHeight * 0.45;
       const sections = ids
         .map((id) => document.getElementById(id))
         .filter((el): el is HTMLElement => el !== null);
@@ -174,7 +231,6 @@ function useActive(ids: string[]) {
     };
 
     updateActive();
-
     window.addEventListener("scroll", updateActive, { passive: true });
     window.addEventListener("resize", updateActive);
 
@@ -187,48 +243,7 @@ function useActive(ids: string[]) {
   return active;
 }
 
-function Count({ to }: { to: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    let raf = 0;
-
-    const io = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-
-      io.disconnect();
-
-      const t0 = performance.now();
-
-      const step = (t: number) => {
-        const k = Math.min(1, (t - t0) / 1400);
-
-        el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3))));
-
-        if (k < 1) {
-          raf = requestAnimationFrame(step);
-        }
-      };
-
-      raf = requestAnimationFrame(step);
-    });
-
-    io.observe(el);
-
-    return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-    };
-  }, [to]);
-
-  return <span ref={ref}>0</span>;
-}
-
-// ================= PARALLAXE =================
-
+// ================= PARALLAXE HERO =================
 function useHeroParallax() {
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -241,13 +256,12 @@ function useHeroParallax() {
       hero.style.setProperty("--py", String(e.clientY / innerHeight - 0.5));
     };
 
-    addEventListener("pointermove", m);
+    addEventListener("pointermove", m, { passive: true });
     return () => removeEventListener("pointermove", m);
   }, []);
 }
 
 // ================= TIMELINE =================
-
 function useTimeline() {
   useEffect(() => {
     const tl = document.querySelector<HTMLElement>(".tl");
@@ -258,7 +272,7 @@ function useTimeline() {
 
     const update = () => {
       tick = false;
-      const y = innerHeight * 0.62;
+      const y = innerHeight * 0.64;
       const r = tl.getBoundingClientRect();
 
       tl.style.setProperty(
@@ -290,14 +304,14 @@ function useTimeline() {
 }
 
 // ================= INCLINAISON 3D =================
-
 function useTilt() {
   useEffect(() => {
     if (
       !matchMedia("(hover:hover)").matches ||
       matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
+    ) {
       return;
+    }
 
     type S = {
       rx: number;
@@ -311,9 +325,9 @@ function useTilt() {
     };
 
     const map = new Map<HTMLElement, S>();
-    let raf = 0,
-      last = 0,
-      cur: HTMLElement | null = null;
+    let raf = 0;
+    let last = 0;
+    let cur: HTMLElement | null = null;
 
     const loop = (t: number) => {
       const dt = Math.min(0.05, (t - (last || t)) / 1000);
@@ -322,8 +336,8 @@ function useTilt() {
 
       map.forEach((s, el) => {
         const on = s.tp > 0;
-        const kt = 1 - Math.exp(-dt / (on ? 0.09 : 0.3));
-        const kp = 1 - Math.exp(-dt / (on ? 0.2 : 0.35));
+        const kt = 1 - Math.exp(-dt / (on ? 0.09 : 0.28));
+        const kp = 1 - Math.exp(-dt / (on ? 0.18 : 0.32));
 
         s.rx += (s.tx - s.rx) * kt;
         s.ry += (s.ty - s.ry) * kt;
@@ -341,8 +355,7 @@ function useTilt() {
           return;
         }
 
-        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-6 * s.p).toFixed(3)}px) scale(${(1 + 0.015 * s.p).toFixed(4)})`;
-
+        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-5 * s.p).toFixed(3)}px) scale(${(1 + 0.012 * s.p).toFixed(4)})`;
         el.style.setProperty("--p", s.p.toFixed(4));
         busy = true;
       });
@@ -385,7 +398,6 @@ function useTilt() {
       const y = (e.clientY - r.top) / r.height - 0.5;
 
       let s = map.get(el);
-
       if (!s) {
         s = {
           rx: 0,
@@ -394,8 +406,8 @@ function useTilt() {
           tx: 0,
           ty: 0,
           tp: 0,
-          max: Number(el.dataset.tilt) || 8,
-          persp: el.dataset.persp === "none" ? "" : "perspective(900px) ",
+          max: Number(el.dataset.tilt) || 7,
+          persp: el.dataset.persp === "none" ? "" : "perspective(950px) ",
         };
         map.set(el, s);
       }
@@ -418,7 +430,7 @@ function useTilt() {
       }
     };
 
-    addEventListener("pointermove", move);
+    addEventListener("pointermove", move, { passive: true });
     document.addEventListener("pointerout", out);
 
     return () => {
@@ -429,8 +441,7 @@ function useTilt() {
   }, []);
 }
 
-// ================= APPARITION DES ÉLÉMENTS =================
-
+// ================= APPARITION AU SCROLL =================
 function useAes(dep: string) {
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -441,7 +452,7 @@ function useAes(dep: string) {
             io.unobserve(e.target);
           }
         }),
-      { threshold: 0.18, rootMargin: "0px 0px -6% 0px" },
+      { threshold: 0.14, rootMargin: "0px 0px -4% 0px" },
     );
 
     document.querySelectorAll(".aes:not(.in)").forEach((el) => io.observe(el));
@@ -449,8 +460,7 @@ function useAes(dep: string) {
   }, [dep]);
 }
 
-// ================= LIENS D'ANCRE =================
-
+// ================= NAVIGATION ANCRES =================
 function useAnchorCenter() {
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -460,8 +470,9 @@ function useAnchorCenter() {
         e.metaKey ||
         e.ctrlKey ||
         e.shiftKey
-      )
+      ) {
         return;
+      }
 
       const a = (e.target as HTMLElement).closest?.<HTMLAnchorElement>(
         'a[href^="#"]',
@@ -472,12 +483,13 @@ function useAnchorCenter() {
       if (!sec) return;
 
       e.preventDefault();
+      playButtonClick();
 
       const top = scrollY + sec.getBoundingClientRect().top;
       const h = sec.offsetHeight;
 
       scrollTo({
-        top: Math.max(0, h <= innerHeight ? top - (innerHeight - h) / 2 : top),
+        top: Math.max(0, h <= innerHeight ? top - (innerHeight - h) / 2 : top - 24),
         behavior: "smooth",
       });
 
@@ -489,29 +501,19 @@ function useAnchorCenter() {
   }, []);
 }
 
-// ================= PROJETS =================
-
+// ================= HELPERS =================
 const cover = (p: Project) =>
   p.thumbnail ?? p.media?.find((m) => m.type === "image")?.src;
 
-// Utilise le genre explicite du projet, avec un fallback sur son type.
 const getProjectGenre = (p: Project): Genre | undefined => {
   if (p.genre) return p.genre;
-
   const type = p.type?.toLocaleLowerCase("fr") ?? "";
   const title = p.title.toLocaleLowerCase("fr");
 
-  if (
-    type.includes("développement web") ||
-    type.includes("developpement web")
-  ) {
+  if (type.includes("développement web") || type.includes("developpement web")) {
     return "developpement";
   }
-  if (
-    type.includes("audiovisuel") ||
-    type.includes("vidéo") ||
-    type.includes("video")
-  ) {
+  if (type.includes("audiovisuel") || type.includes("vidéo") || type.includes("video")) {
     return "audiovisuel";
   }
   if (title.includes("d'jam") || title.includes("the pit")) {
@@ -520,83 +522,138 @@ const getProjectGenre = (p: Project): Genre | undefined => {
   if (type.includes("communication") || type.includes("marketing")) {
     return "communication";
   }
-
   return undefined;
 };
+
+const TOOL_CLUSTERS = [
+  {
+    id: "all",
+    label: "Tous les outils",
+    code: "00",
+    description: "Vue d'ensemble de l'écosystème créatif et technique.",
+    items: tools,
+  },
+  {
+    id: "design",
+    label: "Design & UI/UX",
+    code: "01",
+    description: "Identité visuelle, mise en page éditoriale, maquettage et ergonomie.",
+    items: tools.filter((t) =>
+      ["Figma", "InDesign", "Photoshop", "Illustrator", "Affinity", "UX Design", "Maquettes", "Ergonomie", "Responsive", "Accessibilité"].includes(t),
+    ),
+  },
+  {
+    id: "dev",
+    label: "Développement Web",
+    code: "02",
+    description: "Intégration front-end, interfaces interactives, 3D et back-end.",
+    items: tools.filter((t) =>
+      ["React", "TypeScript", "three.js", "Vite", "Vercel", "HTML5", "CSS3", "JavaScript", "PHP", "SQL", "WordPress", "SEO"].includes(t),
+    ),
+  },
+  {
+    id: "motion",
+    label: "Audiovisuel & Workflow",
+    code: "03",
+    description: "Montage vidéo, motion design, versioning et gestion de projet.",
+    items: tools.filter((t) =>
+      ["After Effects", "Premiere Pro", "Git", "GitHub", "Notion"].includes(t),
+    ),
+  },
+] as const;
 
 const BAND = [
   "Communication",
   "Design graphique",
+  "UI/UX Design",
   "Développement web",
   "Audiovisuel",
-  "UI/UX design",
 ];
-const ids = nav.map(([id]) => id) as string[];
 
-const delay = (d: number) => ({ "--d": d + "s" }) as React.CSSProperties;
+const ids = ["accueil", ...nav.map(([id]) => id)];
+const delay = (d: number) => ({ "--d": d + "s" }) as CSSProperties;
 
 // ================= COMPOSANT PRINCIPAL =================
-
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Force le thème clair et évite de récupérer un ancien thème sombre.
+  // Thème sombre cinématographique par défaut
   useEffect(() => {
-    document.documentElement.dataset.theme = "light";
-
+    document.documentElement.dataset.theme = "dark";
     try {
-      localStorage.setItem("theme", "light");
+      localStorage.setItem("theme", "dark");
     } catch {
-      // Le site reste en mode clair même si le stockage est indisponible.
+      // Ignore si localStorage est indisponible
     }
   }, []);
 
+  const typedRole = useTyped(profile.roles);
   const active = useActive(ids);
+
   const [open, setOpen] = useState<number | null>(null);
   const [modalProjects, setModalProjects] = useState<Project[]>([]);
+  const [projectScope, setProjectScope] = useState<"all" | "perso" | "universitaire">("all");
   const [selectedGenre, setSelectedGenre] = useState<Genre | "all">("all");
+  const [selSkill, setSelSkill] = useState(0);
+  const [activeCluster, setActiveCluster] = useState<string>("all");
+  const [focusedTool, setFocusedTool] = useState<string | null>(null);
 
-  const personalProjects = projects.filter((p) => p.category === "perso");
-
-  const universityProjects = projects.filter(
-    (p) => p.category === "universitaire",
+  const personalProjects = useMemo(
+    () => projects.filter((p) => p.category === "perso"),
+    [],
   );
 
-  const universityProjectsByGenre = projectGenres.map(([genre, label]) => ({
-    genre,
-    label,
-    projects: universityProjects.filter((p) => getProjectGenre(p) === genre),
-  }));
+  const universityProjects = useMemo(
+    () => projects.filter((p) => p.category === "universitaire"),
+    [],
+  );
 
-  const groups: [string, string, Project[]][] = [
-    [
-      "Projets personnels",
-      "Des créations libres pour explorer mes idées, tester de nouvelles approches et développer mon univers visuel.",
-      personalProjects,
-    ],
-    [
-      "Projets universitaires",
-      "Des projets réalisés en BUT MMI, entre réflexion créative, conception graphique et production numérique.",
-      universityProjects,
-    ],
-  ];
+  const universityProjectsByGenre = useMemo(
+    () =>
+      projectGenres.map(([genre, label]) => ({
+        genre,
+        label,
+        projects: universityProjects.filter((p) => getProjectGenre(p) === genre),
+      })),
+    [universityProjects],
+  );
+
+  const visibleGroups = useMemo(() => {
+    const allGroups: [string, string, "perso" | "universitaire", Project[]][] = [
+      [
+        "Projets personnels",
+        "Explorations libres autour du motion design, de l'identité visuelle et de la création web.",
+        "perso",
+        personalProjects,
+      ],
+      [
+        "Projets universitaires",
+        "Réalisations menées en BUT MMI mêlant direction artistique, conception interactive et stratégie.",
+        "universitaire",
+        universityProjects,
+      ],
+    ];
+
+    if (projectScope === "all") return allGroups;
+    return allGroups.filter(([, , cat]) => cat === projectScope);
+  }, [personalProjects, universityProjects, projectScope]);
+
+  const currentCluster =
+    TOOL_CLUSTERS.find((c) => c.id === activeCluster) ?? TOOL_CLUSTERS[0];
 
   useEffects();
   useHeroParallax();
   useTimeline();
   useTilt();
-  useAes(`projects-${selectedGenre}`);
+  useAes(`projects-${projectScope}-${selectedGenre}`);
   useAnchorCenter();
   useIntroSound();
-
-  const [sel, setSel] = useState(0);
 
   const send = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     playButtonClick();
 
     const f = new FormData(e.currentTarget);
-
     const subject = encodeURIComponent("Contact portfolio — " + f.get("name"));
     const body = encodeURIComponent(f.get("message") + "\n\n" + f.get("email"));
 
@@ -605,13 +662,26 @@ export default function App() {
 
   return (
     <>
-      <div id="glow" />
+      <div id="progress" aria-hidden="true" />
+      <div id="glow" aria-hidden="true" />
+      <div id="cursor-dot" aria-hidden="true" />
+      <div id="cursor-ring" aria-hidden="true" />
 
-      <nav
-        className={active ? "nav nav-visible" : "nav nav-hidden"}
-        aria-hidden={!active}
-      >
-        <div className="nav-inner">
+      <div className="orb o1" aria-hidden="true" />
+      <div className="orb o2" aria-hidden="true" />
+
+      {/* ================= NAVIGATION ================= */}
+      <nav aria-label="Navigation principale">
+        <div className="nav-shell">
+          <a
+            href="#accueil"
+            className="nav-brand"
+            onClick={() => setMenuOpen(false)}
+          >
+            <span className="nav-brand-dot" aria-hidden="true" />
+            <span>{profile.name}</span>
+          </a>
+
           <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
             {nav.map(([id, label]) => (
               <a
@@ -619,10 +689,9 @@ export default function App() {
                 href={`#${id}`}
                 className={active === id ? "on" : ""}
                 onClick={() => {
-                  playButtonClick(); // 👈
+                  playButtonClick();
                   setMenuOpen(false);
                 }}
-                tabIndex={active ? 0 : -1}
               >
                 {label}
               </a>
@@ -634,8 +703,10 @@ export default function App() {
             className="mobile-menu-btn"
             aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={menuOpen}
-            onClick={() => setMenuOpen(!menuOpen)}
-            tabIndex={active ? 0 : -1}
+            onClick={() => {
+              playButtonClick();
+              setMenuOpen((v) => !v);
+            }}
           >
             <span />
             <span />
@@ -644,6 +715,7 @@ export default function App() {
         </div>
       </nav>
 
+      {/* ================= 01. ACCUEIL ================= */}
       <section id="accueil">
         <div id="hero">
           <div className="h-word" aria-hidden="true">
@@ -651,85 +723,110 @@ export default function App() {
           </div>
 
           <div className="h-text">
-            <span className="badge mono rv">
-              <span className="dot" />
-              Disponible · stage avril 2027
-            </span>
+            <div className="h-eyebrow rv">
+              <span className="badge mono">
+                <span className="dot" />
+                Recherche de stage · Avril 2027
+              </span>
+              <span className="mono h-role">
+                {typedRole}
+                <span className="cur" aria-hidden="true" />
+              </span>
+            </div>
 
             <h1 className="rv" style={delay(0.1)}>
-              Salut, moi c'est
+              Concevoir des univers
               <br />
-              <span className="grad instrument">{profile.name}.</span>
+              <span className="instrument">sensibles &amp; vivants.</span>
             </h1>
 
-            <p className="lead rv" style={{ ...delay(0.3), marginTop: 14 }}>
-              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
-              Clermont Auvergne au Puy-en-Velay. Je mêle créativité, webdesign
-              et nouvelles technologie pour donner vie à mes idées.
+            <p className="h-signature rv" style={delay(0.18)}>
+              <span className="madi">{profile.name}</span>
+              <span className="mono h-subtag">
+                BUT MMI · Création Numérique · Le Puy-en-Velay
+              </span>
             </p>
 
-            <div className="btns rv" style={delay(0.4)}>
+            <p className="lead rv" style={delay(0.26)}>
+              Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
+              Clermont Auvergne au Puy-en-Velay. Je mêle créativité, webdesign
+              et nouvelles technologies pour donner vie à des expériences
+              visuelles soignées.
+            </p>
+
+            <div className="btns rv" style={delay(0.34)}>
               <a className="btn p" href="#projets">
-                Voir mes projets →
+                Explorer mes projets ↗
               </a>
               <a className="btn" href="#contact">
-                Me contacter
+                Discuter d'un stage · Avril 2027
               </a>
             </div>
           </div>
 
           <div className="h-visual rv" style={delay(0.2)}>
-            <div className="arch">
-              <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
-            </div>
+            <div className="arch-frame" data-tilt="6">
+              <div className="arch">
+                <img src={profile.photo} alt={`Portrait de ${profile.name}`} />
+                <div className="arch-vignette" aria-hidden="true" />
+              </div>
 
-            <div className="h-badge" aria-hidden="true">
-              <svg viewBox="0 0 120 120">
-                <circle cx="60" cy="60" r="60" fill="#d84b7d" />
-                <defs>
-                  <path
-                    id="hb"
-                    d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0"
+              <div className="h-badge" aria-hidden="true">
+                <svg viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="60" fill="#B72D60" />
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="56"
+                    fill="none"
+                    stroke="rgba(233,165,187,0.35)"
+                    strokeWidth="1"
                   />
-                </defs>
-                <text
-                  fontSize="10.5"
-                  fontWeight="700"
-                  fill="#fff"
-                  letterSpacing="1"
-                >
-                  <textPath href="#hb" textLength="252" lengthAdjust="spacing">
-                    DÉVELOPPEUSE WEB • UI/UX • MOTION •
-                  </textPath>
-                </text>
-                <text
-                  x="60"
-                  y="68"
-                  textAnchor="middle"
-                  fontSize="22"
-                  fill="#fff"
-                >
-                  ✦
-                </text>
-              </svg>
-            </div>
+                  <defs>
+                    <path
+                      id="hb"
+                      d="M60,60 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0"
+                    />
+                  </defs>
+                  <text
+                    fontSize="10"
+                    fontWeight="700"
+                    fill="#F5F3EF"
+                    letterSpacing="1.2"
+                  >
+                    <textPath href="#hb" textLength="252" lengthAdjust="spacing">
+                      UI/UX DESIGN • CRÉATION • MOTION • WEB •
+                    </textPath>
+                  </text>
+                  <text
+                    x="60"
+                    y="67"
+                    textAnchor="middle"
+                    fontSize="20"
+                    fill="#E9A5BB"
+                  >
+                    ✦
+                  </text>
+                </svg>
+              </div>
 
-            <span className="h-chip c1">
-              <i />
-              Créative
-            </span>
-            <span className="h-chip c2 sage">
-              <i />
-              Autonome
-            </span>
-            <span className="h-chip c3">
-              <i />
-              Rigoureuse
-            </span>
-            <span className="h-chip c4 sage">
-              <i />
-              Polyvalente
-            </span>
+              <span className="h-chip c1">
+                <i />
+                Créative
+              </span>
+              <span className="h-chip c2 soft">
+                <i />
+                Autonome
+              </span>
+              <span className="h-chip c3">
+                <i />
+                Rigoureuse
+              </span>
+              <span className="h-chip c4 soft">
+                <i />
+                Polyvalente
+              </span>
+            </div>
           </div>
         </div>
 
@@ -745,11 +842,16 @@ export default function App() {
         </div>
       </section>
 
+      {/* ================= 02. À PROPOS ================= */}
       <section id="a-propos">
         <div className="about">
-          <div className="rv rv-l" style={delay(0.15)}>
-            <p className="tag mono">// qui suis-je ?</p>
-            <h2>Un peu plus sur moi.</h2>
+          <div className="about-copy rv rv-l" style={delay(0.1)}>
+            <p className="tag mono">01 // À propos</p>
+            <h2>
+              Entre direction artistique,
+              <br />
+              <span className="instrument">design &amp; mouvement.</span>
+            </h2>
 
             <p className="about-p">
               Hello ! Moi, c’est Manon, étudiante en BUT MMI, parcours Création
@@ -765,20 +867,20 @@ export default function App() {
               continuer à apprendre.
             </p>
 
-            <p className="about-p">
-              Je cherche un stage à partir d'avril 2027 pour progresser au sein
-              d'une équipe, et y apporter ma curiosité et mon sens du détail.
-            </p>
+            <p className="about-p">{about[2]}</p>
 
-            <div className="chips about-facts">
-              <i className="mono">📍 Lyon</i>
-              <i className="mono">🎓 BUT MMI · 2e année</i>
-              <i className="mono">🗓️ Stage avril 2027</i>
+            <div className="about-meta">
+              {facts.map((fact) => (
+                <span key={fact} className="fact-pill mono">
+                  {fact}
+                </span>
+              ))}
+              <span className="fact-pill mono">📍 Lyon</span>
             </div>
           </div>
 
-          <div className="photo rv rv-r">
-            <div className="p-tilt" data-tilt="11" data-persp="none">
+          <div className="photo rv rv-r" style={delay(0.2)}>
+            <div className="p-tilt" data-tilt="9" data-persp="none">
               <span className="p-outline" aria-hidden="true" />
               <div className="p-frame">
                 {profile.photo ? (
@@ -794,10 +896,9 @@ export default function App() {
                         .map((w) => w[0])
                         .join("")}
                     </span>
-                    <small>ta photo ici</small>
+                    <small>portrait</small>
                   </div>
                 )}
-                <span className="p-sheen" aria-hidden="true" />
                 <span className="p-glare" aria-hidden="true" />
               </div>
               <span className="p-tag" aria-hidden="true">
@@ -808,167 +909,285 @@ export default function App() {
         </div>
       </section>
 
+      {/* ================= 03. COMPÉTENCES ================= */}
       <section id="competences">
         <div className="sk">
           <div className="sk-side">
-            <p className="tag mono rv">// ce que je sais faire</p>
-            <h2 className="rv">Mes compétences.</h2>
+            <p className="tag mono rv">02 // Savoir-faire</p>
+            <h2 className="rv">
+              Mes <span className="instrument">compétences.</span>
+            </h2>
             <p className="sk-note rv">
-              survole ou touche une ligne pour la découvrir.
+              Survolez ou cliquez sur un domaine pour explorer mon approche
+              créative et technique.
             </p>
 
-            <div className="sk-count mono rv">
-              <b key={sel}>{String(sel + 1).padStart(2, "0")}</b>
-              <span>/ {String(skills.length).padStart(2, "0")}</span>
+            <div className="sk-preview-card rv" style={delay(0.12)}>
+              <div className="sk-count mono">
+                <b key={selSkill}>{String(selSkill + 1).padStart(2, "0")}</b>
+                <span>/ {String(skills.length).padStart(2, "0")}</span>
+              </div>
+              <p className="sk-preview-title">
+                {skills[selSkill]?.title}
+              </p>
+              <p className="sk-preview-text">
+                {skills[selSkill]?.text}
+              </p>
             </div>
           </div>
 
           <ul className="sk-list">
-            {skills.map((s, i) => (
-              <li
-                key={s.title}
-                className="sk-row rv"
-                data-open={sel === i}
-                style={delay(i * 0.08)}
-                onMouseEnter={() => setSel(i)}
-              >
-                <button
-                  className="sk-head"
-                  aria-expanded={sel === i}
-                  onClick={() => {
-                    playButtonClick();
-                    setSel(i);
-                  }}
-                  onFocus={() => setSel(i)}
+            {skills.map((s, i) => {
+              const isOpen = selSkill === i;
+              return (
+                <li
+                  key={s.title}
+                  className="sk-row rv"
+                  data-open={isOpen}
+                  style={delay(i * 0.06)}
+                  onMouseEnter={() => setSelSkill(i)}
                 >
-                  <span className="sk-n mono">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="sk-t">{s.title}</span>
-                  <span className="sk-plus" aria-hidden="true">
-                    +
-                  </span>
-                </button>
-
-                <div className="sk-body">
-                  <div>
-                    <p>{s.text}</p>
-                    <span className="sk-ico" aria-hidden="true">
-                      {s.icon}
+                  <button
+                    type="button"
+                    className="sk-head"
+                    aria-expanded={isOpen}
+                    onClick={() => {
+                      playButtonClick();
+                      setSelSkill(i);
+                    }}
+                    onFocus={() => setSelSkill(i)}
+                  >
+                    <span className="sk-n mono">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
+                    <span className="sk-t">{s.title}</span>
+                    <span className="sk-plus" aria-hidden="true">
+                      +
+                    </span>
+                  </button>
+
+                  <div className="sk-body">
+                    <div>
+                      <p>{s.text}</p>
+                      <span className="sk-ico" aria-hidden="true">
+                        {s.icon}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </div>
 
-        <div className="cell sk-goal rv" data-tilt="3">
-          <h3 className="mono" style={{ color: "var(--acc)" }}>
-            &gt; objectif.txt
-          </h3>
-          <p className="mono">Stage Montage vidéo ou UI/UX · avril 2027.</p>
+        <div className="cell sk-goal rv" data-tilt="3" style={delay(0.2)}>
+          <div className="sk-goal-left">
+            <span className="mono sk-goal-tag">&gt; objectif.txt</span>
+            <p className="sk-goal-main">
+              Stage en montage vidéo, design graphique ou UI/UX design ·{" "}
+              <strong>Avril 2027</strong>
+            </p>
+          </div>
+          <a href="#contact" className="btn">
+            Proposer une opportunité ↗
+          </a>
         </div>
       </section>
 
+      {/* ================= 04. BOÎTE À OUTILS ================= */}
       <section id="boite-a-outils">
-        <p className="tag mono rv">// avec quoi je crée</p>
+        <div className="section-head">
+          <div>
+            <p className="tag mono rv">03 // Environnement</p>
+            <h2 className="rv">
+              Ma boîte à <span className="instrument">outils.</span>
+            </h2>
+          </div>
+          <p className="tools-inspiration rv">
+            Inspirée de{" "}
+            <a
+              href="https://heaven-ghobrial.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Heaven Ghobrial
+            </a>{" "}
+            · {tools.length} outils &amp; technologies
+          </p>
+        </div>
 
-        <h2 className="rv">Ma boîte à outils.</h2>
+        <div className="toolbox-layout">
+          <div className="toolbox-explorer rv" style={delay(0.08)}>
+            <div
+              className="toolbox-filters"
+              role="tablist"
+              aria-label="Filtrer les outils par domaine"
+            >
+              {TOOL_CLUSTERS.map((cluster) => {
+                const isActive = activeCluster === cluster.id;
+                return (
+                  <button
+                    key={cluster.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    className={`cluster-tab ${isActive ? "is-active" : ""}`}
+                    onClick={() => {
+                      playButtonClick();
+                      setActiveCluster(cluster.id);
+                      setFocusedTool(null);
+                    }}
+                  >
+                    <span className="mono">{cluster.code}</span>
+                    <span>{cluster.label}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-        <p className="tools-inspiration rv">
-          Inspirée de{" "}
-          <a
-            href="https://heaven-ghobrial.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Heaven Ghobrial
-          </a>
-          .
-        </p>
+            <div className="cell toolbox-card" data-tilt="4">
+              <div className="toolbox-card-head">
+                <span className="mono toolbox-code">
+                  DOMAINE // {currentCluster.code}
+                </span>
+                <h3>{currentCluster.label}</h3>
+                <p>{currentCluster.description}</p>
+              </div>
 
-        <WordSphere words={tools} />
+              <div className="toolbox-pills">
+                {currentCluster.items.map((tool) => {
+                  const isFocused = focusedTool === tool;
+                  return (
+                    <button
+                      key={tool}
+                      type="button"
+                      className={`tool-pill mono ${isFocused ? "is-focused" : ""}`}
+                      onMouseEnter={() => setFocusedTool(tool)}
+                      onClick={() => {
+                        playButtonClick();
+                        setFocusedTool(tool);
+                      }}
+                    >
+                      <span className="tool-dot" aria-hidden="true" />
+                      {tool}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="toolbox-sphere-wrap rv" style={delay(0.16)}>
+            <WordSphere
+              words={tools}
+              highlightedWords={
+                activeCluster === "all" ? [] : currentCluster.items
+              }
+              focusedWord={focusedTool}
+            />
+          </div>
+        </div>
       </section>
 
+      {/* ================= 05. PROJETS ================= */}
       <section id="projets" className="showing-projects">
-        <p className="tag mono rv">// ce que j'ai créé</p>
-        <h2 className="rv">Mes projets.</h2>
+        <div className="projects-top">
+          <div>
+            <p className="tag mono rv">04 // Réalisations</p>
+            <h2 className="rv">
+              Mes <span className="instrument">projets.</span>
+            </h2>
+          </div>
+
+          <div
+            className="scope-switch"
+            role="group"
+            aria-label="Filtrer par type de projet"
+          >
+            <button
+              type="button"
+              className={projectScope === "all" ? "is-active" : ""}
+              onClick={() => {
+                playButtonClick();
+                setProjectScope("all");
+              }}
+            >
+              Tous <span className="mono">{projects.length}</span>
+            </button>
+            <button
+              type="button"
+              className={projectScope === "perso" ? "is-active" : ""}
+              onClick={() => {
+                playButtonClick();
+                setProjectScope("perso");
+              }}
+            >
+              Personnels <span className="mono">{personalProjects.length}</span>
+            </button>
+            <button
+              type="button"
+              className={projectScope === "universitaire" ? "is-active" : ""}
+              onClick={() => {
+                playButtonClick();
+                setProjectScope("universitaire");
+              }}
+            >
+              Universitaires{" "}
+              <span className="mono">{universityProjects.length}</span>
+            </button>
+          </div>
+        </div>
 
         <div className="folder-list">
-          {groups.map(([name, description, list], groupIndex) => {
+          {visibleGroups.map(([name, description, category, list], idx) => {
+            const isUni = category === "universitaire";
             const displayedList =
-              groupIndex === 1 && selectedGenre !== "all"
+              isUni && selectedGenre !== "all"
                 ? list.filter((p) => getProjectGenre(p) === selectedGenre)
                 : list;
 
             return (
               <div
-                className={`grp project-group project-group--${groupIndex + 1}`}
+                className={`grp project-group project-group--${idx + 1}`}
                 key={name}
               >
-                <div className="project-section-heading">
+                <div className="project-section-heading rv">
                   <span
                     className="project-section-number mono"
                     aria-hidden="true"
                   >
-                    {String(groupIndex + 1).padStart(2, "0")}
+                    {category === "perso" ? "01" : "02"}
                   </span>
                   <div className="project-section-copy">
+                    <span className="project-section-kicker mono">
+                      {category === "perso"
+                        ? "EXPLORATIONS CRÉATIVES"
+                        : "CURSUS BUT MMI"}
+                    </span>
                     <h3>{name}</h3>
                     <p className="project-section-description">{description}</p>
                   </div>
                   <span className="mono project-section-count">
-                    <strong>{String(list.length).padStart(2, "0")}</strong>
-                    <span>projets</span>
+                    {String(displayedList.length).padStart(2, "0")} réalisations
                   </span>
                 </div>
 
-                {groupIndex === 1 && (
+                {isUni && (
                   <div
+                    className="genre-filters"
                     role="group"
-                    aria-label="Filtrer les projets universitaires par genre"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      flexWrap: "wrap",
-                      gap: 9,
-                      margin: "0 0 28px",
-                    }}
+                    aria-label="Filtrer les projets universitaires par discipline"
                   >
                     <button
                       type="button"
+                      className={`genre-filter ${selectedGenre === "all" ? "active" : ""}`}
                       aria-pressed={selectedGenre === "all"}
                       onClick={() => {
                         playButtonClick();
                         setSelectedGenre("all");
                       }}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 7,
-                        minHeight: 44,
-                        padding: "10px 18px",
-                        border: `1px solid ${selectedGenre === "all" ? "#fbeef3" : "#e8dbe2"}`,
-                        borderRadius: 999,
-                        background:
-                          selectedGenre === "all" ? "#fbeef3" : "transparent",
-                        color:
-                          selectedGenre === "all"
-                            ? "#c63e70"
-                            : "var(--muted, #706775)",
-                        font: "inherit",
-                        fontSize: 13,
-                        cursor: "pointer",
-                        transition:
-                          "color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease",
-                      }}
                     >
-                      Tout{" "}
-                      <sup style={{ fontSize: 10, opacity: 0.7 }}>
-                        {universityProjects.length}
-                      </sup>
+                      Tout <sup className="mono">{universityProjects.length}</sup>
                     </button>
 
                     {universityProjectsByGenre.map(
@@ -978,35 +1197,15 @@ export default function App() {
                           <button
                             key={genre}
                             type="button"
+                            className={`genre-filter ${isActive ? "active" : ""}`}
                             aria-pressed={isActive}
                             onClick={() => {
                               playButtonClick();
                               setSelectedGenre(genre);
                             }}
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              gap: 7,
-                              minHeight: 44,
-                              padding: "10px 18px",
-                              border: `1px solid ${isActive ? "#fbeef3" : "#e8dbe2"}`,
-                              borderRadius: 999,
-                              background: isActive ? "#fbeef3" : "transparent",
-                              color: isActive
-                                ? "#c63e70"
-                                : "var(--muted, #706775)",
-                              font: "inherit",
-                              fontSize: 13,
-                              cursor: "pointer",
-                              transition:
-                                "color .25s ease, background .25s ease, border-color .25s ease, transform .25s ease",
-                            }}
                           >
                             {label}{" "}
-                            <sup style={{ fontSize: 10, opacity: 0.7 }}>
-                              {genreProjects.length}
-                            </sup>
+                            <sup className="mono">{genreProjects.length}</sup>
                           </button>
                         );
                       },
@@ -1014,46 +1213,79 @@ export default function App() {
                   </div>
                 )}
 
-                <div className="grid3">
-                  {displayedList.map((p, i) => (
-                    <a
-                      key={p.title}
-                      href={p.href}
-                      className="cell proj aes"
-                      data-tilt="9"
-                      style={delay((i % 3) * 0.08)}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        playProjectClick();
-                        setModalProjects(displayedList);
-                        setOpen(i);
-                      }}
-                    >
-                      <span className="arrow">↗</span>
-                      <div
-                        className="thumb"
-                        style={{ "--c": p.color } as React.CSSProperties}
+                <div className="projects-editorial-grid">
+                  {displayedList.map((p, i) => {
+                    // Rythme éditorial asymétrique
+                    const mod = i % 5;
+                    const layoutClass =
+                      mod === 0
+                        ? "proj-wide"
+                        : mod === 3
+                          ? "proj-tall"
+                          : "proj-std";
+
+                    return (
+                      <article
+                        key={p.title}
+                        className={`cell proj aes ${layoutClass}`}
+                        data-tilt="6"
+                        style={delay((i % 3) * 0.08)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Ouvrir le projet ${p.title}`}
+                        onClick={() => {
+                          playProjectClick();
+                          setModalProjects(displayedList);
+                          setOpen(i);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            playProjectClick();
+                            setModalProjects(displayedList);
+                            setOpen(i);
+                          }
+                        }}
                       >
-                        {cover(p) ? (
-                          <img src={cover(p)} alt="" loading="lazy" />
-                        ) : (
-                          p.icon
-                        )}
-                      </div>
-                      <span className="when mono">
-                        {p.collaboration ?? p.kind}
-                      </span>
-                      <h3>{p.title}</h3>
-                      <p>{p.text}</p>
-                      <div className="chips">
-                        {p.stack.map((c) => (
-                          <i key={c} className="mono">
-                            {c}
-                          </i>
-                        ))}
-                      </div>
-                    </a>
-                  ))}
+                        <div
+                          className="thumb"
+                          style={{ "--c": p.color } as CSSProperties}
+                        >
+                          {cover(p) ? (
+                            <img src={cover(p)} alt={p.title} loading="lazy" />
+                          ) : (
+                            <span className="thumb-icon">{p.icon}</span>
+                          )}
+                          <span className="thumb-overlay" aria-hidden="true" />
+                          <span className="arrow" aria-hidden="true">
+                            ↗
+                          </span>
+                        </div>
+
+                        <div className="proj-body">
+                          <div className="proj-meta">
+                            <span className="when mono">
+                              {p.collaboration ?? p.kind}
+                            </span>
+                            {p.type && (
+                              <span className="proj-type mono">{p.type}</span>
+                            )}
+                          </div>
+
+                          <h3>{p.title}</h3>
+                          <p>{p.text}</p>
+
+                          <div className="chips">
+                            {p.stack.map((c) => (
+                              <i key={c} className="mono">
+                                {c}
+                              </i>
+                            ))}
+                          </div>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               </div>
             );
@@ -1061,9 +1293,12 @@ export default function App() {
         </div>
       </section>
 
+      {/* ================= 06. PARCOURS ================= */}
       <section id="parcours">
-        <p className="tag mono rv">// d'où je viens</p>
-        <h2 className="rv">Mon parcours.</h2>
+        <p className="tag mono rv">05 // Formation</p>
+        <h2 className="rv">
+          Mon <span className="instrument">parcours.</span>
+        </h2>
 
         <div className="tl">
           <span className="tl-head" aria-hidden="true" />
@@ -1071,51 +1306,75 @@ export default function App() {
           {studies.map((s, i) => (
             <div
               key={s.title}
-              className="cell it rv rv-r"
+              className={`cell it rv rv-r ${s.accent ? "is-current" : ""}`}
               style={delay(i * 0.08)}
             >
               <span className="when mono">{s.when}</span>
-              <h3 style={s.accent ? { color: "var(--acc)" } : undefined}>
-                {s.title}
-              </h3>
+              <h3>{s.title}</h3>
               <p>{s.text}</p>
             </div>
           ))}
         </div>
       </section>
 
+      {/* ================= 07. CONTACT ================= */}
       <section id="contact">
-        <p className="tag mono rv">// et maintenant ?</p>
-        <h2 className="rv">Prêt·e à collaborer ?</h2>
+        <p className="tag mono rv">06 // Échanger</p>
+        <h2 className="rv">
+          Prêt·e à <span className="instrument">collaborer ?</span>
+        </h2>
 
-        <div className="bento">
-          <div className="cell s2 rv">
+        <div className="contact-grid">
+          <div className="cell contact-form-card rv">
+            <p className="contact-lead">
+              Un projet créatif, une opportunité de{" "}
+              <strong>stage en avril 2027</strong> ou simplement envie
+              d'échanger ? Écrivez-moi directement.
+            </p>
             <form onSubmit={send}>
-              <input name="name" placeholder="Ton nom" required />
-              <input
-                name="email"
-                type="email"
-                placeholder="Ton email"
-                required
-              />
+              <div className="form-row">
+                <input name="name" placeholder="Votre nom" required />
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Votre adresse e-mail"
+                  required
+                />
+              </div>
               <textarea
                 name="message"
                 rows={4}
-                placeholder="Ton message"
+                placeholder="Votre message..."
                 required
               />
 
               <button className="btn p" type="submit">
-                Envoyer ↗
+                Envoyer le message ↗
               </button>
             </form>
           </div>
 
-          <div className="cell s2 rv" style={delay(0.1)}>
+          <div className="contact-side rv" style={delay(0.1)}>
+            <div className="cell availability-card" data-tilt="4">
+              <span className="badge mono">
+                <span className="dot" />
+                Disponibilité · Avril 2027
+              </span>
+              <h3>Recherche de stage</h3>
+              <p>
+                À la recherche d'un stage à partir d'<strong>avril 2027</strong>{" "}
+                en UI/UX design, design graphique, développement web créatif ou
+                audiovisuel.
+              </p>
+            </div>
+
             <div className="links">
               <a href={"mailto:" + profile.email}>
-                <span>Email</span>
-                <span className="mono">{profile.email}</span>
+                <div>
+                  <span className="link-label">Adresse e-mail</span>
+                  <span className="mono link-val">{profile.email}</span>
+                </div>
+                <span className="link-arrow">↗</span>
               </a>
 
               <a
@@ -1123,8 +1382,11 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span>LinkedIn</span>
-                <span>↗</span>
+                <div>
+                  <span className="link-label">LinkedIn</span>
+                  <span className="mono link-val">in/manon-farget</span>
+                </div>
+                <span className="link-arrow">↗</span>
               </a>
 
               <a
@@ -1132,13 +1394,19 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span>GitHub</span>
-                <span>↗</span>
+                <div>
+                  <span className="link-label">GitHub</span>
+                  <span className="mono link-val">@mfrgt4</span>
+                </div>
+                <span className="link-arrow">↗</span>
               </a>
 
               <a href={profile.cv} target="_blank" rel="noopener noreferrer">
-                <span>CV (PDF)</span>
-                <span>↓</span>
+                <div>
+                  <span className="link-label">Curriculum Vitae</span>
+                  <span className="mono link-val">Télécharger le PDF</span>
+                </div>
+                <span className="link-arrow">↓</span>
               </a>
             </div>
           </div>
@@ -1155,10 +1423,10 @@ export default function App() {
       )}
 
       <footer className="mono">
-        © 2026 {profile.name} · Imaginé avec créativité, conçu avec passion ·{" "}
-        <a href="#accueil" style={{ color: "var(--acc)" }}>
-          ↑ haut
-        </a>
+        <span>
+          © 2026 {profile.name} · Imaginé avec créativité, conçu avec passion
+        </span>
+        <a href="#accueil">↑ Haut de page</a>
       </footer>
     </>
   );
