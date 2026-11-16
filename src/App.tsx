@@ -596,13 +596,21 @@ const TOOL_CLUSTERS = [
     ),
   },
   {
-    id: "motion",
-    label: "Audiovisuel & Workflow",
+    id: "audiovisuel",
+    label: "Audiovisuel",
     code: "03",
-    description:
-      "Montage vidéo, motion design, versioning et gestion de projet.",
+    description: "Montage vidéo et motion design.",
     items: tools.filter((t) =>
-      ["After Effects", "Premiere Pro", "Git", "GitHub", "Notion"].includes(t),
+      ["After Effects", "Premiere Pro"].includes(t),
+    ),
+  },
+  {
+    id: "workflow",
+    label: "Workflow",
+    code: "04",
+    description: "Versioning et gestion de projet.",
+    items: tools.filter((t) =>
+      ["Git", "GitHub", "Notion"].includes(t),
     ),
   },
 ] as const;
