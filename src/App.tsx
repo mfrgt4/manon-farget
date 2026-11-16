@@ -1383,7 +1383,7 @@ export default function App() {
               >
                 <div>
                   <span className="link-label">GitHub</span>
-                  <span className="mono link-val">@mfrgt4</span>
+                  <span className="mono link-val">mfrgt4</span>
                 </div>
                 <span className="link-arrow">↗</span>
               </a>
