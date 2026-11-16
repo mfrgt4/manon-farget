@@ -297,13 +297,16 @@ nav a {
   color: var(--mute);
   white-space: nowrap;
   transition:
-    color 0.25s ease,
-    background 0.25s ease;
+    color 0.45s ease,
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: background-color, color;
 }
 
 nav a:hover {
   color: var(--fg);
-  background: rgba(235, 143, 171, 0.08);
+  background: rgba(233, 165, 187, 0.08);
+  transform: translateY(-1px);
 }
 
 nav a.on {
