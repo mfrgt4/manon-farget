@@ -363,7 +363,7 @@ function useTilt() {
           return;
         }
 
-        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-5 * s.p).toFixed(3)}px) scale(${(1 + 0.012 * s.p).toFixed(4)})`;
+        el.style.transform = `${s.persp}rotateX(${s.rx.toFixed(3)}deg) rotateY(${s.ry.toFixed(3)}deg) translateY(${(-5 * s.p).toFixed(3)}px)`;
         el.style.setProperty("--p", s.p.toFixed(4));
         busy = true;
       });
@@ -596,14 +596,18 @@ const TOOL_CLUSTERS = [
     ),
   },
   {
-    id: "motion",
-    label: "Audiovisuel & Workflow",
+    id: "audiovisuel",
+    label: "Audiovisuel",
     code: "03",
-    description:
-      "Montage vidéo, motion design, versioning et gestion de projet.",
-    items: tools.filter((t) =>
-      ["After Effects", "Premiere Pro", "Git", "GitHub", "Notion"].includes(t),
-    ),
+    description: "Montage vidéo et motion design.",
+    items: tools.filter((t) => ["After Effects", "Premiere Pro"].includes(t)),
+  },
+  {
+    id: "workflow",
+    label: "Workflow",
+    code: "04",
+    description: "Versioning et gestion de projet.",
+    items: tools.filter((t) => ["Git", "GitHub", "Notion"].includes(t)),
   },
 ] as const;
 
@@ -621,6 +625,26 @@ const delay = (d: number) => ({ "--d": d + "s" }) as CSSProperties;
 // ================= COMPOSANT PRINCIPAL =================
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Thème sombre cinématographique par défaut
+  useEffect(() => {
+    document.documentElement.dataset.theme = "dark";
+    try {
+      localStorage.setItem("theme", "dark");
+    } catch {
+      // Ignore si localStorage est indisponible
+    }
+  }, []);
+
+  const typedRole = useTyped(profile.roles);
+  const active = useActive(ids);
+
+  const [open, setOpen] = useState<number | null>(null);
+  const [modalProjects, setModalProjects] = useState<Project[]>([]);
+  const [selectedGenre, setSelectedGenre] = useState<Genre | "all">("all");
+  const [selSkill, setSelSkill] = useState(0);
+  const [activeCluster, setActiveCluster] = useState<string>("all");
+  const [focusedTool, setFocusedTool] = useState<string | null>(null);
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [paletteQuery, setPaletteQuery] = useState("");
@@ -669,18 +693,8 @@ export default function App() {
       {
         title: "Actions",
         items: [
-          {
-            key: "action-email",
-            label: "Copier mon email",
-            run: () => {
-              navigator.clipboard?.writeText(profile.email).catch(() => {});
-            },
-          },
-          {
-            key: "action-cv",
-            label: "Télécharger mon CV",
-            run: () => window.open(profile.cv, "_blank"),
-          },
+          { key: "action-email", label: "Copier mon email", run: () => { navigator.clipboard?.writeText(profile.email).catch(() => {}); } },
+          { key: "action-cv", label: "Télécharger mon CV", run: () => window.open(profile.cv, "_blank") },
         ].filter((a) => match(a.label)),
       },
       {
@@ -729,29 +743,6 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Thème sombre cinématographique par défaut
-  useEffect(() => {
-    document.documentElement.dataset.theme = "dark";
-    try {
-      localStorage.setItem("theme", "dark");
-    } catch {
-      // Ignore si localStorage est indisponible
-    }
-  }, []);
-
-  const typedRole = useTyped(profile.roles);
-  const active = useActive(ids);
-
-  const [open, setOpen] = useState<number | null>(null);
-  const [modalProjects, setModalProjects] = useState<Project[]>([]);
-  const [projectScope, setProjectScope] = useState<
-    "all" | "perso" | "universitaire"
-  >("all");
-  const [selectedGenre, setSelectedGenre] = useState<Genre | "all">("all");
-  const [selSkill, setSelSkill] = useState(0);
-  const [activeCluster, setActiveCluster] = useState<string>("all");
-  const [focusedTool, setFocusedTool] = useState<string | null>(null);
-
   const personalProjects = useMemo(
     () => projects.filter((p) => p.category === "perso"),
     [],
@@ -791,9 +782,8 @@ export default function App() {
         ],
       ];
 
-    if (projectScope === "all") return allGroups;
-    return allGroups.filter(([, , cat]) => cat === projectScope);
-  }, [personalProjects, universityProjects, projectScope]);
+    return allGroups;
+  }, [personalProjects, universityProjects]);
 
   const currentCluster =
     TOOL_CLUSTERS.find((c) => c.id === activeCluster) ?? TOOL_CLUSTERS[0];
@@ -802,7 +792,7 @@ export default function App() {
   useHeroParallax();
   useTimeline();
   useTilt();
-  useAes(`projects-${projectScope}-${selectedGenre}`);
+  useAes(`projects-${selectedGenre}`);
   useAnchorCenter();
   useIntroSound();
 
@@ -844,7 +834,7 @@ export default function App() {
           </a>
 
           <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
-            {nav.map(([id, label]) => (
+            {nav.map(([id, label], idx) => (
               <a
                 key={id}
                 href={`#${id}`}
@@ -854,6 +844,9 @@ export default function App() {
                   setMenuOpen(false);
                 }}
               >
+                <span className="nav-num mono">
+                  {String(idx + 1).padStart(2, "0")}
+                </span>
                 {label}
               </a>
             ))}
@@ -875,6 +868,7 @@ export default function App() {
               <path d="m16.5 16.5 4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
           </button>
+
 
           <button
             type="button"
@@ -991,9 +985,8 @@ export default function App() {
 
             <p className="lead rv" style={delay(0.26)}>
               Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
-              Clermont Auvergne au Puy-en-Velay. Je mêle créativité
-              et nouvelles technologies pour donner vie à des expériences
-              visuelles soignées.
+              Clermont Auvergne. Je mêle créativité et nouvelles technologies
+              pour donner vie à des expériences visuelles soignées.
             </p>
 
             <div className="btns rv" style={delay(0.34)}>
@@ -1015,13 +1008,13 @@ export default function App() {
 
               <div className="h-badge" aria-hidden="true">
                 <svg viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="60" fill="#B72D60" />
+                  <circle cx="60" cy="60" r="60" fill="#EB8FAB" />
                   <circle
                     cx="60"
                     cy="60"
                     r="56"
                     fill="none"
-                    stroke="rgba(233,165,187,0.35)"
+                    stroke="rgba(235, 143, 171, 0.35)"
                     strokeWidth="1"
                   />
                   <defs>
@@ -1049,7 +1042,7 @@ export default function App() {
                     y="67"
                     textAnchor="middle"
                     fontSize="20"
-                    fill="#E9A5BB"
+                    fill="#EB8FAB"
                   >
                     ✦
                   </text>
@@ -1121,7 +1114,6 @@ export default function App() {
                   {fact}
                 </span>
               ))}
-              <span className="fact-pill mono">📍 Lyon</span>
             </div>
           </div>
 
@@ -1201,11 +1193,19 @@ export default function App() {
                     <span className="sk-n mono">
                       {String(i + 1).padStart(2, "0")}
                     </span>
+                    <span className="sk-t">{s.title}</span>
                     <span className="sk-plus" aria-hidden="true">
                       +
                     </span>
                   </button>
-
+                  <div className="sk-body">
+                    <div>
+                      <p>{s.text}</p>
+                      <span className="sk-ico" aria-hidden="true">
+                        {s.icon}
+                      </span>
+                    </div>
+                  </div>
                 </li>
               );
             })}
@@ -1243,8 +1243,7 @@ export default function App() {
               rel="noopener noreferrer"
             >
               Heaven Ghobrial
-            </a>{" "}
-            · {tools.length} outils &amp; technologies
+            </a>
           </p>
         </div>
 
@@ -1277,7 +1276,7 @@ export default function App() {
               })}
             </div>
 
-            <div className="cell toolbox-card" data-tilt="4">
+            <div className="cell toolbox-card">
               <div className="toolbox-card-head">
                 <span className="mono toolbox-code">
                   DOMAINE // {currentCluster.code}
@@ -1329,44 +1328,6 @@ export default function App() {
             <h2 className="rv">
               Mes <span className="instrument">projets.</span>
             </h2>
-          </div>
-
-          <div
-            className="scope-switch"
-            role="group"
-            aria-label="Filtrer par type de projet"
-          >
-            <button
-              type="button"
-              className={projectScope === "all" ? "is-active" : ""}
-              onClick={() => {
-                playButtonClick();
-                setProjectScope("all");
-              }}
-            >
-              Tous <span className="mono">{projects.length}</span>
-            </button>
-            <button
-              type="button"
-              className={projectScope === "perso" ? "is-active" : ""}
-              onClick={() => {
-                playButtonClick();
-                setProjectScope("perso");
-              }}
-            >
-              Personnels <span className="mono">{personalProjects.length}</span>
-            </button>
-            <button
-              type="button"
-              className={projectScope === "universitaire" ? "is-active" : ""}
-              onClick={() => {
-                playButtonClick();
-                setProjectScope("universitaire");
-              }}
-            >
-              Universitaires{" "}
-              <span className="mono">{universityProjects.length}</span>
-            </button>
           </div>
         </div>
 
@@ -1448,20 +1409,11 @@ export default function App() {
 
                 <div className="projects-editorial-grid">
                   {displayedList.map((p, i) => {
-                    // Rythme éditorial asymétrique
-                    const mod = i % 5;
-                    const layoutClass =
-                      mod === 0
-                        ? "proj-wide"
-                        : mod === 3
-                          ? "proj-tall"
-                          : "proj-std";
-
                     return (
                       <article
                         key={p.title}
-                        className={`cell proj aes ${layoutClass}`}
-                        data-tilt="6"
+                        className="cell proj aes"
+                        data-tilt={i % 3 === 0 ? undefined : "6"}
                         style={delay((i % 3) * 0.08)}
                         role="button"
                         tabIndex={0}
@@ -1588,19 +1540,6 @@ export default function App() {
           </div>
 
           <div className="contact-side rv" style={delay(0.1)}>
-            <div className="cell availability-card" data-tilt="4">
-              <span className="badge mono">
-                <span className="dot" />
-                Disponibilité · Avril 2027
-              </span>
-              <h3>Recherche de stage</h3>
-              <p>
-                À la recherche d'un stage à partir d'<strong>avril 2027</strong>{" "}
-                en UI/UX design, design graphique, développement web créatif ou
-                audiovisuel.
-              </p>
-            </div>
-
             <div className="links">
               <a href={"mailto:" + profile.email}>
                 <div>
@@ -1629,7 +1568,7 @@ export default function App() {
               >
                 <div>
                   <span className="link-label">GitHub</span>
-                  <span className="mono link-val">@mfrgt4</span>
+                  <span className="mono link-val">mfrgt4</span>
                 </div>
                 <span className="link-arrow">↗</span>
               </a>
