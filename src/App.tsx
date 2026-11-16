@@ -1,4 +1,11 @@
-import { CSSProperties, FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  CSSProperties,
+  FormEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import WordSphere from "./WordSphere";
 import ProjectModal from "./ProjectModal";
 import {
@@ -185,7 +192,8 @@ function useEffects() {
     const onScroll = () => {
       if (!progress) return;
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      const ratio =
+        max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
       progress.style.transform = `scaleX(${ratio})`;
     };
 
@@ -489,7 +497,10 @@ function useAnchorCenter() {
       const h = sec.offsetHeight;
 
       scrollTo({
-        top: Math.max(0, h <= innerHeight ? top - (innerHeight - h) / 2 : top - 24),
+        top: Math.max(
+          0,
+          h <= innerHeight ? top - (innerHeight - h) / 2 : top - 24,
+        ),
         behavior: "smooth",
       });
 
@@ -510,10 +521,17 @@ const getProjectGenre = (p: Project): Genre | undefined => {
   const type = p.type?.toLocaleLowerCase("fr") ?? "";
   const title = p.title.toLocaleLowerCase("fr");
 
-  if (type.includes("développement web") || type.includes("developpement web")) {
+  if (
+    type.includes("développement web") ||
+    type.includes("developpement web")
+  ) {
     return "developpement";
   }
-  if (type.includes("audiovisuel") || type.includes("vidéo") || type.includes("video")) {
+  if (
+    type.includes("audiovisuel") ||
+    type.includes("vidéo") ||
+    type.includes("video")
+  ) {
     return "audiovisuel";
   }
   if (title.includes("d'jam") || title.includes("the pit")) {
@@ -537,25 +555,52 @@ const TOOL_CLUSTERS = [
     id: "design",
     label: "Design & UI/UX",
     code: "01",
-    description: "Identité visuelle, mise en page éditoriale, maquettage et ergonomie.",
+    description:
+      "Identité visuelle, mise en page éditoriale, maquettage et ergonomie.",
     items: tools.filter((t) =>
-      ["Figma", "InDesign", "Photoshop", "Illustrator", "Affinity", "UX Design", "Maquettes", "Ergonomie", "Responsive", "Accessibilité"].includes(t),
+      [
+        "Figma",
+        "InDesign",
+        "Photoshop",
+        "Illustrator",
+        "Affinity",
+        "UX Design",
+        "Maquettes",
+        "Ergonomie",
+        "Responsive",
+        "Accessibilité",
+      ].includes(t),
     ),
   },
   {
     id: "dev",
     label: "Développement Web",
     code: "02",
-    description: "Intégration front-end, interfaces interactives, 3D et back-end.",
+    description:
+      "Intégration front-end, interfaces interactives, 3D et back-end.",
     items: tools.filter((t) =>
-      ["React", "TypeScript", "three.js", "Vite", "Vercel", "HTML5", "CSS3", "JavaScript", "PHP", "SQL", "WordPress", "SEO"].includes(t),
+      [
+        "React",
+        "TypeScript",
+        "three.js",
+        "Vite",
+        "Vercel",
+        "HTML5",
+        "CSS3",
+        "JavaScript",
+        "PHP",
+        "SQL",
+        "WordPress",
+        "SEO",
+      ].includes(t),
     ),
   },
   {
     id: "motion",
     label: "Audiovisuel & Workflow",
     code: "03",
-    description: "Montage vidéo, motion design, versioning et gestion de projet.",
+    description:
+      "Montage vidéo, motion design, versioning et gestion de projet.",
     items: tools.filter((t) =>
       ["After Effects", "Premiere Pro", "Git", "GitHub", "Notion"].includes(t),
     ),
@@ -592,7 +637,9 @@ export default function App() {
 
   const [open, setOpen] = useState<number | null>(null);
   const [modalProjects, setModalProjects] = useState<Project[]>([]);
-  const [projectScope, setProjectScope] = useState<"all" | "perso" | "universitaire">("all");
+  const [projectScope, setProjectScope] = useState<
+    "all" | "perso" | "universitaire"
+  >("all");
   const [selectedGenre, setSelectedGenre] = useState<Genre | "all">("all");
   const [selSkill, setSelSkill] = useState(0);
   const [activeCluster, setActiveCluster] = useState<string>("all");
@@ -613,26 +660,29 @@ export default function App() {
       projectGenres.map(([genre, label]) => ({
         genre,
         label,
-        projects: universityProjects.filter((p) => getProjectGenre(p) === genre),
+        projects: universityProjects.filter(
+          (p) => getProjectGenre(p) === genre,
+        ),
       })),
     [universityProjects],
   );
 
   const visibleGroups = useMemo(() => {
-    const allGroups: [string, string, "perso" | "universitaire", Project[]][] = [
+    const allGroups: [string, string, "perso" | "universitaire", Project[]][] =
       [
-        "Projets personnels",
-        "Explorations libres autour du motion design, de l'identité visuelle et de la création web.",
-        "perso",
-        personalProjects,
-      ],
-      [
-        "Projets universitaires",
-        "Réalisations menées en BUT MMI mêlant direction artistique, conception interactive et stratégie.",
-        "universitaire",
-        universityProjects,
-      ],
-    ];
+        [
+          "Projets personnels",
+          "Explorations libres autour du motion design, de l'identité visuelle et de la création web.",
+          "perso",
+          personalProjects,
+        ],
+        [
+          "Projets universitaires",
+          "Réalisations menées en BUT MMI mêlant direction artistique, conception interactive et stratégie.",
+          "universitaire",
+          universityProjects,
+        ],
+      ];
 
     if (projectScope === "all") return allGroups;
     return allGroups.filter(([, , cat]) => cat === projectScope);
@@ -728,28 +778,24 @@ export default function App() {
                 <span className="dot" />
                 Recherche de stage · Avril 2027
               </span>
-              <span className="mono h-role">
-                {typedRole}
-                <span className="cur" aria-hidden="true" />
-              </span>
             </div>
 
             <h1 className="rv" style={delay(0.1)}>
-              Concevoir des univers
+              Salut ! Moi c'est
               <br />
-              <span className="instrument">sensibles &amp; vivants.</span>
+              <span className="instrument">{profile.name}</span>
             </h1>
 
             <p className="h-signature rv" style={delay(0.18)}>
-              <span className="madi">{profile.name}</span>
-              <span className="mono h-subtag">
-                BUT MMI · Création Numérique · Le Puy-en-Velay
+              <span className="mono h-role">
+                {typedRole}
+                <span className="cur" aria-hidden="true" />
               </span>
             </p>
 
             <p className="lead rv" style={delay(0.26)}>
               Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
-              Clermont Auvergne au Puy-en-Velay. Je mêle créativité, webdesign
+              Clermont Auvergne au Puy-en-Velay. Je mêle créativité
               et nouvelles technologies pour donner vie à des expériences
               visuelles soignées.
             </p>
@@ -794,7 +840,11 @@ export default function App() {
                     fill="#F5F3EF"
                     letterSpacing="1.2"
                   >
-                    <textPath href="#hb" textLength="252" lengthAdjust="spacing">
+                    <textPath
+                      href="#hb"
+                      textLength="252"
+                      lengthAdjust="spacing"
+                    >
                       UI/UX DESIGN • CRÉATION • MOTION • WEB •
                     </textPath>
                   </text>
@@ -927,12 +977,6 @@ export default function App() {
                 <b key={selSkill}>{String(selSkill + 1).padStart(2, "0")}</b>
                 <span>/ {String(skills.length).padStart(2, "0")}</span>
               </div>
-              <p className="sk-preview-title">
-                {skills[selSkill]?.title}
-              </p>
-              <p className="sk-preview-text">
-                {skills[selSkill]?.text}
-              </p>
             </div>
           </div>
 
@@ -950,6 +994,7 @@ export default function App() {
                   <button
                     type="button"
                     className="sk-head"
+                    aria-label={s.title}
                     aria-expanded={isOpen}
                     onClick={() => {
                       playButtonClick();
@@ -960,20 +1005,11 @@ export default function App() {
                     <span className="sk-n mono">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="sk-t">{s.title}</span>
                     <span className="sk-plus" aria-hidden="true">
                       +
                     </span>
                   </button>
 
-                  <div className="sk-body">
-                    <div>
-                      <p>{s.text}</p>
-                      <span className="sk-ico" aria-hidden="true">
-                        {s.icon}
-                      </span>
-                    </div>
-                  </div>
                 </li>
               );
             })}
@@ -1187,7 +1223,8 @@ export default function App() {
                         setSelectedGenre("all");
                       }}
                     >
-                      Tout <sup className="mono">{universityProjects.length}</sup>
+                      Tout{" "}
+                      <sup className="mono">{universityProjects.length}</sup>
                     </button>
 
                     {universityProjectsByGenre.map(
