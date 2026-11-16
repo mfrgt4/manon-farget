@@ -849,10 +849,11 @@ h2 .instrument {
 
 .sk-preview-card {
   margin-top: 28px;
-  padding: 24px;
-  border-radius: var(--r);
-  background: linear-gradient(160deg, var(--card-elevated), var(--bg-rose));
-  border: 1px solid var(--line-strong);
+  padding: 0;          /* avant : 24px */
+  border-radius: 0;
+  background: none;    /* avant : linear-gradient(...) */
+  border: none;        /* avant : 1px solid */
+  box-shadow: none;
 }
 
 .sk-count {
