@@ -1005,10 +1005,20 @@ export default function App() {
                     <span className="sk-n mono">
                       {String(i + 1).padStart(2, "0")}
                     </span>
+                    <span className="sk-t">{s.title}</span>
                     <span className="sk-plus" aria-hidden="true">
                       +
                     </span>
                   </button>
+
+                  <div className="sk-body">
+                    <div>
+                      <p>{s.text}</p>
+                      <span className="sk-ico" aria-hidden="true">
+                        {s.icon}
+                      </span>
+                    </div>
+                  </div>
 
                 </li>
               );
