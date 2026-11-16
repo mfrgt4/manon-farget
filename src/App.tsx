@@ -795,9 +795,8 @@ export default function App() {
 
             <p className="lead rv" style={delay(0.26)}>
               Étudiante en 2<sup>e</sup> année de BUT MMI à l'Université
-              Clermont Auvergne au Puy-en-Velay. Je mêle créativité
-              et nouvelles technologies pour donner vie à des expériences
-              visuelles soignées.
+              Clermont Auvergne au Puy-en-Velay. Je mêle créativité et nouvelles
+              technologies pour donner vie à des expériences visuelles soignées.
             </p>
 
             <div className="btns rv" style={delay(0.34)}>
@@ -1004,11 +1003,19 @@ export default function App() {
                     <span className="sk-n mono">
                       {String(i + 1).padStart(2, "0")}
                     </span>
+                    <span className="sk-t">{s.title}</span>
                     <span className="sk-plus" aria-hidden="true">
                       +
                     </span>
                   </button>
-
+                  <div className="sk-body">
+                    <div>
+                      <p>{s.text}</p>
+                      <span className="sk-ico" aria-hidden="true">
+                        {s.icon}
+                      </span>
+                    </div>
+                  </div>
                 </li>
               );
             })}
