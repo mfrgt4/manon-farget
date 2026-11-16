@@ -1355,13 +1355,6 @@ export default function App() {
           </div>
 
           <div className="contact-side rv" style={delay(0.1)}>
-            <div className="cell availability-card" data-tilt="4">
-              <span className="badge mono">
-                <span className="dot" />
-                Disponibilité · Avril 2027
-              </span>
-            </div>
-
             <div className="links">
               <a href={"mailto:" + profile.email}>
                 <div>
