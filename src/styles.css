@@ -277,6 +277,12 @@ nav {
   background: var(--acc);
 }
 
+.nav-brand-img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
 nav .in {
   display: flex;
   gap: 4px;

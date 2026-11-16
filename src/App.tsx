@@ -727,9 +727,13 @@ export default function App() {
             href="#accueil"
             className="nav-brand"
             onClick={() => setMenuOpen(false)}
+            aria-label="Retour à l'accueil"
           >
-            <span className="nav-brand-dot" aria-hidden="true" />
-            <span>{profile.name}</span>
+            <img
+              src="/mf_favicon.png"
+              alt="Manon Farget"
+              className="nav-brand-img"
+            />
           </a>
 
           <div className={`in ${menuOpen ? "mobile-open" : ""}`}>
