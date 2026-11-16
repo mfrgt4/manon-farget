@@ -1221,7 +1221,7 @@ export default function App() {
                       <article
                         key={p.title}
                         className="cell proj aes"
-                        data-tilt="6"
+                        data-tilt={i % 3 === 0 ? undefined : "6"}
                         style={delay((i % 3) * 0.08)}
                         role="button"
                         tabIndex={0}
