@@ -3,23 +3,23 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const R = 2.4;
-const PINK = new THREE.Color("#EB8FAB");
-const MINT = new THREE.Color("#f6f1f4");
-const FG = new THREE.Color("#ffffff");
+const PINK = new THREE.Color("#F2A7BE"); // rose pastel, plus doux
+const MINT = new THREE.Color("#FDF3F6"); // blanc laiteux rosé
+const FG = new THREE.Color("#FFF5F8"); // hover : blanc rosé, pas blanc pur
 
 function makeLabel(text: string, color: THREE.Color): THREE.Sprite {
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d")!;
-  const font = "500 52px Inter, system-ui, sans-serif";
+  const font = "400 48px Inter, system-ui, sans-serif"; // plus fin, plus doux
   ctx.font = font;
-  ctx.letterSpacing = "3px";
-  c.width = Math.ceil(ctx.measureText(text).width) + 56;
+  ctx.letterSpacing = "4px";
+  c.width = Math.ceil(ctx.measureText(text).width) + 72;
   c.height = 96;
   ctx.font = font;
-  ctx.letterSpacing = "3px";
+  ctx.letterSpacing = "4px";
   ctx.textBaseline = "middle"; ctx.textAlign = "center";
-  ctx.shadowColor = "rgba(235, 143, 171, 0.45)";
-  ctx.shadowBlur = 18;
+  ctx.shadowColor = "rgba(242, 167, 190, 0.28)"; // glow très diffus
+  ctx.shadowBlur = 26;
   ctx.fillStyle = "#fff";
   ctx.fillText(text, c.width / 2, c.height / 2 + 1);
   ctx.fillText(text, c.width / 2, c.height / 2 + 1);
@@ -59,12 +59,12 @@ export default function WordSphere({
     const readPalette = () => {
       const cs = getComputedStyle(document.documentElement);
       const g = (n: string, f: string) => cs.getPropertyValue(n).trim() || f;
-      PINK.set(g("--sph-a", "#EB8FAB"));
-      MINT.set("#f6f1f4");
-      FG.set("#ffffff");
+      PINK.set(g("--sph-a", "#F2A7BE"));
+      MINT.set("#FDF3F6");
+      FG.set("#FFF5F8");
       const tmp = new THREE.Color(g("--sph-a", "#EB8FAB"));
       const lum = 0.2126 * tmp.r + 0.7152 * tmp.g + 0.0722 * tmp.b;
-      if (lum < 0.25) PINK.set("#EB8FAB");
+      if (lum < 0.25) PINK.set("#F2A7BE");
     };
     readPalette();
     const mo = new MutationObserver(readPalette);
@@ -77,12 +77,12 @@ export default function WordSphere({
     el.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true; controls.dampingFactor = 0.06;
+    controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true; controls.dampingFactor = 0.04;
     controls.autoRotate = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-    controls.autoRotateSpeed = 0.8;
+    controls.autoRotateSpeed = 0.6; // très lent, effet flottant
 
     const sprites = words.map((w, i) => {
-      const s = makeLabel(w, i % 4 === 0 ? PINK : MINT); // 1 mot sur 4 en rose
+      const s = makeLabel(w, i % 5 === 0 ? PINK : MINT); // 1 mot sur 5 en rose pastel
       const y = 1 - (2 * (i + 0.5)) / words.length, r = Math.sqrt(1 - y * y), a = i * 2.399963;
       s.userData.word = w;
       s.position.set(Math.cos(a) * r * R, y * R, Math.sin(a) * r * R);
@@ -124,22 +124,22 @@ export default function WordSphere({
         const dimmed = highlighted.length > 0 && !isHighlighted && !isFocused;
 
         // Priorité : hover / focus > highlight > dimmed > profondeur
-        const depth = Math.pow(Math.min(Math.max(t, 0), 1), 1.6);
+        const depth = Math.pow(Math.min(Math.max(t, 0), 1), 1.2); // courbe douce
         const targetOpacity = on || isFocused
-          ? 1
+          ? 0.95 // jamais 100% : plus doux
           : dimmed
-            ? 0.1
-            : 0.12 + 0.88 * depth;
+            ? 0.18
+            : 0.3 + 0.65 * depth; // derrière 0.3, devant 0.95
         m.opacity = targetOpacity;
         m.color.lerp(on || isFocused ? FG : (s.userData.color as THREE.Color), 0.2);
         const targetScale = on || isFocused
-          ? s.userData.base.clone().multiplyScalar(1.2)
+          ? s.userData.base.clone().multiplyScalar(1.15) // zoom survol très doux
           : isHighlighted
-            ? s.userData.base.clone().multiplyScalar(1.15)
+            ? s.userData.base.clone().multiplyScalar(1.08)
             : dimmed
-              ? s.userData.base.clone().multiplyScalar(0.8)
-              : s.userData.base.clone().multiplyScalar(0.72 + 0.42 * depth);
-        s.scale.lerp(targetScale, 0.2);
+              ? s.userData.base.clone().multiplyScalar(0.9)
+              : s.userData.base.clone().multiplyScalar(0.88 + 0.22 * depth); // écart devant/derrière réduit
+        s.scale.lerp(targetScale, 0.12); // transition plus douce
       }
       renderer.render(scene, camera);
       raf = requestAnimationFrame(loop);
