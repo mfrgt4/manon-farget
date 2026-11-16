@@ -260,7 +260,7 @@ nav.is-scrolled .in {
    même sur le lien actif (fond rose) */
 nav.is-scrolled .nav-num,
 nav.is-scrolled a.on .nav-num {
-  color: #fff;
+  color: var(--acc);
 }
 
 .nav-shell {
@@ -349,8 +349,8 @@ nav .in {
   padding: 5px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(19, 16, 21, 0.8);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  background: transparent;
+  box-shadow: none;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   transition:
@@ -362,13 +362,15 @@ nav .in {
 
 nav a {
   padding: 8px 15px;
+  border: 1px solid transparent;
   border-radius: 999px;
   font-size: 13px;
   color: var(--mute);
   white-space: nowrap;
   transition:
     color 0.25s ease,
-    background 0.25s ease;
+    background 0.25s ease,
+    border-color 0.25s ease;
 }
 
 nav a:hover {
@@ -378,7 +380,8 @@ nav a:hover {
 
 nav a.on {
   color: var(--fg);
-  background: var(--acc-dark);
+  background: transparent;
+  border-color: var(--acc);
 }
 
 .mobile-menu-btn {
