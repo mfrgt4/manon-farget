@@ -637,9 +637,6 @@ export default function App() {
 
   const [open, setOpen] = useState<number | null>(null);
   const [modalProjects, setModalProjects] = useState<Project[]>([]);
-  const [projectScope, setProjectScope] = useState<
-    "all" | "perso" | "universitaire"
-  >("all");
   const [selectedGenre, setSelectedGenre] = useState<Genre | "all">("all");
   const [selSkill, setSelSkill] = useState(0);
   const [activeCluster, setActiveCluster] = useState<string>("all");
@@ -684,9 +681,8 @@ export default function App() {
         ],
       ];
 
-    if (projectScope === "all") return allGroups;
-    return allGroups.filter(([, , cat]) => cat === projectScope);
-  }, [personalProjects, universityProjects, projectScope]);
+    return allGroups;
+  }, [personalProjects, universityProjects]);
 
   const currentCluster =
     TOOL_CLUSTERS.find((c) => c.id === activeCluster) ?? TOOL_CLUSTERS[0];
@@ -695,7 +691,7 @@ export default function App() {
   useHeroParallax();
   useTimeline();
   useTilt();
-  useAes(`projects-${projectScope}-${selectedGenre}`);
+  useAes(`projects-${selectedGenre}`);
   useAnchorCenter();
   useIntroSound();
 
@@ -1005,20 +1001,10 @@ export default function App() {
                     <span className="sk-n mono">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="sk-t">{s.title}</span>
                     <span className="sk-plus" aria-hidden="true">
                       +
                     </span>
                   </button>
-
-                  <div className="sk-body">
-                    <div>
-                      <p>{s.text}</p>
-                      <span className="sk-ico" aria-hidden="true">
-                        {s.icon}
-                      </span>
-                    </div>
-                  </div>
 
                 </li>
               );
@@ -1145,43 +1131,6 @@ export default function App() {
             </h2>
           </div>
 
-          <div
-            className="scope-switch"
-            role="group"
-            aria-label="Filtrer par type de projet"
-          >
-            <button
-              type="button"
-              className={projectScope === "all" ? "is-active" : ""}
-              onClick={() => {
-                playButtonClick();
-                setProjectScope("all");
-              }}
-            >
-              Tous <span className="mono">{projects.length}</span>
-            </button>
-            <button
-              type="button"
-              className={projectScope === "perso" ? "is-active" : ""}
-              onClick={() => {
-                playButtonClick();
-                setProjectScope("perso");
-              }}
-            >
-              Personnels <span className="mono">{personalProjects.length}</span>
-            </button>
-            <button
-              type="button"
-              className={projectScope === "universitaire" ? "is-active" : ""}
-              onClick={() => {
-                playButtonClick();
-                setProjectScope("universitaire");
-              }}
-            >
-              Universitaires{" "}
-              <span className="mono">{universityProjects.length}</span>
-            </button>
-          </div>
         </div>
 
         <div className="folder-list">
