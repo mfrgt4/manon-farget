@@ -238,7 +238,7 @@ nav {
   right: 0;
   z-index: 60;
   padding: 16px 24px;
-  transition: background 0.4s ease, backdrop-filter 0.4s ease;
+  transition: background 0.6s ease, backdrop-filter 0.6s ease;
 }
 
 /* Au scroll : fond flou sur toute la barre, pilule sans contour ni fond */
@@ -297,6 +297,7 @@ nav.is-scrolled a.on .nav-num {
   font-size: 10px;
   color: var(--mute);
   margin-right: 6px;
+  transition: color 0.6s ease;
 }
 
 nav a.on .nav-num {
@@ -352,6 +353,11 @@ nav .in {
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+  transition:
+    background 0.6s ease,
+    border-color 0.6s ease,
+    box-shadow 0.6s ease,
+    backdrop-filter 0.6s ease;
 }
 
 nav a {
