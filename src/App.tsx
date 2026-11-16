@@ -162,13 +162,15 @@ function useEffects() {
         glow.style.top = my + "px";
       }
 
+      const inPalette = (e.target as HTMLElement).closest(".palette-overlay");
+
       if (cursorDot && finePointer && !reduced) {
-        cursorDot.style.opacity = "1";
+        cursorDot.style.opacity = inPalette ? "0" : "1";
         cursorDot.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
       }
 
       if (cursorRing && finePointer && !reduced) {
-        cursorRing.style.opacity = "1";
+        cursorRing.style.opacity = inPalette ? "0" : "1";
         const interactive = (e.target as HTMLElement).closest(
           "a, button, input, textarea, [role='button'], #cloudbox",
         );

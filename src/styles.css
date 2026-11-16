@@ -2520,3 +2520,25 @@ footer a:hover {
   padding: 18px 10px;
   color: var(--mute);
 }
+
+/* Curseur normal dans la palette de recherche */
+.palette,
+.palette button,
+.palette kbd {
+  cursor: auto !important;
+}
+
+.palette input {
+  cursor: text !important;
+}
+
+.palette button {
+  cursor: pointer !important;
+}
+
+/* Cache le curseur custom quand la palette est ouverte */
+body:has(.palette-overlay) #cursor-dot,
+body:has(.palette-overlay) #cursor-ring {
+  opacity: 0 !important;
+  display: none !important;
+}
