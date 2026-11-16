@@ -628,6 +628,15 @@ const delay = (d: number) => ({ "--d": d + "s" }) as CSSProperties;
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const [navScrolled, setNavScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setNavScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   // Thème sombre cinématographique par défaut
   useEffect(() => {
     document.documentElement.dataset.theme = "dark";
@@ -820,7 +829,7 @@ export default function App() {
       <div className="orb o2" aria-hidden="true" />
 
       {/* ================= NAVIGATION ================= */}
-      <nav aria-label="Navigation principale">
+      <nav aria-label="Navigation principale" className={navScrolled ? "is-scrolled" : ""}>
         <div className="nav-shell">
           <a
             href="#accueil"
