@@ -3,9 +3,9 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const R = 2.4;
-const PINK = new THREE.Color("#F2A7BE"); // rose pastel, plus doux
+const PINK = new THREE.Color("#F2A7BE"); // rose pastel
 const MINT = new THREE.Color("#FDF3F6"); // blanc laiteux rosé
-const FG = new THREE.Color("#FFF5F8"); // hover : blanc rosé, pas blanc pur
+const FG = new THREE.Color("#FFF5F8");
 
 function makeLabel(text: string, color: THREE.Color): THREE.Sprite {
   const c = document.createElement("canvas");
@@ -18,10 +18,15 @@ function makeLabel(text: string, color: THREE.Color): THREE.Sprite {
   ctx.font = font;
   ctx.letterSpacing = "4px";
   ctx.textBaseline = "middle"; ctx.textAlign = "center";
-  ctx.shadowColor = "rgba(242, 167, 190, 0.28)"; // glow très diffus
+  // Glow très diffus
+  ctx.shadowColor = "rgba(242, 167, 190, 0.28)";
   ctx.shadowBlur = 26;
   ctx.fillStyle = "#fff";
-  ctx.fillText(text, c.width / 2, c.height / 2 + 1);
+  // CONTOUR doux autour du mot
+  ctx.lineJoin = "round";
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+  ctx.strokeText(text, c.width / 2, c.height / 2 + 1);
   ctx.fillText(text, c.width / 2, c.height / 2 + 1);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -55,14 +60,14 @@ export default function WordSphere({
   useEffect(() => {
     const el = box.current!;
     // Couleurs des mots : suivent le thème jour / sombre (variables --sph-a, --sph-b, --fg)
-    // Mots toujours clairs sur fond sombre : jamais de noir (#171717).
+    // Mode soft : couleurs toujours claires et pastel, jamais de noir.
     const readPalette = () => {
       const cs = getComputedStyle(document.documentElement);
       const g = (n: string, f: string) => cs.getPropertyValue(n).trim() || f;
       PINK.set(g("--sph-a", "#F2A7BE"));
       MINT.set("#FDF3F6");
       FG.set("#FFF5F8");
-      const tmp = new THREE.Color(g("--sph-a", "#EB8FAB"));
+      const tmp = new THREE.Color(g("--sph-a", "#F2A7BE"));
       const lum = 0.2126 * tmp.r + 0.7152 * tmp.g + 0.0722 * tmp.b;
       if (lum < 0.25) PINK.set("#F2A7BE");
     };
@@ -126,19 +131,19 @@ export default function WordSphere({
         // Priorité : hover / focus > highlight > dimmed > profondeur
         const depth = Math.pow(Math.min(Math.max(t, 0), 1), 1.2); // courbe douce
         const targetOpacity = on || isFocused
-          ? 0.95 // jamais 100% : plus doux
+          ? 0.95
           : dimmed
             ? 0.18
-            : 0.3 + 0.65 * depth; // derrière 0.3, devant 0.95
+            : 0.3 + 0.65 * depth;
         m.opacity = targetOpacity;
         m.color.lerp(on || isFocused ? FG : (s.userData.color as THREE.Color), 0.2);
         const targetScale = on || isFocused
-          ? s.userData.base.clone().multiplyScalar(1.15) // zoom survol très doux
+          ? s.userData.base.clone().multiplyScalar(1.3) // hover un peu plus gros
           : isHighlighted
             ? s.userData.base.clone().multiplyScalar(1.08)
             : dimmed
               ? s.userData.base.clone().multiplyScalar(0.9)
-              : s.userData.base.clone().multiplyScalar(0.88 + 0.22 * depth); // écart devant/derrière réduit
+              : s.userData.base.clone().multiplyScalar(0.88 + 0.22 * depth);
         s.scale.lerp(targetScale, 0.12); // transition plus douce
       }
       renderer.render(scene, camera);
