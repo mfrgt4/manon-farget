@@ -730,7 +730,7 @@ export default function App() {
             aria-label="Retour à l'accueil"
           >
             <img
-              src="/mf_favicon.png"
+              src="/images/mf_favicon.png"
               alt="Manon Farget"
               className="nav-brand-img"
             />
