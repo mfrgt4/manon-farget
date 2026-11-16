@@ -6,7 +6,7 @@ export const profile = {
   github: "https://github.com/mfrgt4",
   cv: "/images/CV_Manon-FARGET_Graphique.pdf",
   photo: "/images/portrait.png",
-  roles: ["Développeuse web", "UI/UX designer", "Motion lover", "Étudiante MMI"],
+  roles: ["Graphiste", "Monteuse vidéo", "Communication visuelle", "Développeuse web"],
 };
 export const nav = [
   ["a-propos", "À propos"], ["competences", "Compétences"], ["boite-a-outils", "Ma boîte à outils"],
