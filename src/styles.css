@@ -2423,6 +2423,23 @@ footer a:hover {
     opacity: 1 !important;
     transform: none !important;
   }
+
+  /* Modale projet : rien ne doit déborder sur le côté */
+  .pm {
+    overflow-x: hidden;
+  }
+
+  .pm-wrap,
+  .pm-slide,
+  .pm-view,
+  .pm-info {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .pm-info {
+    overflow-wrap: anywhere;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
