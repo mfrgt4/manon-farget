@@ -2666,3 +2666,57 @@ body:has(.palette-overlay) #cursor-ring {
     pointer-events: auto;
   }
 }
+
+/* ================= RESPONSIVE GRANDS ÉCRANS PC ================= */
+@media (min-width: 1440px) {
+  /* On élargit les contenants, sinon tout reste collé au milieu */
+  section,
+  #hero,
+  .nav-shell {
+    max-width: 1320px;
+  }
+
+  section {
+    padding: 140px 32px 80px;
+  }
+
+  /* Hero un peu plus grand */
+  #hero h1 {
+    font-size: clamp(56px, 5vw, 88px);
+  }
+
+  /* Projets : un peu plus d'air entre les cartes */
+  .projects-editorial-grid {
+    gap: 24px;
+  }
+
+  /* Modale projet : plus large */
+  .pm-wrap {
+    max-width: 1360px;
+  }
+}
+
+@media (min-width: 1920px) {
+  /* Très grands écrans : on élargit encore, sans que le texte devienne géant */
+  section,
+  #hero,
+  .nav-shell {
+    max-width: 1480px;
+  }
+
+  section {
+    padding: 160px 40px 90px;
+  }
+
+  #hero h1 {
+    font-size: clamp(64px, 4.5vw, 96px);
+  }
+
+  .projects-editorial-grid {
+    gap: 28px;
+  }
+
+  .pm-wrap {
+    max-width: 1520px;
+  }
+}
