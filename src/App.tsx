@@ -1135,8 +1135,7 @@ export default function App() {
 
             <p className="about-p">
               Hello ! Moi, c’est Manon, étudiante en BUT MMI, parcours Création
-              Numérique. Je m’intéresse particulièrement au design graphique, à
-              l’UI/UX design et à l’audiovisuel. J’aime explorer les univers
+              Numérique. Je m’intéresse particulièrement au design graphique et à l’audiovisuel. J’aime explorer les univers
               visuels, imaginer des interfaces et donner vie à mes idées à
               travers des projets créatifs.
             </p>
