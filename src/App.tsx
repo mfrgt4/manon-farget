@@ -1257,7 +1257,7 @@ export default function App() {
           <div className="sk-goal-left">
             <span className="mono sk-goal-tag">&gt; objectif.txt</span>
             <p className="sk-goal-main">
-              Stage en montage vidéo, design graphique ou UI/UX design ·{" "}
+              Stage en montage vidéo ou design graphique ·{" "}
               <strong>Avril 2027</strong>
             </p>
           </div>
