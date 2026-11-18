@@ -2668,7 +2668,7 @@ body:has(.palette-overlay) #cursor-ring {
 }
 
 /* ================= RESPONSIVE GRANDS ÉCRANS PC ================= */
-@media (min-width: 1440px) {
+@media (min-width: 1440px) and (max-width: 1919px) {
   /* On élargit les contenants, sinon tout reste collé au milieu */
   section,
   #hero,
@@ -2696,7 +2696,7 @@ body:has(.palette-overlay) #cursor-ring {
   }
 }
 
-@media (min-width: 1920px) {
+@media (min-width: 1920px) and (max-width: 2559px) {
   /* Très grands écrans : on élargit encore, sans que le texte devienne géant */
   section,
   #hero,
@@ -2718,5 +2718,45 @@ body:has(.palette-overlay) #cursor-ring {
 
   .pm-wrap {
     max-width: 1520px;
+  }
+}
+
+@media (min-width: 2560px) {
+  /* QHD / 2K : 2560 × 1440 — on élargit beaucoup, mais on garde le texte lisible */
+  section,
+  #hero,
+  .nav-shell {
+    max-width: 1720px;
+  }
+
+  section {
+    padding: 180px 48px 100px;
+  }
+
+  #hero {
+    gap: 96px;
+  }
+
+  #hero h1 {
+    font-size: clamp(72px, 3.8vw, 108px);
+  }
+
+  /* Projets : cartes plus grandes, sans passer en 4 colonnes */
+  .projects-editorial-grid {
+    gap: 32px;
+  }
+
+  .proj-body {
+    padding: 28px 28px 30px;
+  }
+
+  .proj-body h3 {
+    font-size: 24px;
+  }
+
+  /* Modale projet : plus large et plus aérée */
+  .pm-wrap {
+    max-width: 1780px;
+    gap: 96px;
   }
 }
